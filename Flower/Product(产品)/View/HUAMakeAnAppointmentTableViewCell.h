@@ -22,6 +22,8 @@
 @property (nonatomic, strong)UILabel *weekLabel;
 
 @property (nonatomic, strong)NSDictionary *typeDic;
+//数据解析的类型，因为两个界面用同样的cell
+@property (nonatomic, strong)NSString *jsonType;
 
 //上班时间预约的数组数据
 @property (nonatomic, strong)NSArray *range_list;

@@ -22,14 +22,17 @@
     //记录上一次视图的位置;
     UIView *_lastView;
     NSDictionary *_dic;
+    NSArray *_appointmentTime;//时间
     UIButton *_selecteTimeButton;//选中的时间
-    NSArray *_earlyTime;//早班时间
+    NSArray *_earlyTime;//预约时间
 }
 @property (nonatomic,strong)UIScrollView *scrollView;
 @property (nonatomic, strong)UITableView *tableView;
 @property (nonatomic, strong)NSMutableArray *dateArray;
 @property (nonatomic, strong)UIButton *loadingButton;
 @property (nonatomic, strong)UITableView *lastTbaleView;
+//会员信息
+@property (nonatomic, strong)NSDictionary *membersInformation;
 
 //遮盖视图
 @property (strong, nonatomic) HATransparentView *transparentView;
@@ -50,9 +53,8 @@
     
     self.dateArray = [NSMutableArray array];
     
-    _earlyTime = @[@"09:00 - 09:30",@"09:30 - 10:00",@"10:00 - 10:30",@"10:30 - 11:00",@"11:00 - 11:30",@"11:30 - 12:00"];
-    
-    
+    //获取会员消息
+    [self membersData];
     
     //获取数据
     [self getData];
@@ -64,6 +66,25 @@
     
     
 }
+- (void)membersData{
+    
+    NSString *token = [HUAUserDefaults getToken];
+    
+    AFHTTPRequestOperationManager *manager = [[AFHTTPRequestOperationManager alloc]init];
+    [manager.requestSerializer setValue:token forHTTPHeaderField:@"token"];
+    NSString *url = [HUA_URL stringByAppendingPathComponent:@"user/is_vip"];
+    
+    NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
+    parameters[@"shop_id"] =self.shop_id;
+    [manager GET:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+        NSLog(@"%@",responseObject);
+        self.membersInformation = responseObject;
+        
+    } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
+        HUALog(@"%@",error);
+    }];
+}
+
 - (void)getData{
     NSDate *date = [NSDate date];
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
@@ -78,14 +99,14 @@
     
     [manager GET:url parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
         
-      //  NSString *type = responseObject[@"info"][@"range_type"][@"type_name"];
-       // NSArray *array = responseObject[@"info"][@"range_type"][@"time_list"];
-        NSLog(@"%@",responseObject);
+        
+        _earlyTime = responseObject[@"info"][@"item"][@"range_list"];
+        NSLog(@"%ld",_earlyTime.count);
         
         //_dic = @{@"type":type,@"array":array,};
         //NSLog(@"%@",_dic[@"type"]);
         
-        //[self.tableView reloadData];
+        [self.tableView reloadData];
         
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         NSLog(@"Error: %@", error);
@@ -133,7 +154,7 @@
         make.left.mas_equalTo(hua_scale(10));
     }];
     [projectLabel setSingleLineAutoResizeWithMaxWidth:200];
-
+    
     //项目
     _project = [UILabel labelText:self.category color:HUAColor(0x333333) font:hua_scale(13)];
     [_scrollView addSubview:_project];
@@ -142,7 +163,7 @@
         make.bottom.mas_equalTo(projectLabel);
     }];
     [_project setSingleLineAutoResizeWithMaxWidth:200];
-
+    
     //技师类型
     UILabel *technicianLabel = [UILabel new];
     technicianLabel.text = @"技师 :";
@@ -154,7 +175,7 @@
         make.left.mas_equalTo(hua_scale(10));
     }];
     [technicianLabel setSingleLineAutoResizeWithMaxWidth:200];
-
+    
     
     //姓名
     _name = [UILabel labelText:self.model.name color:HUAColor(0x4da800) font:hua_scale(13)];
@@ -259,7 +280,7 @@
             [label updateLayout];
             //NSLog(@"%f",label.width);
         }
-
+        
     }
     UIView *lastView2 = nil;
     for (int i=0; i<5; i++) {
@@ -328,7 +349,7 @@
 //点击按钮增加控件
 - (void)addTbaleView{
     
-     NSArray *titleArray = @[@"早班",@"中班",@"晚班"];
+    NSArray *titleArray = @[@"早班",@"中班",@"晚班"];
     
     UIView *bgView =[UIView new];
     //bgView.backgroundColor = [UIColor yellowColor];
@@ -376,8 +397,8 @@
                 make.left.mas_equalTo(hua_scale(78*i)+(hua_scale(78.0/2.0-label.width/2.0))+hua_scale(73));
             }];
             
-           
-           // NSLog(@"%f",label.width);
+            
+            // NSLog(@"%f",label.width);
         }
         lastView1 = view1;
     }
@@ -438,7 +459,7 @@
 
 - (void)click:(UIButton *)sender{
     sender.selected = !sender.selected;
-   
+    
     [self addTbaleView];
     
 }
@@ -449,13 +470,9 @@
     if (tableView == self.tableView || tableView == _lastTbaleView) {
         return self.dateArray.count;
     }else{
-        return 6;
+        return _appointmentTime.count;
     }
-   
-    
 }
-
-
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     
     //  static NSString *cellStr = @"cell";
@@ -465,7 +482,9 @@
     }
     cell.backgroundColor = [UIColor clearColor];
     cell.dateDic = self.dateArray[indexPath.row];
-    
+    //预约的时间
+    cell.jsonType = @"1";
+    cell.range_list = _earlyTime;
     
     if (tableView == self.tableView) {
         
@@ -482,7 +501,7 @@
         UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
         
         UIButton *timeButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        [timeButton setTitle:_earlyTime[indexPath.row] forState:0];
+        [timeButton setTitle:_appointmentTime[indexPath.row] forState:0];
         [timeButton setTitleColor:HUAColor(0x333333) forState:0];
         [timeButton setTitleColor:HUAColor(0x4da800) forState:UIControlStateSelected];
         timeButton.tag = 800+indexPath.row;
@@ -510,16 +529,30 @@
     }
     //选择时间
     [cell setButtonBlock:^(UIButton *sender,NSString *range_type_id) {
-       
-        _transparentView = [[HATransparentView alloc] init];
-        _transparentView.delegate = self;
-        _transparentView.tapBackgroundToClose = YES;
-        _transparentView.hideCloseButton = YES;
         
-        _transparentView.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.8];
-        [_transparentView open];
+        AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+        manager.responseSerializer = [AFHTTPResponseSerializer serializer];
         
-        [self showTimeView];
+        NSString *url = [HUA_URL stringByAppendingPathComponent:[NSString stringWithFormat:@"master/master_appointment?master_id=%@&range_type_id=%@",self.model.master_id,range_type_id]];
+        
+        [manager GET:url parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+            
+            
+            NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:responseObject options:0 error:nil];
+            _appointmentTime = dic[@"info"][@"range_type"][@"time_list"];
+            
+            _transparentView = [[HATransparentView alloc] init];
+            _transparentView.delegate = self;
+            _transparentView.tapBackgroundToClose = YES;
+            _transparentView.hideCloseButton = YES;
+            _transparentView.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.8];
+            [_transparentView open];
+            
+            [self showTimeView];
+            
+        } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
+            HUALog(@"%@",error);
+        }];
     }];
     
     return cell;
@@ -583,7 +616,7 @@
         make.right.mas_equalTo(hua_scale(-15));
         make.size.mas_equalTo(CGSizeMake(hua_scale(30), hua_scale(15)));
     }];
-
+    
     UIButton *anyButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [anyButton setTitle:@"任意时间" forState:0];
     anyButton.clipsToBounds = YES;
@@ -601,7 +634,7 @@
         make.left.mas_equalTo(hua_scale(10));
         make.size.mas_equalTo(CGSizeMake(hua_scale(130), hua_scale(35)));
     }];
-
+    
     UIButton *determineButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [determineButton setTitle:@"确定" forState:0];
     determineButton.clipsToBounds = YES;
@@ -611,7 +644,7 @@
     determineButton.backgroundColor = HUAColor(0x4da800);
     determineButton.tag = 342;
     [determineButton setTitleColor:HUAColor(0xffffff) forState:0];
-     determineButton.titleLabel.font = [UIFont systemFontOfSize:hua_scale(14)];
+    determineButton.titleLabel.font = [UIFont systemFontOfSize:hua_scale(14)];
     [determineButton addTarget:self action:@selector(clear:) forControlEvents:UIControlEventTouchUpInside];
     [bgImageView addSubview:determineButton];
     [determineButton mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -619,7 +652,7 @@
         make.right.mas_equalTo(hua_scale(-10));
         make.size.mas_equalTo(CGSizeMake(hua_scale(130), hua_scale(35)));
     }];
-
+    
     UITableView *timeTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, 0, 0) style:UITableViewStylePlain];
     timeTableView.scrollEnabled = NO;
     timeTableView.delegate = self;
@@ -651,30 +684,37 @@
                 
             } completion:^(BOOL finished) {
                 HUATechniciansOrdersViewController *vc = [HUATechniciansOrdersViewController new];
-               
-                //是否是会员。
-                vc.showType = YES;
                 //项目
                 vc.projectType = self.category;
                 //名字
                 vc.technicianName = self.model.name;
                 //金额
                 vc.moneyNumber = self.model.price;
+                if ([[self.membersInformation[@"info"]class] isSubclassOfClass:[NSString class]]) {
+                    //不是会员
+                    vc.showType = NO;
+                }else{
+                    //是会员
+                    vc.showType = YES;
+                    vc.membersName = self.membersInformation[@"info"][@"nickname"];
+                    vc.membersType = self.membersInformation[@"info"][@"level"];
+                    vc.membersMoney = self.membersInformation[@"info"][@"money"];
+                }
                 
                 NSLog(@"时间%@",_selecteTimeButton.titleLabel.text);
                 [self.navigationController pushViewController:vc animated:YES];
                 //清除上次选择的时间
                 _selecteTimeButton = nil;
             }];
-      
+            
             
         }else{
-           //请选择时间
-            NSLog(@"请选择时间");
+            //请选择时间
+            [HUAMBProgress MBProgressFromView:_transparentView wrongLabelText:@"请选择时间!"];
         }
     }else{
         //任意时间
-    
+        
     }
 }
 //选中要预约的时间
@@ -682,12 +722,12 @@ UIButton *selebutton =nil;
 UIImageView *lastImage = nil;
 - (void)slecteTime:(UIButton *)sender{
     UIImageView *imageView = [sender viewWithTag:sender.tag+100];
-
+    
     if (selebutton!=sender) {
         sender.selected = YES;
         selebutton.selected = NO;
         
-         imageView.hidden = NO;
+        imageView.hidden = NO;
         lastImage.hidden = YES;
     }else{
         sender.selected = YES;

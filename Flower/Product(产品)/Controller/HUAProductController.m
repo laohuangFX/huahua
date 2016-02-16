@@ -17,8 +17,9 @@
 #import "HUAProductCell.h"
 #import "HUAProduct.h"
 #import "HUAProductDetailController.h"
+#import "EmojiBool.h"
 
-@interface HUAProductController ()<UICollectionViewDelegateFlowLayout,JSDropDownMenuDataSource,JSDropDownMenuDelegate>{
+@interface HUAProductController ()<UICollectionViewDelegateFlowLayout,JSDropDownMenuDataSource,JSDropDownMenuDelegate,UITextFieldDelegate>{
     NSMutableArray *_data1;
     NSMutableArray *_data2;
     NSMutableArray *_data3;
@@ -30,6 +31,7 @@
 
 }
 @property (nonatomic, strong) NSArray *productArray;
+@property (nonatomic, strong) UITextField *searchBar;
 @end
 
 @implementation HUAProductController
@@ -60,17 +62,25 @@ static NSString * const reuseIdentifier = @"cell";
    
     [self setNavigationItem];
     [self category];
+    [self getDataWithparameters:nil];
     
+    
+}
+- (void)getDataWithparameters:(NSDictionary *)parameters{
     AFHTTPRequestOperationManager *manager = [[AFHTTPRequestOperationManager alloc]init];
     NSString *url = [HUA_URL stringByAppendingPathComponent:Product_list];
-    [manager GET:url parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-        //HUALog(@"%@",responseObject);
+    
+    [manager GET:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+        HUALog(@"%@",responseObject);
+        if ([[responseObject objectForKey:@"info"] isKindOfClass:[NSString class]]) {
+            [HUAMBProgress MBProgressOnlywithLabelText:[responseObject objectForKey:@"info"]];
+            return ;
+        }
         self.productArray = [HUADataTool getProductArray:responseObject];
         [self.collectionView reloadData];
     } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
-         HUALog(@"%@",error);
+        HUALog(@"%@",error);
     }];
-    
     
 }
 
@@ -120,11 +130,91 @@ static NSString * const reuseIdentifier = @"cell";
     //设置导航栏右边的BarButtonItem
     UIBarButtonItem *searchBar = [UIBarButtonItem itemWithTarget:self action:@selector(search) image:@"search" highImage:@"search" text:nil];
     self.navigationItem.rightBarButtonItem = searchBar;
+    self.navigationItem.titleView = nil;
+    self.title = @"产品";
 }
 
-- (void)search {
+
+
+- (void)setSearchNav{
+    self.navigationItem.leftBarButtonItems = @[];
     
+    self.searchBar.width = hua_scale(300.0);
+    self.searchBar.height = hua_scale(22.5);
+    self.navigationItem.titleView = self.searchBar;
+    [self.searchBar becomeFirstResponder];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithTitle:@"取消" style:UIBarButtonItemStyleDone target:self action:@selector(dismissBlackView)];
+}
+- (void)dismissBlackView{
+    
+    UIView *blackView = [self.view viewWithTag:1001];
+    if (blackView == nil) {
+        return;
+    }
+    [self setNavigationItem];
+    [self.searchBar resignFirstResponder];
+    self.searchBar.text = @"";
+    [UIView animateWithDuration:0.5 animations:^{
+        blackView.alpha = 0;
+    } completion:^(BOOL finished) {
+        [blackView removeFromSuperview];
+    }];
+}
+- (void)search {
+    [self setSearchNav];
     HUALog(@"...");
+}
+
+
+#pragma mark - textFiled delegate
+
+
+- (void)textFieldDidBeginEditing:(UITextField *)textField{
+    NSLog(@"beginEditing");
+    UIView *blackView  = [[UIView alloc]initWithFrame:self.view.bounds];
+    blackView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.8];
+    blackView.tag = 1001;
+    blackView.alpha = 0;
+    [self.view addSubview:blackView];
+    UITapGestureRecognizer *blackTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(dismissBlackView)];
+    [blackView addGestureRecognizer:blackTap];
+    [self setSearchNav];
+    [UIView animateWithDuration:0.3 animations:^{
+        blackView.alpha = 1;
+    }];
+}
+
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string{
+    
+    return ![EmojiBool stringContainsEmoji:string];
+}
+
+
+//搜索
+- (BOOL)textFieldShouldReturn:(UITextField *)textField{
+    
+    if (textField.text.length == 0) {
+        [self dismissBlackView];
+    }else{
+        //数据请求
+        NSDictionary *parameters = [NSDictionary dictionaryWithObject:textField.text forKey:@"search"];
+        [self getDataWithparameters:parameters];
+        [self dismissBlackView];
+    }
+    return YES;
+}
+- (UITextField *)searchBar{
+    if (!_searchBar) {
+        _searchBar = [UITextField textFieldWithFrame:CGRectZero image:@"search" placeholder:@"搜索"];
+        _searchBar.layer.masksToBounds = YES;
+        _searchBar.layer.cornerRadius = hua_scale(5);
+        _searchBar.backgroundColor = HUAColor(0xeeeeee);
+        _searchBar.width = hua_scale(185);
+        _searchBar.height = hua_scale(22.5);
+        _searchBar.delegate = self;
+        _searchBar.returnKeyType = UIReturnKeySearch;
+    }
+    return _searchBar;
 }
 
 - (void)didReceiveMemoryWarning {

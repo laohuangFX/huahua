@@ -69,7 +69,7 @@
 @property (nonatomic, strong) UIColor *indicatorColor;
 @property (nonatomic, strong) UIColor *textColor;
 @property (nonatomic, strong) UIColor *separatorColor;
-
+@property (nonatomic, assign)NSInteger rowHeigth;
 @property (nonatomic, strong)CATextLayer *titleName;
 /**
  *  the width of menu will be set to screen width defaultly

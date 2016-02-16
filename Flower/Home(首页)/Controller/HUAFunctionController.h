@@ -11,4 +11,5 @@
 @interface HUAFunctionController : UIViewController
 @property (nonatomic, strong) NSString *name;
 @property (nonatomic, strong) NSString *category_id;
+@property (nonatomic, assign) BOOL isSearch;
 @end

@@ -10,7 +10,10 @@
 #import "HUATechnicianModel.h"
 @interface HUATechniciansOrdersViewController : UIViewController
 @property (nonatomic, assign)BOOL showType;
-
+//会员信息
+@property (nonatomic, strong)NSString *membersName;
+@property (nonatomic, strong)NSString *membersType;
+@property (nonatomic, strong)NSString *membersMoney;
 
 //项目
 @property (nonatomic, strong)NSString *projectType;

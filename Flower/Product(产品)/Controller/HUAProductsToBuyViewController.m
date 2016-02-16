@@ -33,34 +33,34 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.typeBool = YES;
+    
     self.title = @"订单确认";
     self.view.backgroundColor = [UIColor whiteColor];
-
+    
     
     [self getData];
 }
 - (void)getData{
-
+    
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager new];
     NSString *url = [HUA_URL stringByAppendingPathComponent:[NSString stringWithFormat:@"product/product_prepay?product_id=%@",self.product_id]];
-
+    
     [manager GET:url parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
         HUALog(@"%@",responseObject);
-
+        
         self.moneyDic = responseObject[@"info"];
-
+        
         [self initScrollView];
         
         //自定义弹出视图
         [self popView];
-
+        
     } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
         HUALog(@"%@",error);
     }];
-
-
-
+    
+    
+    
 }
 
 - (void)initScrollView{
@@ -113,11 +113,11 @@
     .heightIs(1)
     .leftSpaceToView(scrollView,hua_scale(15))
     .widthIs(scrollView.width);
-
+    
     //名字
     UILabel *name = [UILabel new];
     name.textColor = HUAColor(0x000000);
-    name.text = @"陈翔";
+    name.text = self.membersName;
     name.font = [UIFont systemFontOfSize:13];
     [scrollView addSubview:name];
     [name mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -129,7 +129,7 @@
     //会员类型
     UILabel *memberType = [UILabel new];
     memberType.textColor = HUAColor(0x4da800);
-    memberType.text = @"初级会员";
+    memberType.text = self.membersType;
     memberType.font = [UIFont systemFontOfSize:11];
     [scrollView addSubview:memberType];
     [memberType mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -148,9 +148,9 @@
         make.size.mas_equalTo(CGSizeMake(hua_scale(91), hua_scale(29)));
     }];
     
-     //余额
+    //余额
     UILabel *pageLabel = [[UILabel alloc] init];
-    pageLabel.text =@"余额:¥ 12";
+    pageLabel.text =[NSString stringWithFormat:@"余额 : ¥%ld",[self.membersMoney integerValue]] ;
     pageLabel.textColor = HUAColor(0x4da800);
     pageLabel.font = [UIFont systemFontOfSize:hua_scale(13)];
     [HUAConstRowHeight adjustTheLabel:pageLabel adjustColor:HUAColor(0x888888) adjustColorRang:NSMakeRange(0, 3) adjustFont:11 adjustFontRang:NSMakeRange(0, 3) ];
@@ -160,7 +160,7 @@
         
     }];
     [pageLabel setSingleLineAutoResizeWithMaxWidth:200];
-
+    
     
     //购买数量
     UILabel *quantityLabel = [UILabel new];
@@ -187,11 +187,11 @@
             make.left.mas_equalTo(hua_scale(15));
         }];
         [quantityLabel setSingleLineAutoResizeWithMaxWidth:200];
-
+        
     }
-
-
-
+    
+    
+    
     
     //背景图
     UIImageView *backImageView = [[UIImageView alloc] init];
@@ -241,7 +241,7 @@
         make.left.mas_equalTo(subtractButton.mas_right);
         make.right.mas_equalTo(addButton.mas_left);
     }];
-
+    
     //3线
     UIView *thView3 = [UIView new];
     thView3.backgroundColor = HUAColor(0xe1e1e1);
@@ -251,8 +251,8 @@
         make.width.mas_equalTo(scrollView.width);
         make.height.mas_equalTo(1);
     }];
-
-
+    
+    
     //4线
     UIView *thView4 = [UIView new];
     thView4.backgroundColor = HUAColor(0xe1e1e1);
@@ -261,7 +261,7 @@
     .topSpaceToView(thView3,hua_scale(45))
     .heightIs(1)
     .widthIs(scrollView.width);
-
+    
     UILabel *claimType = [[UILabel alloc] init];
     claimType.text = @"取货方式";
     claimType.font = [UIFont systemFontOfSize:13];
@@ -271,7 +271,7 @@
         make.left.mas_equalTo(hua_scale(15));
     }];
     [claimType setSingleLineAutoResizeWithMaxWidth:200];
-
+    
     UILabel *markLabel = [[UILabel alloc] init];
     markLabel.text = @"*";
     markLabel.textColor = [UIColor redColor];
@@ -282,7 +282,7 @@
         make.left.mas_equalTo(claimType.mas_right).mas_equalTo(5);
     }];
     [markLabel setSingleLineAutoResizeWithMaxWidth:200];
-
+    
     //送货方式的按钮
     UIButton *claimBuuton = [UIButton buttonWithType:UIButtonTypeCustom];
     [claimBuuton setTitle:@"请选择" forState:0];
@@ -323,7 +323,7 @@
         make.left.right.mas_equalTo(self.view);
         
     }];
-
+    
     //新增地址
     UIButton *newAddress = [UIButton buttonWithType:UIButtonTypeCustom];
     [newAddress setTitle:@"新增地址" forState:0];
@@ -342,9 +342,9 @@
     [newView addSubview:newAddress];
     [newAddress mas_makeConstraints:^(MASConstraintMaker *make) {
         make.edges.mas_equalTo(0);
-    
+        
     }];
-
+    
     //有地址类型
     //地址名字，电话
     UILabel *lable1 = [UILabel labelText:@"" color:HUAColor(0x333333) font:hua_scale(13)];
@@ -390,7 +390,7 @@
             make.top.mas_equalTo(thView4.mas_bottom).mas_equalTo(hua_scale(15));
             make.left.mas_equalTo(hua_scale(15));
         }];
-
+        
     }else{
         [modeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
             make.top.mas_equalTo(thView5.mas_bottom).mas_equalTo(hua_scale(15));
@@ -407,7 +407,7 @@
         make.height.mas_equalTo(hua_scale(27));
         make.width.mas_equalTo(hua_scale(25));
     }];
-
+    
     UILabel *huiyuanLbale  = [[UILabel alloc] init];
     huiyuanLbale.text = @"会员余额";
     huiyuanLbale.font = [UIFont systemFontOfSize:11];
@@ -418,7 +418,7 @@
     }];
     [huiyuanLbale setSingleLineAutoResizeWithMaxWidth:200];
     
-
+    
     UILabel *title  = [[UILabel alloc] init];
     title.text = @"使用会员余额,服务价格降低";
     title.font = [UIFont systemFontOfSize:9];
@@ -454,8 +454,9 @@
         make.height.mas_equalTo(hua_scale(15));
         make.width.mas_equalTo(hua_scale(15));
     }];
-  
-
+    
+    
+    
     [thView6 updateLayout];
     UIImageView *iocnImageView = [[UIImageView alloc] init];
     iocnImageView.image = [UIImage imageNamed:@"zhifubao"];
@@ -511,7 +512,7 @@
         make.width.mas_equalTo(hua_scale(15));
     }];
     
-
+    
     
     UIImageView *winImageView = [[UIImageView alloc] init];
     winImageView.image = [UIImage imageNamed:@"weixin"];
@@ -558,7 +559,7 @@
         make.width.mas_equalTo(hua_scale(15));
     }];
     
-   
+    
     //8线
     UIView *thView8 = [UIView new];
     thView8.backgroundColor = HUAColor(0xe1e1e1);
@@ -569,7 +570,7 @@
         make.width.mas_equalTo(scrollView.width);
         
     }];
-
+    
     
     
     _memberLabel = [[UILabel alloc] init];
@@ -582,8 +583,8 @@
         
     }];
     [_memberLabel setSingleLineAutoResizeWithMaxWidth:200];
-
-
+    
+    
     UILabel *memberTitle  = [[UILabel alloc] init];
     memberTitle.font = [UIFont systemFontOfSize:hua_scale(11)];
     memberTitle.text = @"产品金额:";
@@ -606,7 +607,7 @@
         make.top.mas_equalTo(memberTitle.mas_bottom).mas_equalTo(hua_scale(12));
     }];
     [freightLabel setSingleLineAutoResizeWithMaxWidth:200];
-
+    
     //运费金钱
     UILabel *freight = [UILabel new];
     freight.font = [UIFont systemFontOfSize:hua_scale(11)];
@@ -617,12 +618,12 @@
         make.top.mas_equalTo(freightLabel);
     }];
     [freight setSingleLineAutoResizeWithMaxWidth:200];
-
-
+    
+    
     //9线
     UIView *thView9 = [UIView new];
     thView9.backgroundColor = HUAColor(0xe1e1e1);
- 
+    
     [scrollView addSubview:thView9];
     [thView9 mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(self.view.width/2.0);
@@ -630,8 +631,8 @@
         make.height.mas_equalTo(1);
         make.right.mas_equalTo(self.view);
     }];
-
-
+    
+    
     [thView9 updateLayout];
     UILabel *ResultLable  = [[UILabel alloc] init];
     ResultLable.font = [UIFont systemFontOfSize:13];
@@ -655,8 +656,8 @@
         make.top.mas_equalTo(ResultLable);
     }];
     [ResultTitle setSingleLineAutoResizeWithMaxWidth:200];
-
-
+    
+    
     //10线
     UIView *thView10 = [UIView new];
     thView10.backgroundColor = HUAColor(0xe1e1e1);
@@ -667,9 +668,9 @@
         make.width.mas_equalTo(self.view);
         
     }];
-
     
- 
+    
+    
     [thView10 updateLayout];
     UILabel *commonLabel = [UILabel new];
     commonLabel.textColor = HUAColor(0x888888);
@@ -712,7 +713,7 @@
         make.size.mas_equalTo(CGSizeMake(hua_scale(166), hua_scale(34)));
         make.right.mas_equalTo(self.view.mas_right).mas_equalTo(hua_scale(-10));
     }];
-
+    
     //11线
     UIView *thView11 = [UIView new];
     thView11.backgroundColor = HUAColor(0xe1e1e1);
@@ -722,29 +723,30 @@
     .heightIs(1)
     .widthIs(scrollView.width);
     [thView11 updateLayout];
-
-
+    
+    
     //运费
     freight.text =[NSString stringWithFormat:@"¥ %@",self.moneyDic[@"carriage"]];
     
     //产品金额
     _memberLabel.text = [NSString stringWithFormat:@"¥ %@ * %@",self.moneyDic[@"price"],_numberTypelabel.text];
+    
     //合计
     ResultLable.text = [NSString stringWithFormat:@"¥ %ld.00",[self.moneyDic[@"price"] integerValue]*[_numberTypelabel.text integerValue]+[self.moneyDic[@"carriage"] integerValue]];
     
     //共
     self.commonValue.text = self.ResultLable.text;
-
-  
+    
+    
     
     scrollView.sd_layout.spaceToSuperView(UIEdgeInsetsZero);
     
     [scrollView setupAutoContentSizeWithBottomView:thView11 bottomMargin:hua_scale(0)];
     self.scrollView = scrollView;
-
+    
 }
 - (void)popView{
-  
+    
     _outView= [UIView new];
     _outView.backgroundColor = [UIColor blackColor];
     _outView.hidden = YES;
@@ -757,7 +759,7 @@
     _contentView = [UIView new];
     _contentView.hidden = YES;
     //_contentView.frame = CGRectMake(self.view.width/2, self.view.height/2, 0, 0);
-      _contentView.frame = CGRectMake(hua_scale(25), self.view.height/2-hua_scale(116.5/2.0+hua_scale(100)), hua_scale(550.0/2.0), hua_scale(330.0/2.0));
+    _contentView.frame = CGRectMake(hua_scale(25), self.view.height/2-hua_scale(116.5/2.0+hua_scale(100)), hua_scale(550.0/2.0), hua_scale(330.0/2.0));
     _contentView.backgroundColor = [UIColor whiteColor];
     [self.view addSubview:_contentView];
     
@@ -800,7 +802,7 @@
         make.centerX.mas_equalTo(0);
         make.width.mas_equalTo(1);
     }];
-
+    
     
     UILabel *titleType = [UILabel new];
     titleType.text = @"取货方式";
@@ -821,7 +823,7 @@
         make.left.mas_equalTo(15);
     }];
     [title1 setSingleLineAutoResizeWithMaxWidth:200];
-
+    
     UILabel *title2 = [UILabel new];
     title2.text = @"送货上门";
     title2.font = [UIFont systemFontOfSize:13];
@@ -841,7 +843,7 @@
         }
         [button setImage:[UIImage imageNamed:@"numer"] forState:0];
         [button setImage:[UIImage imageNamed:@"door_to_door"] forState:UIControlStateSelected];
-
+        
         button.tag = 157+i;
         [_contentView addSubview:button];
         [button addTarget:self action:@selector(clickk:) forControlEvents:UIControlEventTouchUpInside];
@@ -856,7 +858,7 @@
             
         }];
     }
- 
+    
     NSArray *array = @[@"取消",@"确定"];
     for (int i = 0 ; i<2; i++) {
         UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
@@ -873,8 +875,8 @@
             if (i==0) {
                 make.right.mas_equalTo(thView4.mas_left);
             }else {
-            
-            make.left.mas_equalTo(thView4.mas_right);
+                
+                make.left.mas_equalTo(thView4.mas_right);
             }
         }];
     }
@@ -883,7 +885,7 @@
 //按钮点击事件
 UIButton *senderBtn = nil;
 - (void)pageAdd:(UIButton *)button{
-   
+    
     if (senderBtn!=button) {
         button.selected = YES;
         senderBtn.selected = NO;
@@ -891,7 +893,7 @@ UIButton *senderBtn = nil;
     }else{
         button.selected = YES;
     }
-
+    
     //点击减少数量
     if (button.tag == 189 && [_numberTypelabel.text integerValue] >=1) {
         
@@ -906,7 +908,7 @@ UIButton *senderBtn = nil;
         //点击减少数量
         _numberTypelabel.text = [NSString stringWithFormat:@"%ld",[_numberTypelabel.text integerValue]+1];
     }
-   
+    
     //产品金额
     _memberLabel.text = [NSString stringWithFormat:@"¥ %@ * %@",self.moneyDic[@"price"],_numberTypelabel.text];
     
@@ -953,17 +955,17 @@ UIButton *senderButton = nil;
 }
 //点击送货方式按钮
 - (void)claimChange:(UIButton *)sender{
-
-
-   [UIView animateWithDuration:0.3 animations:^{
-       _outView.hidden = NO;
-       _outView.alpha = 0.3;
-   }];
+    
+    
+    [UIView animateWithDuration:0.3 animations:^{
+        _outView.hidden = NO;
+        _outView.alpha = 0.3;
+    }];
     
     [UIView animateWithDuration:0.3 animations:^{
         
         _contentView.hidden = NO;
-      
+        
     }];
 }
 //选择取货方式按钮
@@ -991,7 +993,7 @@ UIButton *btn = nil;
         [UIView animateWithDuration:0.3 animations:^{
             _contentView.hidden = YES;
         } completion:^(BOOL finished) {
-                 _outView.hidden = YES;
+            _outView.hidden = YES;
         }];
     }else{
         UIView   *bgView  = [self.view viewWithTag:166];
@@ -1006,8 +1008,8 @@ UIButton *btn = nil;
             thView5.hidden = NO;
             bgView.hidden = NO;
             [lable mas_remakeConstraints:^(MASConstraintMaker *make) {
-            make.top.mas_equalTo(thView5.mas_bottom).mas_equalTo(hua_scale(15));
-            make.left.mas_equalTo(hua_scale(15));
+                make.top.mas_equalTo(thView5.mas_bottom).mas_equalTo(hua_scale(15));
+                make.left.mas_equalTo(hua_scale(15));
             }];
             [self.scrollView layoutSubviews];
             [button2 setTitle:@"上门取货" forState:0];
@@ -1015,13 +1017,13 @@ UIButton *btn = nil;
             address.hidden = NO;
             [button2 setTitle:@"送货上门" forState:0];
         }
-      
+        
         [UIView animateWithDuration:0.3 animations:^{
             _contentView.hidden = YES;
         } completion:^(BOOL finished) {
             _outView.hidden = YES;
         }];
-
+        
     }
 }
 - (void)didReceiveMemoryWarning {
@@ -1030,13 +1032,13 @@ UIButton *btn = nil;
 }
 
 /*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
+ #pragma mark - Navigation
+ 
+ // In a storyboard-based application, you will often want to do a little preparation before navigation
+ - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+ // Get the new view controller using [segue destinationViewController].
+ // Pass the selected object to the new view controller.
+ }
+ */
 
 @end

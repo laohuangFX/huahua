@@ -38,11 +38,22 @@
     HUAUserDetailInfo *detailInfo = [HUAUserDefaults getUserDetailInfo];
     NSString *url = [HUA_URL stringByAppendingPathComponent:App_index];
     NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
-    parameter[@"category_id"] = self.category_id;
+    if (self.isSearch) {
+        parameter[@"search"] = self.category_id;
+    }else{
+        parameter[@"category_id"] = self.category_id;
+        
+    }
     parameter[@"user_id"] = detailInfo.user_id;
     HUALog(@"%@",self.category_id);
     [HUAHttpTool POSTWithTokenAndUrl:url params:parameter success:^(id responseObject) {
         HUALog(@"%@,,,%@",responseObject,url);
+        if ([[responseObject objectForKey:@"info"] isKindOfClass:[NSString class]]) {
+            [HUAMBProgress MBProgressOnlywithLabelText:[responseObject objectForKey:@"info"]];
+            [self.navigationController popViewControllerAnimated:YES];
+            return ;
+        }
+
         self.shopsArray = [HUADataTool homeShop:responseObject];
         [self.tableView reloadData];
     } failure:^(NSError *error) {

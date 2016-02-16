@@ -97,7 +97,7 @@ _data3 = [NSMutableArray arrayWithObjects:@"不限",@"最少",@"最多",nil];
     menu.textColor = [UIColor colorWithRed:83.f/255.0f green:83.f/255.0f blue:83.f/255.0f alpha:1.0f];
     //图标颜色
     menu.indicatorColor = HUAColor(0x4da800);
- 
+    menu.rowHeigth = 80;
     menu.dataSource = self;
     menu.delegate = self;
     

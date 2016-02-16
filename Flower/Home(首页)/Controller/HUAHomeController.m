@@ -19,16 +19,31 @@
 #import "HUAFunctionController.h"
 #import "HUACategoryList.h"
 #import "MJRefresh.h"
+#import "HUASelectCityView.h"
+#import "HUAGetCity.h"
+#import "EmojiBool.h"
 
 static NSString *identifier = @"cell";
+<<<<<<< HEAD
 @interface HUAHomeController ()<ClickDelegate, UIScrollViewDelegate,UITabBarControllerDelegate,HUASortMenuDelegate,HomeHeaderViewDelegate>
 @property (nonatomic, strong) NSMutableArray *shopsArray;
+=======
+@interface HUAHomeController ()<ClickDelegate, UIScrollViewDelegate,UITabBarControllerDelegate,HUASortMenuDelegate,HomeHeaderViewDelegate,UITextFieldDelegate>
+@property (nonatomic, strong) NSArray *shopsArray;
+@property (nonatomic, strong) NSMutableArray *shopsMutableArray;
+>>>>>>> d0de6bd55e2b676817ef4352a9bcd87cad9ef5c3
 @property (nonatomic, assign) NSUInteger page;
 @property (nonatomic, strong) NSArray *bannerArray;
 @property (nonatomic, strong) NSArray *categoryArray;
 @property (nonatomic, strong) NSString *order;
 @property (nonatomic, strong) HUASectionHeaderView *header;
+<<<<<<< HEAD
 @property (nonatomic, strong) HUASortView *sortView;
+=======
+@property (nonatomic, strong) UITextField *searchBar;
+@property (nonatomic, strong) UIButton *chooseCity;
+@property (nonatomic, strong) HUASelectCityView *selectView;
+>>>>>>> d0de6bd55e2b676817ef4352a9bcd87cad9ef5c3
 @end
 
 @implementation HUAHomeController
@@ -70,9 +85,19 @@ static NSString *identifier = @"cell";
     // 集成下拉刷新控件
     [self setupDownRefresh];
 }
+<<<<<<< HEAD
 
 - (void)viewWillLayoutSubviews {
     [super viewWillLayoutSubviews];
+=======
+- (void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:animated];
+    //取消地区选择
+    if (self.chooseCity.selected) {
+        self.chooseCity.selected = NO;
+        [self.selectView dismissView];
+    }
+>>>>>>> d0de6bd55e2b676817ef4352a9bcd87cad9ef5c3
 }
 
 - (void)getData {
@@ -208,25 +233,47 @@ static NSString *identifier = @"cell";
     }
 }
 
-
+- (UITextField *)searchBar{
+    if (!_searchBar) {
+        _searchBar = [UITextField textFieldWithFrame:CGRectZero image:@"search" placeholder:@"请输入商家名称"];
+        _searchBar.layer.masksToBounds = YES;
+        _searchBar.layer.cornerRadius = hua_scale(5);
+        _searchBar.backgroundColor = HUAColor(0xeeeeee);
+        _searchBar.width = hua_scale(185);
+        _searchBar.height = hua_scale(22.5);
+        _searchBar.delegate = self;
+        _searchBar.returnKeyType = UIReturnKeySearch;
+    }
+    return _searchBar;
+}
+- (UIButton *)chooseCity{
+    if (!_chooseCity) {
+        _chooseCity = [UIButton buttonWithType:0];
+        _chooseCity.width = 60;
+        _chooseCity.height = 44;
+        [_chooseCity setImage:[UIImage imageNamed:@"select"] forState:UIControlStateNormal];
+        [_chooseCity setImage:[UIImage imageNamed:@"select_green"] forState:UIControlStateSelected];
+        [_chooseCity setTitle:@"广州市" forState:UIControlStateNormal];
+        [_chooseCity setTitleColor:HUAColor(0x575757) forState:UIControlStateNormal];
+        [_chooseCity setTitleColor:HUAColor(0x4da800) forState:UIControlStateSelected];
+        
+        _chooseCity.titleLabel.font = [UIFont systemFontOfSize:16];
+        [_chooseCity addTarget:self action:@selector(chooseCity:) forControlEvents:UIControlEventTouchUpInside];
+        _chooseCity.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
+        [_chooseCity setTitleEdgeInsets:UIEdgeInsetsMake(0, -(_chooseCity.imageView.frame.size.width), 0, 0)];
+        [_chooseCity setImageEdgeInsets:UIEdgeInsetsMake(0, (_chooseCity.titleLabel.frame.size.width+20), 0, 0)];
+        
+        
+    }
+    return _chooseCity;
+}
 - (void)setNavigationBar {
-    //设置左边的LOGO
-    //设置偏移
-    UIBarButtonItem *rightSpacer = [UIBarButtonItem rightSpace:hua_scale(12)];
-    UIImageView *logoIcon = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"logo"]];
-    UIBarButtonItem *icon = [[UIBarButtonItem alloc] initWithCustomView:logoIcon];
-    self.navigationItem.leftBarButtonItems = @[icon,rightSpacer];
     
-    //设置搜索框
-    UITextField *searchBar = [UITextField textFieldWithTarget:self action:@selector(searchShopName:) Frame:CGRectZero image:@"search" placeholder:@"请输入商家名称"];
-    //searchBar.borderStyle = UITextBorderStyleRoundedRect;
-    searchBar.layer.masksToBounds = YES;
-    searchBar.layer.cornerRadius = hua_scale(5);
-    searchBar.backgroundColor = HUAColor(0xeeeeee);
-    searchBar.width = hua_scale(185);
-    searchBar.height = hua_scale(22.5);
-    self.navigationItem.titleView = searchBar;
+    self.searchBar.width = hua_scale(185);
+    self.searchBar.height = hua_scale(22.5);
+    self.navigationItem.titleView = self.searchBar;
     
+<<<<<<< HEAD
     
     //设置右边选择城市按钮
     
@@ -245,19 +292,124 @@ static NSString *identifier = @"cell";
     
     
     
+=======
+    //设置左边的LOGO
+    UIImageView *logoIcon = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"logo"]];
+    logoIcon.x = hua_scale(10);
+    logoIcon.width = hua_scale(45);
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:logoIcon];
+    //设置右边选择城市按钮
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:self.chooseCity];
+>>>>>>> d0de6bd55e2b676817ef4352a9bcd87cad9ef5c3
 }
 
-- (void)searchShopName:(UITextField *)tf {
+- (void)setSearchNav{
+    self.navigationItem.leftBarButtonItems = @[];
     
+    self.searchBar.width = hua_scale(300.0);
+    self.searchBar.height = hua_scale(22.5);
+    self.navigationItem.titleView = self.searchBar;
+    
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithTitle:@"取消" style:UIBarButtonItemStyleDone target:self action:@selector(dismissBlackView)];
 }
 
 //选择城市按钮
 #pragma --选择城市按钮的点击事件
 - (void)chooseCity:(UIButton *)chooseCity{
     chooseCity.selected = !chooseCity.selected;
+    if (chooseCity.selected == YES) {
+        self.selectView = [[HUASelectCityView alloc]initWithFrame:self.view.bounds];
+        self.selectView.cityArray = [HUAGetCity getCityArray];
+        __block HUAHomeController * wself = self;
+        self.selectView.cityBlock = ^(NSString *cityName){
+            chooseCity.selected = NO;
+            wself.tableView.scrollEnabled = NO;
+            if (cityName.length != 0) {
+                [chooseCity setTitle:cityName forState:UIControlStateNormal];
+            }
+            
+        };
+        [self.view addSubview:self.selectView];
+        [self.selectView showView];
+        self.tableView.scrollEnabled = NO;
+        
+    }else{
+        [self.selectView dismissView];
+        self.tableView.scrollEnabled = YES;
+    }
+    
     HUALog(@"....");
 }
+<<<<<<< HEAD
 
+=======
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+#pragma mark - textFiled delegate
+
+
+- (void)textFieldDidBeginEditing:(UITextField *)textField{
+    NSLog(@"beginEditing");
+    UIView *blackView  = [[UIView alloc]initWithFrame:self.view.bounds];
+    blackView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.8];
+    blackView.tag = 1001;
+    blackView.alpha = 0;
+    [self.view addSubview:blackView];
+    UITapGestureRecognizer *blackTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(dismissBlackView)];
+    [blackView addGestureRecognizer:blackTap];
+    [self setSearchNav];
+    
+    //取消地区选择
+    if (self.chooseCity.selected) {
+        self.chooseCity.selected = NO;
+        [self.selectView dismissView];
+    }
+    
+    [UIView animateWithDuration:0.3 animations:^{
+        blackView.alpha = 1;
+    }];
+}
+
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string{
+    
+    return ![EmojiBool stringContainsEmoji:string];
+}
+
+
+//搜索
+- (BOOL)textFieldShouldReturn:(UITextField *)textField{
+    
+    if (textField.text.length == 0) {
+        [self dismissBlackView];
+    }else{
+        //数据请求
+        HUAFunctionController *functionVC = [HUAFunctionController new];
+        functionVC.name = @"搜索结果";
+        functionVC.category_id = textField.text;
+        functionVC.isSearch = YES;
+        [self.navigationController pushViewController:functionVC animated:YES];
+        [self dismissBlackView];
+    }
+    return YES;
+}
+- (void)dismissBlackView{
+    
+    UIView *blackView = [self.view viewWithTag:1001];
+    if (blackView == nil) {
+        return;
+    }
+    [self setNavigationBar];
+    [self.searchBar resignFirstResponder];
+    self.searchBar.text = @"";
+    [UIView animateWithDuration:0.5 animations:^{
+        blackView.alpha = 0;
+    } completion:^(BOOL finished) {
+        [blackView removeFromSuperview];
+    }];
+}
+>>>>>>> d0de6bd55e2b676817ef4352a9bcd87cad9ef5c3
 
 #pragma mark - Table view data source
 

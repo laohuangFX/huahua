@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "HUASearchSuperViewController.h"
 
-@interface HUAShopProductController : UIViewController
+@interface HUAShopProductController : HUASearchSuperViewController
 @property (nonatomic, strong) NSString *shop_id;
 @property (nonatomic, strong) NSString *url;
 @property (nonatomic, strong) NSString *shopName;

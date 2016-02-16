@@ -654,11 +654,11 @@
         [UIView animateWithDuration:0.2 animations:^{
             if (leftTableView) {
                 //设置显示左边tableview的高度
-                leftTableView.frame = CGRectMake(_origin.x, self.frame.origin.y + self.frame.size.height, self.frame.size.width*ratio, tableViewHeight+80);
+                leftTableView.frame = CGRectMake(_origin.x, self.frame.origin.y + self.frame.size.height, self.frame.size.width*ratio, tableViewHeight+80-self.rowHeigth);
             }
             if (rightTableView) {
                 //设置显示右边tableview的高度
-                rightTableView.frame = CGRectMake(_origin.x+leftTableView.frame.size.width, self.frame.origin.y + self.frame.size.height, self.frame.size.width*(1-ratio), tableViewHeight+80);
+                rightTableView.frame = CGRectMake(_origin.x+leftTableView.frame.size.width, self.frame.origin.y + self.frame.size.height, self.frame.size.width*(1-ratio), tableViewHeight+80-self.rowHeigth);
             }
         }];
     } else {
