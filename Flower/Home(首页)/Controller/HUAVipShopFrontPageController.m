@@ -149,7 +149,7 @@
             }else {
                 [HUAMBProgress MBProgressOnlywithLabelText:@"取消收藏"];
             }
-            
+        self.block([sender.titleLabel.text integerValue]);
         } failure:^(NSError *error) {
             HUALog(@"%@",error);
         }];

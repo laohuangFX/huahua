@@ -12,7 +12,6 @@
 #import "HUADetailTopCell.h"
 #import "HUAShopInfoCell.h"
 #import "HUAActivityTimeCell.h"
-#import "HUAShopFrontPageController.h"
 #import "HUAVipShopFrontPageController.h"
 #import "HUABuyViewController.h"
 
