@@ -153,6 +153,7 @@ static NSString *identifier = @"cell";
     } failure:^(NSError *error) {
         [HUAMBProgress MBProgressFromWindowWithLabelText:@"请检查网络设置"];
         [self.tableView.mj_header endRefreshing];
+        self.page--;
     }];
 }
 
@@ -179,6 +180,7 @@ static NSString *identifier = @"cell";
         [self.tableView reloadData];
         [self.tableView.mj_footer endRefreshing];
     } failure:^(NSError *error) {
+        self.page--;
         [HUAMBProgress MBProgressFromWindowWithLabelText:@"请检查网络设置"];
         [self.tableView.mj_footer endRefreshing];
     }];
