@@ -24,26 +24,18 @@
 #import "EmojiBool.h"
 
 static NSString *identifier = @"cell";
-<<<<<<< HEAD
-@interface HUAHomeController ()<ClickDelegate, UIScrollViewDelegate,UITabBarControllerDelegate,HUASortMenuDelegate,HomeHeaderViewDelegate>
-@property (nonatomic, strong) NSMutableArray *shopsArray;
-=======
 @interface HUAHomeController ()<ClickDelegate, UIScrollViewDelegate,UITabBarControllerDelegate,HUASortMenuDelegate,HomeHeaderViewDelegate,UITextFieldDelegate>
-@property (nonatomic, strong) NSArray *shopsArray;
-@property (nonatomic, strong) NSMutableArray *shopsMutableArray;
->>>>>>> d0de6bd55e2b676817ef4352a9bcd87cad9ef5c3
+@property (nonatomic, strong) NSMutableArray *shopsArray;
 @property (nonatomic, assign) NSUInteger page;
 @property (nonatomic, strong) NSArray *bannerArray;
 @property (nonatomic, strong) NSArray *categoryArray;
 @property (nonatomic, strong) NSString *order;
 @property (nonatomic, strong) HUASectionHeaderView *header;
-<<<<<<< HEAD
 @property (nonatomic, strong) HUASortView *sortView;
-=======
 @property (nonatomic, strong) UITextField *searchBar;
 @property (nonatomic, strong) UIButton *chooseCity;
 @property (nonatomic, strong) HUASelectCityView *selectView;
->>>>>>> d0de6bd55e2b676817ef4352a9bcd87cad9ef5c3
+
 @end
 
 @implementation HUAHomeController
@@ -85,11 +77,6 @@ static NSString *identifier = @"cell";
     // 集成下拉刷新控件
     [self setupDownRefresh];
 }
-<<<<<<< HEAD
-
-- (void)viewWillLayoutSubviews {
-    [super viewWillLayoutSubviews];
-=======
 - (void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
     //取消地区选择
@@ -97,7 +84,6 @@ static NSString *identifier = @"cell";
         self.chooseCity.selected = NO;
         [self.selectView dismissView];
     }
->>>>>>> d0de6bd55e2b676817ef4352a9bcd87cad9ef5c3
 }
 
 - (void)getData {
@@ -273,26 +259,6 @@ static NSString *identifier = @"cell";
     self.searchBar.height = hua_scale(22.5);
     self.navigationItem.titleView = self.searchBar;
     
-<<<<<<< HEAD
-    
-    //设置右边选择城市按钮
-    
-    UIButton *chooseCity = [UIButton buttonWithType:0];
-    chooseCity.width = 60;
-    chooseCity.height = 44;
-    [chooseCity setImage:[UIImage imageNamed:@"sort_gray"] forState:UIControlStateNormal];
-    [chooseCity setImage:[UIImage imageNamed:@"sort_green"] forState:UIControlStateSelected];
-    [chooseCity setTitle:@"广州市" forState:UIControlStateNormal];
-    [chooseCity setTitleColor:HUAColor(0x575757) forState:UIControlStateNormal];
-    chooseCity.titleLabel.font = [UIFont systemFontOfSize:16];
-    [chooseCity addTarget:self action:@selector(chooseCity:) forControlEvents:UIControlEventTouchUpInside];
-    [chooseCity setTitleEdgeInsets:UIEdgeInsetsMake(0, -(chooseCity.imageView.frame.size.width+20), 0, 0)];
-    [chooseCity setImageEdgeInsets:UIEdgeInsetsMake(0, (chooseCity.titleLabel.frame.size.width+20), 0, 0)];
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:chooseCity];
-    
-    
-    
-=======
     //设置左边的LOGO
     UIImageView *logoIcon = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"logo"]];
     logoIcon.x = hua_scale(10);
@@ -300,7 +266,7 @@ static NSString *identifier = @"cell";
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:logoIcon];
     //设置右边选择城市按钮
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:self.chooseCity];
->>>>>>> d0de6bd55e2b676817ef4352a9bcd87cad9ef5c3
+
 }
 
 - (void)setSearchNav{
@@ -339,13 +305,6 @@ static NSString *identifier = @"cell";
     }
     
     HUALog(@"....");
-}
-<<<<<<< HEAD
-
-=======
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 #pragma mark - textFiled delegate
 
@@ -409,7 +368,6 @@ static NSString *identifier = @"cell";
         [blackView removeFromSuperview];
     }];
 }
->>>>>>> d0de6bd55e2b676817ef4352a9bcd87cad9ef5c3
 
 #pragma mark - Table view data source
 
