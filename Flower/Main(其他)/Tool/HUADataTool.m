@@ -315,13 +315,14 @@
     NSArray *imageArray = nil;
     for (NSDictionary *dic in array ) {
         HUAStatusModel *statusModel = [HUAStatusModel new];
-        statusModel.user_id = dic[@"essay_id"];
+        statusModel.essay_id = dic[@"essay_id"];
         statusModel.content =  dic[@"content"];
         statusModel.name = dic[@"shopname"];
         statusModel.time = dic[@"create_time"];
         statusModel.icon = dic[@"cover"];
         statusModel.praise = dic[@"praise_count"];
         statusModel.comment = dic[@"comment_count"];
+        statusModel.is_praise = dic[@"is_praise"];
         imageArray = dic[@"img_list"];
         NSMutableArray *mutableImage = [NSMutableArray array];
         for (NSDictionary *imageDic in imageArray) {

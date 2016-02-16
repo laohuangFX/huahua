@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-
+#import "HUAStatusModel.h"
 @interface HUAmodel : NSObject
 //
 @property (nonatomic, strong)NSString *content;
@@ -36,4 +36,6 @@
 @property (nonatomic, assign) BOOL isOpening;
 
 @property (nonatomic, assign, readonly) BOOL shouldShowMoreButton;
+
++ (HUAStatusModel *)status:(NSDictionary *)dic;
 @end

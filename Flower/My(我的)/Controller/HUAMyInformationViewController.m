@@ -150,7 +150,7 @@
     //NSLog(@"打印月份完毕");
 
     dispatch_async(queue, ^{
-        for (int i = 1; i < 31; i++) {
+        for (int i = 1; i < 32; i++) {
             [_sunArray addObject:[NSString stringWithFormat:@"%d日",i]];
         }
     });

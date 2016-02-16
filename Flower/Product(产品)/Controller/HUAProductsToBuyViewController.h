@@ -14,4 +14,9 @@
 
 //判断会员类型
 @property (nonatomic, assign)BOOL typeBool;
+//会员信息
+@property (nonatomic, strong)NSString *membersName;
+@property (nonatomic, strong)NSString *membersType;
+@property (nonatomic, strong)NSString *membersMoney;
+
 @end

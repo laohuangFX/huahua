@@ -177,6 +177,7 @@
     if (product.service_id == nil) {
         HUAProductDetailController *productVC = [HUAProductDetailController new];
         productVC.product_id = product.product_id;
+        productVC.shop_id = self.shop_id;
         [self.navigationController pushViewController:productVC animated:YES];
     } else if (product.service_id != nil) {
         HUAServiceDetailController *serviceVC = [HUAServiceDetailController new];

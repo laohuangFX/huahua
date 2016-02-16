@@ -12,6 +12,7 @@
 #import "HUDynamicATableViewCell.h"
 #import "EMMallSectionView.h"
 #import "HUALoginController.h"
+#import "HUAmodel.h"
 
 
 #define Scw [UIScreen mainScreen].bounds.size.width
@@ -26,7 +27,7 @@
     NSString *_parent_user_id;
     //类型
     NSString *_type;
-
+    
     UIView *_endView;
     
     //记录第几行
@@ -57,6 +58,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
     self.automaticallyAdjustsScrollViewInsets = NO;
     
     self.title = @"动态详情";
@@ -65,16 +67,17 @@
     [[UINavigationBar appearance] setTintColor:[UIColor whiteColor]];
     
     [self getData:NO];
-
+    
     //自定义表视图
     [self initTbaleView];
     
     //自定义键盘
     [self initKeyBoard];
     
+    
 }
 - (void)initTbaleView{
-
+    
     //表视图
     self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0,0, Scw, screenHeight-44-20-hua_scale(46)) style:UITableViewStylePlain];
     //self.tableView.backgroundColor = [UIColor redColor];
@@ -82,10 +85,11 @@
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     [self.view addSubview:self.tableView];
+    
 }
 //自定义键盘
 - (void)initKeyBoard{
-
+    
     NSArray *array = @[@"chatBar_colorMore_photoSelected",@"chatBar_colorMore_audioCall",@"chatBar_colorMore_location",@"chatBar_colorMore_video.png",@"chatBar_colorMore_video.png",@"chatBar_colorMore_video.png"];
     self.keyBoard = [[BCKeyBoard alloc] initWithFrame:CGRectMake(0,self.view.bottom-64-hua_scale(46), [UIScreen mainScreen].bounds.size.width,hua_scale(46))];
     self.keyBoard.delegate = self;
@@ -93,7 +97,7 @@
     self.keyBoard.placeholder = @"我来说几句";
     self.keyBoard.currentCtr = self;
     self.keyBoard.placeholderColor = [UIColor colorWithRed:133/255 green:133/255 blue:133/255 alpha:0.5];
-
+    
     //self.keyBoard.backgroundColor = [UIColor redColor];
     
     __block typeof(self) mySelf = self;
@@ -101,7 +105,7 @@
         
         //判断是否是游客评论，
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"登陆" message:@"游客模式下不能评论,请先登陆!" preferredStyle:UIAlertControllerStyleAlert];
-       
+        
         [alert addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
             
             UIWindow *window = [UIApplication sharedApplication].keyWindow;
@@ -119,7 +123,7 @@
     }];
     //表情发送后改变位置
     [self.keyBoard setChangeBlock:^{
-      
+        
         [UIView animateWithDuration:0.5 animations:^{
             mySelf.keyBoard.y = self.view.bottom-64-46;
             
@@ -146,16 +150,15 @@
 
 //获取数据
 - (void)getData:(BOOL)type{
+    //获取当前用户名
+    HUAUserDetailInfo *detailInfo = [HUAUserDefaults getUserDetailInfo];
     
     NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
     AFURLSessionManager *manager = [[AFURLSessionManager alloc] initWithSessionConfiguration:configuration];
- 
     
-    //NSURL *URL = [NSURL URLWithString:@"http://120.24.182.25/huahua_api/index.php/essay/essay_detail?essay_id=43"];
-    //NSURL *URL = [NSURL URLWithString:@"http://192.168.8.142/huahua_api/index.php/essay/essay_detail?essay_id=43"];
-
-    NSURL *URL =  [NSURL URLWithString: [HUA_URL stringByAppendingPathComponent:[NSString stringWithFormat:@"essay/essay_detail?essay_id=%@",self.essay_id]]];
-   
+    
+    NSURL *URL =  [NSURL URLWithString: [HUA_URL stringByAppendingPathComponent:[NSString stringWithFormat:@"essay/essay_detail?essay_id=%@&user_id=%@",self.essay_id,detailInfo.user_id]]];
+    NSLog(@"%@",[HUA_URL stringByAppendingPathComponent:[NSString stringWithFormat:@"essay/essay_detail?essay_id=%@&user_id=%@",self.essay_id,detailInfo.user_id]]);
     NSURLRequest *request = [NSURLRequest requestWithURL:URL];
     
     NSURLSessionDataTask *dataTask = [manager dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
@@ -163,30 +166,33 @@
             NSLog(@"Error: %@", error);
         } else {
             NSLog(@"%@",responseObject);
+            
+            self.statusModel.praise = responseObject[@"info"][@"praise_count"];
+            self.statusModel.is_praise = responseObject[@"info"][@"is_praise"];
             self.pinlunArray = [HUADataTool DynamicDetails:responseObject];
-           
-    
+            
+            
             for (HUAmodel *model in self.pinlunArray) {
                 
                 for (NSDictionary *dic in model.commentArray) {
-        
-                [self.dongtaiDic setValue:dic[@"nickname"] forKey:dic[@"user_id"]];
-                  
+                    
+                    [self.dongtaiDic setValue:dic[@"nickname"] forKey:dic[@"user_id"]];
+                    
                 }
                 [self.dongtaiDic setValue:model.name forKey:model.user_id];
-              
+                
                 model.nameDic = self.dongtaiDic;
             }
             if (type==NO) {
                 [self.tableView reloadData];
             }else{
-            
+                
                 if (_indexPath ==nil ||_indexPath.row == 0 ) {
                     
                     [self.tableView reloadData];
-
+                    
                 }else{
-
+                    
                     [self.tableView reloadRowsAtIndexPaths:@[_indexPath] withRowAnimation:0];
                 }
                 
@@ -202,15 +208,15 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-   
+    
     //return 3;
-
+    
     return self.pinlunArray.count+2;
     //return self.modell.commentArray.count+2;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-       //回复cell
+    //回复cell
     if (indexPath.row == 0) {
         
         static NSString *identifier = @"CELL";
@@ -221,7 +227,56 @@
             cell = [[HUDynamicATableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
         }
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    
+        
+        //点赞
+        [cell setLoveBlock:^{
+            NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
+            //判断是否是游客模式
+            if (token==nil) {
+                //判断是否是游客评论，
+                UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"登陆" message:@"游客模式下不能点赞,请先登陆!" preferredStyle:UIAlertControllerStyleAlert];
+                
+                [alert addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                    
+                    UIWindow *window = [UIApplication sharedApplication].keyWindow;
+                    window.rootViewController= [[HUALoginController alloc] init];
+                    
+                    [alert removeFromParentViewController];
+                    
+                }]];
+                
+                [alert addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                    
+                    [alert removeFromParentViewController];
+                }]];
+                
+                [self presentViewController:alert animated:YES completion:nil];
+                return ;
+            }
+            AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+            //申明返回的结果是json类型
+            manager.responseSerializer = [AFHTTPResponseSerializer serializer];
+            //申明请求的数据是json类型
+            manager.requestSerializer=[AFJSONRequestSerializer serializer];
+            //如果报接受类型不一致请替换一致text/html或别的
+            //manager.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"text/json"];
+            //传入的参数
+            [manager.requestSerializer setValue:token forHTTPHeaderField:@"token"];
+            NSDictionary *parameters = @{@"target":@"essay",@"id":self.statusModel.essay_id};
+            //你的接口地址
+            
+            NSString *url= [HUA_URL stringByAppendingPathComponent:@"user/praise"];
+            //发送请求
+            [manager POST:url parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                NSLog(@"JSON: %@", responseObject);
+                [self getData:NO];
+                
+            } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                NSLog(@"Error: %@", error);
+            }];
+            
+        }];
+        
         cell.model = self.statusModel;
         cell.boolType = YES;
         //评论
@@ -249,7 +304,7 @@
         return cell;
         
     }else{
-    
+        
         static NSString *identifierCell = @"commentsCell";
         
         HUAcommentsTableViewCell *commentsCell = [tableView dequeueReusableCellWithIdentifier:identifierCell];
@@ -258,7 +313,7 @@
         }
         
         //commentsCell.modelDic = self.dongtaiDic;
-
+        
         commentsCell.indexPath = indexPath;
         
         commentsCell.moreButton.tag = 666+indexPath.row;
@@ -268,10 +323,10 @@
         commentsCell.selectionStyle = UITableViewCellSelectionStyleNone;
         
         
-      
+        
         
         commentsCell.modell = self.pinlunArray[indexPath.row-2];
-       
+        
         __weak typeof(self) weakSelf = self;
         //不能回复自己的提醒
         if (!commentsCell.commentLabelBlock) {
@@ -280,47 +335,47 @@
                 [HUAMBProgress MBProgressFromView:weakSelf.view wrongLabelText:@"不能评论自己的回复"];
             }];
         }
-       
+        
         //点击显示全部按钮的回调block
         if (!commentsCell.moreButtonClickedBlock) {
             [commentsCell setMoreButtonClickedBlock:^(NSIndexPath *indexPath) {
-             HUAmodel *model = weakSelf.pinlunArray[indexPath.row-2];
-               model.isOpening = !model.isOpening;
-
+                HUAmodel *model = weakSelf.pinlunArray[indexPath.row-2];
+                model.isOpening = !model.isOpening;
+                
                 [weakSelf.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
             }];
             
-         }
-
+        }
         
-            //点击lable的回掉block
-            if (!commentsCell.commentLabelBlock) {
-                [commentsCell setCommentLabelBlock:^(NSString *nickName,NSString *parent_id,NSString *type,NSString *parent_user_id,UILabel *commentLable,NSIndexPath *indexPath) {
-                    _indexPath = indexPath;
-                    _endView.hidden = NO;
-                  self.keyBoard.placeholder = [NSString stringWithFormat:@"回复:%@",nickName];
-   
-                    [self.keyBoard.textView becomeFirstResponder];
-
-                    _nikeName = nickName;
-                    //要回复的父级user_id
-                    _parent_user_id = parent_user_id;
-                    //要回复的第几条评论
-                    _parent_id = parent_id;
-                    _type = @"3";
-                    
-                    self.cellIndex = indexPath.row;
-                }];
-            }
-            
+        
+        //点击lable的回掉block
+        if (!commentsCell.commentLabelBlock) {
+            [commentsCell setCommentLabelBlock:^(NSString *nickName,NSString *parent_id,NSString *type,NSString *parent_user_id,UILabel *commentLable,NSIndexPath *indexPath) {
+                _indexPath = indexPath;
+                _endView.hidden = NO;
+                self.keyBoard.placeholder = [NSString stringWithFormat:@"回复:%@",nickName];
+                
+                [self.keyBoard.textView becomeFirstResponder];
+                
+                _nikeName = nickName;
+                //要回复的父级user_id
+                _parent_user_id = parent_user_id;
+                //要回复的第几条评论
+                _parent_id = parent_id;
+                _type = @"3";
+                
+                self.cellIndex = indexPath.row;
+            }];
+        }
+        
         
         return commentsCell;
     }
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
- return 1;
-
+    return 1;
+    
 }
 
 //tableView点击事件
@@ -345,19 +400,19 @@
         _parent_id = model.comment_id;
         _type = @"2";
     }
-
+    
     _endView.hidden = NO;
 }
 //行高
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     
     if (indexPath.row == 0) {
-     return [self.tableView cellHeightForIndexPath:indexPath model:self.statusModel keyPath:@"model" cellClass:[HUDynamicATableViewCell class] contentViewWidth:[UIScreen mainScreen].bounds.size.width];
-
+        return [self.tableView cellHeightForIndexPath:indexPath model:self.statusModel keyPath:@"model" cellClass:[HUDynamicATableViewCell class] contentViewWidth:[UIScreen mainScreen].bounds.size.width];
+        
     }else if (indexPath.row == 1){
         
         return hua_scale(12);
-   
+        
     }else{
         return [self.tableView cellHeightForIndexPath:indexPath model:self.pinlunArray[indexPath.row-2] keyPath:@"modell" cellClass:[HUAcommentsTableViewCell class] contentViewWidth:[UIScreen mainScreen].bounds.size.width];
     }
@@ -368,16 +423,13 @@
 int cellRow = 000;
 - (void)didSendText:(NSString *)text
 {
-
-    
-    
     //获取当前用户名
     HUAUserDetailInfo *detailInfo = [HUAUserDefaults getUserDetailInfo];
     
     //清除上一次的cell的高
     [self.tableView.cellAutoHeightManager clearHeightCache];
-   
-
+    
+    
     if (text.length == 0) {
         //清空内容
         _nikeName = nil;
@@ -402,12 +454,12 @@ int cellRow = 000;
             _parent_id = nil;
             _type = nil;
             self.cellIndex = 0;
-
+            
             [self.view endEditing:YES];
             self.keyBoard.textView.label.hidden = NO;
             [HUAMBProgress MBProgressFromView:self.view wrongLabelText:@"内容不允许全部为空格"];
             return;
-           
+            
         }
         
         NSString *token = [HUAUserDefaults getToken];
@@ -415,58 +467,53 @@ int cellRow = 000;
         [manager.requestSerializer setValue:token forHTTPHeaderField:@"token"];
         //申明返回的结果是json类型
         manager.responseSerializer = [AFHTTPResponseSerializer serializer];
-//        //申明请求的数据是json类型
-//        manager.requestSerializer=[AFJSONRequestSerializer serializer];
-//        //如果报接受类型不一致请替换一致text/html或别的
-//        manager.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"text/html"];
-        //传入的参数
-//        if ([_type isEqualToString:@"3"]) {
-//            
-//            
-//        }
-
+        //        //申明请求的数据是json类型
+        //        manager.requestSerializer=[AFJSONRequestSerializer serializer];
+        //        //如果报接受类型不一致请替换一致text/html或别的
+        //        manager.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"text/html"];
+        
         NSDictionary *parameters = @{@"user_id":detailInfo.user_id,@"essay_id":self.essay_id,@"shop_id":@"23",@"parent_id":_parent_id,@"content":text,@"type":_type,@"parent_user_id":_parent_user_id};
         //你的接口地址
         
         NSString *url=[HUA_URL stringByAppendingPathComponent:@"essay/essay_comment_create"];
         //发送请求
         [manager POST:url parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
-
+            
             
             NSLog(@"JSON: %@", responseObject);
-            [self getData:YES];
-
+            [self getData:NO];
+            
             
         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
             NSLog(@"Error: %@", error);
         }];
-    
-
-  //      上传到服务器类型
-//        NSMutableDictionary *dic = [[NSMutableDictionary alloc] init];
-//        if (_nikeName == nil) {
-//            dic = [[NSMutableDictionary alloc] initWithDictionary:@{@"comment_id":@"131",@"parent_id":_parent_id,@"nickname":detailInfo.nickname,@"content":text} copyItems:YES];
-//        }else{
-//          dic = [[NSMutableDictionary alloc] initWithDictionary:@{@"comment_id":@"131",@"parent_id":_parent_id,@"nickname":detailInfo.nickname,@"content":text} copyItems:YES];
-//        }
-//      
-
-       // [self.pinlunArray insertObject:dic atIndex:self.pinlunArray.count];
-   
         
-//        
-//        if (_nikeName != nil) {
-//            //刷新点击cell的lable刷新
-//            HUAcommentsTableViewCell *cell = (HUAcommentsTableViewCell *)self.tagButton.superview.superview;
-//            NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
-//            [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-//        }else{
-//            //普通的回复
-//            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:self.cellIndex inSection:0];
-//            [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-//        }
-//
-      
+        
+        //      上传到服务器类型
+        //        NSMutableDictionary *dic = [[NSMutableDictionary alloc] init];
+        //        if (_nikeName == nil) {
+        //            dic = [[NSMutableDictionary alloc] initWithDictionary:@{@"comment_id":@"131",@"parent_id":_parent_id,@"nickname":detailInfo.nickname,@"content":text} copyItems:YES];
+        //        }else{
+        //          dic = [[NSMutableDictionary alloc] initWithDictionary:@{@"comment_id":@"131",@"parent_id":_parent_id,@"nickname":detailInfo.nickname,@"content":text} copyItems:YES];
+        //        }
+        //
+        
+        // [self.pinlunArray insertObject:dic atIndex:self.pinlunArray.count];
+        
+        
+        //
+        //        if (_nikeName != nil) {
+        //            //刷新点击cell的lable刷新
+        //            HUAcommentsTableViewCell *cell = (HUAcommentsTableViewCell *)self.tagButton.superview.superview;
+        //            NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
+        //            [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+        //        }else{
+        //            //普通的回复
+        //            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:self.cellIndex inSection:0];
+        //            [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+        //        }
+        //
+        
         //清空内容
         _nikeName = nil;
         _parent_user_id = nil;
@@ -508,7 +555,7 @@ int cellRow = 000;
 //点击手势，失去第一响应
 - (void)cancelView{
     
- [self.view endEditing:YES];
+    [self.view endEditing:YES];
     _endView.hidden = YES;
 }
 
@@ -518,10 +565,10 @@ int cellRow = 000;
     if (!str) {
         return true;
     } else {
-
+        
         NSCharacterSet *set = [NSCharacterSet whitespaceAndNewlineCharacterSet];
         
-
+        
         NSString *trimedString = [str stringByTrimmingCharactersInSet:set];
         
         if ([trimedString length] == 0) {

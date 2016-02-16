@@ -187,6 +187,7 @@
         HUAMakeAnAppointmentViewController *vc = [HUAMakeAnAppointmentViewController new];
         vc.master_id = self.master_id;
         vc.model = self.detailInfo;
+        vc.shop_id = self.shop_id;
         NSLog(@"%@",vc.master_id);
         [self.navigationController pushViewController:vc animated:YES];
     }

@@ -11,4 +11,9 @@
 @interface HUABuyViewController : UIViewController
 //是否是会员
 @property (nonatomic, assign)BOOL showType;
+
+//会员信息
+@property (nonatomic, strong)NSString *membersName;
+@property (nonatomic, strong)NSString *membersType;
+@property (nonatomic, strong)NSString *membersMoney;
 @end

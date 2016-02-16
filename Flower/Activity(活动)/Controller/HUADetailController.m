@@ -16,6 +16,7 @@
 #import "HUAVipShopFrontPageController.h"
 #import "HUABuyViewController.h"
 
+
 @interface HUADetailController ()<UITableViewDelegate, UITableViewDataSource, PhoneDelegate>
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) NSArray *detailArray;
@@ -24,6 +25,8 @@
 @property (nonatomic, strong) HUAUserDetailInfo *detailInfo;
 @property (nonatomic, strong) id is_Vip;
 @property (nonatomic, assign) CGFloat cellHeight;
+//会员信息
+@property (nonatomic, strong)NSDictionary *membersInformation;
 @end
 
 @implementation HUADetailController
@@ -74,6 +77,7 @@
     parameter[@"shop_id"] = self.shop_id;
     [manager GET:url parameters:parameter success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
         //HUALog(@"是不是会员%@",responseObject);
+        self.membersInformation = responseObject;
         self.is_Vip = responseObject[@"info"];
     } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
         HUALog(@"%@",error);
@@ -135,8 +139,18 @@
                         [self.navigationController pushViewController:loginVC animated:YES];
                     }];
                 }else {
-                    HUABuyViewController *buyVC = [HUABuyViewController new];
-                    [self.navigationController pushViewController:buyVC animated:YES];
+                   HUABuyViewController *vc = [HUABuyViewController new];
+                    if ([[self.membersInformation[@"info"]class] isSubclassOfClass:[NSString class]]) {
+                        //不是会员
+                        vc.showType = NO;
+                    }else{
+                        //是会员
+                        vc.showType = YES;
+                        vc.membersName = self.membersInformation[@"info"][@"nickname"];
+                        vc.membersType = self.membersInformation[@"info"][@"level"];
+                        vc.membersMoney = self.membersInformation[@"info"][@"money"];
+                    }
+                    [self.navigationController pushViewController:vc animated:YES];
                 }
             }];
             return cell;

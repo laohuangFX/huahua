@@ -9,11 +9,11 @@
 #import "HUATechniciansOrdersViewController.h"
 
 @interface HUATechniciansOrdersViewController (){
-   
+    
     UILabel *_projectlabel; //项目
     UILabel *_nameLabel; //名字
-
-
+    
+    
 }
 
 
@@ -30,12 +30,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    
-    
     self.title = @"技师订单确认";
     self.view.backgroundColor = [UIColor whiteColor];
-    [self initScrollView];
     
+    [self initScrollView];
     
 }
 - (void)initScrollView{
@@ -78,7 +76,7 @@
         make.top.mas_equalTo(goodsLabel.mas_bottom).mas_equalTo(hua_scale(10));
         make.left.mas_equalTo(goodsLabel);
     }];
-  
+    
     //技师名字
     _nameLabel = [UILabel labelText:@"张三" color:HUAColor(0x4da800) font:hua_scale(13)];
     [goodsLabel sizeToFit];
@@ -87,7 +85,7 @@
         make.bottom.mas_equalTo(shopName);
         make.left.mas_equalTo(shopName.mas_right).mas_equalTo(hua_scale(5));
     }];
-
+    
     
     //1线
     UIView *thView1 = [UIView new];
@@ -111,7 +109,7 @@
     //名字
     UILabel *name = [UILabel new];
     name.textColor = HUAColor(0x000000);
-    name.text = @"陈翔";
+    name.text = self.membersName;
     name.font = [UIFont systemFontOfSize:hua_scale(13)];
     [scrollView addSubview:name];
     [name mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -123,7 +121,7 @@
     //会员类型
     UILabel *memberType = [UILabel new];
     memberType.textColor = HUAColor(0x4da800);
-    memberType.text = @"初级会员";
+    memberType.text = self.membersType;
     memberType.font = [UIFont systemFontOfSize:hua_scale(11)];
     [scrollView addSubview:memberType];
     [memberType mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -144,7 +142,7 @@
     
     //余额
     UILabel *pageLabel = [[UILabel alloc] init];
-    pageLabel.text =@"余额 : ¥ 12";
+    pageLabel.text =[NSString stringWithFormat:@"余额 : ¥%ld",self.membersMoney.integerValue];
     pageLabel.textAlignment = NSTextAlignmentCenter;
     pageLabel.textColor = HUAColor(0x4da800);
     pageLabel.font = [UIFont systemFontOfSize:hua_scale(13)];
@@ -170,78 +168,78 @@
         memberType.hidden = YES;
         thView2.hidden = YES;
     }
-//    
-//    //购买数量
-//    UILabel *quantityLabel = [UILabel new];
-//    quantityLabel.text = @"购买数量";
-//    quantityLabel.font = [UIFont systemFontOfSize:13];
-//    [scrollView addSubview:quantityLabel];
-//    [quantityLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.height.mas_equalTo(13);
-//        make.top.mas_equalTo(thView2.mas_bottom).mas_equalTo(hua_scale(50.0/2)-hua_scale(13.0/2.0));
-//        make.left.mas_equalTo(hua_scale(15));
-//    }];
-//    [quantityLabel setSingleLineAutoResizeWithMaxWidth:200];
-//    quantityLabel.sd_layout
-//    .autoHeightRatio(0);
-//    
-//    //背景图
-//    UIImageView *backImageView = [[UIImageView alloc] init];
-//    backImageView.userInteractionEnabled = YES;
-//    backImageView.image = [UIImage imageNamed:@"numer"];
-//    [scrollView addSubview:backImageView];
-//    [backImageView mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.right.mas_equalTo(self.view.right-hua_scale(15));
-//        make.centerY.mas_equalTo(quantityLabel);
-//        make.size.mas_equalTo(CGSizeMake(hua_scale(91), hua_scale(29)));
-//    }];
-//    
-//    //减少
-//    UIButton *subtractButton = [UIButton buttonWithType:UIButtonTypeCustom];
-//    subtractButton.tag = 189;
-//    [subtractButton setBackgroundImage:[UIImage imageNamed:@"btn_minus"] forState:0];
-//    [subtractButton setBackgroundImage:[UIImage imageNamed:@"btn_minus_select"] forState:UIControlStateSelected];
-//    [backImageView addSubview:subtractButton];
-//    [subtractButton addTarget:self action:@selector(pageAdd:) forControlEvents:UIControlEventTouchUpInside];
-//    [subtractButton mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.left.mas_equalTo(0);
-//        make.top.mas_equalTo(0);
-//        make.width.mas_equalTo(hua_scale(28));
-//        make.bottom.mas_equalTo(0);
-//    }];
-//    //增加
-//    UIButton *addButton = [UIButton buttonWithType:UIButtonTypeCustom];
-//    addButton.tag = 190;
-//    [addButton setBackgroundImage:[UIImage imageNamed:@"btn_add_select"] forState:0];
-//    [addButton setBackgroundImage:[UIImage imageNamed:@"btn_add"] forState:UIControlStateSelected];
-//    [addButton addTarget:self action:@selector(pageAdd:) forControlEvents:UIControlEventTouchUpInside];
-//    [backImageView addSubview:addButton];
-//    [addButton mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.right.mas_equalTo(0);
-//        make.top.mas_equalTo(0);
-//        make.bottom.mas_equalTo(0);
-//        make.width.mas_equalTo(hua_scale(28));
-//    }];
-//    
-//    _numberTypelabel = [UILabel new];
-//    _numberTypelabel.font = [UIFont systemFontOfSize:13];
-//    _numberTypelabel.text = @"1";
-//    _numberTypelabel.textAlignment = NSTextAlignmentCenter;
-//    [backImageView addSubview:_numberTypelabel];
-//    [_numberTypelabel mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.bottom.top.mas_equalTo(0);
-//        make.left.mas_equalTo(subtractButton.mas_right);
-//        make.right.mas_equalTo(addButton.mas_left);
-//    }];
+    //
+    //    //购买数量
+    //    UILabel *quantityLabel = [UILabel new];
+    //    quantityLabel.text = @"购买数量";
+    //    quantityLabel.font = [UIFont systemFontOfSize:13];
+    //    [scrollView addSubview:quantityLabel];
+    //    [quantityLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+    //        make.height.mas_equalTo(13);
+    //        make.top.mas_equalTo(thView2.mas_bottom).mas_equalTo(hua_scale(50.0/2)-hua_scale(13.0/2.0));
+    //        make.left.mas_equalTo(hua_scale(15));
+    //    }];
+    //    [quantityLabel setSingleLineAutoResizeWithMaxWidth:200];
+    //    quantityLabel.sd_layout
+    //    .autoHeightRatio(0);
+    //
+    //    //背景图
+    //    UIImageView *backImageView = [[UIImageView alloc] init];
+    //    backImageView.userInteractionEnabled = YES;
+    //    backImageView.image = [UIImage imageNamed:@"numer"];
+    //    [scrollView addSubview:backImageView];
+    //    [backImageView mas_makeConstraints:^(MASConstraintMaker *make) {
+    //        make.right.mas_equalTo(self.view.right-hua_scale(15));
+    //        make.centerY.mas_equalTo(quantityLabel);
+    //        make.size.mas_equalTo(CGSizeMake(hua_scale(91), hua_scale(29)));
+    //    }];
+    //
+    //    //减少
+    //    UIButton *subtractButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    //    subtractButton.tag = 189;
+    //    [subtractButton setBackgroundImage:[UIImage imageNamed:@"btn_minus"] forState:0];
+    //    [subtractButton setBackgroundImage:[UIImage imageNamed:@"btn_minus_select"] forState:UIControlStateSelected];
+    //    [backImageView addSubview:subtractButton];
+    //    [subtractButton addTarget:self action:@selector(pageAdd:) forControlEvents:UIControlEventTouchUpInside];
+    //    [subtractButton mas_makeConstraints:^(MASConstraintMaker *make) {
+    //        make.left.mas_equalTo(0);
+    //        make.top.mas_equalTo(0);
+    //        make.width.mas_equalTo(hua_scale(28));
+    //        make.bottom.mas_equalTo(0);
+    //    }];
+    //    //增加
+    //    UIButton *addButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    //    addButton.tag = 190;
+    //    [addButton setBackgroundImage:[UIImage imageNamed:@"btn_add_select"] forState:0];
+    //    [addButton setBackgroundImage:[UIImage imageNamed:@"btn_add"] forState:UIControlStateSelected];
+    //    [addButton addTarget:self action:@selector(pageAdd:) forControlEvents:UIControlEventTouchUpInside];
+    //    [backImageView addSubview:addButton];
+    //    [addButton mas_makeConstraints:^(MASConstraintMaker *make) {
+    //        make.right.mas_equalTo(0);
+    //        make.top.mas_equalTo(0);
+    //        make.bottom.mas_equalTo(0);
+    //        make.width.mas_equalTo(hua_scale(28));
+    //    }];
+    //
+    //    _numberTypelabel = [UILabel new];
+    //    _numberTypelabel.font = [UIFont systemFontOfSize:13];
+    //    _numberTypelabel.text = @"1";
+    //    _numberTypelabel.textAlignment = NSTextAlignmentCenter;
+    //    [backImageView addSubview:_numberTypelabel];
+    //    [_numberTypelabel mas_makeConstraints:^(MASConstraintMaker *make) {
+    //        make.bottom.top.mas_equalTo(0);
+    //        make.left.mas_equalTo(subtractButton.mas_right);
+    //        make.right.mas_equalTo(addButton.mas_left);
+    //    }];
     
-//    //3线
-//    UIView *thView3 = [UIView new];
-//    thView3.backgroundColor = HUAColor(0xe1e1e1);
-//    [scrollView addSubview:thView3];
-//    thView3.sd_layout
-//    .topSpaceToView(thView2,hua_scale(50))
-//    .heightIs(1)
-//    .widthIs(scrollView.width);
+    //    //3线
+    //    UIView *thView3 = [UIView new];
+    //    thView3.backgroundColor = HUAColor(0xe1e1e1);
+    //    [scrollView addSubview:thView3];
+    //    thView3.sd_layout
+    //    .topSpaceToView(thView2,hua_scale(50))
+    //    .heightIs(1)
+    //    .widthIs(scrollView.width);
     
     
     
@@ -251,9 +249,9 @@
     [scrollView addSubview:modeLabel];
     [modeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         if (self.showType == NO) {
-              make.top.mas_equalTo(thView1.mas_bottom).mas_equalTo(hua_scale(15));
+            make.top.mas_equalTo(thView1.mas_bottom).mas_equalTo(hua_scale(15));
         }else{
-              make.top.mas_equalTo(thView2.mas_bottom).mas_equalTo(hua_scale(15));
+            make.top.mas_equalTo(thView2.mas_bottom).mas_equalTo(hua_scale(15));
         }
         
         make.left.mas_equalTo(hua_scale(15));
@@ -425,7 +423,7 @@
         make.height.mas_equalTo(hua_scale(15));
         make.width.mas_equalTo(hua_scale(15));
     }];
- 
+    
     //产品卡
     
     
@@ -437,7 +435,7 @@
         make.top.mas_equalTo(thView6.mas_bottom).mas_equalTo(hua_scale(10));
         make.size.mas_equalTo(CGSizeMake(hua_scale(25), hua_scale(27)));
     }];
-
+    
     UILabel *chanLbale  = [[UILabel alloc] init];
     chanLbale.text = @"产品卡";
     chanLbale.font = [UIFont systemFontOfSize:hua_scale(11)];
@@ -484,7 +482,7 @@
     .heightIs(1)
     .leftEqualToView(thView6)
     .rightEqualToView(thView6);
-
+    
     
     //7线
     UIView *thView7 = [UIView new];
@@ -496,7 +494,7 @@
     .leftSpaceToView(scrollView,scrollView.width/2)
     .widthIs(scrollView.width/2);
     
-
+    
     
     UILabel *memberTitle  = [[UILabel alloc] init];
     memberTitle.font = [UIFont systemFontOfSize:hua_scale(13)];
@@ -630,23 +628,23 @@ UIButton *bttn = nil;
     }
     
     bttn = button;
-//    //点击减少数量
-//    if (button.tag == 189 && [_numberTypelabel.text integerValue] >=1) {
-//        _numberTypelabel.text = [NSString stringWithFormat:@"%ld",[_numberTypelabel.text integerValue]-1];
-//        //产品金额
-//        _memberLabel.text = [NSString stringWithFormat:@"¥45 * %ld",[_numberTypelabel.text integerValue]];
-//        
-//    }else if(button.tag == 190){
-//        //点击减少数量
-//        _numberTypelabel.text = [NSString stringWithFormat:@"%ld",[_numberTypelabel.text integerValue]+1];
-//        //产品金额
-//        //  UILabel *lable = [self.contentView viewWithTag:10009];
-//        
-//        _memberLabel.text = [NSString stringWithFormat:@"¥45 * %ld",[_numberTypelabel.text integerValue]];
-//        
-//        
-//    }
-   
+    //    //点击减少数量
+    //    if (button.tag == 189 && [_numberTypelabel.text integerValue] >=1) {
+    //        _numberTypelabel.text = [NSString stringWithFormat:@"%ld",[_numberTypelabel.text integerValue]-1];
+    //        //产品金额
+    //        _memberLabel.text = [NSString stringWithFormat:@"¥45 * %ld",[_numberTypelabel.text integerValue]];
+    //
+    //    }else if(button.tag == 190){
+    //        //点击减少数量
+    //        _numberTypelabel.text = [NSString stringWithFormat:@"%ld",[_numberTypelabel.text integerValue]+1];
+    //        //产品金额
+    //        //  UILabel *lable = [self.contentView viewWithTag:10009];
+    //        
+    //        _memberLabel.text = [NSString stringWithFormat:@"¥45 * %ld",[_numberTypelabel.text integerValue]];
+    //        
+    //        
+    //    }
+    
 }
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

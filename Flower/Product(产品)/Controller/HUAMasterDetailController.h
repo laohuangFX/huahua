@@ -10,4 +10,6 @@
 
 @interface HUAMasterDetailController : UIViewController
 @property (nonatomic, strong) NSString *master_id;
+//商铺id
+@property (nonatomic, strong)NSString *shop_id;
 @end

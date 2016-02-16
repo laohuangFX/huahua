@@ -162,6 +162,7 @@
     HUAMasterList *masterList = self.masterListArray[indexPath.row];
     HUAMasterDetailController *masterDetailVC = [HUAMasterDetailController new];
     masterDetailVC.master_id = masterList.master_id;
+    masterDetailVC.shop_id = self.shop_id;
     [self.navigationController pushViewController:masterDetailVC animated:YES];
     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
