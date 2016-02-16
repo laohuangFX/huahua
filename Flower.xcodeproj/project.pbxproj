@@ -240,6 +240,11 @@
 		189319851C488990005D230F /* HUAMyOrderTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 189319701C488990005D230F /* HUAMyOrderTableViewCell.m */; };
 		189319861C488990005D230F /* HUAMyProductTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 189319721C488990005D230F /* HUAMyProductTableViewCell.m */; };
 		1893198B1C488B13005D230F /* area.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1893198A1C488B13005D230F /* area.plist */; };
+		18C964481C730447004A20F3 /* HUASelectCityView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18C964471C730447004A20F3 /* HUASelectCityView.m */; };
+		18C9644E1C73045C004A20F3 /* area.plist in Resources */ = {isa = PBXBuildFile; fileRef = 18C964491C73045C004A20F3 /* area.plist */; };
+		18C9644F1C73045C004A20F3 /* EmojiBool.m in Sources */ = {isa = PBXBuildFile; fileRef = 18C9644B1C73045C004A20F3 /* EmojiBool.m */; };
+		18C964501C73045C004A20F3 /* HUAGetCity.m in Sources */ = {isa = PBXBuildFile; fileRef = 18C9644D1C73045C004A20F3 /* HUAGetCity.m */; };
+		18C964531C73047C004A20F3 /* HUASearchSuperViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18C964521C73047C004A20F3 /* HUASearchSuperViewController.m */; };
 		59015DC71C4C785000524B6F /* HUAMasterListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 59015DC61C4C785000524B6F /* HUAMasterListCell.m */; };
 		59015DCA1C4C81C800524B6F /* HUAMasterList.m in Sources */ = {isa = PBXBuildFile; fileRef = 59015DC91C4C81C800524B6F /* HUAMasterList.m */; };
 		59015DCD1C4C83E200524B6F /* HUAMasterListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 59015DCC1C4C83E200524B6F /* HUAMasterListController.m */; };
@@ -756,6 +761,15 @@
 		189319721C488990005D230F /* HUAMyProductTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HUAMyProductTableViewCell.m; sourceTree = "<group>"; };
 		189319871C4889AA005D230F /* PrefixHeader.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
 		1893198A1C488B13005D230F /* area.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = area.plist; sourceTree = "<group>"; };
+		18C964461C730447004A20F3 /* HUASelectCityView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HUASelectCityView.h; sourceTree = "<group>"; };
+		18C964471C730447004A20F3 /* HUASelectCityView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HUASelectCityView.m; sourceTree = "<group>"; };
+		18C964491C73045C004A20F3 /* area.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = area.plist; sourceTree = "<group>"; };
+		18C9644A1C73045C004A20F3 /* EmojiBool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EmojiBool.h; sourceTree = "<group>"; };
+		18C9644B1C73045C004A20F3 /* EmojiBool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EmojiBool.m; sourceTree = "<group>"; };
+		18C9644C1C73045C004A20F3 /* HUAGetCity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HUAGetCity.h; sourceTree = "<group>"; };
+		18C9644D1C73045C004A20F3 /* HUAGetCity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HUAGetCity.m; sourceTree = "<group>"; };
+		18C964511C73047C004A20F3 /* HUASearchSuperViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HUASearchSuperViewController.h; sourceTree = "<group>"; };
+		18C964521C73047C004A20F3 /* HUASearchSuperViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HUASearchSuperViewController.m; sourceTree = "<group>"; };
 		59015DC51C4C785000524B6F /* HUAMasterListCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HUAMasterListCell.h; sourceTree = "<group>"; };
 		59015DC61C4C785000524B6F /* HUAMasterListCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HUAMasterListCell.m; sourceTree = "<group>"; };
 		59015DC81C4C81C800524B6F /* HUAMasterList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HUAMasterList.h; sourceTree = "<group>"; };
@@ -1470,6 +1484,11 @@
 		189317DB1C4887C3005D230F /* Tool */ = {
 			isa = PBXGroup;
 			children = (
+				18C964491C73045C004A20F3 /* area.plist */,
+				18C9644A1C73045C004A20F3 /* EmojiBool.h */,
+				18C9644B1C73045C004A20F3 /* EmojiBool.m */,
+				18C9644C1C73045C004A20F3 /* HUAGetCity.h */,
+				18C9644D1C73045C004A20F3 /* HUAGetCity.m */,
 				5907461A1C5A0732005AEC7C /* Foundation+Log.m */,
 				590739FC1C4F5DA300F21329 /* MyMD5.h */,
 				590739FD1C4F5DA300F21329 /* MyMD5.m */,
@@ -1617,6 +1636,8 @@
 		189319091C488950005D230F /* View */ = {
 			isa = PBXGroup;
 			children = (
+				18C964461C730447004A20F3 /* HUASelectCityView.h */,
+				18C964471C730447004A20F3 /* HUASelectCityView.m */,
 				1893190C1C488950005D230F /* HUAHomeHeaderView.h */,
 				1893190D1C488950005D230F /* HUAHomeHeaderView.m */,
 				1893190A1C488950005D230F /* HUAFunctionButtonView.h */,
@@ -1644,6 +1665,8 @@
 		189319251C48896B005D230F /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				18C964511C73047C004A20F3 /* HUASearchSuperViewController.h */,
+				18C964521C73047C004A20F3 /* HUASearchSuperViewController.m */,
 				177469CB1C72B97D005B457C /* HUAChooseAddressViewController.h */,
 				177469CC1C72B97D005B457C /* HUAChooseAddressViewController.m */,
 				598284601C5EF4E100972357 /* HUABuyViewController.h */,
@@ -2127,6 +2150,7 @@
 				17B7E2691C71BD9C0032C6D5 /* chatBar_record@2x.png in Resources */,
 				17B7E27C1C71BD9C0032C6D5 /* chatBar_more_cameraSelected.png in Resources */,
 				17B7E2621C71BD9C0032C6D5 /* chatBar_keyboardSelected.png in Resources */,
+				18C9644E1C73045C004A20F3 /* area.plist in Resources */,
 				17B7E2641C71BD9C0032C6D5 /* chatBar_more.png in Resources */,
 				17B7E27B1C71BD9C0032C6D5 /* chatBar_more_camera@2x.png in Resources */,
 				17B7E2761C71BD9C0032C6D5 /* chatBar_colorMore_photo@2x.png in Resources */,
@@ -2280,6 +2304,7 @@
 				189319211C488950005D230F /* HUAShopFooterView.m in Sources */,
 				189318B41C48887A005D230F /* UIBarButtonItem+Extension.m in Sources */,
 				590AAD4A1C5377F7007E1ECB /* HUAMyCollection.m in Sources */,
+				18C964481C730447004A20F3 /* HUASelectCityView.m in Sources */,
 				177469CD1C72B97D005B457C /* HUAChooseAddressViewController.m in Sources */,
 				59015DD01C4C929E00524B6F /* HUAMasterDetailController.m in Sources */,
 				17B7E2E31C71BD9C0032C6D5 /* STAlertView.m in Sources */,
@@ -2354,6 +2379,7 @@
 				17B7E2A21C71BD9C0032C6D5 /* NSObject+MJCoding.m in Sources */,
 				59279F741C5762A800136425 /* HUAcommentsTableViewCell.m in Sources */,
 				17B7E2C61C71BD9C0032C6D5 /* SDWebImageCompat.m in Sources */,
+				18C9644F1C73045C004A20F3 /* EmojiBool.m in Sources */,
 				598284881C5F3C2B00972357 /* HUACategoryList.m in Sources */,
 				59FBFD5A1C48B84700EB00B1 /* HUAServiceDetailController.m in Sources */,
 				17B7E2F61C71CBE70032C6D5 /* HUAShopFrontPageController.m in Sources */,
@@ -2362,8 +2388,10 @@
 				189318F51C488930005D230F /* HUAActivityDetailCell.m in Sources */,
 				189319401C48896B005D230F /* HUAShopProductController.m in Sources */,
 				59EAC7041C60ABB900651534 /* HUAProductDetailCell.m in Sources */,
+				18C964531C73047C004A20F3 /* HUASearchSuperViewController.m in Sources */,
 				17B7E2B91C71BD9C0032C6D5 /* TAAbstractDotView.m in Sources */,
 				189318F21C488930005D230F /* HUADetailController.m in Sources */,
+				18C964501C73045C004A20F3 /* HUAGetCity.m in Sources */,
 				17B7E29E1C71BD9C0032C6D5 /* MJProperty.m in Sources */,
 				17B7E2D51C71BD9C0032C6D5 /* SMProgressHUDActionSheet.m in Sources */,
 				59FBFD631C48D84000EB00B1 /* HUAServiceMasterInfo.m in Sources */,

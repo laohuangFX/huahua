@@ -205,13 +205,13 @@
         //产品
         if ([model.is_receipt isEqualToString:@"0"]) {
             _state.text = @"未发货";
-        }else if ([model.is_receipt isEqualToString:@"1"]){
-             _state.text = @"已发货";
+        }else if ([model.is_receipt isEqualToString:@"2"]){
+             _state.text = @"已收货";
         }else{
             _confirmbutton.hidden = NO;
             _stateLabel.hidden = YES;
             _state.hidden = YES;
-             //_state.text = @"已收货";
+             //_state.text = @"已发货";
         }
     }else if ([model.type isEqualToString:@"2"]){
         //服务
@@ -220,7 +220,6 @@
         }else if ([model.is_use isEqualToString:@"1"]){
             _state.text = @"已使用";
         }
-        
     }else{
         //活动
         if (model.remainNum.integerValue>0) {
@@ -243,7 +242,7 @@
 - (void)click:(UIButton *)button{
 
     
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"收货" message:@"确认收货" preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"收货" message:@"确认收货" preferredStyle:UIAlertControllerStyleAlert];
 
     [alert addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
        
@@ -252,8 +251,14 @@
         _stateLabel.hidden = NO;
         _state.hidden = NO;
         
-        _state.text = @"确认成功";
-        _state.textColor = HUAColor(0x999999);
+        self.goodsBlock(self.indexPath);
+        
+//      _state.text = @"收货完成";
+//      _state.textColor = HUAColor(0x999999);
+        
+        
+        
+  
 
     }]];
     [alert addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {

@@ -64,8 +64,6 @@
     NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
     //parameter[@"per_page"] = @"1";
     [manager GET:url parameters:parameter success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-
-    
         NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:responseObject options:0 error:nil];
  
         self.array = [HUADataTool MyOrder:dic];
@@ -113,19 +111,51 @@ _data3 = [NSMutableArray arrayWithObjects:@"不限",@"最少",@"最多",nil];
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     
-    NSString *identifier = [NSString stringWithFormat:@"Cell%ld%ld",indexPath.section,indexPath.row];
+    static NSString *identifier = @"indetifierCell";
     
-    //static NSString *identifier  = @"cell";
     HUAMyOrderTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
     if (cell==nil) {
         cell = [[HUAMyOrderTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
     }
+    cell.indexPath = indexPath;
+    
     [cell setShowBlock:^(UIAlertController *alert){
         
         [self presentViewController:alert animated:YES completion:nil];
 
     }];
-    
+    //收货block
+    [cell setGoodsBlock:^(NSIndexPath *path){
+        //post请求
+        HUAMyOrderModel *model = self.array[indexPath.row];
+       
+        NSString *token = [HUAUserDefaults getToken];
+        NSLog(@"%@",model.bill_num);
+//        AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+//        [manager.requestSerializer setValue:token forHTTPHeaderField:@"token"];
+//        //申明返回的结果是json类型
+//        manager.responseSerializer = [AFHTTPResponseSerializer serializer];
+//        //申明请求的数据是json类型
+//        //manager.requestSerializer=[AFJSONRequestSerializer serializer];
+//        //如果报接受类型不一致请替换一致text/html或别的
+//        manager.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"text/json"];
+//        //传入的参数
+//        NSDictionary *parameters = @{@"bill_id":model.bill_num};
+//        
+//        NSString *url = [HUA_URL stringByAppendingPathComponent:@"user/create_shopping_addr"];
+//        
+//        [manager POST:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+//            NSLog(@"%@",responseObject);
+//            
+//        } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
+//            
+//            NSLog(@"%@",error);
+//            
+//        }];
+
+        
+        
+    }];
     cell.model = self.array[indexPath.row];
  
     return cell;
@@ -151,7 +181,6 @@ _data3 = [NSMutableArray arrayWithObjects:@"不限",@"最少",@"最多",nil];
         HUAServiceOrderDetailsViewController *vc = [HUAServiceOrderDetailsViewController new];
         vc.is_use = model.is_use;
         vc.service_id = model.service_id;
-
         vc.bill_id = model.bill_num;
         [self.navigationController pushViewController:vc animated:YES];
     
