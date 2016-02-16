@@ -1,0 +1,97 @@
+//
+//  PrefixHeader.pch
+//  huahua
+//
+//  Created by 程召华 on 16/1/4.
+//  Copyright © 2016年 readchen.com. All rights reserved.
+//
+
+#ifndef PrefixHeader_pch
+#define PrefixHeader_pch
+
+#import "UIView+Extension.h"
+#import "UIBarButtonItem+Extension.h"
+#import "SDCycleScrollView.h"
+#import "UIImageView+WebCache.h"
+#import "Masonry.h"
+#import "HUADropdownMenu.h"
+#import "AFNetworking.h"
+#import "UIKit+AFNetworking.h"
+#import "UITableView+SDAutoTableViewCellHeight.h"
+#import "UIView+SDAutoLayout.h"
+#import "HUATranslateTime.h"
+#import "HUADataTool.h"
+#import "HUACreateButton.h"
+#import <QuartzCore/QuartzCore.h>
+#import "HUAConstRowHeight.h"
+#import "UILabel+Extension.h"
+#import "HUAActivityDetailCell.h"
+#import "UITextField+Extension.h"
+#import "UIButton+Extension.h"
+#import "SDPhotoBrowser.h"
+#import "HUAImageViewButton.h"
+#import "JSDropDownMenu.h"
+#import "UIImageView+Category.h"
+#import "TCLPhotoBrowserViewController.h"
+#import "MBProgressHUD.h"
+#import "MJRefresh.h"
+#import "MyMD5.h"
+#import "HUAUserDetailInfo.h"
+#import "BCKeyBoard.h"
+
+//常用宏定义
+//颜色
+#define HUAColor(rgbValue)[UIColor colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 green:((float)((rgbValue & 0xFF00) >> 8))/255.0 blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
+
+//条件选择View的高度
+#define chooseViewHeight hua_scale(30)
+
+//导航栏的高度,状态栏的高度和
+#define navigationBarHeight (self.navigationController.navigationBar.height + [[UIApplication sharedApplication] statusBarFrame].size.height)
+
+//屏幕宽度
+#define screenWidth ([UIScreen mainScreen].bounds.size.width)
+
+//屏幕gaodu
+#define screenHeight ([UIScreen mainScreen].bounds.size.height)
+//比例
+#define hua_scale(__VA_ARGS__)  ([UIScreen mainScreen].bounds.size.width/320)*(__VA_ARGS__)
+
+
+
+//主页排序按钮按钮高度
+#define sortButtonHeight hua_scale(28)
+
+//比例
+#define bili  ([UIScreen mainScreen].bounds.size.width/320)
+
+
+#define SCREEN_WIDTH ([[UIScreen mainScreen] bounds].size.width)
+#define SCREEN_HEIGHT ([[UIScreen mainScreen] bounds].size.height)
+
+
+#define kBCTextViewHeight ([UIScreen mainScreen].bounds.size.width/320)*36 /**< 底部textView的高度 */
+#define kHorizontalPadding ([UIScreen mainScreen].bounds.size.width/320)*8 /**< 横向间隔 */
+#define kVerticalPadding ([UIScreen mainScreen].bounds.size.width/320)*5 /**< 纵向间隔 */
+
+
+//接口
+//#define HUA_URL @"http://120.24.182.25/huahua_api/index.php"
+#define HUA_URL @"http://192.168.8.55/huahua_api/index.php"
+#define Product_list @"general/product_list"
+#define Service_list @"service/service_list"
+#define Master_list @"master/master_list"
+
+
+
+#pragma mark ---
+//宏定义打印
+#ifdef DEBUG // 处于开发阶段
+#define HUALog(...) NSLog(__VA_ARGS__)
+#else // 处于发布阶段
+#define HUALog(...)
+#endif
+
+
+
+#endif /* PrefixHeader_pch */

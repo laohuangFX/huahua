@@ -1,0 +1,323 @@
+//
+//  HUAMyOrderViewController.m
+//  Flower
+//
+//  Created by apple on 16/1/12.
+//  Copyright © 2016年 readchen.com. All rights reserved.
+//
+
+#define Bill_list @"user/bill_list"
+#import "HUAMyOrderViewController.h"
+#import "HUAMyOrderTableViewCell.h"
+#import "HUAMyOrderModel.h"
+#import "HUADataTool.h"
+#import "HUAProductOrderDetailsViewController.h"
+#import "HUAServiceOrderDetailsViewController.h"
+#import "HUAActivityOrderDetailsViewController.h"
+@interface HUAMyOrderViewController ()<UITableViewDataSource,UITableViewDelegate,JSDropDownMenuDataSource,JSDropDownMenuDelegate>{
+ 
+    NSMutableArray *_data1;
+    NSMutableArray *_data2;
+    NSMutableArray *_data3;
+    
+    NSInteger _currentData1Index;
+    NSInteger _currentData2Index;
+    NSInteger _currentData3Index;
+
+
+}
+@property (nonatomic,strong)UITableView *tablewView;
+@property (nonatomic, strong)NSArray *array;
+@end
+
+@implementation HUAMyOrderViewController
+
+- (UITableView *)tablewView {
+    if (!_tablewView) {
+        _tablewView = [[UITableView alloc] initWithFrame:CGRectMake(0, hua_scale(30), screenWidth, screenHeight-navigationBarHeight-hua_scale(30))];
+        _tablewView.delegate = self;
+        _tablewView.dataSource = self;
+       // [_tablewView registerClass:[HUAMyOrderTableViewCell class] forCellReuseIdentifier:@"cell"];
+    }
+    return _tablewView;
+}
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    [self.view addSubview:self.tablewView];
+
+    //假数据
+    //self.array = @[@[@"jjj",@"jjj"],@[],@[@"jjj",@"jjj",],@[@"ffff"],@[],@[@"fffff"],@[],@[@"ffff"],@[],@[],@[@"ffff"],@[],@[@"ffff"]];
+    
+    self.title = @"我的订单";
+    self.view.backgroundColor = [UIColor whiteColor];
+    
+    [self headDownMenu];
+    
+    NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
+  
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    [manager.requestSerializer setValue:token forHTTPHeaderField:@"token"];
+    manager.responseSerializer = [AFHTTPResponseSerializer serializer];
+
+    NSString *url = [HUA_URL stringByAppendingPathComponent:Bill_list];
+    NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+    //parameter[@"per_page"] = @"1";
+    [manager GET:url parameters:parameter success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+
+    
+        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:responseObject options:0 error:nil];
+ 
+        self.array = [HUADataTool MyOrder:dic];
+        //NSLog(@"%ld",self.array.count);
+
+        [self.tablewView reloadData];
+    } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
+        HUALog(@"%@",error);
+    }];
+
+   
+}
+//下拉菜单
+- (void)headDownMenu{
+    
+
+    NSArray *food = @[@"不限", @"服务1", @"服务2", @"服务3", @"服务4",@"服务5"];
+    NSArray *travel = @[@"不限", @"蜂花护发素", @"潘婷护发素", @"沙宣护发素", @"飘柔护发素", @"欧莱雅护发素", @"百雀羚护发素", @"迪彩护发素", @"资生堂护发素", @"露华浓护发素"];
+    NSArray *exercise =@[@"不限", @"活动1", @"活动2", @"活动3", @"活动4", @"活动5"];
+    NSArray *noLimit = @[@"全部"];
+    _data1 = [NSMutableArray arrayWithObjects:@{@"title":@"全部", @"data":noLimit},@{@"title":@"服务",@"data":food}, @{@"title":@"产品", @"data":travel},@{@"title":@"活动", @"data":exercise},nil];
+    
+    _data2 = [NSMutableArray arrayWithObjects:@"全部", @"一天内", @"一周内",@"一个月内",@"三个月内",nil];
+_data3 = [NSMutableArray arrayWithObjects:@"不限",@"最少",@"最多",nil];
+    
+    JSDropDownMenu *menu = [[JSDropDownMenu alloc] initWithOrigin:CGPointMake(0, 0) andHeight:hua_scale(30)];
+    //menu.indicatorColor = [UIColor colorWithRed:175.0f/255.0f green:175.0f/255.0f blue:175.0f/255.0f alpha:1.0];
+    menu.separatorColor = [UIColor colorWithRed:210.0f/255.0f green:210.0f/255.0f blue:210.0f/255.0f alpha:1.0];
+    menu.textColor = [UIColor colorWithRed:83.f/255.0f green:83.f/255.0f blue:83.f/255.0f alpha:1.0f];
+    //图标颜色
+    menu.indicatorColor = HUAColor(0x4da800);
+ 
+    menu.dataSource = self;
+    menu.delegate = self;
+    
+    [self.view addSubview:menu];
+}
+//tableview
+
+#pragma  mark ----UITableView Delegate
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)sectio{
+    
+    return self.array.count;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+    
+    NSString *identifier = [NSString stringWithFormat:@"Cell%ld%ld",indexPath.section,indexPath.row];
+    
+    //static NSString *identifier  = @"cell";
+    HUAMyOrderTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
+    if (cell==nil) {
+        cell = [[HUAMyOrderTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
+    }
+    [cell setShowBlock:^(UIAlertController *alert){
+        
+        [self presentViewController:alert animated:YES completion:nil];
+
+    }];
+    
+    cell.model = self.array[indexPath.row];
+ 
+    return cell;
+    
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+    return [self.tablewView cellHeightForIndexPath:indexPath model:self.array[indexPath.row] keyPath:@"model" cellClass:[HUAMyOrderTableViewCell class] contentViewWidth:SCREEN_WIDTH];
+}
+//点击跳转
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    HUAMyOrderModel *model = self.array[indexPath.row];
+    if ([model.type isEqualToString:@"1"]) {
+       //产品
+        HUAProductOrderDetailsViewController *vc = [HUAProductOrderDetailsViewController new];
+        vc.bill_num = model.bill_num;
+        vc.type = model.type;
+        vc.product_id = model.product_id;
+        vc.is_receipt = model.is_receipt;
+        [self.navigationController pushViewController:vc animated:YES];
+    } else if ([model.type isEqualToString:@"2"]){
+       //服务
+        HUAServiceOrderDetailsViewController *vc = [HUAServiceOrderDetailsViewController new];
+        vc.is_use = model.is_use;
+        vc.service_id = model.service_id;
+
+        vc.bill_id = model.bill_num;
+        [self.navigationController pushViewController:vc animated:YES];
+    
+    }else{
+        //活动
+        HUAActivityOrderDetailsViewController *vc = [HUAActivityOrderDetailsViewController new];
+        vc.bill_id = model.bill_num;
+        vc.active_id = model.active_id;
+        vc.number = model.remainNum;
+        [self.navigationController pushViewController:vc animated:YES];
+    }
+    
+
+}
+
+#pragma mark --- headDownMenuDelegate
+//菜单个数
+- (NSInteger)numberOfColumnsInMenu:(JSDropDownMenu *)menu {
+    
+    return 2;
+}
+
+/**
+ * 是否需要显示为UICollectionView 默认为否
+ */
+-(BOOL)displayByCollectionViewInColumn:(NSInteger)column{
+    
+    //    if (column==2) {
+    //
+    //        return NO;
+    //    }
+    
+    return NO;
+}
+/**
+ * 表视图显示时，是否需要两个表显示
+ */
+-(BOOL)haveRightTableViewInColumn:(NSInteger)column{
+    
+    if (column==0) {
+        return YES;
+    }
+    return NO;
+}
+
+/**
+ * 表视图显示时，左边表显示比例
+ */
+-(CGFloat)widthRatioOfLeftColumn:(NSInteger)column{
+    
+    if (column==0) {
+        return 0.5;
+    }
+    
+    return 1;
+}
+
+//返回当前菜单左边表选中行
+-(NSInteger)currentLeftSelectedRow:(NSInteger)column{
+    
+    if (column==0) {
+        
+        return _currentData1Index;
+        
+    }
+    if (column==1) {
+        
+        return _currentData2Index;
+    }
+    
+    return _currentData3Index;
+}
+//返回菜单栏cell的个数
+- (NSInteger)menu:(JSDropDownMenu *)menu numberOfRowsInColumn:(NSInteger)column leftOrRight:(NSInteger)leftOrRight leftRow:(NSInteger)leftRow{
+    
+    if (column==0) {
+        if (leftOrRight==0) {
+            
+            return _data1.count;
+        } else{
+            
+            NSDictionary *menuDic = [_data1 objectAtIndex:leftRow];
+            return [[menuDic objectForKey:@"data"] count];
+        }
+    } else if (column==1){
+        
+        return _data2.count;
+        
+    } else if (column==2){
+        
+        return _data3.count;
+    }
+    
+    return 0;
+}
+//初始默认菜单title
+- (NSString *)menu:(JSDropDownMenu *)menu titleForColumn:(NSInteger)column{
+    
+    switch (column) {
+        case 0: return @"类别";//[[_data1[0] objectForKey:@"data"] objectAtIndex:0];
+            break;
+        case 1: return @"价格"; //_data2[0];
+            break;
+        case 2: return @"点赞数";//_data3[0];
+            break;
+        default:
+            return nil;
+            break;
+    }
+}
+
+- (NSString *)menu:(JSDropDownMenu *)menu titleForRowAtIndexPath:(JSIndexPath *)indexPath {
+    
+    if (indexPath.column==0) {
+        if (indexPath.leftOrRight==0) {
+            NSDictionary *menuDic = [_data1 objectAtIndex:indexPath.row];
+            return [menuDic objectForKey:@"title"];
+        } else{
+            NSInteger leftRow = indexPath.leftRow;
+            NSDictionary *menuDic = [_data1 objectAtIndex:leftRow];
+            return [[menuDic objectForKey:@"data"] objectAtIndex:indexPath.row];
+        }
+    } else if (indexPath.column==1) {
+        
+        return _data2[indexPath.row];
+        
+    } else {
+        
+        return _data3[indexPath.row];
+    }
+}
+
+- (void)menu:(JSDropDownMenu *)menu didSelectRowAtIndexPath:(JSIndexPath *)indexPath {
+    
+    if (indexPath.column == 0) {
+        
+        if(indexPath.leftOrRight==0){
+            
+            _currentData1Index = indexPath.row;
+            
+            return;
+        }
+        
+    } else if(indexPath.column == 1){
+        
+        _currentData2Index = indexPath.row;
+        
+    } else{
+        
+        _currentData3Index = indexPath.row;
+    }
+}
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+/*
+ #pragma mark - Navigation
+ 
+ // In a storyboard-based application, you will often want to do a little preparation before navigation
+ - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+ // Get the new view controller using [segue destinationViewController].
+ // Pass the selected object to the new view controller.
+ }
+ */
+
+@end
+

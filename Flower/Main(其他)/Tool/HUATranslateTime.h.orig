@@ -1,0 +1,22 @@
+//
+//  HUATranslateTime.h
+//  Flower
+//
+//  Created by 程召华 on 16/1/8.
+//  Copyright © 2016年 readchen.com. All rights reserved.
+//
+
+#import <Foundation/Foundation.h>
+
+@interface HUATranslateTime : NSObject
+<<<<<<< HEAD
++ (NSString *)translateTimeIntoCurrurent:(NSInteger)totalSeconds;
+
++ (NSString *)translateTimeIntoCurrurents:(NSInteger)totalSecond;
+
+=======
+
++ (NSString *)translateTimeIntoCurrurent:(long)time;
+>>>>>>> 7b1d11d8d00e7f0bb6838d4fbff18e49351f0de0
++ (NSString *)translateDateIntoTimestamp:(NSString *)date;
+@end

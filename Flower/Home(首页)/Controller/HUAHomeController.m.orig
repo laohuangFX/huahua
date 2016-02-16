@@ -1,0 +1,344 @@
+//
+//  HUAHomeController.m
+//  huahua
+//
+//  Created by 程召华 on 16/1/4.
+//  Copyright © 2016年 readchen.com. All rights reserved.
+//
+#define App_index @"general/app_index"
+#import "HUAHomeController.h"
+#import "UIBarButtonItem+Extension.h"
+#import "HUASearchBar.h"
+#import "HUAShopTableViewCell.h"
+#import "HUAShopInfo.h"
+#import "HUAHomeHeaderView.h"
+#import "HUASectionHeaderView.h"
+#import "HUAHomeSortDropdownMenuController.h"
+#import "HUAShopFrontPageController.h"
+#import "HUAVipShopFrontPageController.h"
+#import "HUAMyController.h"
+<<<<<<< HEAD
+
+static NSString *identifier = @"cell";
+@interface HUAHomeController ()<ClickDelegate, UIScrollViewDelegate,UITabBarControllerDelegate>
+=======
+#import "HUASortView.h"
+
+static NSString *identifier = @"cell";
+@interface HUAHomeController ()<ClickDelegate, UIScrollViewDelegate,UITabBarControllerDelegate,HUASortMenuDelegate>{
+    NSMutableArray *_data1;
+    
+    NSInteger _currentData1Index;
+ 
+}
+>>>>>>> 7b1d11d8d00e7f0bb6838d4fbff18e49351f0de0
+@property (nonatomic, strong) NSArray *shopsArray;
+@property (nonatomic, strong) NSArray *bannerArray;
+@property (nonatomic, strong) HUASectionHeaderView *header;
+@end
+
+@implementation HUAHomeController
+- (HUASectionHeaderView *)header {
+    if (!_header) {
+        _header = [[HUASectionHeaderView alloc] initWithFrame:CGRectMake(0, 0, screenWidth, sortButtonHeight)];
+        NSLog(@"header = %p",self.header);
+        _header.delegate = self;
+        _header.backgroundColor = HUAColor(0xF6F6F6);
+    }
+    return _header;
+}
+
+- (NSArray *)shopsArray {
+    if (!_shopsArray) {
+        _shopsArray = [NSArray array];
+    }
+    return _shopsArray;
+}
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    //设置tableView没有分割线
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tap:)];
+    [self.view addGestureRecognizer:tap];
+    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    self.tableView.showsVerticalScrollIndicator = NO;
+    self.tabBarController.delegate = self;
+    [self setNavigationBar];
+    
+    
+    AFHTTPRequestOperationManager *maneger = [[AFHTTPRequestOperationManager alloc]init];
+    NSString *url = [HUA_URL stringByAppendingPathComponent:App_index];
+    [maneger POST:url parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+<<<<<<< HEAD
+        HUALog(@"%@",responseObject);
+=======
+        //HUALog(@"%@",responseObject);
+>>>>>>> 7b1d11d8d00e7f0bb6838d4fbff18e49351f0de0
+        self.shopsArray = [HUADataTool homeShop:responseObject];
+        NSArray *array = [HUADataTool homeBanner:responseObject];
+        HUAShopInfo *banner = array.firstObject;
+        self.bannerArray = banner.bannerArr;
+        [self createHeaderView:self.bannerArray];
+        [self.tableView reloadData];
+    } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
+        HUALog(@"%@",error);
+    }];
+    
+}
+
+- ( BOOL )tabBarController:( UITabBarController *)tabBarController shouldSelectViewController :( UIViewController *)viewController {
+<<<<<<< HEAD
+    HUALog(@"asdasdasd");
+=======
+>>>>>>> 7b1d11d8d00e7f0bb6838d4fbff18e49351f0de0
+    if ([viewController isKindOfClass:[HUAMyController class]]) {
+        return NO;
+    }
+    return YES;
+}
+//创建tableView的头部视图
+- (void)createHeaderView:(NSArray *)array {
+    
+    HUAHomeHeaderView *headerView = [[HUAHomeHeaderView alloc]initWithFrame:CGRectMake(0, 0, screenWidth, hua_scale(250))];
+    headerView.imagesURLStrings = array;
+    headerView.backgroundColor = HUAColor(0xEAEAEA);
+    self.tableView.tableHeaderView = headerView;
+}
+
+
+
+- (void)setNavigationBar {
+    UISearchBar *searchBar = [[UISearchBar alloc]init];
+    
+    self.navigationItem.titleView = searchBar;
+
+    //设置左边的LOGO
+    UIImageView *logoIcon = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"logo"]];
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:logoIcon];
+    //设置右边选择城市按钮
+    
+    
+    //HUAImageViewButton *chooseCity = [[HUAImageViewButton alloc]init];
+    UIButton *chooseCity = [UIButton buttonWithType:0];
+    chooseCity.width = 60;
+    chooseCity.height = 44;
+    [chooseCity setImage:[UIImage imageNamed:@"sort_gray"] forState:UIControlStateNormal];
+    [chooseCity setImage:[UIImage imageNamed:@"sort_green"] forState:UIControlStateSelected];
+   [chooseCity setTitle:@"广州市" forState:UIControlStateNormal];
+    [chooseCity setTitleColor:HUAColor(0x575757) forState:UIControlStateNormal];
+    chooseCity.titleLabel.font = [UIFont systemFontOfSize:16];
+    [chooseCity addTarget:self action:@selector(chooseCity:) forControlEvents:UIControlEventTouchUpInside];
+    [chooseCity setTitleEdgeInsets:UIEdgeInsetsMake(0, -(chooseCity.imageView.frame.size.width+20), 0, 0)];
+    [chooseCity setImageEdgeInsets:UIEdgeInsetsMake(0, (chooseCity.titleLabel.frame.size.width+20), 0, 0)];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:chooseCity];
+    
+   
+}
+
+
+
+//选择城市按钮
+#pragma --选择城市按钮的点击事件
+- (void)chooseCity:(UIButton *)chooseCity{
+    chooseCity.selected = !chooseCity.selected;
+    HUALog(@"....");
+    UIButton * button =  [self.header viewWithTag:1000];
+    button.selected = NO;
+    for (UIView *view in [[[UIApplication sharedApplication].windows lastObject] subviews]) {
+        if ([view isKindOfClass:[HUASortView class]]) {
+            [view removeFromSuperview];
+        }
+    }
+
+}
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+#pragma mark - Table view data source
+
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    
+    return self.shopsArray.count;
+}
+
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    HUAShopTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
+    if (!cell) {
+        cell = [[HUAShopTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
+    }
+    //设置cell的背景颜色
+    cell.backgroundColor = HUAColor(0xeeeeee);
+    //设置点击cell不变颜色
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    cell.shopInfo = self.shopsArray[indexPath.row];
+    return cell;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    NSData *data = [[NSUserDefaults standardUserDefaults] objectForKey:@"data"];
+    HUAUserDetailInfo *detailInfo = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+    HUALog(@"detailInf%@",detailInfo.user_id);
+    if (detailInfo.user_id != nil) {
+        HUAVipShopFrontPageController *vipFrontPageVC = [[HUAVipShopFrontPageController alloc] init];
+        HUAShopInfo *shopInfo = self.shopsArray[indexPath.row];
+        vipFrontPageVC.shop_id = shopInfo.shop_id;
+        vipFrontPageVC.user_id = detailInfo.user_id;
+        [self.navigationController pushViewController:vipFrontPageVC animated:YES];
+    }else{
+        HUAShopFrontPageController *shopFrontPageVC = [[HUAShopFrontPageController alloc] init];
+        HUAShopInfo *shopInfo = self.shopsArray[indexPath.row];
+        shopFrontPageVC.shop_id = shopInfo.shop_id;
+<<<<<<< HEAD
+        //    HUAVipShopFrontPageController *vipVC = [HUAVipShopFrontPageController new];
+        //    HUAShopInfo *shopInfo = self.shopsArray[indexPath.row];
+        //    vipVC.shop_id = shopInfo.shop_id;
+=======
+>>>>>>> 7b1d11d8d00e7f0bb6838d4fbff18e49351f0de0
+        [self.navigationController pushViewController:shopFrontPageVC animated:YES];
+
+    }
+    
+}
+
+
+//创建分区头视图
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    
+    
+    return self.header;
+}
+
+
+
+- (void)clickSortButton:(UIButton *)sender {
+     UIWindow *window = [[UIApplication sharedApplication].windows lastObject];
+    if (sender.selected == YES) {
+        if (self.tableView.contentOffset.y >= 330) {
+            HUASortView *sortView = [[HUASortView alloc] initWithFrame:CGRectMake(0, SCREEN_HEIGHT, SCREEN_WIDTH, 0) ];
+            sortView.delegate = self;
+            
+            [window addSubview:sortView];
+           [UIView animateWithDuration:0 delay:0 options:UIViewAnimationOptionLayoutSubviews animations:^{
+                sortView.frame = CGRectMake(0, 64+hua_scale(28), SCREEN_HEIGHT, 1000);
+            } completion:nil];
+            
+        } else {
+            [self.tableView setContentOffset:CGPointMake(0, 330) animated:YES];
+            HUASortView *sortView = [[HUASortView alloc] initWithFrame:CGRectMake(0, SCREEN_HEIGHT, SCREEN_WIDTH, 0) ];
+            sortView.delegate = self;
+            
+            [window addSubview:sortView];
+            [UIView animateWithDuration:0.2 delay:0 options:UIViewAnimationOptionLayoutSubviews animations:^{
+                sortView.frame = CGRectMake(0, 64+hua_scale(28), SCREEN_HEIGHT, 1000);
+            } completion:nil];
+
+        }
+
+    }else {
+        
+        for (UIView *view in [window subviews]) {
+            if ([view isKindOfClass:[HUASortView class]]) {
+                [view removeFromSuperview];
+            }
+        }
+    }
+}
+
+<<<<<<< HEAD
+- (void)clickSortButton {
+    if (self.tableView.contentOffset.y>330) {
+        double delayInSeconds = 0;
+        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+            
+                UIWindow *window = [UIApplication sharedApplication].keyWindow;
+                UIView *chooseView = [[UIView alloc] initWithFrame:CGRectMake(0, 64+sortButtonHeight, screenWidth, hua_scale(33))];
+                chooseView.backgroundColor = HUAColor(0xffffff);
+                [window addSubview:chooseView];
+            
+                UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, hua_scale(61)+64, screenWidth, hua_scale(1000))];
+            
+                imageView.backgroundColor = HUAColor(0x000000);
+                imageView.alpha = 0.5;
+                [window addSubview:imageView];
+            
+        });
+    } else {
+        [self.tableView setContentOffset:CGPointMake(0, 330) animated:YES];
+        double delayInSeconds = 0.4;
+        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+            UIWindow *window = [[UIApplication sharedApplication].windows lastObject];
+            UIView *chooseView = [[UIView alloc] initWithFrame:CGRectMake(0, 64+sortButtonHeight, screenWidth, hua_scale(33))];
+            chooseView.backgroundColor = HUAColor(0xffffff);
+            [window addSubview:chooseView];
+            
+            UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, hua_scale(61)+64, screenWidth, hua_scale(1000))];
+            
+            imageView.backgroundColor = HUAColor(0x000000);
+            imageView.alpha = 0.5;
+            [window addSubview:imageView];
+        });
+    }
+    
+    
+    
+    
+=======
+
+- (void)tap:(UITapGestureRecognizer *)tap {
+    UIButton * button =  [self.header viewWithTag:1000];
+    button.selected = NO;
+    for (UIView *view in [[[UIApplication sharedApplication].windows lastObject] subviews]) {
+        if ([view isKindOfClass:[HUASortView class]]) {
+            [view removeFromSuperview];
+        }
+    }
+
+}
+
+- (void)sortMenuDidDismiss:(HUASortView *)menu {
+    
+    UIButton * button =  [self.header viewWithTag:1000];
+    button.selected = NO;
+>>>>>>> 7b1d11d8d00e7f0bb6838d4fbff18e49351f0de0
+    
+}
+
+//滚动动画停止时执行,代码改变时出发,也就是setContentOffset改变时
+//- (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView;
+//{
+//    UIWindow *window = [[UIApplication sharedApplication].windows lastObject];
+//    UIView *chooseView = [[UIView alloc] initWithFrame:CGRectMake(0, 64+sortButtonHeight, screenWidth, hua_scale(33))];
+//    chooseView.backgroundColor = HUAColor(0xffffff);
+//    [window addSubview:chooseView];
+//    
+//    UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, hua_scale(61)+64, screenWidth, hua_scale(1000))];
+//    
+//    imageView.backgroundColor = HUAColor(0x000000);
+//    imageView.alpha = 0.5;
+//    [window addSubview:imageView];
+//}
+
+//分区高度
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
+    return sortButtonHeight;
+}
+
+//每个cell的高度
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+    return hua_scale(161);
+    
+}
+
+
+
+
+
+
+@end
