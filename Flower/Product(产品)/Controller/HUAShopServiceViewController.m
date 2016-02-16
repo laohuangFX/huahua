@@ -1,17 +1,18 @@
 //
-//  HUAShopProductController.m
+//  HUAShopServiceViewController.m
 //  Flower
 //
-//  Created by 程召华 on 16/1/13.
+//  Created by 程召华 on 16/2/16.
 //  Copyright © 2016年 readchen.com. All rights reserved.
 //
 
-#import "HUAShopProductController.h"
+#import "HUAShopServiceViewController.h"
 #import "HUADataTool.h"
 #import "HUAShopProductCell.h"
 #import "HUAProductDetailController.h"
 #import "HUAServiceDetailController.h"
-@interface HUAShopProductController ()<UITableViewDelegate, UITableViewDataSource,JSDropDownMenuDataSource,JSDropDownMenuDelegate>{
+
+@interface HUAShopServiceViewController ()<UITableViewDelegate, UITableViewDataSource,JSDropDownMenuDataSource,JSDropDownMenuDelegate>{
     NSMutableArray *_data1;
     NSMutableArray *_data2;
     NSMutableArray *_data3;
@@ -22,14 +23,13 @@
     
     
 }
-
 @property (nonatomic, strong) UITableView *tableView;
-
 @property (nonatomic, strong) NSArray *productsArray;
 @property (nonatomic, strong) NSString *service_id;
+
 @end
 
-@implementation HUAShopProductController
+@implementation HUAShopServiceViewController
 
 - (NSArray *)productsArray {
     if (!_productsArray) {
@@ -44,7 +44,7 @@
         _tableView.dataSource = self;
         _tableView.delegate = self;
         [_tableView registerClass:[HUAShopProductCell class] forCellReuseIdentifier:@"cell"];
- 
+        
     }
     return _tableView;
 }
@@ -96,18 +96,18 @@
     _data3 = [NSMutableArray arrayWithObjects:@"不限",@"最少",@"最多",nil];
     
     JSDropDownMenu *menu = [[JSDropDownMenu alloc] initWithOrigin:CGPointMake(0, 0) andHeight:hua_scale(30)];
-
+    
     menu.separatorColor = [UIColor colorWithRed:210.0f/255.0f green:210.0f/255.0f blue:210.0f/255.0f alpha:1.0];
     menu.textColor = [UIColor colorWithRed:83.f/255.0f green:83.f/255.0f blue:83.f/255.0f alpha:1.0f];
     //图标颜色
     menu.indicatorColor = HUAColor(0x4da800);
-
+    
     menu.dataSource = self;
     menu.delegate = self;
     
     [self.view addSubview:menu];
     
-
+    
 }
 
 
@@ -174,10 +174,9 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     HUAShopProduct *product = self.productsArray[indexPath.row];
-    HUAProductDetailController *productVC = [HUAProductDetailController new];
-    productVC.product_id = product.product_id;
-    productVC.shop_id = self.shop_id;
-    [self.navigationController pushViewController:productVC animated:YES];
+    HUAServiceDetailController *serviceVC = [HUAServiceDetailController new];
+    serviceVC.service_id = product.service_id;
+    [self.navigationController pushViewController:serviceVC animated:YES];
    [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 

@@ -282,6 +282,13 @@ static NSString *identifier = @"cell";
 //选择城市按钮
 #pragma --选择城市按钮的点击事件
 - (void)chooseCity:(UIButton *)chooseCity{
+    UIButton * button =  [self.header viewWithTag:1000];
+    button.selected = NO;
+    for (UIView *view in [[[UIApplication sharedApplication].windows lastObject] subviews]) {
+        if ([view isKindOfClass:[HUASortView class]]) {
+            [view removeFromSuperview];
+        }
+    }
     chooseCity.selected = !chooseCity.selected;
     if (chooseCity.selected == YES) {
         self.selectView = [[HUASelectCityView alloc]initWithFrame:self.view.bounds];
@@ -289,7 +296,7 @@ static NSString *identifier = @"cell";
         __block HUAHomeController * wself = self;
         self.selectView.cityBlock = ^(NSString *cityName){
             chooseCity.selected = NO;
-            wself.tableView.scrollEnabled = NO;
+            wself.tableView.scrollEnabled = YES;
             if (cityName.length != 0) {
                 [chooseCity setTitle:cityName forState:UIControlStateNormal];
             }
@@ -437,9 +444,7 @@ static NSString *identifier = @"cell";
             } completion:nil];
             
         }
-        
     }else {
-        
         for (UIView *view in [window subviews]) {
             if ([view isKindOfClass:[HUASortView class]]) {
                 [view removeFromSuperview];

@@ -5,6 +5,7 @@
 //  Created by 程召华 on 16/1/15.
 //  Copyright © 2016年 readchen.com. All rights reserved.
 //
+#define Create_praise      @"user/praise"
 #define Service_detail @"service/service_detail"
 #import "HUAServiceDetailController.h"
 #import "HUAServiceInfo.h"
@@ -26,9 +27,18 @@
 @property (nonatomic, strong)NSString *category;
 
 @property (nonatomic, strong)NSString *shop_id;
+
+@property (nonatomic, strong) HUAUserDetailInfo *detailInfo;
 @end
 
 @implementation HUAServiceDetailController
+
+- (HUAUserDetailInfo *)detailInfo {
+    if (!_detailInfo) {
+        _detailInfo = [HUAUserDefaults getUserDetailInfo];
+    }
+    return _detailInfo;
+}
 
 - (NSArray *)masterArray {
     if (!_masterArray) {
@@ -66,8 +76,56 @@
     [super viewDidLoad];
     self.title = @"服务详情";
     [self.view addSubview:self.tableView];
+    [self.tableView reloadData];
 }
 
+- (void)setNavigationBar {
+    UIButton *praiseButton = [UIButton buttonWithType:0];
+    praiseButton.frame = CGRectMake(hua_scale(268), hua_scale(9), hua_scale(42), hua_scale(16));
+    [praiseButton setImage:[UIImage imageNamed:@"praise_black_empty"] forState:UIControlStateNormal];
+    [praiseButton setImage:[UIImage imageNamed:@"praise_tech"] forState:UIControlStateSelected];
+    [praiseButton setTitle:self.serviceInfo.praise_count forState:UIControlStateNormal];
+    [praiseButton setTitleColor:HUAColor(0x000000) forState:UIControlStateNormal];
+    praiseButton.titleEdgeInsets = UIEdgeInsetsMake(0, 5, 0, 0);
+    praiseButton.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 5);
+    if ([[[[NSNumberFormatter alloc] init] stringFromNumber:self.serviceInfo.have_praised] isEqualToString:@"1"] ) {
+        praiseButton.selected = YES;
+        
+    }
+    [praiseButton setTitle:[NSString stringWithFormat:@"%ld",self.serviceInfo.praise_count.integerValue] forState:UIControlStateNormal];
+    [praiseButton addTarget:self action:@selector(clickToPraise:) forControlEvents:UIControlEventTouchUpInside];
+    
+    praiseButton.titleLabel.font = [UIFont systemFontOfSize:hua_scale(14)];
+    self.navigationItem.rightBarButtonItems = @[[[UIBarButtonItem alloc]initWithCustomView:praiseButton]];
+}
+#pragma mark -- 点击点赞
+- (void)clickToPraise:(UIButton *)sender {
+    if (!self.detailInfo) {
+        [HUAMBProgress MBProgressFromWindowWithLabelText:@"未登录,正在跳转登录页面..." dispatch_get_main_queue:^{
+            HUALoginController *loginVC = [[HUALoginController alloc] init];
+            [self.navigationController pushViewController:loginVC animated:YES];
+        }];
+        
+    }else {
+        sender.selected = !sender.selected;
+        NSString *url = [HUA_URL stringByAppendingPathComponent:Create_praise];
+        NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+        parameter[@"target"] = @"shop";
+        parameter[@"id"] = self.shop_id;
+        [HUAHttpTool POSTWithTokenAndUrl:url params:parameter success:^(id responseObject) {
+            HUALog(@"%@",responseObject);
+            if ([responseObject[@"info"][0] isKindOfClass:[NSDictionary class]]) {
+                [HUAMBProgress MBProgressOnlywithLabelText:@"点赞成功"];
+                [sender setTitle:[NSString stringWithFormat:@"%ld",sender.titleLabel.text.integerValue+1] forState:UIControlStateNormal];
+            }else {
+                [HUAMBProgress MBProgressOnlywithLabelText:@"取消点赞"];
+                [sender setTitle:[NSString stringWithFormat:@"%ld",sender.titleLabel.text.integerValue-1] forState:UIControlStateNormal];
+            }
+        } failure:^(NSError *error) {
+            HUALog(@"%@",error);
+        }];
+    }
+}
 
 
 - (void)getData {
@@ -77,13 +135,15 @@
     parameters[@"service_id"] = self.service_id;
     
     [manager GET:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+        
        self.shop_id = responseObject[@"item"][@"shop_id"];
         self.serviceInfo = [HUAServiceInfo getServiceDetailInfoWithDictionary:responseObject];
         //项目
+        HUALog(@"%@",self.serviceInfo.praise_count);
+        //self.serviceInfo = [HUAServiceInfo mj_objectWithKeyValues:responseObject];
         self.category = responseObject[@"item"][@"category"];
         self.serviceArray = responseObject[@"info"][@"media_lis"];
         self.masterArray = [HUADataTool getMasterArray:responseObject];
-        NSLog(@"sss:%@",self.masterArray);
         [self setHeaderView:self.serviceInfo];
         [self.tableView reloadData];
     } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
@@ -220,44 +280,7 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     HUAServiceMasterCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" ];
-  
-    
-    HUALog(@"%ld",self.masterArray.count);
     cell.masterInfo = self.masterArray[indexPath.row];
-    
-//    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell"];
-//    if (!cell) {
-//        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:@"cell"];
-//    }else {
-//        while ([cell.contentView.subviews lastObject] != nil) {
-//            
-//            [(UIView*)[cell.contentView.subviews lastObject] removeFromSuperview];
-//        }
-//    }
-//    HUAServiceMasterInfo *masterInfo = self.masterArray[indexPath.row];
-//    UIImageView *headImageView = [[UIImageView alloc] initWithFrame:CGRectMake(hua_scale(10), hua_scale(5), hua_scale(40), hua_scale(40))];
-//    [headImageView sd_setImageWithURL:[NSURL URLWithString:masterInfo.cover] placeholderImage:[UIImage imageNamed:@"placeholder"]];
-//    [cell.contentView addSubview:headImageView];
-//    
-//    CGRect nameFrame = CGRectMake(hua_scale(60), hua_scale(8.5), hua_scale(50),     hua_scale(12));
-//    UILabel *nameLabel = [UILabel labelWithFrame:nameFrame text:masterInfo.masterName color:HUAColor(0x333333) font:hua_scale(12)];
-//    [cell.contentView addSubview:nameLabel];
-//    [nameLabel sizeToFit];
-//    
-//    CGRect typeFrame = CGRectMake(hua_scale(65)+nameLabel.width, hua_scale(10), hua_scale(50), hua_scale(10));
-//    UILabel *typeLabel = [UILabel labelWithFrame:typeFrame text:masterInfo.masterType color:HUAColor(0x999999) font:hua_scale(10)];
-//    [cell.contentView addSubview:typeLabel];
-//    [typeLabel sizeToFit];
-//    
-//    UIImageView *praiseImageView = [[UIImageView alloc] initWithFrame:CGRectMake(hua_scale(60), hua_scale(30.5), hua_scale(9), hua_scale(9))];
-//    praiseImageView.image = [UIImage imageNamed:@"productprise"];
-//    [cell.contentView addSubview:praiseImageView];
-//    
-//    
-//    CGRect praiseFrame = CGRectMake(hua_scale(64)+praiseImageView.width, hua_scale(30.5), hua_scale(100), hua_scale(9));
-//    UILabel *praiseLabel = [UILabel labelWithFrame:praiseFrame text:[NSString stringWithFormat:@"%@赞过",masterInfo.praise_count] color:HUAColor(0xcdcdcd) font:hua_scale(9)];
-//    [cell.contentView addSubview:praiseLabel];
-    
     return cell;
     
 }

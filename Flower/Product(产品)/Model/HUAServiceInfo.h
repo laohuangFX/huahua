@@ -16,6 +16,7 @@
 @property (nonatomic, strong) NSString *detail;
 @property (nonatomic, strong) NSString *cover;
 @property (nonatomic, strong) NSString *praise_count;
+@property (nonatomic, strong) NSNumber *have_praised;
 
 
 

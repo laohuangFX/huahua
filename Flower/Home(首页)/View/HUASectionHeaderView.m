@@ -22,7 +22,6 @@
 
 - (id)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
-
         //创建排序按钮
         UIButton *sortButton = [UIButton buttonWithType:0];
         sortButton.tag = 1000;
@@ -34,13 +33,14 @@
         [sortButton setTitleColor:HUAColor(0x4da800) forState:UIControlStateSelected];
         [sortButton setImage:[UIImage imageNamed:@"sort_gray"] forState:UIControlStateNormal];
         [sortButton setImage:[UIImage imageNamed:@"sort_green"] forState:UIControlStateSelected];
-        [sortButton setTitleEdgeInsets:UIEdgeInsetsMake(0, screenWidth-hua_scale(100), 0, 0)];
-        [sortButton setImageEdgeInsets:UIEdgeInsetsMake(0, screenWidth-hua_scale(20), 0, 0)];
+        [sortButton setTitleEdgeInsets:UIEdgeInsetsMake(0, screenWidth-hua_scale(70), 0, 0)];
+        [sortButton setImageEdgeInsets:UIEdgeInsetsMake(0, screenWidth-hua_scale(15), 0, 0)];
         [sortButton addTarget:self action:@selector(click:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:sortButton];
     }
     return self;
 }
+
 - (void)click:(UIButton *)sender {
     
     sender.selected = !sender.selected;

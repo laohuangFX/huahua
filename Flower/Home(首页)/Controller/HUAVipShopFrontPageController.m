@@ -5,7 +5,7 @@
 //  Created by 程召华 on 16/1/13.
 //  Copyright © 2016年 readchen.com. All rights reserved.
 //
-#define Create_praise        @"user/create_praise"
+#define Create_praise        @"user/praise"
 #define Create_collection    @"user/create_collection"
 #define Is_vip               @"user/is_vip"
 #define Shop_index           @"general/shop_index"
@@ -16,6 +16,7 @@
 #import "HUAShopFooterView.h"
 #import "HUADetailController.h"
 #import "HUAShopProductController.h"
+#import "HUAShopServiceViewController.h"
 #import "HUAMasterListController.h"
 #import "HUStatusAViewController.h"
 #import "HUAConsumptionController.h"
@@ -168,8 +169,8 @@
         sender.selected = !sender.selected;
         NSString *url = [HUA_URL stringByAppendingPathComponent:Create_praise];
         NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
-        parameter[@"user_id"] = self.detailInfo.user_id;
-        parameter[@"shop_id"] = self.shop_id;
+        parameter[@"target"] = @"shop";
+        parameter[@"id"] = self.shop_id;
         [HUAHttpTool POSTWithTokenAndUrl:url params:parameter success:^(id responseObject) {
             HUALog(@"%@",responseObject);
             if ([responseObject[@"info"][0] isKindOfClass:[NSDictionary class]]) {
@@ -179,7 +180,7 @@
                 [HUAMBProgress MBProgressOnlywithLabelText:@"取消点赞"];
                 [sender setTitle:[NSString stringWithFormat:@"%ld",sender.titleLabel.text.integerValue-1] forState:UIControlStateNormal];
             }
-            
+            self.block([sender.titleLabel.text integerValue]);
         } failure:^(NSError *error) {
                 HUALog(@"%@",error);
         }];
@@ -209,12 +210,6 @@
 
     } failure:^(NSError *error) {
         HUALog(@"%@",error);
-        if ([error.userInfo[@"headers"] isKindOfClass:[NSDictionary class]]) {
-            [HUAMBProgress MBProgressFromWindowWithLabelText:@"账号在别的手机上登录,请重新登录" dispatch_get_main_queue:^{
-                HUALoginController *loginVC = [[HUALoginController alloc] init];
-                [self.navigationController pushViewController:loginVC animated:YES];
-            }];
-        }
 
     }];
 }
@@ -543,11 +538,11 @@
         [self.navigationController pushViewController:shopProductVC animated:YES];
     }
     if (indexPath.row == 1) {
-        HUAShopProductController *shopProductVC = [HUAShopProductController new];
-        shopProductVC.shop_id = self.shop_id;
-        shopProductVC.url = [HUA_URL stringByAppendingPathComponent:Service_list];
-        shopProductVC.shopName = self.shopName;
-        [self.navigationController pushViewController:shopProductVC animated:YES];
+        HUAShopServiceViewController *shopServiceVC = [HUAShopServiceViewController new];
+        shopServiceVC.shop_id = self.shop_id;
+        shopServiceVC.url = [HUA_URL stringByAppendingPathComponent:Service_list];
+        shopServiceVC.shopName = self.shopName;
+        [self.navigationController pushViewController:shopServiceVC animated:YES];
     }
     if (indexPath.row == 2) {
         HUAMasterListController *masterListVC = [HUAMasterListController new];

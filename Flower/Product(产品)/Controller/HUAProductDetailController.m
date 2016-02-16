@@ -5,7 +5,8 @@
 //  Created by 程召华 on 16/1/13.
 //  Copyright © 2016年 readchen.com. All rights reserved.
 //
-#define Product_detail @"general/product_detail"
+#define Create_praise      @"user/praise"
+#define Product_detail     @"general/product_detail"
 #import "HUAProductDetailController.h"
 #import "HUATopInfoView.h"
 #import "HUAProductDetailInfo.h"
@@ -16,12 +17,21 @@
 @interface HUAProductDetailController ()<UITableViewDataSource, UITableViewDelegate>
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) NSArray *photoArray;
-@property (nonatomic, strong) HUAProductDetailInfo *detailInfo;
+@property (nonatomic, strong) HUAProductDetailInfo *productDetailInfo;
 //会员信息
 @property (nonatomic, strong)NSDictionary *membersInformation;
+
+@property (nonatomic, strong) HUAUserDetailInfo *detailInfo;
 @end
 
 @implementation HUAProductDetailController
+
+- (HUAUserDetailInfo *)detailInfo {
+    if (!_detailInfo) {
+        _detailInfo = [HUAUserDefaults getUserDetailInfo];
+    }
+    return _detailInfo;
+}
 
 - (NSArray *)photoArray {
     if (!_photoArray) {
@@ -53,8 +63,56 @@
     [super viewDidLoad];
     self.title = @"产品详情";
     [self.view addSubview:self.tableView];
+    [self setNavigationBar];
 }
 
+- (void)setNavigationBar {
+    UIButton *praiseButton = [UIButton buttonWithType:0];
+    praiseButton.frame = CGRectMake(hua_scale(268), hua_scale(9), hua_scale(42), hua_scale(16));
+    [praiseButton setImage:[UIImage imageNamed:@"praise_black_empty"] forState:UIControlStateNormal];
+    [praiseButton setImage:[UIImage imageNamed:@"praise_tech"] forState:UIControlStateSelected];
+    [praiseButton setTitle:self.productDetailInfo.praise_count forState:UIControlStateNormal];
+    [praiseButton setTitleColor:HUAColor(0x000000) forState:UIControlStateNormal];
+    praiseButton.titleEdgeInsets = UIEdgeInsetsMake(0, 5, 0, 0);
+    praiseButton.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 5);
+    if ([[[[NSNumberFormatter alloc] init] stringFromNumber:self.productDetailInfo.have_praised] isEqualToString:@"1"] ) {
+        praiseButton.selected = YES;
+        
+    }
+    [praiseButton setTitle:[NSString stringWithFormat:@"%ld",self.productDetailInfo.praise_count.integerValue] forState:UIControlStateNormal];
+    [praiseButton addTarget:self action:@selector(clickToPraise:) forControlEvents:UIControlEventTouchUpInside];
+    
+    praiseButton.titleLabel.font = [UIFont systemFontOfSize:hua_scale(14)];
+    self.navigationItem.rightBarButtonItems = @[[[UIBarButtonItem alloc]initWithCustomView:praiseButton]];
+}
+#pragma mark -- 点击点赞
+- (void)clickToPraise:(UIButton *)sender {
+    if (!self.detailInfo) {
+        [HUAMBProgress MBProgressFromWindowWithLabelText:@"未登录,正在跳转登录页面..." dispatch_get_main_queue:^{
+            HUALoginController *loginVC = [[HUALoginController alloc] init];
+            [self.navigationController pushViewController:loginVC animated:YES];
+        }];
+        
+    }else {
+        sender.selected = !sender.selected;
+        NSString *url = [HUA_URL stringByAppendingPathComponent:Create_praise];
+        NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+        parameter[@"target"] = @"shop";
+        parameter[@"id"] = self.shop_id;
+        [HUAHttpTool POSTWithTokenAndUrl:url params:parameter success:^(id responseObject) {
+            HUALog(@"%@",responseObject);
+            if ([responseObject[@"info"][0] isKindOfClass:[NSDictionary class]]) {
+                [HUAMBProgress MBProgressOnlywithLabelText:@"点赞成功"];
+                [sender setTitle:[NSString stringWithFormat:@"%ld",sender.titleLabel.text.integerValue+1] forState:UIControlStateNormal];
+            }else {
+                [HUAMBProgress MBProgressOnlywithLabelText:@"取消点赞"];
+                [sender setTitle:[NSString stringWithFormat:@"%ld",sender.titleLabel.text.integerValue-1] forState:UIControlStateNormal];
+            }
+        } failure:^(NSError *error) {
+            HUALog(@"%@",error);
+        }];
+    }
+}
 
 
 - (void)getData {
@@ -63,10 +121,10 @@
     NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
     parameters[@"product_id"] = self.product_id;
     [manager GET:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-        self.detailInfo = [HUAProductDetailInfo getProductDetailInfoWithDictionary:responseObject[@"item"]];
+        self.productDetailInfo = [HUAProductDetailInfo mj_objectWithKeyValues:responseObject[@"item"]];
+        HUALog(@"%@",self.productDetailInfo.have_praised);
         self.photoArray = responseObject[@"media_lis"];
-        HUALog(@"%@",responseObject);
-        [self setTableViewHeadrView:self.detailInfo];
+        [self setTableViewHeadrView:self.productDetailInfo];
         [self.tableView reloadData];
     } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
         HUALog(@"%@",error);

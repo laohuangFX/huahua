@@ -243,6 +243,7 @@
 		59003CFA1C730AF30016C72D /* EmojiBool.m in Sources */ = {isa = PBXBuildFile; fileRef = 59003CF61C730AF30016C72D /* EmojiBool.m */; };
 		59003CFB1C730AF30016C72D /* HUAGetCity.m in Sources */ = {isa = PBXBuildFile; fileRef = 59003CF81C730AF30016C72D /* HUAGetCity.m */; };
 		59003CFE1C730B010016C72D /* HUASearchSuperViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 59003CFD1C730B010016C72D /* HUASearchSuperViewController.m */; };
+		59003D011C731BE00016C72D /* HUAShopServiceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 59003D001C731BE00016C72D /* HUAShopServiceViewController.m */; };
 		59015DC71C4C785000524B6F /* HUAMasterListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 59015DC61C4C785000524B6F /* HUAMasterListCell.m */; };
 		59015DCA1C4C81C800524B6F /* HUAMasterList.m in Sources */ = {isa = PBXBuildFile; fileRef = 59015DC91C4C81C800524B6F /* HUAMasterList.m */; };
 		59015DCD1C4C83E200524B6F /* HUAMasterListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 59015DCC1C4C83E200524B6F /* HUAMasterListController.m */; };
@@ -764,6 +765,8 @@
 		59003CF81C730AF30016C72D /* HUAGetCity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HUAGetCity.m; sourceTree = "<group>"; };
 		59003CFC1C730B010016C72D /* HUASearchSuperViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HUASearchSuperViewController.h; sourceTree = "<group>"; };
 		59003CFD1C730B010016C72D /* HUASearchSuperViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HUASearchSuperViewController.m; sourceTree = "<group>"; };
+		59003CFF1C731BE00016C72D /* HUAShopServiceViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HUAShopServiceViewController.h; sourceTree = "<group>"; };
+		59003D001C731BE00016C72D /* HUAShopServiceViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HUAShopServiceViewController.m; sourceTree = "<group>"; };
 		59015DC51C4C785000524B6F /* HUAMasterListCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HUAMasterListCell.h; sourceTree = "<group>"; };
 		59015DC61C4C785000524B6F /* HUAMasterListCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HUAMasterListCell.m; sourceTree = "<group>"; };
 		59015DC81C4C81C800524B6F /* HUAMasterList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HUAMasterList.h; sourceTree = "<group>"; };
@@ -1677,6 +1680,8 @@
 				189319271C48896B005D230F /* HUAProductController.m */,
 				1893192A1C48896B005D230F /* HUAShopProductController.h */,
 				1893192B1C48896B005D230F /* HUAShopProductController.m */,
+				59003CFF1C731BE00016C72D /* HUAShopServiceViewController.h */,
+				59003D001C731BE00016C72D /* HUAShopServiceViewController.m */,
 				189319281C48896B005D230F /* HUAProductDetailController.h */,
 				189319291C48896B005D230F /* HUAProductDetailController.m */,
 				59FBFD581C48B84700EB00B1 /* HUAServiceDetailController.h */,
@@ -2337,6 +2342,7 @@
 				189319461C48896B005D230F /* HUAShopProductCell.m in Sources */,
 				17B7E2EB1C71BD9C0032C6D5 /* UIProgressView+AFNetworking.m in Sources */,
 				590A4F601C50AA93008C8130 /* HUAUserDetailInfo.m in Sources */,
+				59003D011C731BE00016C72D /* HUAShopServiceViewController.m in Sources */,
 				17B7E2CD1C71BD9C0032C6D5 /* UIImage+GIF.m in Sources */,
 				598284791C5EF72C00972357 /* HUAMakeAnAppointmentTableViewCell.m in Sources */,
 				17B7E2E71C71BD9C0032C6D5 /* UIActivityIndicatorView+AFNetworking.m in Sources */,
