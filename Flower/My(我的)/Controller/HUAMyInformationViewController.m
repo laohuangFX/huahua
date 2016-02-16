@@ -109,7 +109,7 @@
     HUALog(@"shengri%@,,,%@,,%@,%@",birthday,self.nameLabel.text,self.sexLable.text,self.birthdayLabel.text);
     NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
     parameters[@"nickname"] = self.nameLabel.text;
-    parameters[@"sex"] = [self.sexLable.text isEqualToString:@"男"]?@"1":@"0";
+    //parameters[@"sex"] = [self.sexLable.text isEqualToString:@"男"]?@"1":@"0";
     //parameters[@"birth"] = birthday;
     [manager POST:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
         HUALog(@"data%@",responseObject);
