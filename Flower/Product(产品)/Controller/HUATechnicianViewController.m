@@ -12,7 +12,7 @@
 
 @interface HUATechnicianViewController ()<UITableViewDataSource,UITableViewDelegate>{
     NSArray *_modelArray;
-
+    
 }
 @property (nonatomic,strong)UITableView *tableView;
 
@@ -27,7 +27,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-   
+    
     self.title = @"选择技师";
     //解析传进来的数据
     [self jsonData];
@@ -37,15 +37,15 @@
 }
 
 - (void)jsonData{
-   
+    
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager new];
     NSString *url = [HUA_URL stringByAppendingPathComponent:[NSString stringWithFormat:@"service/select_master?service_id=%@",self.service_id]];
     NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
-   
+    
     [manager GET:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-       // NSLog(@"%@",responseObject);
+        
         self.array = [HUADataTool TechnicianJson:responseObject];
-       // NSLog(@"%ld",self.array.count);
+        NSLog(@"%ld",self.array.count);
         [self.tableView reloadData];
     } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
         HUALog(@"%@",error);
@@ -77,7 +77,7 @@
     
     UIButton *arbitrarilyBuuton = [UIButton buttonWithType:UIButtonTypeCustom];
     [arbitrarilyBuuton setTitle:@"任意技师" forState:0];
-     arbitrarilyBuuton.backgroundColor = [UIColor whiteColor];
+    arbitrarilyBuuton.backgroundColor = [UIColor whiteColor];
     [arbitrarilyBuuton setTitleColor:HUAColor(0x333333) forState:0];
     arbitrarilyBuuton.titleLabel.font =  [UIFont systemFontOfSize:hua_scale(12)];
     [arbitrarilyBuuton addTarget:self action:@selector(arbitrarilyButton:) forControlEvents:UIControlEventTouchUpInside];
@@ -111,7 +111,7 @@ HUATechnicianTableViewCell *laCell = nil;
     //NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
     
     [manager GET:url parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-
+        
         _seleteBuuton.selected = NO;
         
         NSInteger index = 0;
@@ -119,29 +119,29 @@ HUATechnicianTableViewCell *laCell = nil;
             HUATechnicianModel *model = self.array[i];
             if ([model.master_id isEqualToString:responseObject[@"info"][@"master_id"]]) {
                 index = i;
-            
+                
                 break;
             }
         }
- 
+        
         HUATechnicianTableViewCell *cell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForItem:index inSection:0]];
         _seleteBuuton = cell.seletebutton;
         if (laCell!=cell) {
-           
+            
             cell.seletebutton.selected = YES;
             laCell.seletebutton.selected = NO;
-
+            
         }else{
-        
+            
             cell.seletebutton.selected = YES;
         }
- 
+        
         laCell = cell;
         
     } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
         HUALog(@"%@",error);
     }];
-   
+    
 }
 //确认按钮
 - (void)confirmClick:(UIButton *)sender{
@@ -152,8 +152,10 @@ HUATechnicianTableViewCell *laCell = nil;
         HUAServiceDateViewController *vc = [HUAServiceDateViewController new];
         vc.category = self.category;
         vc.model = self.array[_seleteBuuton.tag-200];
+        vc.shop_id = self.shop_id;
+        
         [self.navigationController pushViewController:vc animated:YES];
-         NSLog(@"跳转成功");
+        NSLog(@"跳转成功");
     }else{
         [HUAMBProgress MBProgressFromView:self.view wrongLabelText:@"请选择一个技师"];
     }
@@ -168,7 +170,7 @@ HUATechnicianTableViewCell *laCell = nil;
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-
+    
     static NSString *cellStr = @"cell";
     
     HUATechnicianTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellStr];
@@ -177,17 +179,17 @@ HUATechnicianTableViewCell *laCell = nil;
     }
     cell.seletebutton.tag = 200+indexPath.row;
     //记录选中的buuton；
-      [cell setButtonBlock:^(UIButton *button){
-          if (laCell.seletebutton==button) {
-              button.selected = YES;
-          }else{
-          laCell.seletebutton.selected = NO;
-          }
-          
-          _seleteBuuton = button;
-          NSLog(@"%ld",_seleteBuuton.tag);
-          laCell = nil;
-      }];
+    [cell setButtonBlock:^(UIButton *button){
+        if (laCell.seletebutton==button) {
+            button.selected = YES;
+        }else{
+            laCell.seletebutton.selected = NO;
+        }
+        
+        _seleteBuuton = button;
+        NSLog(@"%ld",_seleteBuuton.tag);
+        laCell = nil;
+    }];
     cell.model = self.array[indexPath.row];
     
     
@@ -205,13 +207,13 @@ HUATechnicianTableViewCell *laCell = nil;
 }
 
 /*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
+ #pragma mark - Navigation
+ 
+ // In a storyboard-based application, you will often want to do a little preparation before navigation
+ - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+ // Get the new view controller using [segue destinationViewController].
+ // Pass the selected object to the new view controller.
+ }
+ */
 
 @end

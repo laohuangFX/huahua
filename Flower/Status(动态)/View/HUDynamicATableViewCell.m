@@ -18,8 +18,8 @@
     return self;
 }
 - (void)setup{
-   
-
+    
+    
     self.headView = [UIImageView new];
     //self.headView .backgroundColor = [UIColor redColor];
     
@@ -33,12 +33,12 @@
     self.contentLbale.numberOfLines = 0;
     self.contentLbale.font = [UIFont systemFontOfSize:hua_scale(14)];
     self.contentLbale.textColor = HUAColor(0x333333);
-
-
+    
+    
     
     //图片
     self.picContainerView = [HUAWeiXinPhotoContainerView new];
-
+    
     
     //时间
     self.timeButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -49,7 +49,7 @@
     [self.timeButton addTarget:self action:@selector(click:) forControlEvents:UIControlEventTouchUpInside];
     self.timeButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
     [self.timeButton setTitleEdgeInsets:UIEdgeInsetsMake(0, hua_scale(4), 0, 0)];
-
+    
     
     //爱好
     self.loveButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -58,34 +58,35 @@
     [self.loveButton setTitleColor:[UIColor grayColor] forState:0];
     [self.loveButton setImage:[UIImage imageNamed:@"praise_empty"] forState:UIControlStateNormal];
     [self.loveButton setImage:[UIImage imageNamed:@"praise_green"] forState:UIControlStateSelected];
-     self.loveButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight;
+    self.loveButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight;
     [self.loveButton addTarget:self action:@selector(click:) forControlEvents:UIControlEventTouchUpInside];
     [self.loveButton setImageEdgeInsets:UIEdgeInsetsMake(0, hua_scale(0), hua_scale(0), hua_scale(5))];
     //[self.loveButton setTitleEdgeInsets:UIEdgeInsetsMake(0, hua_scale(-26), 0, 0)];
     
     //评论
     self.messageButton = [UIButton buttonWithType:UIButtonTypeCustom];
-
+    
     self.messageButton.tag = 500;
     self.messageButton.titleLabel.font = [UIFont systemFontOfSize:hua_scale(11)];
     [self.messageButton setTitleColor:[UIColor grayColor] forState:0];
-
+    
     [self.messageButton setImage:[UIImage imageNamed:@"comment"] forState:UIControlStateNormal];
     self.messageButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight;
-
+    
     [self.messageButton addTarget:self action:@selector(click:) forControlEvents:UIControlEventTouchUpInside];
     [self.messageButton setImageEdgeInsets:UIEdgeInsetsMake(0, hua_scale(0), 0, hua_scale(5))];
-
+    
+    
     
     //加入父视图
     NSArray *views = @[self.headView, self.nameLbale,self.contentLbale,self.picContainerView,self.timeButton,self.messageButton,self.loveButton];
-
-   
+    
+    
     
     [views enumerateObjectsUsingBlock:^(UIView * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         [self.contentView addSubview:obj];
     }];
-
+    
     UIView *contentView = self.contentView;
     CGFloat margin = hua_scale(10);
     
@@ -101,12 +102,12 @@
     .heightIs(hua_scale(9));
     [self.nameLbale setSingleLineAutoResizeWithMaxWidth:200];
     
-//    self.contentLbale.sd_layout
-//    .leftEqualToView(self.nameLbale)
-//    .topSpaceToView(self.nameLbale, margin)
-//    //.rightSpaceToView(contentView, hua_scale(10))
-//    .autoHeightRatio(0);
-//    [self.contentLbale setSingleLineAutoResizeWithMaxWidth:200];
+    //    self.contentLbale.sd_layout
+    //    .leftEqualToView(self.nameLbale)
+    //    .topSpaceToView(self.nameLbale, margin)
+    //    //.rightSpaceToView(contentView, hua_scale(10))
+    //    .autoHeightRatio(0);
+    //    [self.contentLbale setSingleLineAutoResizeWithMaxWidth:200];
     [self.contentLbale mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(self.nameLbale.mas_bottom).mas_equalTo(hua_scale(9));
         make.left.mas_equalTo(self.nameLbale);
@@ -148,17 +149,23 @@
 - (void)setModel:(HUAStatusModel *)model
 {
     _model = model;
-
+    
     [self.timeButton setTitle:[HUATranslateTime translateTimeIntoCurrurents:model.time.integerValue] forState:0];
     [self.headView sd_setImageWithURL:[NSURL URLWithString:model.icon] placeholderImage:[UIImage imageNamed:@"placeholder"]];
     self.nameLbale.text = model.name;
     self.contentLbale.text = model.content;
+    
+    if ([model.is_praise isEqualToString:@"yse"]) {
+        self.loveButton.selected = YES;
+    }else{
+        self.loveButton.selected = NO;
+    }
     [self.loveButton setTitle:model.praise forState:0];
     [self.messageButton setTitle:model.comment forState:0];
-
-
-
-        
+    
+    
+    
+    
     self.picContainerView.picPathStringsArray = model.imageArray;
     
     NSMutableAttributedString *attributedStrings = [[NSMutableAttributedString alloc] initWithString:self.contentLbale.text];
@@ -168,23 +175,19 @@
     self.contentLbale.attributedText = attributedStrings;
     [self.contentLbale sizeToFit];
     
-    
-    
-
 }
 
 //点击事件
 
 - (void)click:(UIButton *)btn{
-
-    btn.selected = !btn.selected;
     
-
     if (btn.tag == 500) {
-       
+        
         if (self.boolType==NO) {
+            
             //跳转详情页面
             [self.delagate pusView:btn];
+            
         }else{
             //回调评论
             self.pinlunBlock();
@@ -192,20 +195,16 @@
         
         
     }else if (btn.tag == 501){
-        if (btn.selected == YES) {
-            [btn setTitle:[NSString stringWithFormat:@"%ld",self.loveButton.titleLabel.text.integerValue+1] forState:0];
-            if (self.loveBlock) {
-                self.loveBlock();
-            }
-            
-        }else{
-            if (btn.titleLabel.text.integerValue>=1) {
-                 [btn setTitle:[NSString stringWithFormat:@"%ld",self.loveButton.titleLabel.text.integerValue-1] forState:0];
-            }
+        NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
+        //点赞
+        if (token!=nil) {
+            btn.selected = !btn.selected;
+            self.loveBlock();
+        }else {
+            self.loveBlock();
         }
-    
     }
-
+    
 }
 - (void)awakeFromNib {
     // Initialization code
@@ -213,7 +212,7 @@
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];
-
+    
     // Configure the view for the selected state
 }
 

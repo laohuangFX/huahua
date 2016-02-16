@@ -11,4 +11,6 @@
 @interface HUAProductDetailController : UIViewController
 @property (nonatomic, strong) NSString *product_id;
 @property (nonatomic, strong) NSString *shopName;
+
+@property (nonatomic, strong) NSString *shop_id;
 @end

@@ -17,6 +17,8 @@
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) NSArray *photoArray;
 @property (nonatomic, strong) HUAProductDetailInfo *detailInfo;
+//会员信息
+@property (nonatomic, strong)NSDictionary *membersInformation;
 @end
 
 @implementation HUAProductDetailController
@@ -43,6 +45,8 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self getData];
+    //获取会员信息
+    [self getMembers];
 }
 
 - (void)viewDidLoad {
@@ -64,6 +68,24 @@
         HUALog(@"%@",responseObject);
         [self setTableViewHeadrView:self.detailInfo];
         [self.tableView reloadData];
+    } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
+        HUALog(@"%@",error);
+    }];
+}
+- (void)getMembers{
+    
+    NSString *token = [HUAUserDefaults getToken];
+    
+    AFHTTPRequestOperationManager *manager = [[AFHTTPRequestOperationManager alloc]init];
+    [manager.requestSerializer setValue:token forHTTPHeaderField:@"token"];
+    NSString *url = [HUA_URL stringByAppendingPathComponent:@"user/is_vip"];
+    
+    NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
+    parameters[@"shop_id"] =self.shop_id;
+    [manager GET:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+        NSLog(@"%@",responseObject);
+        self.membersInformation = responseObject;
+        
     } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
         HUALog(@"%@",error);
     }];
@@ -116,10 +138,20 @@
                 });
             });
         }else {
-            HUAProductsToBuyViewController *buyVC = [HUAProductsToBuyViewController new];
-            buyVC.product_id = self.product_id;
-            [self.navigationController pushViewController:buyVC animated:YES];
-        }
+            HUAProductsToBuyViewController *vc = [HUAProductsToBuyViewController new];
+            vc.product_id = self.product_id;
+            if ([[self.membersInformation[@"info"]class] isSubclassOfClass:[NSString class]]) {
+                //不是会员
+                vc.typeBool = NO;
+            }else{
+                //是会员
+                vc.typeBool = YES;
+                vc.membersName = self.membersInformation[@"info"][@"nickname"];
+                vc.membersType = self.membersInformation[@"info"][@"level"];
+                vc.membersMoney = self.membersInformation[@"info"][@"money"];
+            }
+            
+            [self.navigationController pushViewController:vc animated:YES];        }
         
     }];
 

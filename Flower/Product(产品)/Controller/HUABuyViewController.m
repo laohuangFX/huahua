@@ -18,8 +18,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-   
-    self.showType = YES;
     
     self.title = @"订单确认";
     self.view.backgroundColor = [UIColor whiteColor];
@@ -32,9 +30,9 @@
     //scrollView.backgroundColor = [UIColor yellowColor];
     scrollView.bounces = NO;
     [self.view addSubview:scrollView];
-
+    
     //UIView *mianView = self.view;
-
+    
     //商品
     UILabel *goodsLabel = [UILabel new];
     goodsLabel.text = @"商店:";
@@ -44,7 +42,7 @@
     goodsLabel.sd_layout
     .leftSpaceToView(scrollView,hua_scale(15))
     .heightIs(hua_scale(14));
-     goodsLabel.y = (hua_scale(35.0/2.0)-hua_scale(14.0/2.0));
+    goodsLabel.y = (hua_scale(35.0/2.0)-hua_scale(14.0/2.0));
     [goodsLabel setSingleLineAutoResizeWithMaxWidth:200];
     
     //商店名
@@ -69,13 +67,13 @@
     .heightIs(1)
     .widthIs(scrollView.width);
     
-
-
+    
+    
     //名字
     UILabel *name = [UILabel new];
     name.textColor = HUAColor(0x000000);
-    name.text = @"陈翔";
     name.font = [UIFont systemFontOfSize:hua_scale(13)];
+    name.text = self.membersName;
     [scrollView addSubview:name];
     [name mas_makeConstraints:^(MASConstraintMaker *make) {
         make.height.mas_equalTo(13);
@@ -86,7 +84,7 @@
     //会员类型
     UILabel *memberType = [UILabel new];
     memberType.textColor = HUAColor(0x4da800);
-    memberType.text = @"初级会员";
+    memberType.text = self.membersType;
     memberType.font = [UIFont systemFontOfSize:hua_scale(11)];
     [scrollView addSubview:memberType];
     [memberType mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -94,7 +92,7 @@
         make.top.mas_equalTo(thView1.mas_bottom).mas_equalTo(hua_scale(50.0/2)-hua_scale(11.0/2.0));
         make.left.mas_equalTo(name.mas_right).mas_equalTo(hua_scale(5));
     }];
-
+    
     UIImageView *basketImageView = [[UIImageView alloc] init];
     //basketImageView.backgroundColor = [UIColor redColor];
     basketImageView.image = [UIImage imageNamed:@"numer"];
@@ -107,8 +105,8 @@
     
     //余额
     UILabel *pageLabel = [[UILabel alloc] init];
-    pageLabel.text =@"余额 : ¥ 12";
     pageLabel.textAlignment = NSTextAlignmentCenter;
+    pageLabel.text = [NSString stringWithFormat:@"余额 : ¥%ld",self.membersMoney.integerValue];
     pageLabel.textColor = HUAColor(0x4da800);
     pageLabel.font = [UIFont systemFontOfSize:hua_scale(13)];
     NSMutableAttributedString *att = [[NSMutableAttributedString alloc] initWithString:pageLabel.text];
@@ -123,7 +121,7 @@
         make.right.mas_equalTo(basketImageView);
         
     }];
-
+    
     //2线
     UIView *thView2 = [UIView new];
     thView2.backgroundColor = HUAColor(0xe1e1e1);
@@ -144,15 +142,15 @@
     
     
     //购买数量
-   UILabel *quantityLabel = [UILabel new];
+    UILabel *quantityLabel = [UILabel new];
     quantityLabel.text = @"购买数量";
     quantityLabel.font = [UIFont systemFontOfSize:hua_scale(13)];
     [scrollView addSubview:quantityLabel];
     [quantityLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         if (self.showType == NO) {
-             make.top.mas_equalTo(thView1.mas_bottom).mas_equalTo(hua_scale(50.0/2)-hua_scale(13.0/2.0));
+            make.top.mas_equalTo(thView1.mas_bottom).mas_equalTo(hua_scale(50.0/2)-hua_scale(13.0/2.0));
         }else{
-              make.top.mas_equalTo(thView2.mas_bottom).mas_equalTo(hua_scale(50.0/2)-hua_scale(13.0/2.0));
+            make.top.mas_equalTo(thView2.mas_bottom).mas_equalTo(hua_scale(50.0/2)-hua_scale(13.0/2.0));
         }
         
         make.height.mas_equalTo(13);
@@ -161,7 +159,7 @@
     [quantityLabel setSingleLineAutoResizeWithMaxWidth:200];
     quantityLabel.sd_layout
     .autoHeightRatio(0);
-
+    
     //背景图
     UIImageView *backImageView = [[UIImageView alloc] init];
     backImageView.userInteractionEnabled = YES;
@@ -172,7 +170,7 @@
         make.centerY.mas_equalTo(quantityLabel);
         make.size.mas_equalTo(CGSizeMake(hua_scale(91), hua_scale(29)));
     }];
-
+    
     //减少
     UIButton *subtractButton = [UIButton buttonWithType:UIButtonTypeCustom];
     subtractButton.tag = 189;
@@ -199,7 +197,7 @@
         make.bottom.mas_equalTo(0);
         make.width.mas_equalTo(hua_scale(28));
     }];
-
+    
     _numberTypelabel = [UILabel new];
     _numberTypelabel.font = [UIFont systemFontOfSize:hua_scale(13)];
     _numberTypelabel.text = @"1";
@@ -220,8 +218,8 @@
     .topSpaceToView(backImageView,hua_scale(11))
     .heightIs(1)
     .widthIs(scrollView.width);
-
-
+    
+    
     
     
     //4线
@@ -253,44 +251,44 @@
         make.width.mas_equalTo(hua_scale(25));
     }];
     
-        UILabel *huiyuanLbale  = [[UILabel alloc] init];
-        huiyuanLbale.text = @"会员余额";
-        huiyuanLbale.font = [UIFont systemFontOfSize:hua_scale(11)];
-        [scrollView addSubview:huiyuanLbale];
-        [huiyuanLbale mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.mas_equalTo(iocnImage.mas_right).mas_equalTo(hua_scale(8));
-            make.top.mas_equalTo(iocnImage);
-        }];
-        [huiyuanLbale setSingleLineAutoResizeWithMaxWidth:200];
+    UILabel *huiyuanLbale  = [[UILabel alloc] init];
+    huiyuanLbale.text = @"会员余额";
+    huiyuanLbale.font = [UIFont systemFontOfSize:hua_scale(11)];
+    [scrollView addSubview:huiyuanLbale];
+    [huiyuanLbale mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.mas_equalTo(iocnImage.mas_right).mas_equalTo(hua_scale(8));
+        make.top.mas_equalTo(iocnImage);
+    }];
+    [huiyuanLbale setSingleLineAutoResizeWithMaxWidth:200];
     
     
-        UILabel *title  = [[UILabel alloc] init];
-        title.text = @"使用会员余额,服务价格降低";
-        title.font = [UIFont systemFontOfSize:hua_scale(9)];
-        title.textColor = HUAColor(0x4da800);
-        [scrollView addSubview:title];
-        [title mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.mas_equalTo(iocnImage.mas_right).mas_equalTo(hua_scale(8));
-            make.bottom.mas_equalTo(iocnImage.mas_bottom);
-        }];
-        [title setSingleLineAutoResizeWithMaxWidth:200];
+    UILabel *title  = [[UILabel alloc] init];
+    title.text = @"使用会员余额,服务价格降低";
+    title.font = [UIFont systemFontOfSize:hua_scale(9)];
+    title.textColor = HUAColor(0x4da800);
+    [scrollView addSubview:title];
+    [title mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.mas_equalTo(iocnImage.mas_right).mas_equalTo(hua_scale(8));
+        make.bottom.mas_equalTo(iocnImage.mas_bottom);
+    }];
+    [title setSingleLineAutoResizeWithMaxWidth:200];
     
     
-        UIButton *selectBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        selectBtn.tag = 191;
-        [selectBtn setBackgroundImage:[UIImage imageNamed:@"do_not_select"] forState:0];
-        [selectBtn setBackgroundImage:[UIImage imageNamed:@"chooseButton_yes"] forState:UIControlStateSelected];
-        [selectBtn addTarget:self action:@selector(selectButton:) forControlEvents:UIControlEventTouchUpInside];
-        [scrollView addSubview:selectBtn];
-        [selectBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.right.mas_equalTo(self.view.right-hua_scale(15));
-            make.top.mas_equalTo(iocnImage);
-            make.height.mas_equalTo(hua_scale(15));
-            make.width.mas_equalTo(hua_scale(15));
-        }];
-
+    UIButton *selectBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    selectBtn.tag = 191;
+    [selectBtn setBackgroundImage:[UIImage imageNamed:@"do_not_select"] forState:0];
+    [selectBtn setBackgroundImage:[UIImage imageNamed:@"chooseButton_yes"] forState:UIControlStateSelected];
+    [selectBtn addTarget:self action:@selector(selectButton:) forControlEvents:UIControlEventTouchUpInside];
+    [scrollView addSubview:selectBtn];
+    [selectBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.right.mas_equalTo(self.view.right-hua_scale(15));
+        make.top.mas_equalTo(iocnImage);
+        make.height.mas_equalTo(hua_scale(15));
+        make.width.mas_equalTo(hua_scale(15));
+    }];
     
-
+    
+    
     //5线
     UIView *thView5 = [UIView new];
     thView5.backgroundColor = HUAColor(0xe1e1e1);
@@ -300,7 +298,7 @@
     .heightIs(1)
     .widthIs(scrollView.width);
     
-     UIImageView *iocnImageView = [[UIImageView alloc] init];
+    UIImageView *iocnImageView = [[UIImageView alloc] init];
     iocnImageView.image = [UIImage imageNamed:@"zhifubao"];
     [scrollView addSubview:iocnImageView];
     [iocnImageView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -309,7 +307,7 @@
         make.size.mas_equalTo(CGSizeMake(hua_scale(25), hua_scale(27)));
     }];
     
-     UILabel *yuanLbale  = [[UILabel alloc] init];
+    UILabel *yuanLbale  = [[UILabel alloc] init];
     yuanLbale.text = @"支付宝";
     yuanLbale.font = [UIFont systemFontOfSize:hua_scale(11)];
     [scrollView addSubview:yuanLbale];
@@ -344,9 +342,9 @@
         make.height.mas_equalTo(hua_scale(15));
         make.width.mas_equalTo(hua_scale(15));
     }];
-
     
-
+    
+    
     //6线
     UIView *thView6 = [UIView new];
     thView6.backgroundColor = HUAColor(0xe1e1e1);
@@ -400,9 +398,9 @@
         make.height.mas_equalTo(hua_scale(15));
         make.width.mas_equalTo(hua_scale(15));
     }];
-
-
-
+    
+    
+    
     //7线
     UIView *thView7 = [UIView new];
     thView7.backgroundColor = HUAColor(0xe1e1e1);
@@ -434,7 +432,7 @@
         make.top.mas_equalTo(memberTitle);
     }];
     [_memberLabel setSingleLineAutoResizeWithMaxWidth:200];
-
+    
     
     UILabel *ResultLable  = [[UILabel alloc] init];
     ResultLable.font = [UIFont systemFontOfSize:hua_scale(13)];
@@ -458,7 +456,7 @@
         make.top.mas_equalTo(thView7.mas_bottom).mas_equalTo(hua_scale(17));
     }];
     [ResultTitle setSingleLineAutoResizeWithMaxWidth:200];
-
+    
     //8线
     UIView *thView8 = [UIView new];
     thView8.backgroundColor = HUAColor(0xe1e1e1);
@@ -508,8 +506,8 @@
         make.size.mas_equalTo(CGSizeMake(hua_scale(166), hua_scale(34)));
         make.right.mas_equalTo(self.view.mas_right).mas_equalTo(hua_scale(-10));
     }];
-
-
+    
+    
     //9线
     UIView *thView9 = [UIView new];
     thView9.backgroundColor = HUAColor(0xe1e1e1);
@@ -521,7 +519,8 @@
     
     scrollView.sd_layout.spaceToSuperView(UIEdgeInsetsZero);
     
-     [scrollView setupAutoContentSizeWithBottomView:thView9 bottomMargin:0];
+    [scrollView setupAutoContentSizeWithBottomView:thView9 bottomMargin:0];
+    
     
 }
 
@@ -536,7 +535,7 @@ UIButton *lastButton = nil;
         button.selected = YES;
     }
     
-
+    
     
     //点击减少数量
     if (button.tag == 189 && [_numberTypelabel.text integerValue] >=1) {
@@ -555,7 +554,7 @@ UIButton *lastButton = nil;
         //产品金额
         
         _memberLabel.text = [NSString stringWithFormat:@"¥45 * %ld",[_numberTypelabel.text integerValue]];
-
+        
     }
     //合计
     UILabel *label1 = [self.view viewWithTag:199];
@@ -572,17 +571,17 @@ UIButton *selectBtn = nil;
         sender.selected = YES;
         selectBtn.selected = NO;
     }else{
-    
+        
         sender.selected = YES;
     }
     
     
     selectBtn = sender;
-
+    
 }
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
- 
+    
 }
 
 

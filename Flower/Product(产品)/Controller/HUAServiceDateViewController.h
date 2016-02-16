@@ -12,6 +12,9 @@
 //项目类型
 @property (nonatomic, strong)NSString *category;
 
+//店铺id
+@property (nonatomic, strong)NSString *shop_id;
+
 //名字
 @property (nonatomic, strong)NSString *technicianName;
 @property (nonatomic, strong)HUATechnicianModel *model;

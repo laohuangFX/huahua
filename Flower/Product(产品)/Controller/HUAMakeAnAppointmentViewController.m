@@ -12,7 +12,7 @@
 #import "HUATechniciansOrdersViewController.h"
 
 @interface HUAMakeAnAppointmentViewController ()<UITableViewDataSource,UITableViewDelegate,HATransparentViewDelegate>{
-
+    
     int _page;
     UIView *_bgView;
     //记录上一次视图的位置;
@@ -22,7 +22,10 @@
     NSArray *_appointmentTime;//早班时间
     //底部弹出的视图
     UIView  *_tanBgview;
-
+    //记录上次选择的项目
+    UIImageView *_selecteImageView;
+    UIButton    *_selecteSender;
+    
 }
 @property (nonatomic,strong)UIScrollView *scrollView;
 @property (nonatomic, strong)UITableView *tableView;
@@ -33,6 +36,10 @@
 @property (nonatomic, strong)UITableView *serviceTableView;
 //遮盖视图
 @property (strong, nonatomic)HATransparentView *transparentView;
+
+//会员信息
+@property (nonatomic, strong)NSDictionary *membersInformation;
+
 @end
 
 @implementation HUAMakeAnAppointmentViewController
@@ -45,45 +52,71 @@
     
     
     //初始化
-     _page = 7;
+    _page = 7;
     _lastTbaleView = nil;
     
     self.dateArray = [NSMutableArray array];
     
+    //获取会员信息
+    [self membersData];
+    
     //获取数据
-    [self getData];
+    //[self getData];
+    
     
     //获取日期
     [self getDate:0];
     
     [self initScrollView];
     
+    
     //初始化选择项目列表
     //[self  initServiceTableView];
-   
+    
 }
-- (void)getData{
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+//- (void)getData{
+//    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+//
+//    manager.responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@"application/json", @"text/html",@"text/json", @"text/javascript", nil];
+//    NSString *url = [HUA_URL stringByAppendingPathComponent:[NSString stringWithFormat:@"master/master_appointment?master_id=%@&range_type_id=%@",self.master_id,self.range_type_id]];
+//
+//    [manager GET:url parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+//
+//       NSString *type = responseObject[@"info"][@"range_type"][@"type_name"];
+//        NSArray *array = responseObject[@"info"][@"range_type"][@"time_list"];
+//
+//        _dic = @{@"type":type,@"array":array,};
+//        NSLog(@"%@",_dic[@"type"]);
+//
+//        [self.tableView reloadData];
+//
+//    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+//        NSLog(@"Error: %@", error);
+//    }];
+//}
+//获取会员数据
+- (void)membersData{
     
-    manager.responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@"application/json", @"text/html",@"text/json", @"text/javascript", nil];
+    NSString *token = [HUAUserDefaults getToken];
     
-    [manager GET:@"http://www/huahua_api/index.php/master/master_appointment?master_id=13&range_type_id=1" parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+    AFHTTPRequestOperationManager *manager = [[AFHTTPRequestOperationManager alloc]init];
+    [manager.requestSerializer setValue:token forHTTPHeaderField:@"token"];
+    NSString *url = [HUA_URL stringByAppendingPathComponent:@"user/is_vip"];
+    
+    NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
+    parameters[@"shop_id"] =self.shop_id;
+    [manager GET:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+        NSLog(@"%@",responseObject);
+        self.membersInformation = responseObject;
         
-       NSString *type = responseObject[@"info"][@"range_type"][@"type_name"];
-        NSArray *array = responseObject[@"info"][@"range_type"][@"time_list"];
-        
-
-        _dic = @{@"type":type,@"array":array,};
-        NSLog(@"%@",_dic[@"type"]);
-        
-        [self.tableView reloadData];
-        
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        NSLog(@"Error: %@", error);
+    } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
+        HUALog(@"%@",error);
     }];
+    
+    
 }
 - (void)getDate:(int )page{
-   
+    
     
     //获取当前时间戳的方法
     for (int i= 0; i<7; i++) {
@@ -96,7 +129,7 @@
         
         
         NSString *weekStr = [HUADate getWeekDayFordate:[strTime integerValue]];
-       // NSLog(@"%@",weekStr);
+        // NSLog(@"%@",weekStr);
         
         NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
         [formatter setDateFormat:@"MM-dd"];
@@ -108,14 +141,14 @@
         
         
         [self.dateArray addObject:dic];
-    
+        
     }
 }
 - (void)initScrollView{
     self.scrollView = [[UIScrollView alloc] init];
     self.scrollView.backgroundColor = [UIColor whiteColor];
     [self.view addSubview:self.scrollView];
-
+    
     UIImageView *headImageView = [[UIImageView alloc] init];
     [headImageView sd_setImageWithURL:[NSURL URLWithString:self.model.cover] placeholderImage:[UIImage imageNamed:@"placeholder"]];
     [self.scrollView addSubview:headImageView];
@@ -134,7 +167,7 @@
         make.left.mas_equalTo(headImageView.mas_right).mas_equalTo(hua_scale(10));
     }];
     [nameLabel setSingleLineAutoResizeWithMaxWidth:200];
-  
+    
     //技师类型
     UILabel *technicianLabel = [UILabel new];
     technicianLabel.text = self.model.masterType;
@@ -183,7 +216,7 @@
         make.left.mas_equalTo(headImageView);
     }];
     [serviceLabel setSingleLineAutoResizeWithMaxWidth:200];
- 
+    
     
     //选择项目按钮
     UIButton *serviceButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -216,7 +249,7 @@
         make.left.mas_equalTo(headImageView);
     }];
     [moneyLabel setSingleLineAutoResizeWithMaxWidth:200];
-   
+    
     //金额
     UILabel *money = [UILabel new];
     money.text = @"¥0.00";
@@ -239,7 +272,7 @@
         make.left.mas_equalTo(headImageView);
         make.right.mas_equalTo(self.view.mas_right).mas_equalTo(hua_scale(-10));
     }];
-
+    
     UILabel *dateLabel = [UILabel new];
     dateLabel.text =@"选择日期";
     dateLabel.font = [UIFont systemFontOfSize:14];
@@ -249,7 +282,7 @@
         make.left.mas_equalTo(headImageView);
     }];
     [dateLabel setSingleLineAutoResizeWithMaxWidth:200];
-
+    
     //线3
     UIView *thView3 =[UIView new];
     thView3.backgroundColor = HUAColor(0xe1e1e1);
@@ -332,6 +365,7 @@
             make.width.mas_equalTo(hua_scale(1));
             make.top.mas_equalTo(0);
             make.bottom.mas_equalTo(0);
+            
             if (i==0) {
                 make.left.mas_equalTo(0);
             }else if (i==1){
@@ -346,7 +380,9 @@
         lastView2 = view1;
     }
     
-
+    
+    
+    
     self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, 0, 0) style:UITableViewStylePlain];
     //self.tableView.hidden = YES;
     self.tableView.delegate = self;
@@ -361,6 +397,8 @@
         make.right.mas_equalTo(self.view.mas_right).mas_equalTo(hua_scale(-10));
         make.height.mas_equalTo(hua_scale(231));
     }];
+    
+    
     _loadingButton = [UIButton buttonWithType:UIButtonTypeCustom];
     _loadingButton.backgroundColor = HUAColor(0xf8f8f8);
     _loadingButton.tag = 190;
@@ -379,13 +417,13 @@
     self.scrollView.sd_layout.spaceToSuperView(UIEdgeInsetsZero);
     
     [self.scrollView setupAutoContentSizeWithBottomView:_loadingButton bottomMargin:10];
-
+    
 }
 
 //选择项目视图
 - (void)initServiceTableView{
-
-   // _transparentView.backgroundColor = [UIColor redColor];
+    
+    // _transparentView.backgroundColor = [UIColor redColor];
     
     _tanBgview = [UIView new];
     _tanBgview.backgroundColor = HUAColor(0xf8f8f8);
@@ -514,6 +552,7 @@
         lastView2 = view1;
     }
     
+    
     _lastTbaleView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, 0, 0) style:UITableViewStylePlain];
     _lastTbaleView.backgroundColor = [UIColor clearColor];
     _lastTbaleView.delegate = self;
@@ -552,38 +591,38 @@
 }
 #pragma mark --------------------UITableViewDelegate
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)sectio{
-   
+    
     if (tableView == self.tableView || tableView == _lastTbaleView) {
         return self.dateArray.count;
     }else if (tableView == self.serviceTableView){
-    
+        
         return self.model.serviceArray.count;
         
     }else {
         return _appointmentTime.count;
     }
-
+    
 }
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     
-  //  static NSString *cellStr = @"cell";
+    //  static NSString *cellStr = @"cell";
     HUAMakeAnAppointmentTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:nil];
     if (cell == nil) {
         cell = [[HUAMakeAnAppointmentTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
-         }
-      cell.backgroundColor = [UIColor clearColor];
+    }
+    cell.backgroundColor = [UIColor clearColor];
     cell.range_list = self.model.about_arrange[@"item"][@"range_list"][indexPath.row];
     if (tableView == self.tableView) {
         
         cell.typeDic = _dic;
         cell.dateDic = self.dateArray[indexPath.row];
     }else if (tableView == self.lastTbaleView){
-         cell.dateDic = self.dateArray[indexPath.row];
-    
+        cell.dateDic = self.dateArray[indexPath.row];
+        
     }else if (tableView == self.serviceTableView){
-    
+        
         UITableViewCell *serviceCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
         
         UIButton *serviceButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -599,6 +638,11 @@
             make.right.top.bottom.mas_equalTo(0);
             make.left.mas_equalTo(hua_scale(15));
         }];
+        //记录上次选择的项目
+        if (_selecteSender.tag==1100+indexPath.row) {
+            serviceButton.selected = YES;
+        }
+        
         
         UIImageView *gouimage = [UIImageView new];
         gouimage.hidden = YES;
@@ -610,13 +654,17 @@
             make.size.mas_equalTo(CGSizeMake(hua_scale(14), 10));
             make.centerY.mas_equalTo(0);
         }];
+        //记录上次选择的项目
+        if (_selecteImageView.tag==1200+indexPath.row) {
+            gouimage.hidden = NO;
+        }
         
         return serviceCell;
- 
+        
     }else {
-    
+        
         UITableViewCell *timeCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
-       
+        
         UIButton *timeButton = [UIButton buttonWithType:UIButtonTypeCustom];
         [timeButton setTitle:_appointmentTime[indexPath.row] forState:0];
         [timeButton setTitleColor:HUAColor(0x333333) forState:0];
@@ -641,41 +689,41 @@
         }];
         
         return timeCell;
-
+        
     }
     
     
-        //选择时间
-        [cell setButtonBlock:^(UIButton *sender,NSString *range_type_id) {
+    //选择时间
+    [cell setButtonBlock:^(UIButton *sender,NSString *range_type_id) {
+        
+        AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+        manager.responseSerializer = [AFHTTPResponseSerializer serializer];
+        
+        NSString *url = [HUA_URL stringByAppendingPathComponent:[NSString stringWithFormat:@"master/master_appointment?master_id=%@&range_type_id=%@",self.master_id,range_type_id]];
+        
+        [manager GET:url parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
             
-            AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-            manager.responseSerializer = [AFHTTPResponseSerializer serializer];
             
-            NSString *url = [HUA_URL stringByAppendingPathComponent:[NSString stringWithFormat:@"master/master_appointment?master_id=%@&range_type_id=%@",self.master_id,range_type_id]];
- 
-            [manager GET:url parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-                
-                
-                NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:responseObject options:0 error:nil];
-                NSLog(@"%@",dic);
-                _appointmentTime = dic[@"info"][@"range_type"][@"time_list"];
-                
-                _transparentView = [[HATransparentView alloc] init];
-                _transparentView.delegate = self;
-                _transparentView.tapBackgroundToClose = YES;
-                _transparentView.hideCloseButton = YES;
-                _transparentView.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.8];
-                [_transparentView open];
-                
-                [self showTimeView];
-                
-            } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
-                HUALog(@"%@",error);
-            }];
+            NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:responseObject options:0 error:nil];
+            NSLog(@"%@",dic);
+            _appointmentTime = dic[@"info"][@"range_type"][@"time_list"];
+            
+            _transparentView = [[HATransparentView alloc] init];
+            _transparentView.delegate = self;
+            _transparentView.tapBackgroundToClose = YES;
+            _transparentView.hideCloseButton = YES;
+            _transparentView.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.8];
+            [_transparentView open];
+            
+            [self showTimeView];
+            
+        } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
+            HUALog(@"%@",error);
         }];
-
-
-    return cell;   
+    }];
+    
+    
+    return cell;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -688,7 +736,7 @@
     }else{
         return hua_scale(30);
     }
-
+    
 }
 
 //弹框
@@ -787,7 +835,7 @@
         make.left.right.mas_equalTo(0);
         make.bottom.mas_equalTo(determineButton.mas_top).mas_equalTo(hua_scale(-11));
     }];
-   // self.timeTableView = timeTableView;
+    // self.timeTableView = timeTableView;
     
 }
 //取消弹窗button事件
@@ -808,8 +856,6 @@
                     
                 } completion:^(BOOL finished) {
                     HUATechniciansOrdersViewController *vc = [HUATechniciansOrdersViewController new];
-                    //是否是会员。
-                    vc.showType = YES;
                     //项目
                     vc.projectType = button1.titleLabel.text;
                     //名字
@@ -818,19 +864,29 @@
                     vc.moneyNumber = @"45";
                     // vc.model = self.model;
                     NSLog(@"时间%@",_selecteTimeButton.titleLabel.text);
+                    if ([[self.membersInformation[@"info"]class] isSubclassOfClass:[NSString class]]) {
+                        //不是会员
+                        vc.showType = NO;
+                    }else{
+                        //是会员
+                        vc.showType = YES;
+                        vc.membersName = self.membersInformation[@"info"][@"nickname"];
+                        vc.membersType = self.membersInformation[@"info"][@"level"];
+                        vc.membersMoney = self.membersInformation[@"info"][@"money"];
+                    }
                     [self.navigationController pushViewController:vc animated:YES];
                     //清除上次选择的时间
                     _selecteTimeButton = nil;
                     
                 }];
             }else{
-            
+                
                 //项目为空，提示框
                 [HUAMBProgress MBProgressFromView:_transparentView wrongLabelText:@"请选择一个项目"];
             }
-            }else{
+        }else{
             //请选择时间，提示框
-             [HUAMBProgress MBProgressFromView:_transparentView wrongLabelText:@"请选择时间"];
+            [HUAMBProgress MBProgressFromView:_transparentView wrongLabelText:@"请选择时间"];
         }
     }else{
         //任意时间
@@ -875,7 +931,7 @@ UIImageView *lastImagee = nil;
             
             _tanBgview.top = self.view.height-_tanBgview.height+64;
         }];
-
+        
     }else{
         //回到原位
         button.selected = NO;
@@ -886,7 +942,7 @@ UIImageView *lastImagee = nil;
             [_transparentView close];
             
         }];
-
+        
     }
 }
 
@@ -906,11 +962,22 @@ UIImageView *ServiceImagee = nil;
         sender.selected = YES;
         imageView.hidden = NO;
     }
-    
+    _selecteImageView = imageView;
+    _selecteSender = sender;
     ServiceImagee = imageView;
     selectServiceButtonn = sender;
     [button setTitle:sender.titleLabel.text forState:0];
-
+    
+    //回到原位
+    button.selected = NO;
+    [UIView animateWithDuration:0.3 animations:^{
+        
+        _tanBgview.top = self.view.bottom;
+    } completion:^(BOOL finished) {
+        [_transparentView close];
+        
+    }];
+    
 }
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

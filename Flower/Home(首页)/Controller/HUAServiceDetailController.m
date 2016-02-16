@@ -24,6 +24,8 @@
 
 //项目类容
 @property (nonatomic, strong)NSString *category;
+
+@property (nonatomic, strong)NSString *shop_id;
 @end
 
 @implementation HUAServiceDetailController
@@ -75,7 +77,7 @@
     parameters[@"service_id"] = self.service_id;
     
     [manager GET:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-        // HUALog(@"%@",responseObject);
+       self.shop_id = responseObject[@"item"][@"shop_id"];
         self.serviceInfo = [HUAServiceInfo getServiceDetailInfoWithDictionary:responseObject];
         //项目
         self.category = responseObject[@"item"][@"category"];
@@ -205,6 +207,7 @@
         HUATechnicianViewController *vc = [HUATechnicianViewController new];
         vc.service_id = self.service_id;
         vc.category = self.category;
+         vc.shop_id = self.shop_id;
         [self.navigationController pushViewController:vc animated:YES];
     }
     HUALog(@"购买了");

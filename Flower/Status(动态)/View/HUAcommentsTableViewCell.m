@@ -29,10 +29,10 @@ const CGFloat maxContentLabelHeight = 54;
     return self;
 }
 - (void)setup{
-
+    
     _shouldOpenContentLabel = NO;
     
- 
+    
     self.removeLabel = [NSMutableArray array];
     self.pinLabelArrar = [NSMutableArray array];
     
@@ -45,7 +45,7 @@ const CGFloat maxContentLabelHeight = 54;
     self.nameLbale.text = @"小绵羊";
     self.nameLbale.font = [UIFont systemFontOfSize:hua_scale(12)];
     self.nameLbale.textColor = HUAColor(0x576b96);
-
+    
     
     //时间
     self.timeButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -55,14 +55,14 @@ const CGFloat maxContentLabelHeight = 54;
     [self.timeButton setImage:[UIImage imageNamed:@"time"] forState:0];
     self.timeButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
     [self.timeButton setTitleEdgeInsets:UIEdgeInsetsMake(0, hua_scale(4), 0, 0)];
-
+    
     
     //内容
     self.contentLbale = [UILabel new];
     self.contentLbale.font = [UIFont systemFontOfSize:hua_scale(12)];
     self.contentLbale.numberOfLines = 0;
     self.contentLbale.text = @"我是假数据我";
-      [self.contentLbale sizeToFit];
+    [self.contentLbale sizeToFit];
     //self.contentLbale.backgroundColor = [UIColor blueColor];
     self.contentLbale.textColor = HUAColor(0x494949);
     
@@ -82,7 +82,7 @@ const CGFloat maxContentLabelHeight = 54;
     _moreButton.titleEdgeInsets = UIEdgeInsetsMake(0, hua_scale(5), 0, 0);
     _moreButton.titleLabel.font = [UIFont systemFontOfSize:hua_scale(12)];
     
-
+    
     
     //加入父视图
     NSArray *views = @[self.headImage, self.nameLbale,self.contentLbale,self.timeButton,self.replyView,self.moreButton];
@@ -93,14 +93,14 @@ const CGFloat maxContentLabelHeight = 54;
     
     UIView *contentView = self.contentView;
     CGFloat margin = 10;
-
+    
     //头像
     self.headImage.sd_layout
     .leftSpaceToView(contentView,hua_scale(margin))
     .topSpaceToView(contentView,hua_scale(margin))
     .heightIs(hua_scale(22))
     .widthIs(hua_scale(22));
-
+    
     self.nameLbale.sd_layout
     .leftSpaceToView(self.headImage,hua_scale(margin))
     .topEqualToView(self.headImage)
@@ -120,18 +120,18 @@ const CGFloat maxContentLabelHeight = 54;
     .rightSpaceToView(contentView,hua_scale(15))
     .autoHeightRatio(0);
     
-     self.replyView.sd_layout
+    self.replyView.sd_layout
     .leftEqualToView(self.contentLbale)
     .topSpaceToView(self.contentLbale,hua_scale(9))
     .rightEqualToView(self.contentLbale)
     .heightIs(hua_scale(0));
-
+    
     // morebutton的高度在setmodel里面设置
     _moreButton.sd_layout
     .leftEqualToView(_replyView)
     .topSpaceToView(_replyView, 0)
     .rightEqualToView(_replyView);
-
+    
     [self setupAutoHeightWithBottomViewsArray:@[self.moreButton] bottomMargin:20];
     
 }
@@ -143,8 +143,9 @@ const CGFloat maxContentLabelHeight = 54;
     [self removeOldPicturesAndReplys];
     if (modell != nil) {
         _modell = modell;
+        
         self.nameLbale.text = modell.name;
-
+        
         self.contentLbale.text = modell.content;
         
         [self.headImage sd_setImageWithURL:[NSURL URLWithString:modell.icon] placeholderImage:[UIImage imageNamed:@"placeholder"]];
@@ -152,13 +153,13 @@ const CGFloat maxContentLabelHeight = 54;
         if (modell.commentArray.count>=4) {
             _moreButton.hidden = NO;
             _moreButton.sd_layout.heightIs(18);
-
+            
         }else{
             _moreButton.sd_layout.heightIs(0);
             _moreButton.hidden = YES;
         }
         
-
+        
         if (modell.commentArray.count>0) {
             float _upINt = 0;
             float _labelFh = 0;
@@ -179,7 +180,7 @@ const CGFloat maxContentLabelHeight = 54;
                 self.commentLabel.textColor =HUAColor(0x494949);
                 self.commentLabel.tag = 9000+i;
                 
-    
+                
                 NSMutableAttributedString *att = [[NSMutableAttributedString alloc] initWithString:self.commentLabel.text];
                 //设置行间距
                 NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
@@ -194,41 +195,41 @@ const CGFloat maxContentLabelHeight = 54;
                     
                     [att addAttributes:@{NSForegroundColorAttributeName:HUAColor(0x576b95)}  range:NSMakeRange(range1.location, range1.length)];
                     [att addAttributes:@{NSForegroundColorAttributeName:HUAColor(0x576b95)} range:NSMakeRange(range1.length+2, range2.location-range1.length-1)];
-
+                    
                 }else {
-
+                    
                     NSRange rang = [self.commentLabel.text rangeOfString:modell.commentArray[i][@"nickname"]];
                     
                     [att addAttributes:@{NSForegroundColorAttributeName: HUAColor(0x576b95)}  range:NSMakeRange(0, rang.length+1)];
                 }
-
+                
                 self.commentLabel.font = [UIFont systemFontOfSize:hua_scale(12)];
                 self.commentLabel.userInteractionEnabled = YES;
                 self.commentLabel.attributedText = att;
                 [self.commentLabel sizeToFit];
                 [self.replyView addSubview:self.commentLabel];
                 [self.removeLabel addObject:self.commentLabel];
-
+                
                 
                 [self.commentLabel addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapClick:)]];
                 
-//                if (i==0) {
-//                    [self.commentLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
-//                        make.left.mas_equalTo(self.replyView.mas_left).mas_equalTo(hua_scale(5));
-//                        make.top.mas_equalTo(self.replyView.mas_top).mas_equalTo(hua_scale(10));
-//                        make.right.mas_equalTo(hua_scale(-10));
-//                       
-//                    }];
-//                }else{
-//                    [self.commentLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
-//                        make.left.mas_equalTo(self.replyView.mas_left).mas_equalTo(hua_scale(5));
-//                        make.top.mas_equalTo(lastView.mas_bottom).mas_equalTo(hua_scale(10));
-//                        
-//                        
-//                    }];
-//                }
-
-
+                //                if (i==0) {
+                //                    [self.commentLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+                //                        make.left.mas_equalTo(self.replyView.mas_left).mas_equalTo(hua_scale(5));
+                //                        make.top.mas_equalTo(self.replyView.mas_top).mas_equalTo(hua_scale(10));
+                //                        make.right.mas_equalTo(hua_scale(-10));
+                //
+                //                    }];
+                //                }else{
+                //                    [self.commentLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+                //                        make.left.mas_equalTo(self.replyView.mas_left).mas_equalTo(hua_scale(5));
+                //                        make.top.mas_equalTo(lastView.mas_bottom).mas_equalTo(hua_scale(10));
+                //
+                //
+                //                    }];
+                //                }
+                
+                
                 
                 
                 [self.commentLabel updateLayout];
@@ -254,18 +255,18 @@ const CGFloat maxContentLabelHeight = 54;
                         
                     }else{
                         //最小限制
-
+                        
                         _upINt = _miniH+10;
-
+                        
                     }
                 }else {
                     
                     _upINt = _labelFh+hua_scale(10);
-
+                    
                     _moreButton.hidden = YES;
                     //_replyView.hidden = NO;
                 }
-
+                
                 
                 [self.replyView sd_resetLayout];
                 self.replyView.sd_layout
@@ -274,11 +275,11 @@ const CGFloat maxContentLabelHeight = 54;
                 .rightEqualToView(self.contentLbale)
                 .heightIs(_labelFh+hua_scale(10))
                 .maxHeightIs(_upINt);
-               
+                
                 
                 
                 [self.replyView updateLayout];
-                 //NSLog(@"gao:%f",self.replyView.height);
+                //NSLog(@"gao:%f",self.replyView.height);
                 [self.moreButton sd_resetLayout];
                 self.moreButton.sd_layout
                 .topSpaceToView(self.replyView,0)
@@ -292,7 +293,7 @@ const CGFloat maxContentLabelHeight = 54;
                 //记录上一个label
                 lastView = self.commentLabel;
             }
-
+            
         }else{
             self.replyView.height = 0;
             self.moreButton.height = 0;
@@ -314,18 +315,18 @@ const CGFloat maxContentLabelHeight = 54;
         if (self.user_idSameBlock) {
             self.user_idSameBlock();
         }
-        return; 
+        return;
     }
     
     
     if (self.commentLabelBlock) {
         self.commentLabelBlock(self.modell.commentArray[label.tag-9000][@"nickname"],self.modell.commentArray[label.tag-9000][@"parent_id"],self.modell.commentArray[label.tag-9000][@"type"],self.modell.commentArray[label.tag-9000][@"user_id"],(UILabel *)tap.view,self.indexPath);
     }
-
+    
 }
 //防止cell重叠
 -(void)removeOldPicturesAndReplys{
-
+    
     
     
     
@@ -341,7 +342,7 @@ const CGFloat maxContentLabelHeight = 54;
 }
 - (void)click:(UIButton *)btn{
     btn.selected = !btn.selected;
-
+    
 }
 - (void)moreButtonClicked:(UIButton *)sender
 {
@@ -355,7 +356,7 @@ const CGFloat maxContentLabelHeight = 54;
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];
-
+    
     // Configure the view for the selected state
 }
 

@@ -15,6 +15,8 @@
 //服务id
 @property (nonatomic, strong)NSString *service_id;
 
+//商店Id
+@property (nonatomic, strong)NSString *shop_id;
 //服务项目类型
 @property (nonatomic, strong)NSString *category; 
 @end
