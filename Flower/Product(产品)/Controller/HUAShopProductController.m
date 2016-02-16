@@ -56,22 +56,33 @@
     self.title = self.shopName;
     [self setNavigationItem];
     [self category];
+    self.searchplaceholder = @"搜索";
+    
+    [self geDataWithSubParameters:nil];
+    
+}
+- (void)geDataWithSubParameters:(NSDictionary *)SubParameters{
     
     AFHTTPRequestOperationManager *manager = [[AFHTTPRequestOperationManager alloc] init];
     NSString *url = self.url;
     NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
     parameters[@"shop_id"] = self.shop_id;
+    if (SubParameters != nil) {
+        [parameters setValuesForKeysWithDictionary:SubParameters];
+    }
     [manager GET:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
         HUALog(@"%@",responseObject);
+        if ([[responseObject objectForKey:@"info"] isKindOfClass:[NSString class]]) {
+            [HUAMBProgress MBProgressOnlywithLabelText:[responseObject objectForKey:@"info"]];
+            return ;
+        }
         self.productsArray = [HUADataTool shopProduct:responseObject];
         [self.tableView reloadData];
     } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
         HUALog(@"%@",error);
     }];
     
-    
 }
-
 #pragma --设置三个选择按钮
 //设置三个选择按钮
 - (void)category {
@@ -101,14 +112,44 @@
 
 
 - (void)setNavigationItem {
+    
+    self.navigationItem.hidesBackButton = NO;
+    
+    self.navigationItem.titleView = nil;
+    
     UIBarButtonItem *searchBar = [UIBarButtonItem itemWithTarget:self action:@selector(search) image:@"search" highImage:@"search" text:nil];
     self.navigationItem.rightBarButtonItem = searchBar;
-
+    
 }
+
+#pragma mark -- searchTextFiled
 
 - (void)search {
     HUALog(@"搜索");
+    [self showSearchNav];
 }
+
+- (void)dismissBlackView{
+    [super dismissBlackView];
+    [self setNavigationItem];
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField{
+    if (textField.text.length == 0) {
+        [self dismissBlackView];
+    }else{
+        //数据请求
+        NSDictionary *subParametes = [NSDictionary dictionaryWithObject:textField.text forKey:@"search"];
+        [self geDataWithSubParameters:subParametes];
+        
+        [self dismissBlackView];
+    }
+    
+    
+    return YES;
+}
+
+
 
 
 

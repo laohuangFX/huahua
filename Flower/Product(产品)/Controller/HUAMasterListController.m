@@ -55,15 +55,24 @@
 
     [self category];
     [self setNavigationItem];
-    [self getData];
+    self.searchplaceholder = @"搜索";
+    [self getdataWithSubParameters:nil];
 }
-
-- (void)getData{
+- (void)getdataWithSubParameters:(NSDictionary *)SubParameters{
+    
+    
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager new];
     NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
     parameters[@"shop_id"] = self.shop_id;
+    if (SubParameters != nil) {
+        [parameters setValuesForKeysWithDictionary:SubParameters];
+    }
     [manager GET:self.url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
         HUALog(@"%@",responseObject);
+        if ([[responseObject objectForKey:@"info"] isKindOfClass:[NSString class]]) {
+            [HUAMBProgress MBProgressOnlywithLabelText:[responseObject objectForKey:@"info"]];
+            return ;
+        }
         self.masterListArray = [HUADataTool getMasterList:responseObject];
         [self.tableView reloadData];
         HUALog(@"%lu",self.masterListArray.count);
@@ -98,13 +107,43 @@
 }
 
 - (void)setNavigationItem {
+    
+    
+    self.navigationItem.hidesBackButton = NO;
+    
+    self.navigationItem.titleView = nil;
+    
     UIBarButtonItem *searchBar = [UIBarButtonItem itemWithTarget:self action:@selector(search) image:@"search" highImage:@"search" text:nil];
     self.navigationItem.rightBarButtonItem = searchBar;
 }
 
+#pragma mark -- searchTextFiled
+
 - (void)search {
-    HUALog(@"查找");
+    HUALog(@"搜索");
+    [self showSearchNav];
 }
+
+- (void)dismissBlackView{
+    [super dismissBlackView];
+    [self setNavigationItem];
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField{
+    if (textField.text.length == 0) {
+        [self dismissBlackView];
+    }else{
+        //数据请求
+        //数据请求
+        NSDictionary *subParametes = [NSDictionary dictionaryWithObject:textField.text forKey:@"search"];
+        [self getdataWithSubParameters:subParametes];
+        [self dismissBlackView];
+    }
+    
+    
+    return YES;
+}
+
 
 #pragma mark - tableView代理
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
