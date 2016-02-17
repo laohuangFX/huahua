@@ -102,6 +102,7 @@
 }
 
 - (void)click:(UIButton *)sender {
+    self.y = screenHeight;
     if (self.lastButton) {
         self.lastButton.selected = NO;
         [self.lastButton setTitleColor:HUAColor(0x666666) forState:UIControlStateNormal];
@@ -126,6 +127,7 @@
 }
 
 - (void)backgroundTapped:(UITapGestureRecognizer *)tap {
+    self.y = screenHeight;
     [self removeFromSuperview];
     if ([self.delegate respondsToSelector:@selector(sortMenuDidDismiss:)]) {
         [self.delegate sortMenuDidDismiss:6];

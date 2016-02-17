@@ -5,6 +5,8 @@
 //  Created by 程召华 on 16/1/4.
 //  Copyright © 2016年 readchen.com. All rights reserved.
 //
+#define sortViewHeight  (64+hua_scale(28))
+
 #define App_index @"general/app_index"
 #import "HUAHomeController.h"
 #import "UIBarButtonItem+Extension.h"
@@ -41,7 +43,7 @@ static NSString *identifier = @"cell";
 @implementation HUAHomeController
 - (HUASortView *)sortView {
     if (!_sortView) {
-        _sortView = [[HUASortView alloc] initWithFrame:CGRectMake(0, SCREEN_HEIGHT, SCREEN_WIDTH, 0) ];
+        _sortView = [[HUASortView alloc] initWithFrame:CGRectMake(0, screenHeight, screenWidth, screenHeight-sortViewHeight) ];
         _sortView.delegate = self;
     }
     return _sortView;
@@ -287,11 +289,8 @@ static NSString *identifier = @"cell";
 - (void)chooseCity:(UIButton *)chooseCity{
     UIButton * button =  [self.header viewWithTag:1000];
     button.selected = NO;
-    for (UIView *view in [[[UIApplication sharedApplication].windows lastObject] subviews]) {
-        if ([view isKindOfClass:[HUASortView class]]) {
-            [view removeFromSuperview];
-        }
-    }
+    self.sortView.y = screenHeight;
+     [self.sortView removeFromSuperview];
     chooseCity.selected = !chooseCity.selected;
     if (chooseCity.selected == YES) {
         self.selectView = [[HUASelectCityView alloc]initWithFrame:self.view.bounds];
@@ -322,11 +321,10 @@ static NSString *identifier = @"cell";
 - (void)textFieldDidBeginEditing:(UITextField *)textField{
     UIButton * button =  [self.header viewWithTag:1000];
     button.selected = NO;
-    for (UIView *view in [[[UIApplication sharedApplication].windows lastObject] subviews]) {
-        if ([view isKindOfClass:[HUASortView class]]) {
-            [view removeFromSuperview];
-        }
-    }
+    [UIView animateWithDuration:0.1 animations:^{
+        self.sortView.y = screenHeight;
+    }];
+    [self.sortView removeFromSuperview];
     NSLog(@"beginEditing");
     UIView *blackView  = [[UIView alloc]initWithFrame:self.view.bounds];
     blackView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.8];
@@ -396,40 +394,39 @@ static NSString *identifier = @"cell";
 
 - (void)clickSortButton:(UIButton *)sender {
     UIWindow *window = [[UIApplication sharedApplication].windows lastObject];
-    
     if (sender.selected == YES) {
         if (self.tableView.contentOffset.y == 0) {
-            HUALog(@".....%f",self.tableView.contentOffset.y);
             [self.tableView setContentOffset:CGPointMake(0, hua_scale(250)) animated:YES];
-            
             [window addSubview:self.sortView];
-            
-            [UIView animateWithDuration:0.5 delay:0 options:UIViewAnimationOptionLayoutSubviews animations:^{
-                self.sortView.frame = CGRectMake(0, 64+hua_scale(28), SCREEN_HEIGHT, 1000);
+            [UIView animateWithDuration:0 delay:0.5 options:UIViewAnimationOptionLayoutSubviews animations:^{
+                self.sortView.y = sortViewHeight;
+                
             } completion:nil];
             
         } else {
             [self.tableView setContentOffset:CGPointMake(0, hua_scale(250)) animated:YES];
             [window addSubview:self.sortView];
-          
-
-            [UIView animateWithDuration:0 delay:1 options:UIViewAnimationOptionLayoutSubviews animations:^{
-                self.sortView.frame = CGRectMake(0, 64+hua_scale(28), SCREEN_HEIGHT, 1000);
+            [UIView animateWithDuration:0 delay:0 options:UIViewAnimationOptionLayoutSubviews animations:^{
+                self.sortView.y = sortViewHeight;
             } completion:nil];
-            
+        
         }
     }else {
-        for (UIView *view in [window subviews]) {
-            if ([view isKindOfClass:[HUASortView class]]) {
-                [view removeFromSuperview];
-            }
-        }
+        [UIView animateWithDuration:0.1 animations:^{
+            self.sortView.y = screenHeight;
+        }];
+          [self.sortView removeFromSuperview];
+        
     }
 }
 
 
 
 - (void)sortMenuDidDismiss:(HUASortViewButtonType)buttonType {
+
+    UIButton * button =  [self.header viewWithTag:1000];
+    button.selected = NO;
+
     [self.shopsArray removeAllObjects];
     self.page = 1;
     switch (buttonType) {
@@ -448,8 +445,7 @@ static NSString *identifier = @"cell";
             break;
     }
     [self getData];
-    UIButton * button =  [self.header viewWithTag:1000];
-    button.selected = NO;
+    
     
 }
 
