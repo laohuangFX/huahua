@@ -12,4 +12,8 @@
 @property (nonatomic, strong)HUAMyOrderModel *model;
 
 @property (nonatomic, copy)void (^showBlock)(UIAlertController *alert);
+
+@property (nonatomic, copy)void (^goodsBlock)(NSIndexPath *indexPath);
+
+@property (nonatomic, strong)NSIndexPath *indexPath;
 @end

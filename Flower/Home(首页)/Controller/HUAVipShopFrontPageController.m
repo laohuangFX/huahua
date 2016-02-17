@@ -16,6 +16,7 @@
 #import "HUAShopFooterView.h"
 #import "HUADetailController.h"
 #import "HUAShopProductController.h"
+#import "HUAShopServiceViewController.h"
 #import "HUAMasterListController.h"
 #import "HUStatusAViewController.h"
 #import "HUAConsumptionController.h"
@@ -149,7 +150,7 @@
             }else {
                 [HUAMBProgress MBProgressOnlywithLabelText:@"取消收藏"];
             }
-            
+
         } failure:^(NSError *error) {
             HUALog(@"%@",error);
         }];
@@ -179,7 +180,7 @@
                 [HUAMBProgress MBProgressOnlywithLabelText:@"取消点赞"];
                 [sender setTitle:[NSString stringWithFormat:@"%ld",sender.titleLabel.text.integerValue-1] forState:UIControlStateNormal];
             }
-            
+            self.block([sender.titleLabel.text integerValue]);
         } failure:^(NSError *error) {
                 HUALog(@"%@",error);
         }];
@@ -209,12 +210,6 @@
 
     } failure:^(NSError *error) {
         HUALog(@"%@",error);
-        if ([error.userInfo[@"headers"] isKindOfClass:[NSDictionary class]]) {
-            [HUAMBProgress MBProgressFromWindowWithLabelText:@"账号在别的手机上登录,请重新登录" dispatch_get_main_queue:^{
-                HUALoginController *loginVC = [[HUALoginController alloc] init];
-                [self.navigationController pushViewController:loginVC animated:YES];
-            }];
-        }
 
     }];
 }
@@ -543,11 +538,11 @@
         [self.navigationController pushViewController:shopProductVC animated:YES];
     }
     if (indexPath.row == 1) {
-        HUAShopProductController *shopProductVC = [HUAShopProductController new];
-        shopProductVC.shop_id = self.shop_id;
-        shopProductVC.url = [HUA_URL stringByAppendingPathComponent:Service_list];
-        shopProductVC.shopName = self.shopName;
-        [self.navigationController pushViewController:shopProductVC animated:YES];
+        HUAShopServiceViewController *shopServiceVC = [HUAShopServiceViewController new];
+        shopServiceVC.shop_id = self.shop_id;
+        shopServiceVC.url = [HUA_URL stringByAppendingPathComponent:Service_list];
+        shopServiceVC.shopName = self.shopName;
+        [self.navigationController pushViewController:shopServiceVC animated:YES];
     }
     if (indexPath.row == 2) {
         HUAMasterListController *masterListVC = [HUAMasterListController new];

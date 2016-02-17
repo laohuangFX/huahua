@@ -29,11 +29,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    
-    UIImageView *logoIcon = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"logo"]];
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:logoIcon];
-    
-    
+
     NSArray *vcsArray = [self.navigationController viewControllers];
     NSInteger vcCount = vcsArray.count;
     if (vcCount == 1) {
@@ -140,7 +136,7 @@
     //评论类型
     cell.boolType = NO;
     cell.model = self.array[indexPath.row];
-    
+       __weak typeof(self) weakSelf = self;
     //回调点赞block
     [cell setLoveBlock:^{
         NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
@@ -151,9 +147,7 @@
             
             [alert addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
                 
-                UIWindow *window = [UIApplication sharedApplication].keyWindow;
-                window.rootViewController= [[HUALoginController alloc] init];
-                
+                [weakSelf.navigationController pushViewController:[HUALoginController new] animated:YES];
                 [alert removeFromParentViewController];
                 
             }]];

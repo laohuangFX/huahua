@@ -927,6 +927,7 @@ UIImageView *lastImagee = nil;
         [_transparentView open];
         [self initServiceTableView];
         
+        
         [UIView animateWithDuration:0.5 animations:^{
             
             _tanBgview.top = self.view.height-_tanBgview.height+64;

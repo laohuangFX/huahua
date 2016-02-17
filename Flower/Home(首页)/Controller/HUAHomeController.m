@@ -321,7 +321,7 @@ static NSString *identifier = @"cell";
         __block HUAHomeController * wself = self;
         self.selectView.cityBlock = ^(NSString *cityName){
             chooseCity.selected = NO;
-            wself.tableView.scrollEnabled = NO;
+            wself.tableView.scrollEnabled = YES;
             if (cityName.length != 0) {
                 [chooseCity setTitle:cityName forState:UIControlStateNormal];
             }

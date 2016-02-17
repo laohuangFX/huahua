@@ -21,6 +21,7 @@
         self.price = dic[@"price"];
         self.product_id = dic[@"product_id"];
         self.service_id = dic[@"service_id"];
+        self.shop_id = dic[@"shop_id"];
     }
     return self;
 }

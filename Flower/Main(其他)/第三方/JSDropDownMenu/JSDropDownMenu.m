@@ -192,7 +192,7 @@
 @property (nonatomic, copy) NSArray *bgLayers;
 @property (nonatomic, assign) NSInteger leftSelectedRow;
 @property (nonatomic, assign) BOOL hadSelected;
-
+@property (nonatomic, strong)NSString *leftText;
 @end
 
 
@@ -849,17 +849,6 @@ UITableViewCell *lastCell = nil;
     //让上一次的cell的颜色还原
     lastCell.textLabel.textColor = HUAColor(0x333333);
     
-    if (_leftTableView == tableView) {
-        UITableViewCell *cell = [_leftTableView cellForRowAtIndexPath:indexPath];
-        cell.textLabel.textColor = HUAColor(0xffffff);
-        //NSLog(@"%@",cell.textLabel.text);
-        lastCell = cell;
-    }else{
-        UITableViewCell *cell = [_rightTableView cellForRowAtIndexPath:indexPath];
-        cell.textLabel.textColor =HUAColor(0xffffff);
-        lastCell = cell;
-        //NSLog(@"%@",cell.textLabel.text);
-    }
     
     NSInteger leftOrRight = 0;
     if (_rightTableView==tableView) {
@@ -869,12 +858,14 @@ UITableViewCell *lastCell = nil;
         _rightTableView.hidden = NO;
     }
     
+    
     if (self.delegate || [self.delegate respondsToSelector:@selector(menu:didSelectRowAtIndexPath:)]) {
         
         BOOL haveRightTableView = [_dataSource haveRightTableViewInColumn:_currentSelectedMenudIndex];
         
         if ((leftOrRight==0 && !haveRightTableView) || leftOrRight==1) {
             [self confiMenuWithSelectRow:indexPath.row leftOrRight:leftOrRight];
+            
         }
         
         [self.delegate menu:self didSelectRowAtIndexPath:[JSIndexPath indexPathWithCol:self.currentSelectedMenudIndex leftOrRight:leftOrRight leftRow:_leftSelectedRow row:indexPath.row]];
@@ -891,6 +882,46 @@ UITableViewCell *lastCell = nil;
             [_rightTableView reloadData];
         }
         
+
+        NSString *leftText = [[NSString alloc] init];
+        NSString *rightText = [[NSString alloc] init];
+        NSString *towStr = [[NSString alloc] init];
+        NSString *threeStr = [[NSString alloc] init];
+        
+        
+        UITableViewCell *cell = [_leftTableView cellForRowAtIndexPath:indexPath];
+        UITableViewCell *rightCell = [_rightTableView cellForRowAtIndexPath:indexPath];
+         cell.textLabel.textColor = HUAColor(0xffffff);
+        
+        if (_leftTableView == tableView && leftOrRight==0 && haveRightTableView) {
+ 
+            lastCell = cell;
+            leftText = cell.textLabel.text;
+            
+            
+        }else if(_rightTableView == tableView && leftOrRight==1 && haveRightTableView){
+ 
+            lastCell = rightCell;
+    
+            rightCell.textLabel.textColor = HUAColor(0xffffff);
+       
+            rightText = rightCell.textLabel.text;
+        }
+        
+        if (_leftTableView == tableView && leftOrRight==0 && !haveRightTableView &&_currentSelectedMenudIndex ==1) {
+
+            towStr = cell.textLabel.text;
+        }else if(_currentSelectedMenudIndex ==2){
+  
+            threeStr = cell.textLabel.text;
+        }
+        
+        if (self.getDataBlock != nil){
+               self.getDataBlock(leftText,rightText,towStr,threeStr);
+        }
+        
+     
+        
     } else {
         //TODO: delegate is nil
      
@@ -900,7 +931,7 @@ UITableViewCell *lastCell = nil;
 - (void)confiMenuWithSelectRow:(NSInteger)row leftOrRight:(NSInteger)leftOrRight{
     CATextLayer *title = (CATextLayer *)_titles[_currentSelectedMenudIndex];
     title.string = [self.dataSource menu:self titleForRowAtIndexPath:[JSIndexPath indexPathWithCol:self.currentSelectedMenudIndex leftOrRight:leftOrRight leftRow:_leftSelectedRow row:row]];
-    
+
     [self animateIdicator:_indicators[_currentSelectedMenudIndex] background:_backGroundView leftTableView:_leftTableView rightTableView:_rightTableView title:_titles[_currentSelectedMenudIndex] forward:NO complecte:^{
         _show = NO;
     }];

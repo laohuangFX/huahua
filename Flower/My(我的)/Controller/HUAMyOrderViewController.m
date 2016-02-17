@@ -37,7 +37,7 @@
         _tablewView = [[UITableView alloc] initWithFrame:CGRectMake(0, hua_scale(30), screenWidth, screenHeight-navigationBarHeight-hua_scale(30))];
         _tablewView.delegate = self;
         _tablewView.dataSource = self;
-       // [_tablewView registerClass:[HUAMyOrderTableViewCell class] forCellReuseIdentifier:@"cell"];
+ 
     }
     return _tablewView;
 }
@@ -45,9 +45,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self.view addSubview:self.tablewView];
-
-    //假数据
-    //self.array = @[@[@"jjj",@"jjj"],@[],@[@"jjj",@"jjj",],@[@"ffff"],@[],@[@"fffff"],@[],@[@"ffff"],@[],@[],@[@"ffff"],@[],@[@"ffff"]];
     
     self.title = @"我的订单";
     self.view.backgroundColor = [UIColor whiteColor];
@@ -64,8 +61,6 @@
     NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
     //parameter[@"per_page"] = @"1";
     [manager GET:url parameters:parameter success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-
-    
         NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:responseObject options:0 error:nil];
  
         self.array = [HUADataTool MyOrder:dic];
@@ -82,14 +77,14 @@
 - (void)headDownMenu{
     
 
-    NSArray *food = @[@"不限", @"服务1", @"服务2", @"服务3", @"服务4",@"服务5"];
-    NSArray *travel = @[@"不限", @"蜂花护发素", @"潘婷护发素", @"沙宣护发素", @"飘柔护发素", @"欧莱雅护发素", @"百雀羚护发素", @"迪彩护发素", @"资生堂护发素", @"露华浓护发素"];
-    NSArray *exercise =@[@"不限", @"活动1", @"活动2", @"活动3", @"活动4", @"活动5"];
+    NSArray *food = @[@"不限服务", @"未使用", @"已交易完成"];
+    NSArray *travel = @[@"不限产品",@"等待发货",@"待确认收货",@"交易完成"];
+    NSArray *exercise =@[@"不限活动", @"未使用", @"已使用", @"已过期"];
     NSArray *noLimit = @[@"全部"];
-    _data1 = [NSMutableArray arrayWithObjects:@{@"title":@"全部", @"data":noLimit},@{@"title":@"服务",@"data":food}, @{@"title":@"产品", @"data":travel},@{@"title":@"活动", @"data":exercise},nil];
+    _data1 = [NSMutableArray arrayWithObjects:@{@"title":@"全部", @"data":noLimit},@{@"title":@"产品",@"data":food}, @{@"title":@"服务", @"data":travel},@{@"title":@"活动", @"data":exercise},nil];
     
     _data2 = [NSMutableArray arrayWithObjects:@"全部", @"一天内", @"一周内",@"一个月内",@"三个月内",nil];
-_data3 = [NSMutableArray arrayWithObjects:@"不限",@"最少",@"最多",nil];
+    _data3 = [NSMutableArray arrayWithObjects:@"不限",@"最少",@"最多",nil];
     
     JSDropDownMenu *menu = [[JSDropDownMenu alloc] initWithOrigin:CGPointMake(0, 0) andHeight:hua_scale(30)];
     //menu.indicatorColor = [UIColor colorWithRed:175.0f/255.0f green:175.0f/255.0f blue:175.0f/255.0f alpha:1.0];
@@ -100,6 +95,13 @@ _data3 = [NSMutableArray arrayWithObjects:@"不限",@"最少",@"最多",nil];
     menu.rowHeigth = 80;
     menu.dataSource = self;
     menu.delegate = self;
+    [menu setGetDataBlock:^(NSString *text1, NSString *text2, NSString *text3, NSString *text4) {
+        NSLog(@"%@",text1);
+        NSLog(@"%@",text2);
+        NSLog(@"%@",text3);
+        NSLog(@"%@",text4);
+        
+    }];
     
     [self.view addSubview:menu];
 }
@@ -113,19 +115,51 @@ _data3 = [NSMutableArray arrayWithObjects:@"不限",@"最少",@"最多",nil];
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     
-    NSString *identifier = [NSString stringWithFormat:@"Cell%ld%ld",indexPath.section,indexPath.row];
+    static NSString *identifier = @"indetifierCell";
     
-    //static NSString *identifier  = @"cell";
     HUAMyOrderTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
     if (cell==nil) {
         cell = [[HUAMyOrderTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
     }
+    cell.indexPath = indexPath;
+    
     [cell setShowBlock:^(UIAlertController *alert){
         
         [self presentViewController:alert animated:YES completion:nil];
 
     }];
-    
+    //收货block
+    [cell setGoodsBlock:^(NSIndexPath *path){
+        //post请求
+        HUAMyOrderModel *model = self.array[indexPath.row];
+       
+        NSString *token = [HUAUserDefaults getToken];
+        NSLog(@"%@",model.bill_num);
+//        AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+//        [manager.requestSerializer setValue:token forHTTPHeaderField:@"token"];
+//        //申明返回的结果是json类型
+//        manager.responseSerializer = [AFHTTPResponseSerializer serializer];
+//        //申明请求的数据是json类型
+//        //manager.requestSerializer=[AFJSONRequestSerializer serializer];
+//        //如果报接受类型不一致请替换一致text/html或别的
+//        manager.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"text/json"];
+//        //传入的参数
+//        NSDictionary *parameters = @{@"bill_id":model.bill_num};
+//        
+//        NSString *url = [HUA_URL stringByAppendingPathComponent:@"user/create_shopping_addr"];
+//        
+//        [manager POST:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+//            NSLog(@"%@",responseObject);
+//            
+//        } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
+//            
+//            NSLog(@"%@",error);
+//            
+//        }];
+
+        
+        
+    }];
     cell.model = self.array[indexPath.row];
  
     return cell;
@@ -151,7 +185,6 @@ _data3 = [NSMutableArray arrayWithObjects:@"不限",@"最少",@"最多",nil];
         HUAServiceOrderDetailsViewController *vc = [HUAServiceOrderDetailsViewController new];
         vc.is_use = model.is_use;
         vc.service_id = model.service_id;
-
         vc.bill_id = model.bill_num;
         [self.navigationController pushViewController:vc animated:YES];
     
@@ -253,7 +286,7 @@ _data3 = [NSMutableArray arrayWithObjects:@"不限",@"最少",@"最多",nil];
     switch (column) {
         case 0: return @"类别";//[[_data1[0] objectForKey:@"data"] objectAtIndex:0];
             break;
-        case 1: return @"价格"; //_data2[0];
+        case 1: return @"时间"; //_data2[0];
             break;
         case 2: return @"点赞数";//_data3[0];
             break;

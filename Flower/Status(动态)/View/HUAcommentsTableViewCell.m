@@ -137,8 +137,9 @@ const CGFloat maxContentLabelHeight = 54;
 }
 
 - (void)setModell:(HUAmodel *)modell{
+  
     
-    _shouldOpenContentLabel = NO;
+      _shouldOpenContentLabel = NO;
     //清理缓存
     [self removeOldPicturesAndReplys];
     if (modell != nil) {
@@ -167,6 +168,7 @@ const CGFloat maxContentLabelHeight = 54;
             UIView *lastView = nil;
             float _lastHeigth = 0;
             [self.moreButton updateLayout];
+
             for (int i = 0; i<modell.commentArray.count; i++) {
                 self.commentLabel = [[UILabel alloc] initWithFrame:CGRectMake(hua_scale(5), hua_scale(10)+_labelFh,hua_scale(250), 0)];
                 if ([modell.commentArray[i][@"type"] isEqualToString:@"2"]) {
