@@ -272,6 +272,7 @@ static NSString *identifier = @"cell";
 }
 
 - (void)setSearchNav{
+    self.tableView.scrollEnabled = NO;
     self.navigationItem.leftBarButtonItems = @[];
     
     self.searchBar.width = hua_scale(300.0);
@@ -319,6 +320,13 @@ static NSString *identifier = @"cell";
 
 
 - (void)textFieldDidBeginEditing:(UITextField *)textField{
+    UIButton * button =  [self.header viewWithTag:1000];
+    button.selected = NO;
+    for (UIView *view in [[[UIApplication sharedApplication].windows lastObject] subviews]) {
+        if ([view isKindOfClass:[HUASortView class]]) {
+            [view removeFromSuperview];
+        }
+    }
     NSLog(@"beginEditing");
     UIView *blackView  = [[UIView alloc]initWithFrame:self.view.bounds];
     blackView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.8];
@@ -363,7 +371,7 @@ static NSString *identifier = @"cell";
     return YES;
 }
 - (void)dismissBlackView{
-    
+    self.tableView.scrollEnabled = YES;
     UIView *blackView = [self.view viewWithTag:1001];
     if (blackView == nil) {
         return;
@@ -372,11 +380,79 @@ static NSString *identifier = @"cell";
     [self.searchBar resignFirstResponder];
     self.searchBar.text = @"";
     [UIView animateWithDuration:0.5 animations:^{
-        blackView.alpha = 0;
+        blackView.alpha = 0.5;
     } completion:^(BOOL finished) {
         [blackView removeFromSuperview];
     }];
 }
+
+
+#pragma mark --- 创建分区头视图
+//创建分区头视图
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    return self.header;
+    
+}
+
+- (void)clickSortButton:(UIButton *)sender {
+    UIWindow *window = [[UIApplication sharedApplication].windows lastObject];
+    
+    if (sender.selected == YES) {
+        if (self.tableView.contentOffset.y == 0) {
+            HUALog(@".....%f",self.tableView.contentOffset.y);
+            [self.tableView setContentOffset:CGPointMake(0, hua_scale(250)) animated:YES];
+            
+            [window addSubview:self.sortView];
+            
+            [UIView animateWithDuration:0.5 delay:0 options:UIViewAnimationOptionLayoutSubviews animations:^{
+                self.sortView.frame = CGRectMake(0, 64+hua_scale(28), SCREEN_HEIGHT, 1000);
+            } completion:nil];
+            
+        } else {
+            [self.tableView setContentOffset:CGPointMake(0, hua_scale(250)) animated:YES];
+            [window addSubview:self.sortView];
+          
+
+            [UIView animateWithDuration:0 delay:1 options:UIViewAnimationOptionLayoutSubviews animations:^{
+                self.sortView.frame = CGRectMake(0, 64+hua_scale(28), SCREEN_HEIGHT, 1000);
+            } completion:nil];
+            
+        }
+    }else {
+        for (UIView *view in [window subviews]) {
+            if ([view isKindOfClass:[HUASortView class]]) {
+                [view removeFromSuperview];
+            }
+        }
+    }
+}
+
+
+
+- (void)sortMenuDidDismiss:(HUASortViewButtonType)buttonType {
+    [self.shopsArray removeAllObjects];
+    self.page = 1;
+    switch (buttonType) {
+        case HUASortViewButtonTypePopularity:
+            self.order = @"bill_count_desc";
+            [HUAMBProgress MBProgressOnlywithLabelText: @"人气排序"];
+            break;
+        case HUASortViewButtonTypeDistance:
+            
+            break;
+        case HUASortViewButtonTypeShopName:
+            self.order = @"shopname_desc";
+            [HUAMBProgress MBProgressOnlywithLabelText: @"名字排序"];
+            break;
+        default:
+            break;
+    }
+    [self getData];
+    UIButton * button =  [self.header viewWithTag:1000];
+    button.selected = NO;
+    
+}
+
 
 #pragma mark - Table view data source
 
@@ -418,77 +494,6 @@ static NSString *identifier = @"cell";
 }
 
 
-//创建分区头视图
-- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-    return self.header;
-    
-}
-
-- (void)clickSortButton:(UIButton *)sender {
-    UIWindow *window = [[UIApplication sharedApplication].windows lastObject];
-    if (sender.selected == YES) {
-        if (self.tableView.contentOffset.y != hua_scale(250)) {
-            [self.tableView setContentOffset:CGPointMake(0, hua_scale(250)) animated:YES];
-            
-            
-            [window addSubview:self.sortView];
-            [UIView animateWithDuration:0 delay:1 options:UIViewAnimationOptionLayoutSubviews animations:^{
-                self.sortView.frame = CGRectMake(0, 64+hua_scale(28), SCREEN_HEIGHT, 1000);
-            } completion:nil];
-            
-        } else {
-            [self.tableView setContentOffset:CGPointMake(0, hua_scale(250)) animated:YES];
-            
-            
-            [window addSubview:self.sortView];
-            [UIView animateWithDuration:0 delay:0 options:UIViewAnimationOptionLayoutSubviews animations:^{
-                self.sortView.frame = CGRectMake(0, 64+hua_scale(28), SCREEN_HEIGHT, 1000);
-            } completion:nil];
-            
-        }
-    }else {
-        for (UIView *view in [window subviews]) {
-            if ([view isKindOfClass:[HUASortView class]]) {
-                [view removeFromSuperview];
-            }
-        }
-    }
-}
-
-- (void)tap:(UITapGestureRecognizer *)tap {
-    UIButton * button =  [self.header viewWithTag:1000];
-    button.selected = NO;
-    for (UIView *view in [[[UIApplication sharedApplication].windows lastObject] subviews]) {
-        if ([view isKindOfClass:[HUASortView class]]) {
-            [view removeFromSuperview];
-        }
-    }
-    
-}
-
-- (void)sortMenuDidDismiss:(HUASortViewButtonType)buttonType {
-    [self.shopsArray removeAllObjects];
-    self.page = 1;
-    switch (buttonType) {
-        case HUASortViewButtonTypePopularity:
-            self.order = @"bill_count_desc";
-            [HUAMBProgress MBProgressOnlywithLabelText: @"人气排序"];
-            break;
-        case HUASortViewButtonTypeDistance:
-            
-            break;
-        case HUASortViewButtonTypeShopName:
-            self.order = @"shopname_desc";
-            [HUAMBProgress MBProgressOnlywithLabelText: @"名字排序"];
-            break;
-        default:
-            break;
-    }
-    [self getData];
-    UIButton * button =  [self.header viewWithTag:1000];
-    button.selected = NO;
-    
-}
 
 
 //分区高度
