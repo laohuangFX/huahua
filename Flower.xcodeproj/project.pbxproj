@@ -306,6 +306,8 @@
 		59AC01061C3A4AFE00F453F5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 59AC01041C3A4AFE00F453F5 /* LaunchScreen.storyboard */; };
 		59AC01111C3A4AFE00F453F5 /* FlowerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 59AC01101C3A4AFE00F453F5 /* FlowerTests.m */; };
 		59AC011C1C3A4AFE00F453F5 /* FlowerUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 59AC011B1C3A4AFE00F453F5 /* FlowerUITests.m */; };
+		59E09D9C1C740EEB0058D9AD /* HUAProductInformation.m in Sources */ = {isa = PBXBuildFile; fileRef = 59E09D9B1C740EEB0058D9AD /* HUAProductInformation.m */; };
+		59E09D9F1C7410D40058D9AD /* HUAUserInfomation.m in Sources */ = {isa = PBXBuildFile; fileRef = 59E09D9E1C7410D40058D9AD /* HUAUserInfomation.m */; };
 		59EAC7041C60ABB900651534 /* HUAProductDetailCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 59EAC7031C60ABB900651534 /* HUAProductDetailCell.m */; };
 		59FA2FDE1C4B637B00A4F606 /* HUAChooseMasterCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 59FA2FDD1C4B637B00A4F606 /* HUAChooseMasterCell.m */; };
 		59FA2FE11C4B692700A4F606 /* HUAChooseMaster.m in Sources */ = {isa = PBXBuildFile; fileRef = 59FA2FE01C4B692700A4F606 /* HUAChooseMaster.m */; };
@@ -886,6 +888,10 @@
 		59AC01171C3A4AFE00F453F5 /* FlowerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FlowerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		59AC011B1C3A4AFE00F453F5 /* FlowerUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FlowerUITests.m; sourceTree = "<group>"; };
 		59AC011D1C3A4AFE00F453F5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		59E09D9A1C740EEB0058D9AD /* HUAProductInformation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HUAProductInformation.h; sourceTree = "<group>"; };
+		59E09D9B1C740EEB0058D9AD /* HUAProductInformation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HUAProductInformation.m; sourceTree = "<group>"; };
+		59E09D9D1C7410D40058D9AD /* HUAUserInfomation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HUAUserInfomation.h; sourceTree = "<group>"; };
+		59E09D9E1C7410D40058D9AD /* HUAUserInfomation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HUAUserInfomation.m; sourceTree = "<group>"; };
 		59EAC7021C60ABB900651534 /* HUAProductDetailCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HUAProductDetailCell.h; sourceTree = "<group>"; };
 		59EAC7031C60ABB900651534 /* HUAProductDetailCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HUAProductDetailCell.m; sourceTree = "<group>"; };
 		59FA2FDC1C4B637B00A4F606 /* HUAChooseMasterCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HUAChooseMasterCell.h; sourceTree = "<group>"; };
@@ -1622,6 +1628,8 @@
 				590746141C59B11D005AEC7C /* HUAConsumption.m */,
 				598284861C5F3C2B00972357 /* HUACategoryList.h */,
 				598284871C5F3C2B00972357 /* HUACategoryList.m */,
+				59E09D9D1C7410D40058D9AD /* HUAUserInfomation.h */,
+				59E09D9E1C7410D40058D9AD /* HUAUserInfomation.m */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -1717,6 +1725,8 @@
 				59015DC91C4C81C800524B6F /* HUAMasterList.m */,
 				59015DD71C4C99BE00524B6F /* HUAMasterDetailInfo.h */,
 				59015DD81C4C99BE00524B6F /* HUAMasterDetailInfo.m */,
+				59E09D9A1C740EEB0058D9AD /* HUAProductInformation.h */,
+				59E09D9B1C740EEB0058D9AD /* HUAProductInformation.m */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -2228,6 +2238,7 @@
 				17B7E2CC1C71BD9C0032C6D5 /* UIButton+WebCache.m in Sources */,
 				17B7E2931C71BD9C0032C6D5 /* MASViewAttribute.m in Sources */,
 				17B7E24F1C71BD9C0032C6D5 /* AFURLResponseSerialization.m in Sources */,
+				59E09D9F1C7410D40058D9AD /* HUAUserInfomation.m in Sources */,
 				189319821C488990005D230F /* HUAHeadCell.m in Sources */,
 				189317E61C4887C3005D230F /* HUADataTool.m in Sources */,
 				17B7E2A31C71BD9C0032C6D5 /* NSObject+MJKeyValue.m in Sources */,
@@ -2393,6 +2404,7 @@
 				59015DD61C4C94A100524B6F /* HUAMienCell.m in Sources */,
 				17B7E2E01C71BD9C0032C6D5 /* STConst.m in Sources */,
 				189319201C488950005D230F /* HUASectionHeaderView.m in Sources */,
+				59E09D9C1C740EEB0058D9AD /* HUAProductInformation.m in Sources */,
 				17B7E2D11C71BD9C0032C6D5 /* UIImageView+WebCache.m in Sources */,
 				59003CFA1C730AF30016C72D /* EmojiBool.m in Sources */,
 				17B7E2971C71BD9C0032C6D5 /* View+MASAdditions.m in Sources */,

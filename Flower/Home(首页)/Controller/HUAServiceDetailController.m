@@ -76,7 +76,7 @@
     [super viewDidLoad];
     self.title = @"服务详情";
     [self.view addSubview:self.tableView];
-    [self.tableView reloadData];
+
 }
 
 - (void)setNavigationBar {
@@ -110,8 +110,8 @@
         sender.selected = !sender.selected;
         NSString *url = [HUA_URL stringByAppendingPathComponent:Create_praise];
         NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
-        parameter[@"target"] = @"shop";
-        parameter[@"id"] = self.shop_id;
+        parameter[@"target"] = @"service";
+        parameter[@"id"] = self.service_id;
         [HUAHttpTool POSTWithTokenAndUrl:url params:parameter success:^(id responseObject) {
             HUALog(@"%@",responseObject);
             if ([responseObject[@"info"][0] isKindOfClass:[NSDictionary class]]) {
@@ -129,27 +129,26 @@
 
 
 - (void)getData {
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager new];
+    
     NSString *url = [HUA_URL stringByAppendingPathComponent:Service_detail];
     NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
+    parameters[@"user_id"] = self.detailInfo.user_id;
     parameters[@"service_id"] = self.service_id;
-    
-    [manager GET:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-        
-       self.shop_id = responseObject[@"item"][@"shop_id"];
-        self.serviceInfo = [HUAServiceInfo getServiceDetailInfoWithDictionary:responseObject];
-        //项目
-        HUALog(@"%@",self.serviceInfo.praise_count);
-        //self.serviceInfo = [HUAServiceInfo mj_objectWithKeyValues:responseObject];
-        self.category = responseObject[@"item"][@"category"];
+    [HUAHttpTool GETWithTokenAndUrl:url params:parameters success:^(id responseObject) {
+        HUALog(@"response%@",responseObject);
+        //self.shop_id = responseObject[@"item"][@"shop_id"];
+        self.serviceInfo = [HUAServiceInfo mj_objectWithKeyValues:responseObject[@"item"]];
+        HUALog(@"%@",self.serviceInfo.have_praised);
+        //self.category = responseObject[@"item"][@"category"];
         self.serviceArray = responseObject[@"info"][@"media_lis"];
         self.masterArray = [HUADataTool getMasterArray:responseObject];
         [self setHeaderView:self.serviceInfo];
+        [self setNavigationBar];
         [self.tableView reloadData];
-    } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
-        HUALog(@"%@",error);
-    }];
 
+    } failure:^(NSError *error) {
+         HUALog(@"%@",error);
+    }];
 }
 
 #pragma mark - tableView代理

@@ -17,7 +17,8 @@
 @property (nonatomic, strong) NSString *cover;
 @property (nonatomic, strong) NSString *praise_count;
 @property (nonatomic, strong) NSNumber *have_praised;
-
+@property (nonatomic, strong) NSString *category;
+@property (nonatomic, strong) NSString *shop_id;
 
 
 @property (nonatomic, strong) NSArray *media_lis;

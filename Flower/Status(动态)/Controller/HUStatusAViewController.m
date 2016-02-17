@@ -30,8 +30,7 @@
     [super viewDidLoad];
     
     
-    UIImageView *logoIcon = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"logo"]];
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:logoIcon];
+   
     
     
     NSArray *vcsArray = [self.navigationController viewControllers];

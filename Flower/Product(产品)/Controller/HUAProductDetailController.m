@@ -6,7 +6,7 @@
 //  Copyright © 2016年 readchen.com. All rights reserved.
 //
 #define Create_praise      @"user/praise"
-#define Product_detail     @"general/product_detail"
+#define Product_detail     @"product/product_detail"
 #import "HUAProductDetailController.h"
 #import "HUATopInfoView.h"
 #import "HUAProductDetailInfo.h"
@@ -63,7 +63,7 @@
     [super viewDidLoad];
     self.title = @"产品详情";
     [self.view addSubview:self.tableView];
-    [self setNavigationBar];
+
 }
 
 - (void)setNavigationBar {
@@ -97,8 +97,8 @@
         sender.selected = !sender.selected;
         NSString *url = [HUA_URL stringByAppendingPathComponent:Create_praise];
         NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
-        parameter[@"target"] = @"shop";
-        parameter[@"id"] = self.shop_id;
+        parameter[@"target"] = @"product";
+        parameter[@"id"] = self.product_id;
         [HUAHttpTool POSTWithTokenAndUrl:url params:parameter success:^(id responseObject) {
             HUALog(@"%@",responseObject);
             if ([responseObject[@"info"][0] isKindOfClass:[NSDictionary class]]) {
@@ -116,19 +116,23 @@
 
 
 - (void)getData {
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager new];
+
     NSString *url = [HUA_URL stringByAppendingPathComponent:Product_detail];
     NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
+    parameters[@"user_id"] = [HUAUserDefaults getUserDetailInfo].user_id;
     parameters[@"product_id"] = self.product_id;
-    [manager GET:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+    [HUAHttpTool GETWithTokenAndUrl:url params:parameters success:^(id responseObject) {
+        
         self.productDetailInfo = [HUAProductDetailInfo mj_objectWithKeyValues:responseObject[@"item"]];
-        HUALog(@"%@",self.productDetailInfo.have_praised);
+        HUALog(@"%@,,%@",responseObject,self.productDetailInfo.have_praised);
         self.photoArray = responseObject[@"media_lis"];
         [self setTableViewHeadrView:self.productDetailInfo];
+        [self setNavigationBar];
         [self.tableView reloadData];
-    } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
+    } failure:^(NSError *error) {
         HUALog(@"%@",error);
     }];
+
 }
 - (void)getMembers{
     
@@ -217,20 +221,7 @@
 
 
 
-#pragma mark - navigationitem
-- (void)setNavigationItem {
 
-    UIButton *praiseButton = [UIButton buttonWithType:0];
-    praiseButton.frame = CGRectMake(hua_scale(268), hua_scale(9), hua_scale(42), hua_scale(16));
-    [praiseButton setImage:[UIImage imageNamed:@"praise"] forState:UIControlStateNormal];
-    [praiseButton setTitle:@"11" forState:UIControlStateNormal];
-    [praiseButton setTitleColor:HUAColor(0x000000) forState:UIControlStateNormal];
-    praiseButton.titleEdgeInsets = UIEdgeInsetsMake(0, 5, 0, 0);
-    praiseButton.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 5);
-    
-    praiseButton.titleLabel.font = [UIFont systemFontOfSize:hua_scale(14)];
-    self.navigationItem.rightBarButtonItems = @[[[UIBarButtonItem alloc]initWithCustomView:praiseButton]];
-}
 
 #pragma mark - tableView代理
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {

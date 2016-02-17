@@ -227,31 +227,17 @@
             cell = [[HUDynamicATableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
         }
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
-        
+    
         //点赞
         [cell setLoveBlock:^{
             NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
             //判断是否是游客模式
             if (token==nil) {
                 //判断是否是游客评论，
-                UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"登陆" message:@"游客模式下不能点赞,请先登陆!" preferredStyle:UIAlertControllerStyleAlert];
-                
-                [alert addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                    
-                    UIWindow *window = [UIApplication sharedApplication].keyWindow;
-                    window.rootViewController= [[HUALoginController alloc] init];
-                    
-                    [alert removeFromParentViewController];
-                    
-                }]];
-                
-                [alert addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                    
-                    [alert removeFromParentViewController];
-                }]];
-                
-                [self presentViewController:alert animated:YES completion:nil];
-                return ;
+                [HUAMBProgress MBProgressFromWindowWithLabelText:@"未登录,正在跳转登录页面..." dispatch_get_main_queue:^{
+                    HUALoginController *loginVC = [[HUALoginController alloc] init];
+                    [self.navigationController pushViewController:loginVC animated:YES];
+                }];
             }
             AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
             //申明返回的结果是json类型
@@ -381,6 +367,7 @@
 //tableView点击事件
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     _indexPath = indexPath;
+
     if (indexPath.row==0) {
         self.keyBoard.placeholder =@"我来说几句";
         [self.keyBoard.textView becomeFirstResponder];

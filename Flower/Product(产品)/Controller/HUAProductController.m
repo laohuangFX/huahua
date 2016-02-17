@@ -129,7 +129,9 @@ static NSString * const reuseIdentifier = @"cell";
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:logoIcon];
     //设置导航栏右边的BarButtonItem
     UIBarButtonItem *searchBar = [UIBarButtonItem itemWithTarget:self action:@selector(search) image:@"search" highImage:@"search" text:nil];
-    self.navigationItem.rightBarButtonItem = searchBar;
+//    UIBarButtonItem *leftSpace = [UIBarButtonItem leftSpace:hua_scale(-25)];
+//    UIBarButtonItem *rightSpace = [UIBarButtonItem rightSpace:hua_scale(10)];
+    self.navigationItem.rightBarButtonItems = @[searchBar];
     self.navigationItem.titleView = nil;
     self.title = @"产品";
 }

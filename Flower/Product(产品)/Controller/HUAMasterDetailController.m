@@ -5,7 +5,7 @@
 //  Created by 程召华 on 16/1/18.
 //  Copyright © 2016年 readchen.com. All rights reserved.
 //
-
+#define Create_praise      @"user/praise"
 #define Master_detail @"master/master_detail"
 #import "HUAMasterDetailController.h"
 #import "HUAMienCell.h"
@@ -19,13 +19,21 @@
 @interface HUAMasterDetailController ()<UITableViewDataSource, UITableViewDelegate, SDPhotoBrowserDelegate, STPhotoBrowserDelegate>
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) NSArray *acheivementArray;
-@property (nonatomic, strong) HUAMasterDetailInfo *detailInfo;
+@property (nonatomic, strong) HUAMasterDetailInfo *masterDetailInfo;
 @property (nonatomic ,strong) UIScrollView *achievementScrollView;
 @property (nonatomic, strong) NSArray *serviceArray;
 @property (nonatomic, strong) NSArray *mienArray;
+@property (nonatomic, strong) HUAUserDetailInfo *detailInfo;
 @end
 
 @implementation HUAMasterDetailController
+- (HUAUserDetailInfo *)detailInfo {
+    if (!_detailInfo) {
+        _detailInfo = [HUAUserDefaults getUserDetailInfo];
+    }
+    return _detailInfo;
+}
+
 - (UITableView *)tableView {
     if (!_tableView) {
         _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, screenWidth, screenHeight-navigationBarHeight)];
@@ -50,41 +58,74 @@
     [self.view addSubview:self.tableView];
 }
 
-
-- (void)getData {
-    AFHTTPRequestOperationManager *manager = [[AFHTTPRequestOperationManager alloc]init];
-    NSString *url = [HUA_URL stringByAppendingPathComponent:Master_detail];
-    NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
-    parameters[@"master_id"] = self.master_id;
-    [manager GET:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-        self.serviceArray = responseObject[@"info"][@"service"];
-        self.detailInfo = [HUAMasterDetailInfo getMasterDetailInfoWithDictionary:responseObject];
-        self.mienArray = [HUADataTool mienArray:responseObject];
-        HUALog(@"%@",self.mienArray);
-        self.acheivementArray = [HUADataTool achievementArray:responseObject];
-        [self setHeaderView:self.detailInfo];
-        [self setNavigationItem];
-        [self.tableView reloadData];
-    } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
-        HUALog(@"%@",error);
-    }];
-
-}
-
-- (void)setNavigationItem {
-
+- (void)setNavigationBar {
     UIButton *praiseButton = [UIButton buttonWithType:0];
     praiseButton.frame = CGRectMake(hua_scale(268), hua_scale(9), hua_scale(42), hua_scale(16));
-    [praiseButton setImage:[UIImage imageNamed:@"praise"] forState:UIControlStateNormal];
-    [praiseButton setTitle:self.detailInfo.praise_count forState:UIControlStateNormal];
+    [praiseButton setImage:[UIImage imageNamed:@"praise_black_empty"] forState:UIControlStateNormal];
+    [praiseButton setImage:[UIImage imageNamed:@"praise_tech"] forState:UIControlStateSelected];
+    [praiseButton setTitle:self.masterDetailInfo.praise_count forState:UIControlStateNormal];
     [praiseButton setTitleColor:HUAColor(0x000000) forState:UIControlStateNormal];
     praiseButton.titleEdgeInsets = UIEdgeInsetsMake(0, 5, 0, 0);
     praiseButton.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 5);
+    if ([[[[NSNumberFormatter alloc] init] stringFromNumber:self.masterDetailInfo.have_praised] isEqualToString:@"1"] ) {
+        praiseButton.selected = YES;
+        
+    }
+    [praiseButton setTitle:[NSString stringWithFormat:@"%ld",self.masterDetailInfo.praise_count.integerValue] forState:UIControlStateNormal];
+    [praiseButton addTarget:self action:@selector(clickToPraise:) forControlEvents:UIControlEventTouchUpInside];
     
     praiseButton.titleLabel.font = [UIFont systemFontOfSize:hua_scale(14)];
     self.navigationItem.rightBarButtonItems = @[[[UIBarButtonItem alloc]initWithCustomView:praiseButton]];
-    
 }
+#pragma mark -- 点击点赞
+- (void)clickToPraise:(UIButton *)sender {
+    if (!self.detailInfo) {
+        [HUAMBProgress MBProgressFromWindowWithLabelText:@"未登录,正在跳转登录页面..." dispatch_get_main_queue:^{
+            HUALoginController *loginVC = [[HUALoginController alloc] init];
+            [self.navigationController pushViewController:loginVC animated:YES];
+        }];
+        
+    }else {
+        sender.selected = !sender.selected;
+        NSString *url = [HUA_URL stringByAppendingPathComponent:Create_praise];
+        NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+        parameter[@"target"] = @"master";
+        parameter[@"id"] = self.master_id;
+        [HUAHttpTool POSTWithTokenAndUrl:url params:parameter success:^(id responseObject) {
+            HUALog(@"%@",responseObject);
+            if ([responseObject[@"info"][0] isKindOfClass:[NSDictionary class]]) {
+                [HUAMBProgress MBProgressOnlywithLabelText:@"点赞成功"];
+                [sender setTitle:[NSString stringWithFormat:@"%ld",sender.titleLabel.text.integerValue+1] forState:UIControlStateNormal];
+            }else {
+                [HUAMBProgress MBProgressOnlywithLabelText:@"取消点赞"];
+                [sender setTitle:[NSString stringWithFormat:@"%ld",sender.titleLabel.text.integerValue-1] forState:UIControlStateNormal];
+            }
+        } failure:^(NSError *error) {
+            HUALog(@"%@",error);
+        }];
+    }
+}
+
+- (void)getData {
+    NSString *url = [HUA_URL stringByAppendingPathComponent:Master_detail];
+    NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
+    parameters[@"user_id"] = self.detailInfo.user_id;
+    parameters[@"master_id"] = self.master_id;
+    [HUAHttpTool GETWithTokenAndUrl:url params:parameters success:^(id responseObject) {
+        HUALog(@"%@",responseObject);
+        self.serviceArray = responseObject[@"info"][@"service"];
+        self.masterDetailInfo = [HUAMasterDetailInfo mj_objectWithKeyValues:responseObject[@"info"][@"item"]];
+        self.mienArray = [HUADataTool mienArray:responseObject];
+        HUALog(@"%@",self.mienArray);
+        self.acheivementArray = [HUADataTool achievementArray:responseObject];
+        [self setHeaderView:self.masterDetailInfo];
+        [self setNavigationBar];
+        [self.tableView reloadData];
+    } failure:^(NSError *error) {
+         HUALog(@"%@",error);
+    }];
+}
+
 
 #pragma mark -- headerView
 - (void)setHeaderView:(HUAMasterDetailInfo *)detailInfo {
