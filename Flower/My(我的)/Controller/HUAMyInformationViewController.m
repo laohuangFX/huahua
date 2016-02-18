@@ -99,6 +99,7 @@
 }
 
 - (void) viewWillDisappear:(BOOL)animated {
+    
     NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
 
@@ -109,7 +110,7 @@
     HUALog(@"shengri%@,,,%@,,%@,%@",birthday,self.nameLabel.text,self.sexLable.text,self.birthdayLabel.text);
     NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
     parameters[@"nickname"] = self.nameLabel.text;
-    //parameters[@"sex"] = [self.sexLable.text isEqualToString:@"男"]?@"1":@"0";
+    parameters[@"sex"] = [_sexLable.text isEqualToString:@"男"]?@"1":@"0";
     //parameters[@"birth"] = birthday;
     [manager POST:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
         HUALog(@"data%@",responseObject);
@@ -341,6 +342,7 @@
         cell.InformationLabel.hidden = YES;
         cell.headImage.hidden=NO;
         cell.headImage.image = [UIImage imageNamed:self.model[indexPath.row]];
+        NSLog(@"%@",self.model[indexPath.row]);
         //添加手势进入浏览大图
         [cell.headImage addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(browseImage:)]];
         
@@ -610,7 +612,7 @@
         manager.responseSerializer = [AFHTTPResponseSerializer serializer];
 
         //传入的参数
-        NSDictionary *parameters = @{@"sex":[_selectStr isEqualToString:@"男"]? @"1":@"0"};
+        NSDictionary *parameters = @{@"sex":[_sexLable.text isEqualToString:@"男"]? @"1":@"0"};
         NSString *url = [HUA_URL stringByAppendingPathComponent:@"user/update_info"];
         [manager POST:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
             NSLog(@"%@",responseObject);

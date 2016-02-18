@@ -15,4 +15,6 @@ typedef void(^SexBlock)(NSString *showSex);
 @property (nonatomic, copy) SexBlock block;
 
 @property (nonatomic, strong)NSString *birthString;
+
+
 @end

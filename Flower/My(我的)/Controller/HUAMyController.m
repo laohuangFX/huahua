@@ -22,6 +22,8 @@
 
 //生日
 @property (nonatomic, strong)NSString *birthString;
+//个人信息
+@property (nonatomic, strong)NSDictionary *userDic;
 @end
 
 @implementation HUAMyController
@@ -102,8 +104,9 @@ static NSString * const identifier = @"head";
         HUALog(@"token返回%@",responseObject);
 
         NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:responseObject options:0 error:nil];
+        self.userDic = dic;
         self.birthString = dic[@"info"][@"birth"];
-
+  
         NSString *string = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
         HUALog(@"%@",string);
         
@@ -242,6 +245,9 @@ static NSString * const identifier = @"head";
     }else if (indexPath.section ==0 &&indexPath.row ==0){
         HUAMyInformationViewController *vc = [HUAMyInformationViewController new];
         vc.birthString = self.birthString;
+        
+        
+        
         [self.navigationController pushViewController:vc animated:YES];
 
     }else if (indexPath.section == 2 && indexPath.row == 0) {
