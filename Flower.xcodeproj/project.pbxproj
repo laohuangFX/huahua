@@ -176,8 +176,6 @@
 		17B7E2EC1C71BD9C0032C6D5 /* UIRefreshControl+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = 17B7E2451C71BD9C0032C6D5 /* UIRefreshControl+AFNetworking.m */; };
 		17B7E2ED1C71BD9C0032C6D5 /* UIWebView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = 17B7E2471C71BD9C0032C6D5 /* UIWebView+AFNetworking.m */; };
 		17B7E2F01C71C09C0032C6D5 /* HUAAddressModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 17B7E2EF1C71C09C0032C6D5 /* HUAAddressModel.m */; };
-		17B7E2F51C71CBE70032C6D5 /* HUAHomeSortDropdownMenuController.m in Sources */ = {isa = PBXBuildFile; fileRef = 17B7E2F21C71CBE70032C6D5 /* HUAHomeSortDropdownMenuController.m */; };
-		17B7E2F61C71CBE70032C6D5 /* HUAShopFrontPageController.m in Sources */ = {isa = PBXBuildFile; fileRef = 17B7E2F41C71CBE70032C6D5 /* HUAShopFrontPageController.m */; };
 		17B7E2FB1C71E0400032C6D5 /* HUAChooseAddressTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 17B7E2F81C71E0400032C6D5 /* HUAChooseAddressTableViewCell.m */; };
 		189317E41C4887C3005D230F /* HUAConstRowHeight.m in Sources */ = {isa = PBXBuildFile; fileRef = 189317DD1C4887C3005D230F /* HUAConstRowHeight.m */; };
 		189317E51C4887C3005D230F /* HUACreateButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 189317DF1C4887C3005D230F /* HUACreateButton.m */; };
@@ -317,6 +315,9 @@
 		5F3CF5D01C72F26600C2D8AA /* HUAGetCity.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F3CF5CD1C72F26600C2D8AA /* HUAGetCity.m */; };
 		5F3CF5D31C72F35500C2D8AA /* HUASelectCityView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F3CF5D21C72F35500C2D8AA /* HUASelectCityView.m */; };
 		5F3CF5D61C72F50800C2D8AA /* HUASearchSuperViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F3CF5D51C72F50800C2D8AA /* HUASearchSuperViewController.m */; };
+		5F9994111C7555C600707DEC /* HUAShopServiceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F9994101C7555C600707DEC /* HUAShopServiceViewController.m */; };
+		5F9994141C7555E100707DEC /* HUAProductInformation.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F9994131C7555E100707DEC /* HUAProductInformation.m */; };
+		5F9994171C75562900707DEC /* HUAUserInfomation.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F9994161C75562900707DEC /* HUAUserInfomation.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -634,10 +635,6 @@
 		17B7E2471C71BD9C0032C6D5 /* UIWebView+AFNetworking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIWebView+AFNetworking.m"; sourceTree = "<group>"; };
 		17B7E2EE1C71C09C0032C6D5 /* HUAAddressModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HUAAddressModel.h; sourceTree = "<group>"; };
 		17B7E2EF1C71C09C0032C6D5 /* HUAAddressModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HUAAddressModel.m; sourceTree = "<group>"; };
-		17B7E2F11C71CBE70032C6D5 /* HUAHomeSortDropdownMenuController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HUAHomeSortDropdownMenuController.h; sourceTree = "<group>"; };
-		17B7E2F21C71CBE70032C6D5 /* HUAHomeSortDropdownMenuController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HUAHomeSortDropdownMenuController.m; sourceTree = "<group>"; };
-		17B7E2F31C71CBE70032C6D5 /* HUAShopFrontPageController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HUAShopFrontPageController.h; sourceTree = "<group>"; };
-		17B7E2F41C71CBE70032C6D5 /* HUAShopFrontPageController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HUAShopFrontPageController.m; sourceTree = "<group>"; };
 		17B7E2F71C71E0400032C6D5 /* HUAChooseAddressTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HUAChooseAddressTableViewCell.h; sourceTree = "<group>"; };
 		17B7E2F81C71E0400032C6D5 /* HUAChooseAddressTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HUAChooseAddressTableViewCell.m; sourceTree = "<group>"; };
 		189317DC1C4887C3005D230F /* HUAConstRowHeight.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HUAConstRowHeight.h; sourceTree = "<group>"; };
@@ -909,6 +906,12 @@
 		5F3CF5D21C72F35500C2D8AA /* HUASelectCityView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HUASelectCityView.m; sourceTree = "<group>"; };
 		5F3CF5D41C72F50800C2D8AA /* HUASearchSuperViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HUASearchSuperViewController.h; sourceTree = "<group>"; };
 		5F3CF5D51C72F50800C2D8AA /* HUASearchSuperViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HUASearchSuperViewController.m; sourceTree = "<group>"; };
+		5F99940F1C7555C600707DEC /* HUAShopServiceViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HUAShopServiceViewController.h; sourceTree = "<group>"; };
+		5F9994101C7555C600707DEC /* HUAShopServiceViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HUAShopServiceViewController.m; sourceTree = "<group>"; };
+		5F9994121C7555E100707DEC /* HUAProductInformation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HUAProductInformation.h; sourceTree = "<group>"; };
+		5F9994131C7555E100707DEC /* HUAProductInformation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HUAProductInformation.m; sourceTree = "<group>"; };
+		5F9994151C75562900707DEC /* HUAUserInfomation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HUAUserInfomation.h; sourceTree = "<group>"; };
+		5F9994161C75562900707DEC /* HUAUserInfomation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HUAUserInfomation.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1602,10 +1605,6 @@
 		189318FB1C488950005D230F /* Controller */ = {
 			isa = PBXGroup;
 			children = (
-				17B7E2F11C71CBE70032C6D5 /* HUAHomeSortDropdownMenuController.h */,
-				17B7E2F21C71CBE70032C6D5 /* HUAHomeSortDropdownMenuController.m */,
-				17B7E2F31C71CBE70032C6D5 /* HUAShopFrontPageController.h */,
-				17B7E2F41C71CBE70032C6D5 /* HUAShopFrontPageController.m */,
 				5982845A1C5EF46000972357 /* HUAHomeController.h */,
 				5982845B1C5EF46000972357 /* HUAHomeController.m */,
 				189319021C488950005D230F /* HUAVipShopFrontPageController.h */,
@@ -1621,6 +1620,8 @@
 		189319041C488950005D230F /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				5F9994151C75562900707DEC /* HUAUserInfomation.h */,
+				5F9994161C75562900707DEC /* HUAUserInfomation.m */,
 				189319051C488950005D230F /* HUAShopInfo.h */,
 				189319061C488950005D230F /* HUAShopInfo.m */,
 				189319071C488950005D230F /* HUAShopIntroduce.h */,
@@ -1665,6 +1666,8 @@
 		189319251C48896B005D230F /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				5F99940F1C7555C600707DEC /* HUAShopServiceViewController.h */,
+				5F9994101C7555C600707DEC /* HUAShopServiceViewController.m */,
 				177469CB1C72B97D005B457C /* HUAChooseAddressViewController.h */,
 				177469CC1C72B97D005B457C /* HUAChooseAddressViewController.m */,
 				598284601C5EF4E100972357 /* HUABuyViewController.h */,
@@ -1704,6 +1707,8 @@
 		1893192C1C48896B005D230F /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				5F9994121C7555E100707DEC /* HUAProductInformation.h */,
+				5F9994131C7555E100707DEC /* HUAProductInformation.m */,
 				177469CE1C72BB26005B457C /* HUATechnicianModel.h */,
 				177469CF1C72BB26005B457C /* HUATechnicianModel.m */,
 				1893192D1C48896B005D230F /* HUAProduct.h */,
@@ -2324,7 +2329,6 @@
 				5903E69D1C58E1C000FF5B3D /* HUAMobileNumber.m in Sources */,
 				17B7E2E21C71BD9C0032C6D5 /* UIView+ST.m in Sources */,
 				17B7E2AF1C71BD9C0032C6D5 /* MJRefreshBackNormalFooter.m in Sources */,
-				17B7E2F51C71CBE70032C6D5 /* HUAHomeSortDropdownMenuController.m in Sources */,
 				17B7E2AB1C71BD9C0032C6D5 /* MJRefreshAutoGifFooter.m in Sources */,
 				17B7E29C1C71BD9C0032C6D5 /* MJExtensionConst.m in Sources */,
 				17B7E2981C71BD9C0032C6D5 /* ViewController+MASAdditions.m in Sources */,
@@ -2338,6 +2342,7 @@
 				1893197D1C488990005D230F /* HUAReceivingViewController.m in Sources */,
 				5903E6A01C58EB3300FF5B3D /* HUAMBProgress.m in Sources */,
 				189319221C488950005D230F /* HUAShopTableViewCell.m in Sources */,
+				5F9994171C75562900707DEC /* HUAUserInfomation.m in Sources */,
 				17B7E2C21C71BD9C0032C6D5 /* SDWaitingView.m in Sources */,
 				590AAD3E1C531757007E1ECB /* HUAForgetPasswordController.m in Sources */,
 				59015DCD1C4C83E200524B6F /* HUAMasterListController.m in Sources */,
@@ -2380,7 +2385,6 @@
 				17B7E2C61C71BD9C0032C6D5 /* SDWebImageCompat.m in Sources */,
 				598284881C5F3C2B00972357 /* HUACategoryList.m in Sources */,
 				59FBFD5A1C48B84700EB00B1 /* HUAServiceDetailController.m in Sources */,
-				17B7E2F61C71CBE70032C6D5 /* HUAShopFrontPageController.m in Sources */,
 				17B7E2EC1C71BD9C0032C6D5 /* UIRefreshControl+AFNetworking.m in Sources */,
 				17B7E2A91C71BD9C0032C6D5 /* MJRefreshFooter.m in Sources */,
 				189318F51C488930005D230F /* HUAActivityDetailCell.m in Sources */,
@@ -2400,6 +2404,7 @@
 				59015DD61C4C94A100524B6F /* HUAMienCell.m in Sources */,
 				17B7E2E01C71BD9C0032C6D5 /* STConst.m in Sources */,
 				189319201C488950005D230F /* HUASectionHeaderView.m in Sources */,
+				5F9994141C7555E100707DEC /* HUAProductInformation.m in Sources */,
 				17B7E2D11C71BD9C0032C6D5 /* UIImageView+WebCache.m in Sources */,
 				17B7E2971C71BD9C0032C6D5 /* View+MASAdditions.m in Sources */,
 				189318F41C488930005D230F /* HUADetailInfo.m in Sources */,
@@ -2443,6 +2448,7 @@
 				17B7E2AA1C71BD9C0032C6D5 /* MJRefreshHeader.m in Sources */,
 				1893191D1C488950005D230F /* HUAShopIntroduce.m in Sources */,
 				5982846E1C5EF4E100972357 /* HUABuyViewController.m in Sources */,
+				5F9994111C7555C600707DEC /* HUAShopServiceViewController.m in Sources */,
 				17B7E2E61C71BD9C0032C6D5 /* STPhotoBrowserView.m in Sources */,
 				17B7E2C01C71BD9C0032C6D5 /* SDBrowserImageView.m in Sources */,
 				189318A81C48882A005D230F /* HUATabBarController.m in Sources */,
