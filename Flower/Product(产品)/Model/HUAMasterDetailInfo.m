@@ -21,8 +21,10 @@
         self.masterName = dic[@"masterName"];
         self.masterType = dic[@"masterType"];
         self.praise_count = dic[@"praise_count"];
+        self.have_praised = dic[@"have_praised"];
         self.about_arrange = dictionary[@"info"][@"about_arrange"];
         self.serviceArray = dictionary[@"info"][@"service"];
+        
         
     }
     return self;

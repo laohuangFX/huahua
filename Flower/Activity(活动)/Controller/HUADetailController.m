@@ -145,6 +145,7 @@
                 [sender setTitle:[NSString stringWithFormat:@"%ld",sender.titleLabel.text.integerValue-1] forState:UIControlStateNormal];
             }
         } failure:^(NSError *error) {
+            [HUAMBProgress MBProgressFromWindowWithLabelText:@"请检查网络设置"];
             HUALog(@"%@",error);
         }];
     }

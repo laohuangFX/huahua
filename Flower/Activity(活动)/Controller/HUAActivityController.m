@@ -64,10 +64,11 @@ static NSString * const reuseIdentifier = @"goods";
     NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
     parameter[@"per_page"] = @(self.page);
     [HUAHttpTool GET:url params:parameter success:^(id responseObject) {
-        HUALog(@"123%@",responseObject);
+        
         self.totalPage = responseObject[@"info"][@"pages"];
         NSArray *array = [HUADataTool activity:responseObject];
         [self.goodsArray insertObjects:array atIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, array.count)]];
+        HUALog(@"123%@",self.goodsArray);
         [self.collectionView reloadData];
         [self.collectionView.mj_header endRefreshing];
     } failure:^(NSError *error) {
@@ -80,11 +81,20 @@ static NSString * const reuseIdentifier = @"goods";
 }
 
 #pragma mark -- 上拉自动加载数据
+
 - (void)collectionView:(UICollectionView *)collectionView willDisplayCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.row == self.goodsArray.count-1) {
+    if (indexPath.row == self.goodsArray.count-2) {
         [self loadMoreData];
     }
+    HUALog(@"%ld",indexPath.row % 3);
 }
+
+
+- (void)collectionView:(UICollectionView *)collectionView didEndDisplayingCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
+ 
+}
+
+
 
 - (void)loadMoreData {
     self.page++;
@@ -117,10 +127,10 @@ static NSString * const reuseIdentifier = @"goods";
     NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
     parameter[@"per_page"] = @(self.page);
     [HUAHttpTool GET:url params:parameter success:^(id responseObject) {
-        HUALog(@"123%@",responseObject);
         self.totalPage = responseObject[@"info"][@"pages"];
          NSArray *array = [HUADataTool activity:responseObject];
         [self.goodsArray addObjectsFromArray:array];
+        HUALog(@"123%@",self.goodsArray);
         [self.collectionView reloadData];
     } failure:^(NSError *error) {
         [HUAMBProgress MBProgressFromWindowWithLabelText:@"请检查网络设置"];
