@@ -26,8 +26,10 @@
     tabBarVC.selectedIndex= 2;
     self.window.rootViewController = tabBarVC;
     //背景色
+
     
-    
+    //开始监听网络状态
+    [[AFNetworkReachabilityManager sharedManager] startMonitoring];
     return YES;
     
 
