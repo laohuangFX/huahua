@@ -17,7 +17,7 @@
 @property (nonatomic, strong)NSString *comment;
 @property (nonatomic, strong)NSString *content;
 //是否点赞
-@property (nonatomic, strong)NSString *is_praise;
+@property (nonatomic, strong)NSNumber *is_praise;
 //动态Id
 @property (nonatomic, strong)NSString *essay_id;
 @property (nonatomic,strong)NSArray *imageArray;

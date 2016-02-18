@@ -13,4 +13,5 @@
 @property (nonatomic, strong) NSString *user_id;
 @property (nonatomic, strong) NSString *shopName;
 @property (nonatomic, copy)void (^block)(NSUInteger praise_count);
+
 @end

@@ -155,7 +155,7 @@
     self.nameLbale.text = model.name;
     self.contentLbale.text = model.content;
     
-    if ([model.is_praise isEqualToString:@"yse"]) {
+    if ([[model.is_praise stringValue] isEqualToString:@"1"]) {
         self.loveButton.selected = YES;
     }else{
         self.loveButton.selected = NO;

@@ -108,9 +108,9 @@
         
         [alert addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
             
-            UIWindow *window = [UIApplication sharedApplication].keyWindow;
-            window.rootViewController= [[HUALoginController alloc] init];
-            
+//            UIWindow *window = [UIApplication sharedApplication].keyWindow;
+//            window.rootViewController= [[HUALoginController alloc] init];
+            [mySelf.navigationController pushViewController:[HUALoginController new] animated:YES];
             [alert removeFromParentViewController];
             
         }]];
@@ -150,48 +150,48 @@
 
 //获取数据
 - (void)getData:(BOOL)type{
-    //获取当前用户名
+    
+    //    //获取当前用户名
     HUAUserDetailInfo *detailInfo = [HUAUserDefaults getUserDetailInfo];
     
-    NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
-    AFURLSessionManager *manager = [[AFURLSessionManager alloc] initWithSessionConfiguration:configuration];
+    NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
     
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    [manager.requestSerializer setValue:token forHTTPHeaderField:@"token"];
+    manager.responseSerializer = [AFHTTPResponseSerializer serializer];
     
-    NSURL *URL =  [NSURL URLWithString: [HUA_URL stringByAppendingPathComponent:[NSString stringWithFormat:@"essay/essay_detail?essay_id=%@&user_id=%@",self.essay_id,detailInfo.user_id]]];
-    NSLog(@"%@",[HUA_URL stringByAppendingPathComponent:[NSString stringWithFormat:@"essay/essay_detail?essay_id=%@&user_id=%@",self.essay_id,detailInfo.user_id]]);
-    NSURLRequest *request = [NSURLRequest requestWithURL:URL];
-    
-    NSURLSessionDataTask *dataTask = [manager dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
-        if (error) {
-            NSLog(@"Error: %@", error);
-        } else {
-            NSLog(@"%@",responseObject);
-            
-            self.statusModel.praise = responseObject[@"info"][@"praise_count"];
-            self.statusModel.is_praise = responseObject[@"info"][@"is_praise"];
-            self.pinlunArray = [HUADataTool DynamicDetails:responseObject];
-            
-            
+    NSString *url = [HUA_URL stringByAppendingPathComponent:[NSString stringWithFormat:@"essay/essay_detail?essay_id=%@",self.essay_id]];
+    NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+    //parameter[@"per_page"] = @"1";
+    [manager GET:url parameters:parameter success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:responseObject options:0 error:nil];
+  
+            self.statusModel.praise = dic[@"info"][@"praise_count"];
+            self.statusModel.is_praise = dic[@"info"][@"have_praised"];
+            self.pinlunArray = [HUADataTool DynamicDetails:dic];
+
+
             for (HUAmodel *model in self.pinlunArray) {
-                
+
                 for (NSDictionary *dic in model.commentArray) {
-                    
+
                     [self.dongtaiDic setValue:dic[@"nickname"] forKey:dic[@"user_id"]];
-                    
+
                 }
                 [self.dongtaiDic setValue:model.name forKey:model.user_id];
-                
+
                 model.nameDic = self.dongtaiDic;
             }
             if (type==NO) {
                 [self.tableView reloadData];
             }else{
-                
+
                 if (_indexPath ==nil ||_indexPath.row == 0 ) {
-                    
-                    [self.tableView reloadData];
-                    
+
+                  //  [self.tableView reloadData];
+
                 }else{
+
                     
                     [self.tableView reloadRowsAtIndexPaths:@[_indexPath] withRowAnimation:0];
                 }
@@ -199,11 +199,71 @@
                 //清空
                 _indexPath = nil;
             }
-            
-            
-        }
+
+        
+    } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
+        HUALog(@"%@",error);
     }];
-    [dataTask resume];
+    
+
+//
+//    
+//    //获取当前用户名
+//    HUAUserDetailInfo *detailInfo = [HUAUserDefaults getUserDetailInfo];
+//    
+//    NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
+// 
+//    
+//    NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
+//    AFURLSessionManager *manager = [[AFURLSessionManager alloc] initWithSessionConfiguration:configuration];
+//    [manager.requestSerializer setValue:token forHTTPHeaderField:@"token"];
+//    NSURL *URL =  [NSURL URLWithString: [HUA_URL stringByAppendingPathComponent:[NSString stringWithFormat:@"essay/essay_detail?essay_id=%@",self.essay_id]]];
+//    NSLog(@"%@",[HUA_URL stringByAppendingPathComponent:[NSString stringWithFormat:@"essay/essay_detail?essay_id=%@",self.essay_id]]);
+//    NSURLRequest *request = [NSURLRequest requestWithURL:URL];
+//    
+//    NSURLSessionDataTask *dataTask = [manager dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
+//        if (error) {
+//            NSLog(@"Error: %@", error);
+//        } else {
+//           // NSLog(@"%@",responseObject);
+//            
+//            self.statusModel.praise = responseObject[@"info"][@"praise_count"];
+//            self.statusModel.is_praise = responseObject[@"info"][@"is_praise"];
+//            self.pinlunArray = [HUADataTool DynamicDetails:responseObject];
+//            
+//            
+//            for (HUAmodel *model in self.pinlunArray) {
+//                
+//                for (NSDictionary *dic in model.commentArray) {
+//                    
+//                    [self.dongtaiDic setValue:dic[@"nickname"] forKey:dic[@"user_id"]];
+//                    
+//                }
+//                [self.dongtaiDic setValue:model.name forKey:model.user_id];
+//                
+//                model.nameDic = self.dongtaiDic;
+//            }
+//            if (type==NO) {
+//                [self.tableView reloadData];
+//            }else{
+//                
+//                if (_indexPath ==nil ||_indexPath.row == 0 ) {
+//                    
+//                    [self.tableView reloadData];
+//                    
+//                }else{
+//                    
+//                    [self.tableView reloadRowsAtIndexPaths:@[_indexPath] withRowAnimation:0];
+//                }
+//                
+//                //清空
+//                _indexPath = nil;
+//            }
+//            
+//            
+//        }
+//    }];
+//    [dataTask resume];
     
 }
 
@@ -227,17 +287,33 @@
             cell = [[HUDynamicATableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
         }
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    
+           __weak typeof(self) weakSelf = self;
+
+
         //点赞
         [cell setLoveBlock:^{
             NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
             //判断是否是游客模式
             if (token==nil) {
                 //判断是否是游客评论，
-                [HUAMBProgress MBProgressFromWindowWithLabelText:@"未登录,正在跳转登录页面..." dispatch_get_main_queue:^{
-                    HUALoginController *loginVC = [[HUALoginController alloc] init];
-                    [self.navigationController pushViewController:loginVC animated:YES];
-                }];
+                UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"登陆" message:@"游客模式下不能点赞,请先登陆!" preferredStyle:UIAlertControllerStyleAlert];
+                
+                [alert addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                    
+//                    UIWindow *window = [UIApplication sharedApplication].keyWindow;
+//                    window.rootViewController= [[HUALoginController alloc] init];
+                    [weakSelf.navigationController pushViewController:[HUALoginController new] animated:YES];
+                    [alert removeFromParentViewController];
+                    
+                }]];
+                
+                [alert addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                    
+                    [alert removeFromParentViewController];
+                }]];
+                
+                [self presentViewController:alert animated:YES completion:nil];
+                return ;
             }
             AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
             //申明返回的结果是json类型
@@ -327,10 +403,9 @@
             [commentsCell setMoreButtonClickedBlock:^(NSIndexPath *indexPath) {
                 HUAmodel *model = weakSelf.pinlunArray[indexPath.row-2];
                 model.isOpening = !model.isOpening;
-                
+                NSLog(@"%i",model.isOpening);
                 [weakSelf.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
             }];
-            
         }
         
         
@@ -466,11 +541,12 @@ int cellRow = 000;
         //发送请求
         [manager POST:url parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
             
-            
-            NSLog(@"JSON: %@", responseObject);
-            [self getData:NO];
-            
-            
+               NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:responseObject options:0 error:nil];
+            NSLog(@"JSON: %@", dic);
+           // [self getData:YES];
+            HUAmodel *model = self.pinlunArray[_indexPath.row-2];
+            [model.commentArray addObject:dic[@"info"]];
+            [self.tableView reloadRowsAtIndexPaths:@[_indexPath] withRowAnimation:0];
         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
             NSLog(@"Error: %@", error);
         }];

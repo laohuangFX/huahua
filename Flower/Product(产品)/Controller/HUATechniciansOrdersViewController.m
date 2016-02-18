@@ -7,22 +7,25 @@
 //
 
 #import "HUATechniciansOrdersViewController.h"
-
-@interface HUATechniciansOrdersViewController (){
+#import "HUAcardTableViewCell.h"
+@interface HUATechniciansOrdersViewController ()<HATransparentViewDelegate,UITableViewDataSource,UITableViewDelegate>{
     
     UILabel *_projectlabel; //项目
     UILabel *_nameLabel; //名字
     
+    UIButton *_selecteButton;//记录选中的button的订单方式
     
+    UIView *_tanBgView;//弹窗
+    NSArray *_cardArray;//产品卡的数组
 }
-
-
 
 ///////////////////技师和服务的订单页/////////////////////////////////////////////////////
 
 //个数
+
 @property(nonatomic,strong)UILabel *numberTypelabel ;
 @property (nonatomic, strong)UILabel *memberLabel;
+@property (nonatomic, strong)HATransparentView *transparentView;
 @end
 
 @implementation HUATechniciansOrdersViewController
@@ -292,7 +295,7 @@
     
     
     UIButton *selectBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    selectBtn.tag = 191;
+    selectBtn.tag = 190;
     [selectBtn setBackgroundImage:[UIImage imageNamed:@"do_not_select"] forState:0];
     [selectBtn setBackgroundImage:[UIImage imageNamed:@"chooseButton_yes"] forState:UIControlStateSelected];
     [selectBtn addTarget:self action:@selector(pageAdd:) forControlEvents:UIControlEventTouchUpInside];
@@ -356,7 +359,7 @@
     
     
     UIButton *selectsBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    selectsBtn.tag = 192;
+    selectsBtn.tag = 191;
     [selectsBtn setBackgroundImage:[UIImage imageNamed:@"do_not_select"] forState:0];
     [selectsBtn setBackgroundImage:[UIImage imageNamed:@"chooseButton_yes"] forState:UIControlStateSelected];
     [selectsBtn addTarget:self action:@selector(pageAdd:) forControlEvents:UIControlEventTouchUpInside];
@@ -412,7 +415,7 @@
     
     
     UIButton *winselectsBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    winselectsBtn.tag = 193;
+    winselectsBtn.tag = 192;
     [winselectsBtn setBackgroundImage:[UIImage imageNamed:@"do_not_select"] forState:0];
     [winselectsBtn setBackgroundImage:[UIImage imageNamed:@"chooseButton_yes"] forState:UIControlStateSelected];
     [winselectsBtn addTarget:self action:@selector(pageAdd:) forControlEvents:UIControlEventTouchUpInside];
@@ -581,7 +584,7 @@
     successButton.layer.cornerRadius =3.f;
     [successButton setTitle:@"提交并支付" forState:0];
     [successButton setTitleColor:HUAColor(0xffffff) forState:0];
-    [successButton addTarget:self action:@selector(pageAdd:) forControlEvents:UIControlEventTouchUpInside];
+    [successButton addTarget:self action:@selector(Confirm:) forControlEvents:UIControlEventTouchUpInside];
     [scrollView addSubview:successButton];
     [successButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.mas_equalTo(commonLabel);
@@ -615,7 +618,94 @@
     //合计
     ResultLable.text = [NSString stringWithFormat:@"¥ %@",self.moneyNumber];
 }
+//添加显示产品卡订单
+- (void)showCardView{
 
+    _tanBgView = [UIView new];
+    _tanBgView.backgroundColor = HUAColor(0xcdcdcd);
+    [_transparentView addSubview:_tanBgView];
+    [_tanBgView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.right.mas_equalTo(self.view);
+        make.top.mas_equalTo(self.view.bottom);
+        //make.height.mas_equalTo(hua_scale(80*_cardArray.count+40+50));
+        make.height.mas_equalTo(self.view.height-hua_scale(312.0/2.0));
+    }];
+    
+    UIView *bgView = [UIView new];
+    bgView.backgroundColor = [UIColor whiteColor];
+    [_tanBgView addSubview:bgView];
+    [bgView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(0);
+        make.left.right.mas_equalTo(0);
+        make.height.mas_equalTo(hua_scale(40));
+        
+    }];
+    
+    UILabel *title = [UILabel labelText:@"请选择" color:HUAColor(0x333333) font:hua_scale(15)];
+    [title sizeToFit];
+    [_tanBgView addSubview:title];
+    [title mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.center.mas_equalTo(bgView);
+    }];
+    
+    //xx按钮
+    UIButton *bakeButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    bakeButton.backgroundColor = [UIColor yellowColor];
+    [bakeButton addTarget:self action:@selector(removeBgView) forControlEvents:UIControlEventTouchUpInside];
+    [_tanBgView addSubview:bakeButton];
+    [bakeButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.mas_equalTo(hua_scale(15));
+        make.size.mas_equalTo(CGSizeMake(hua_scale(13), hua_scale(13)));
+        make.centerY.mas_equalTo(bgView);
+    }];
+
+    [_tanBgView updateLayout];
+    
+    UITableView *tanBgTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, hua_scale(40), _tanBgView.width,_tanBgView.height-hua_scale(40+34+16)) style:UITableViewStylePlain];
+    tanBgTableView.delegate =self;
+    tanBgTableView.dataSource =self;
+    [_tanBgView addSubview:tanBgTableView];
+    
+
+    //取消按钮
+    UIButton *cancelButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    cancelButton.backgroundColor =[UIColor whiteColor];
+    cancelButton.tag = 1009;
+    [cancelButton setTitle:@"取消" forState:0];
+    cancelButton.clipsToBounds = YES;
+    cancelButton.layer.borderWidth =1;
+    cancelButton.layer.borderColor = [UIColor grayColor].CGColor;//设置边框颜色
+    cancelButton.layer.cornerRadius =3.f;
+    [cancelButton setTitleColor:HUAColor(0x000000) forState:0];
+    [cancelButton addTarget:self action:@selector(tanBgButton:) forControlEvents:UIControlEventTouchUpInside];
+    [_tanBgView addSubview:cancelButton];
+    [cancelButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(tanBgTableView.mas_bottom).mas_equalTo(hua_scale(8));
+        make.bottom.mas_equalTo(hua_scale(-8));
+        make.left.mas_equalTo(hua_scale(10));
+        make.width.mas_equalTo(_tanBgView.width/2-hua_scale(15));
+    }];
+
+    //确定按钮
+    UIButton *certainButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    certainButton.backgroundColor = HUAColor(0x4da800);
+    certainButton.tag = 1010;
+    [certainButton setTitle:@"确认支付" forState:0];
+    certainButton.clipsToBounds = YES;
+    certainButton.layer.borderWidth =1;
+    certainButton.layer.borderColor = HUAColor(0x4da800).CGColor;//设置边框颜色
+    certainButton.layer.cornerRadius =3.f;
+    [certainButton setTitleColor:HUAColor(0xffffff) forState:0];
+    [certainButton addTarget:self action:@selector(tanBgButton:) forControlEvents:UIControlEventTouchUpInside];
+    [_tanBgView addSubview:certainButton];
+    [certainButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(tanBgTableView.mas_bottom).mas_equalTo(hua_scale(8));
+        make.bottom.mas_equalTo(hua_scale(-8));
+        make.right.mas_equalTo(hua_scale(-10));
+        make.width.mas_equalTo(cancelButton);
+    }];
+
+}
 //按钮点击事件
 UIButton *bttn = nil;
 - (void)pageAdd:(UIButton *)button{
@@ -628,29 +718,111 @@ UIButton *bttn = nil;
     }
     
     bttn = button;
-    //    //点击减少数量
-    //    if (button.tag == 189 && [_numberTypelabel.text integerValue] >=1) {
-    //        _numberTypelabel.text = [NSString stringWithFormat:@"%ld",[_numberTypelabel.text integerValue]-1];
-    //        //产品金额
-    //        _memberLabel.text = [NSString stringWithFormat:@"¥45 * %ld",[_numberTypelabel.text integerValue]];
-    //
-    //    }else if(button.tag == 190){
-    //        //点击减少数量
-    //        _numberTypelabel.text = [NSString stringWithFormat:@"%ld",[_numberTypelabel.text integerValue]+1];
-    //        //产品金额
-    //        //  UILabel *lable = [self.contentView viewWithTag:10009];
-    //        
-    //        _memberLabel.text = [NSString stringWithFormat:@"¥45 * %ld",[_numberTypelabel.text integerValue]];
-    //        
-    //        
-    //    }
     
+    _selecteButton = button;
 }
+//确认提交订单
+- (void)Confirm:(UIButton *)sender{
+
+    if (_selecteButton.tag == 193) {
+        NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
+        
+        AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+        manager.responseSerializer = [AFHTTPResponseSerializer serializer];
+      
+        [manager.requestSerializer setValue:token forHTTPHeaderField:@"token"];
+        
+        NSString *url = [HUA_URL stringByAppendingPathComponent:@"user/user_product_card"];
+        
+        
+        
+        [manager GET:url parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+
+           
+            
+            NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:responseObject options:0 error:nil];
+
+            _cardArray = dic[@"info"][@"list"];
+            NSLog(@"%ld",_cardArray.count);
+            _transparentView = [[HATransparentView alloc] init];
+            _transparentView.delegate = self;
+            _transparentView.tapBackgroundToClose = YES;
+            _transparentView.hideCloseButton = YES;
+            _transparentView.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.8];
+            [_transparentView open];
+            
+            [self showCardView];
+            
+            [_tanBgView updateLayout];
+            
+            [UIView animateWithDuration:0.5 animations:^{
+               
+                _tanBgView.top = self.view.height-_tanBgView.height+64;
+                
+            }];
+            
+        } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
+            HUALog(@"%@",error);
+        }];
+
+        NSLog(@"弹出窗口");
+    }else{
+        NSLog(@"其他支付");
+    }
+
+}
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     
 }
+//弹窗按钮时间
+- (void)removeBgView{
+//xx按钮
+
+}
+//确认
+- (void)tanBgButton:(UIButton *)sender{
+
+    if (sender.tag == 1009) {
+        [UIView animateWithDuration:0.3 animations:^{
+            
+            _tanBgView.top = self.view.bottom;
+            
+        } completion:^(BOOL finished) {
+            
+        [_transparentView close];
+        }];
+
+    }
+    
+}
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)sectio{
+    return _cardArray.count;
+
+}
 
 
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+     static NSString *cellStr = @"cell";
+    
+    HUAcardTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellStr];
+    
+    if (cell == nil) {
+        cell = [[HUAcardTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellStr];
+    }
+    
+    cell.dataDic = _cardArray[indexPath.row];
+    
+    return cell;
+}
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+    return hua_scale(80);
+}
+
+- (void)HATransparentViewDidClosed
+{
+    NSLog(@"Did close");
+}
 @end

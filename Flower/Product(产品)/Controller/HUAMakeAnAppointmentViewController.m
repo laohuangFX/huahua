@@ -150,7 +150,9 @@
     [self.view addSubview:self.scrollView];
     
     UIImageView *headImageView = [[UIImageView alloc] init];
+     NSLog(@"%@",self.model.cover);
     [headImageView sd_setImageWithURL:[NSURL URLWithString:self.model.cover] placeholderImage:[UIImage imageNamed:@"placeholder"]];
+   
     [self.scrollView addSubview:headImageView];
     [headImageView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(hua_scale(10));
@@ -926,6 +928,7 @@ UIImageView *lastImagee = nil;
         _transparentView.backgroundColor = HUAColor(0xb2b2b2);
         [_transparentView open];
         [self initServiceTableView];
+        
         
         [UIView animateWithDuration:0.5 animations:^{
             

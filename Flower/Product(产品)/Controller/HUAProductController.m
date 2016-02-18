@@ -28,6 +28,20 @@
     NSInteger _currentData2Index;
     NSInteger _currentData3Index;
 
+    //参数
+    //左边
+    NSString *_leftText;
+    //左边的子类
+    NSString *_leftSubText;
+    //中间
+    NSString *_midstText;
+    //右边
+    NSString *_rightText;
+    
+    //存放产品id
+    NSMutableDictionary *_dataDic;
+    //存放
+    NSMutableDictionary *_towDataDic;
 
 }
 @property (nonatomic, strong) NSArray *productArray;
@@ -51,8 +65,11 @@ static NSString * const reuseIdentifier = @"cell";
     
     self.collectionView.userInteractionEnabled = YES;
     self.collectionView.backgroundColor = HUAColor(0xE4E4E4);
+    _dataDic = [NSMutableDictionary dictionary];
+    _towDataDic = [NSMutableDictionary dictionary];
+    //获取下拉菜单数据
+    [self getDownData];
     //注册HUAProductCell类型的cell;并且从xib来加载
-
     [self.collectionView registerClass:[HUAProductCell class] forCellWithReuseIdentifier:reuseIdentifier];
     //设置collectionView的Y值，给三个button留空间
     self.collectionView.y = chooseViewHeight;
@@ -61,8 +78,24 @@ static NSString * const reuseIdentifier = @"cell";
     self.collectionView.showsVerticalScrollIndicator = NO;
    
     [self setNavigationItem];
-    [self category];
+  
     [self getDataWithparameters:nil];
+    
+    
+}
+//获取下拉菜单数据
+- (void)getDownData{
+    
+    AFHTTPRequestOperationManager *manager = [[AFHTTPRequestOperationManager alloc] init];
+    NSString *url = [HUA_URL stringByAppendingPathComponent:@"product/product_cat"];
+    NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
+    //parameters[@"shop_id"] = self.shop_id;
+    [manager GET:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation,NSDictionary* responseObject) {
+        HUALog(@"%@",responseObject);
+        [self category:responseObject];
+    } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
+        HUALog(@"%@",error);
+    }];
     
     
 }
@@ -87,37 +120,111 @@ static NSString * const reuseIdentifier = @"cell";
 
 #pragma --设置三个选择按钮
 //设置三个选择按钮
-- (void)category {
+- (void)category:(NSDictionary *)titelDic{
     
-    NSArray *food = @[@"不限", @"海飞丝", @"飘柔", @"清扬", @"沙宣",@"霸王"];
-    NSArray *travel = @[@"不限", @"蜂花护发素", @"潘婷护发素", @"沙宣护发素", @"飘柔护发素", @"欧莱雅护发素", @"百雀羚护发素", @"迪彩护发素", @"资生堂护发素", @"露华浓护发素"];
+    NSMutableArray *food= [NSMutableArray array];
+    NSMutableArray *travel = [NSMutableArray array];
+    
+    //    NSArray *food = @[@"不限", @"海飞丝", @"飘柔", @"清扬", @"沙宣",@"霸王"];
+    //    NSArray *travel = @[@"不限", @"蜂花护发素", @"潘婷护发素", @"沙宣护发素", @"飘柔护发素", @"欧莱雅护发素", @"百雀羚护发素", @"迪彩护发素", @"资生堂护发素", @"露华浓护发素"];
     NSArray *noLimit = @[@"不限"];
-    _data1 = [NSMutableArray arrayWithObjects:@{@"title":@"不限", @"data":noLimit},@{@"title":@"沐浴露",@"data":food}, @{@"title":@"护发素", @"data":travel}, @{@"title":@"洗面奶",@"data":food},@{@"title":@"啫喱水",@"data":travel},@{@"title":@"BB霜",@"data":food},@{@"title":@"眼霜",@"data":travel},@{@"title":@"指甲油",@"data":food},@{@"title":@"卸甲油",@"data":travel},nil];
     
-    _data2 = [NSMutableArray arrayWithObjects:@"不限", @"从低到高", @"从高到低",nil];
-    _data3 = [NSMutableArray arrayWithObjects:@"不限",@"最少",@"最多",nil];
+    _data1 = [NSMutableArray array];
+    
+    for (int i=0; i<[titelDic[@"info"] count]+1; i++) {
+        if (i==0) {
+            [_data1 addObject:@{@"title":@"不限",@"data":noLimit}];
+        }else{
+            NSMutableArray *array = [NSMutableArray array];
+            
+            for (int y = 0; y< [titelDic[@"info"][i-1][@"sub"] count]+1; y++) {
+                if (y==0){
+                    [array addObject:@"不限"];
+                }else{
+                    [array addObject:titelDic[@"info"][i-1][@"sub"][y-1][@"name"]];
+                    //存放二级
+                    [_towDataDic setValue:titelDic[@"info"][i-1][@"sub"][y-1][@"category_id"] forKey:titelDic[@"info"][i-1][@"sub"][y-1][@"name"]];
+                }
+            }
+            [food addObject:titelDic[@"info"][i-1][@"name"]];
+            [_data1 insertObject:@{@"title":food[i-1],@"data":array} atIndex:i];
+            
+        }
+    }
+    //存放一级
+    for (NSDictionary *dic in titelDic[@"info"]) {
+        [_dataDic setValue:dic[@"category_id"] forKey:dic[@"name"]];
+    }
+    
+    NSLog(@"%@",_dataDic);
+    
+    
+    //_data1 = [NSMutableArray arrayWithObjects:@{@"title":@"不限", @"data":noLimit},@{@"title":@"沐浴露",@"data":food}, @{@"title":@"护发素", @"data":travel}, @{@"title":@"洗面奶",@"data":food},@{@"title":@"啫喱水",@"data":travel},@{@"title":@"BB霜",@"data":food},@{@"title":@"眼霜",@"data":travel},@{@"title":@"指甲油",@"data":food},@{@"title":@"卸甲油",@"data":travel},nil];
+    NSLog(@"%@",_data1);
+    _data2 = [NSMutableArray arrayWithObjects:@"不限", @"价格降序", @"价格升序",nil];
+    _data3 = [NSMutableArray arrayWithObjects:@"不限",@"点赞降序",@"点赞升序",nil];
     
     JSDropDownMenu *menu = [[JSDropDownMenu alloc] initWithOrigin:CGPointMake(0, 0) andHeight:hua_scale(30)];
-    //menu.indicatorColor = [UIColor colorWithRed:175.0f/255.0f green:175.0f/255.0f blue:175.0f/255.0f alpha:1.0];
+    
     menu.separatorColor = [UIColor colorWithRed:210.0f/255.0f green:210.0f/255.0f blue:210.0f/255.0f alpha:1.0];
     menu.textColor = [UIColor colorWithRed:83.f/255.0f green:83.f/255.0f blue:83.f/255.0f alpha:1.0f];
     //图标颜色
     menu.indicatorColor = HUAColor(0x4da800);
-    //    //menu.separatorColor = [UIColor grayColor];
-    //    menu.textColor = HUAColor(0x4da800);
+    
     menu.dataSource = self;
     menu.delegate = self;
     
-    [self.view addSubview:menu];
+    [menu setGetDataBlock:^(NSString *leftText, NSString *leftSubText, NSString *midstText, NSString *lastText) {
+        
 
-//    HUAMenuViewController *men = [[HUAMenuViewController alloc]init];
-//    [self.view addSubview:men.view];
-//    
-//    HUAChooseView *view = [[HUAChooseView alloc]initWithFrame:CGRectMake(0, 0, screenWidth, chooseViewHeight)];
-//    view.layer.borderColor = HUAColor(0xd2d2d2).CGColor;
-//    view.layer.borderWidth = 1;
-//    [self.view addSubview:view];
-//    [self.view bringSubviewToFront:view];
+        if (leftText.length != 0) {
+            _leftText = leftText;
+            return ;
+        }else if (leftSubText.length !=0){
+            _leftSubText = leftSubText;
+        }else if (midstText.length !=0){
+            _midstText = midstText;
+        }else if (lastText.length !=0){
+            _rightText = lastText;
+        }
+        
+        
+        AFHTTPRequestOperationManager *manager = [[AFHTTPRequestOperationManager alloc] init];
+        NSString *url =[HUA_URL stringByAppendingPathComponent:@"product/product_list"];
+        NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
+        if (![_leftText isEqualToString:@"不限"] && _leftText != nil) {
+            parameters[@"parent_id"] =_dataDic[_leftText];
+        }
+        if (![_leftSubText isEqualToString:@"不限"] && _leftSubText != nil) {
+            parameters[@"category_id"] =_towDataDic[_leftSubText];
+        }
+        if (![_midstText isEqualToString:@"不限"] && _midstText != nil) {
+            parameters[@"order_price"] =[_midstText isEqualToString:@"价格降序"]? @"desc":@"asc";
+        }
+        if (![_rightText isEqualToString:@"不限"] && _rightText != nil) {
+            parameters[@"order_praise"] =[_midstText isEqualToString:@"点赞降序"]? @"desc":@"asc";
+        }
+        
+        
+        [manager GET:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+            HUALog(@"%@",responseObject);
+            if ([[responseObject objectForKey:@"info"] isKindOfClass:[NSString class]]) {
+                [HUAMBProgress MBProgressOnlywithLabelText:[responseObject objectForKey:@"info"]];
+                return ;
+            }
+
+            self.productArray = nil;
+            self.productArray = [HUADataTool getProductArray:responseObject];
+            [self.collectionView reloadData];
+        } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
+            HUALog(@"%@",error);
+        }];
+        
+        
+    }];
+    [self.view addSubview:menu];
+    
+    
 }
 
 #pragma --设置导航栏的BarButtonItem
@@ -265,9 +372,10 @@ static NSString * const reuseIdentifier = @"cell";
 //点击collectionView触发方法
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     HUAShopProduct *product = self.productArray[indexPath.row];
-
+    
     HUAProductDetailController *productVC = [HUAProductDetailController new];
     productVC.product_id = product.product_id;
+    productVC.shop_id = product.shop_id;
     [self.navigationController pushViewController:productVC animated:YES];
     
     

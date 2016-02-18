@@ -47,6 +47,7 @@
 #import "HUAConstRowHeight.h"
 #import "HUAUserDefaults.h"
 #import "HATransparentView.h"
+
 //常用宏定义
 //颜色
 #define HUAColor(rgbValue)[UIColor colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 green:((float)((rgbValue & 0xFF00) >> 8))/255.0 blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
@@ -86,12 +87,14 @@
 //接口
 //#define HUA_URL @"http://120.24.182.25/huahua_api/index.php"
 //#define HUA_URL @"http://192.168.8.55/huahua_api/index.php/"
-#define HUA_URL @"http://192.168.8.142/huahua_api/index.php"
-//#define HUA_URL @"http://112.74.22.87/huahua_api/index.php"
+//#define HUA_URL @"http://192.168.8.142/huahua_api/index.php"
+#define HUA_URL @"http://112.74.22.87/huahua_api/index.php"
 #define Product_list @"general/product_list"
 #define Service_list @"service/service_list"
 #define Master_list @"master/master_list"
 
+//获取当前网络
+#define kNetworkNotReachability ([AFNetworkReachabilityManager sharedManager].networkReachabilityStatus <= 0)
 
 
 #pragma mark ---

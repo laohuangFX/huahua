@@ -114,7 +114,8 @@
     [HUAHttpTool GETWithTokenAndUrl:url params:parameters success:^(id responseObject) {
         HUALog(@"%@",responseObject);
         self.serviceArray = responseObject[@"info"][@"service"];
-        self.masterDetailInfo = [HUAMasterDetailInfo mj_objectWithKeyValues:responseObject[@"info"][@"item"]];
+        self.masterDetailInfo = [HUAMasterDetailInfo getMasterDetailInfoWithDictionary:responseObject];
+        //self.masterDetailInfo = [HUAMasterDetailInfo mj_objectWithKeyValues:responseObject[@"info"][@"item"]];
         self.mienArray = [HUADataTool mienArray:responseObject];
         HUALog(@"%@",self.mienArray);
         self.acheivementArray = [HUADataTool achievementArray:responseObject];
@@ -227,7 +228,7 @@
     }else {
         HUAMakeAnAppointmentViewController *vc = [HUAMakeAnAppointmentViewController new];
         vc.master_id = self.master_id;
-        vc.model = self.detailInfo;
+        vc.model = self.masterDetailInfo;
         vc.shop_id = self.shop_id;
         NSLog(@"%@",vc.master_id);
         [self.navigationController pushViewController:vc animated:YES];

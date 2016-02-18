@@ -67,9 +67,11 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [self getData];
     //获取会员信息
     [self getMembers];
+    
+    [self getData];
+
 }
 
 - (void)viewDidLoad {
@@ -255,7 +257,8 @@
                 vc.membersMoney = self.membersInformation[@"info"][@"money"];
             }
             
-            [self.navigationController pushViewController:vc animated:YES];        }
+            [self.navigationController pushViewController:vc animated:YES];
+        }
         
     }];
 
