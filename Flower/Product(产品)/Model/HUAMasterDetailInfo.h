@@ -18,6 +18,8 @@
 
 @property (nonatomic, strong) NSString *brief;
 
+@property (nonatomic, strong) NSNumber *have_praised;
+
 + (id)getMasterDetailInfoWithDictionary:(NSDictionary *)dic;
 
 @property (nonatomic, strong) NSArray *mien;

@@ -5,6 +5,8 @@
 //  Created by 程召华 on 16/1/4.
 //  Copyright © 2016年 readchen.com. All rights reserved.
 //
+#define sortViewHeight  (64+hua_scale(28))
+
 #define App_index @"general/app_index"
 #import "HUAHomeController.h"
 #import "UIBarButtonItem+Extension.h"
@@ -13,10 +15,6 @@
 #import "HUAShopInfo.h"
 #import "HUAHomeHeaderView.h"
 #import "HUASectionHeaderView.h"
-#import "HUAHomeSortDropdownMenuController.h"
-#import "HUAShopFrontPageController.h"
-#import "HUAVipShopFrontPageController.h"
-#import "HUAMyController.h"
 #import "HUAVipShopFrontPageController.h"
 #import "HUAMyController.h"
 #import "HUASortView.h"
@@ -26,22 +24,41 @@
 #import "HUASelectCityView.h"
 #import "HUAGetCity.h"
 #import "EmojiBool.h"
+#import <CoreLocation/CoreLocation.h>
 
 static NSString *identifier = @"cell";
-@interface HUAHomeController ()<ClickDelegate, UIScrollViewDelegate,UITabBarControllerDelegate,HUASortMenuDelegate,HomeHeaderViewDelegate,UITextFieldDelegate>
-@property (nonatomic, strong) NSArray *shopsArray;
+
+@interface HUAHomeController ()<ClickDelegate, UIScrollViewDelegate,UITabBarControllerDelegate,HUASortMenuDelegate,HomeHeaderViewDelegate,UITextFieldDelegate,CLLocationManagerDelegate>
+//@property (nonatomic, strong) NSArray *shopsArray;
 @property (nonatomic, strong) NSMutableArray *shopsMutableArray;
+@property (nonatomic, strong) NSMutableArray *shopsArray;
+
 @property (nonatomic, assign) NSUInteger page;
 @property (nonatomic, strong) NSArray *bannerArray;
 @property (nonatomic, strong) NSArray *categoryArray;
 @property (nonatomic, strong) NSString *order;
 @property (nonatomic, strong) HUASectionHeaderView *header;
+@property (nonatomic, strong) HUASortView *sortView;
 @property (nonatomic, strong) UITextField *searchBar;
 @property (nonatomic, strong) UIButton *chooseCity;
 @property (nonatomic, strong) HUASelectCityView *selectView;
+
+
+@property (nonatomic, strong) CLLocationManager * mgr;
+@property (nonatomic, assign) CLLocationCoordinate2D currentCoord;
+@property (nonatomic, strong) NSString *currentCity;
+
 @end
 
 @implementation HUAHomeController
+- (HUASortView *)sortView {
+    if (!_sortView) {
+        _sortView = [[HUASortView alloc] initWithFrame:CGRectMake(0, screenHeight, screenWidth, screenHeight-sortViewHeight) ];
+        _sortView.delegate = self;
+    }
+    return _sortView;
+}
+
 - (HUASectionHeaderView *)header {
     if (!_header) {
         _header = [[HUASectionHeaderView alloc] initWithFrame:CGRectMake(0, 0, screenWidth, sortButtonHeight)];
@@ -53,39 +70,30 @@ static NSString *identifier = @"cell";
 
 - (NSArray *)shopsArray {
     if (!_shopsArray) {
-        _shopsArray = [NSArray array];
+        _shopsArray = [NSMutableArray array];
     }
     return _shopsArray;
-}
-
-- (NSArray *)shopsMutableArray {
-    if (!_shopsMutableArray) {
-        _shopsMutableArray = [NSMutableArray array];
-    }
-    return _shopsMutableArray;
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     //设置tableView没有分割线
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    self.tableView.showsVerticalScrollIndicator = NO;
+    //self.tableView.showsVerticalScrollIndicator = NO;
     self.tabBarController.delegate = self;
-    self.page = 1;
-    [self getData];
+    self.page = 0;
     //设置导航栏
     [self setNavigationBar];
     // 集成上拉刷新控件
     [self setupUpRefresh];
     // 集成下拉刷新控件
     [self setupDownRefresh];
-    
-   
-    
+
+    //定位
+    [self getAddress];
 }
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    
 }
 - (void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
@@ -95,17 +103,20 @@ static NSString *identifier = @"cell";
         [self.selectView dismissView];
     }
 }
+//- (void)getData{
+//    
+//}
+
 
 - (void)getData {
-
+    
     NSString *url = [HUA_URL stringByAppendingPathComponent:App_index];
     NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
     parameter[@"order"] = self.order;
     parameter[@"per_page"] = @(self.page);
     [HUAHttpTool POST:url params:parameter success:^(id responseObject) {
         NSArray *shopArray = [HUADataTool homeShop:responseObject];
-        [self.shopsMutableArray addObjectsFromArray:shopArray];
-        self.shopsArray = [self.shopsMutableArray copy];
+        [self.shopsArray addObjectsFromArray:shopArray];
         self.categoryArray = [HUADataTool getCategoryList:responseObject];
         HUALog(@"self.shopsArray  %lu",(unsigned long)self.shopsArray.count);
         NSArray *array = [HUADataTool homeBanner:responseObject];
@@ -116,21 +127,20 @@ static NSString *identifier = @"cell";
     } failure:^(NSError *error) {
         [HUAMBProgress MBProgressFromWindowWithLabelText:@"请检查网络设置"];
     }];
-
-}
- // 集成下拉刷新控件
-- (void)setupDownRefresh {
     
+}
+// 集成下拉刷新控件
+- (void)setupDownRefresh {
     self.tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(loadNewData)];
     
     // 马上进入刷新状态
-   // [self.tableView.mj_header beginRefreshing];
-
+    [self.tableView.mj_header beginRefreshing];
+    
 }
- // 集成上拉刷新控件
+// 集成上拉刷新控件
 - (void)setupUpRefresh {
     self.tableView.mj_footer = [MJRefreshBackNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(loadMoreData)];
-   
+    
 }
 
 - (void)loadNewData {
@@ -139,15 +149,20 @@ static NSString *identifier = @"cell";
         [HUAMBProgress MBProgressOnlywithLabelText:@"没有更多数据了"];
         [self.tableView.mj_header endRefreshing];
         return;
+    }else if (self.order) {
+        self.page--;
+        [HUAMBProgress MBProgressOnlywithLabelText:@"没有更多数据了"];
+        [self.tableView.mj_header endRefreshing];
+        return;
     }
+    
     NSString *url = [HUA_URL stringByAppendingPathComponent:App_index];
     NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
     parameter[@"order"] = self.order;
     parameter[@"per_page"] = @(self.page);
     [HUAHttpTool POST:url params:parameter success:^(id responseObject) {
         NSArray *shopArray = [HUADataTool homeShop:responseObject];
-        [self.shopsMutableArray insertObjects:shopArray atIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, shopArray.count)]];
-        self.shopsArray = [self.shopsMutableArray copy];
+        [self.shopsArray insertObjects:shopArray atIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, shopArray.count)]];
         self.categoryArray = [HUADataTool getCategoryList:responseObject];
         HUALog(@"%@",self.categoryArray[0]);
         NSArray *array = [HUADataTool homeBanner:responseObject];
@@ -159,39 +174,15 @@ static NSString *identifier = @"cell";
     } failure:^(NSError *error) {
         [HUAMBProgress MBProgressFromWindowWithLabelText:@"请检查网络设置"];
         [self.tableView.mj_header endRefreshing];
+        self.page--;
     }];
-
-   //    [HUAHttpTool POSTWithTokenAndUrl:url params:parameter success:^(id responseObject) {
-//        self.shopsArray = [HUADataTool homeShop:responseObject];
-//        self.categoryArray = [HUADataTool getCategoryList:responseObject];
-//        HUALog(@"%@",self.categoryArray[0]);
-//        NSArray *array = [HUADataTool homeBanner:responseObject];
-//        HUAShopInfo *banner = array.firstObject;
-//        self.bannerArray = banner.bannerArr;
-//        [self createHeaderView:self.bannerArray];
-//        [self.tableView reloadData];
-//        [self.tableView.mj_header endRefreshing];
-//    } failure:^(NSError *error) {
-//        [self.tableView.mj_header endRefreshing];
-//        [HUAMBProgress MBProgressFromWindowWithLabelText:@"请检查网络设置"];
-////        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:[[UIApplication sharedApplication].windows lastObject] animated:YES];
-////        dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
-////            hud.labelText = @"请检查网络设置";
-////            sleep(1);
-////            dispatch_async(dispatch_get_main_queue(), ^{
-////                [MBProgressHUD hideHUDForView:[[UIApplication sharedApplication].windows lastObject] animated:YES];
-////            });
-////        });
-//
-//        HUALog(@"%@",error.userInfo[@"error"]);
-//    }];
 }
 
 - (void)loadMoreData {
     self.page++;
     if (self.page > 4) {
         [HUAMBProgress MBProgressOnlywithLabelText:@"没有更多数据了"];
-        [self.tableView.mj_header endRefreshing];
+        [self.tableView.mj_footer endRefreshing];
         return;
     }
     NSString *url = [HUA_URL stringByAppendingPathComponent:App_index];
@@ -200,9 +191,7 @@ static NSString *identifier = @"cell";
     parameter[@"per_page"] = @(self.page);
     [HUAHttpTool POST:url params:parameter success:^(id responseObject) {
         NSArray *shopArray = [HUADataTool homeShop:responseObject];
-        NSMutableArray *mutabelArray = [NSMutableArray array];
-        [mutabelArray addObjectsFromArray:shopArray];
-        self.shopsArray = [mutabelArray copy];
+        [self.shopsArray addObjectsFromArray:shopArray];
         self.categoryArray = [HUADataTool getCategoryList:responseObject];
         HUALog(@"%@",self.categoryArray[0]);
         NSArray *array = [HUADataTool homeBanner:responseObject];
@@ -212,13 +201,14 @@ static NSString *identifier = @"cell";
         [self.tableView reloadData];
         [self.tableView.mj_footer endRefreshing];
     } failure:^(NSError *error) {
+        self.page--;
         [HUAMBProgress MBProgressFromWindowWithLabelText:@"请检查网络设置"];
         [self.tableView.mj_footer endRefreshing];
     }];
 }
 
 - (BOOL)tabBarController:( UITabBarController *)tabBarController shouldSelectViewController :( UIViewController *)viewController {
-    HUALog(@"asdasdasd");
+    
     if ([viewController isKindOfClass:[HUAMyController class]]) {
         return NO;
     }
@@ -272,7 +262,8 @@ static NSString *identifier = @"cell";
         _chooseCity.height = 44;
         [_chooseCity setImage:[UIImage imageNamed:@"select"] forState:UIControlStateNormal];
         [_chooseCity setImage:[UIImage imageNamed:@"select_green"] forState:UIControlStateSelected];
-        [_chooseCity setTitle:@"广州市" forState:UIControlStateNormal];
+       
+        [_chooseCity setTitle: [[NSUserDefaults standardUserDefaults]objectForKey:@"currentCity"] forState:UIControlStateNormal];
         [_chooseCity setTitleColor:HUAColor(0x575757) forState:UIControlStateNormal];
         [_chooseCity setTitleColor:HUAColor(0x4da800) forState:UIControlStateSelected];
         
@@ -299,9 +290,11 @@ static NSString *identifier = @"cell";
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:logoIcon];
     //设置右边选择城市按钮
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:self.chooseCity];
+
 }
 
 - (void)setSearchNav{
+    self.tableView.scrollEnabled = NO;
     self.navigationItem.leftBarButtonItems = @[];
     
     self.searchBar.width = hua_scale(300.0);
@@ -314,6 +307,11 @@ static NSString *identifier = @"cell";
 //选择城市按钮
 #pragma --选择城市按钮的点击事件
 - (void)chooseCity:(UIButton *)chooseCity{
+
+    UIButton * button =  [self.header viewWithTag:1000];
+    button.selected = NO;
+    self.sortView.y = screenHeight;
+     [self.sortView removeFromSuperview];
     chooseCity.selected = !chooseCity.selected;
     if (chooseCity.selected == YES) {
         self.selectView = [[HUASelectCityView alloc]initWithFrame:self.view.bounds];
@@ -323,6 +321,7 @@ static NSString *identifier = @"cell";
             chooseCity.selected = NO;
             wself.tableView.scrollEnabled = YES;
             if (cityName.length != 0) {
+                wself.currentCity = cityName;
                 [chooseCity setTitle:cityName forState:UIControlStateNormal];
             }
             
@@ -338,14 +337,16 @@ static NSString *identifier = @"cell";
     
     HUALog(@"....");
 }
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
 #pragma mark - textFiled delegate
 
 
 - (void)textFieldDidBeginEditing:(UITextField *)textField{
+    UIButton * button =  [self.header viewWithTag:1000];
+    button.selected = NO;
+    [UIView animateWithDuration:0.1 animations:^{
+        self.sortView.y = screenHeight;
+    }];
+    [self.sortView removeFromSuperview];
     NSLog(@"beginEditing");
     UIView *blackView  = [[UIView alloc]initWithFrame:self.view.bounds];
     blackView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.8];
@@ -390,7 +391,7 @@ static NSString *identifier = @"cell";
     return YES;
 }
 - (void)dismissBlackView{
-    
+    self.tableView.scrollEnabled = YES;
     UIView *blackView = [self.view viewWithTag:1001];
     if (blackView == nil) {
         return;
@@ -399,12 +400,100 @@ static NSString *identifier = @"cell";
     [self.searchBar resignFirstResponder];
     self.searchBar.text = @"";
     [UIView animateWithDuration:0.5 animations:^{
-        blackView.alpha = 0;
+        blackView.alpha = 0.5;
     } completion:^(BOOL finished) {
         [blackView removeFromSuperview];
     }];
 }
 
+#pragma mark 定位
+- (void)setCurrentCity:(NSString *)currentCity{
+    _currentCity = currentCity;
+    NSUserDefaults *userD  = [NSUserDefaults standardUserDefaults];
+    [userD setObject:currentCity forKey:@"currentCity"];
+    self.currentCoord = [self getCoord:currentCity];
+    
+}
+- (CLLocationCoordinate2D)getCoord:(NSString *)city{
+//    NSString *oreillyAddress = @"1005 Gravenstein Highway North, Sebastopol, CA 95472, USA";
+    CLGeocoder *myGeocoder = [[CLGeocoder alloc] init];
+    __block CLLocationCoordinate2D coord;
+    [myGeocoder geocodeAddressString:city completionHandler:^(NSArray *placemarks, NSError *error) {
+        if ([placemarks count] > 0 && error == nil) {
+            NSLog(@"Found %lu placemark(s).", (unsigned long)[placemarks count]);
+            CLPlacemark *firstPlacemark = [placemarks objectAtIndex:0];
+            NSLog(@"Longitude = %f", firstPlacemark.location.coordinate.longitude);
+            NSLog(@"Latitude = %f", firstPlacemark.location.coordinate.latitude);
+            coord = firstPlacemark.location.coordinate;
+        }
+        else if ([placemarks count] == 0 && error == nil) {
+            NSLog(@"Found no placemarks.");
+        } else if (error != nil) {
+            NSLog(@"An error occurred = %@", error);
+        }  
+    }];
+    return coord;
+}
+- (void)getAddress{
+    self.mgr = [[CLLocationManager alloc]init];
+    self.mgr.delegate = self;
+    //用于判断当前是ios7.0还是ios8.0
+    if ([[UIDevice currentDevice].systemVersion doubleValue] >= 8.0) {
+        //NSLocationAlwaysUsageDescription   允许在前后台都可以授权
+//        NSLocationWhenInUseUsageDescription   允许在前台授权
+        //手动授权
+        
+//        主动请求前后台授权
+        [self.mgr requestAlwaysAuthorization];
+        
+        //主动请求前台授权
+//                [self.mgr requestWhenInUseAuthorization];
+    }else {
+        [self.mgr startUpdatingLocation];
+    }
+
+}
+//判断授权状态
+- (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status{
+    
+    if (status == kCLAuthorizationStatusAuthorizedAlways || status == kCLAuthorizationStatusAuthorizedWhenInUse) {
+        //开启定位
+        [self.mgr startUpdatingLocation];
+        // 定位的精确度
+        self.mgr.desiredAccuracy = kCLLocationAccuracyBestForNavigation;
+//        //每隔一点距离定位一次 （单位：米）
+//        self.mgr.distanceFilter = 10;
+    }
+    
+}
+//获取定位的位置信息
+- (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray<CLLocation *> *)locations{
+    NSLog(@"%@",locations);
+    //获取我当前的位置
+    CLLocation *location = [locations lastObject];
+    
+    //当前经纬度
+    self.currentCoord  = location.coordinate;
+    NSLog(@" **************** coord.x = %f,coord.y = %f ",self.currentCoord.latitude,self.currentCoord.longitude);
+    //地理反编码
+    //创建反编码对象
+    CLGeocoder *geocoder = [[CLGeocoder alloc]init];
+    //调用方法，使用位置反编码对象获取位置信息
+    [geocoder reverseGeocodeLocation:location completionHandler:^(NSArray<CLPlacemark *> * _Nullable placemarks, NSError * _Nullable error) {
+        for (CLPlacemark *place in placemarks) {
+            NSLog(@" **************** name = %@,thorough = %@ ,locality = %@",place.name,place.thoroughfare,place.locality);
+            [_chooseCity setTitle:place.locality forState:UIControlStateNormal];
+            _chooseCity.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
+            [_chooseCity setTitleEdgeInsets:UIEdgeInsetsMake(0, -(_chooseCity.imageView.frame.size.width), 0, 0)];
+            [_chooseCity setImageEdgeInsets:UIEdgeInsetsMake(0, (_chooseCity.titleLabel.frame.size.width+20), 0, 0)];
+        }
+    }];
+    
+    //停止定位
+     [self.mgr stopUpdatingLocation];
+}
+
+/*
 #pragma mark - Table view data source
 
 
@@ -439,80 +528,113 @@ static NSString *identifier = @"cell";
         [self.navigationController pushViewController:vipFrontPageVC animated:YES];
     
 }
+*/
 
-
+#pragma mark --- 创建分区头视图
 //创建分区头视图
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     return self.header;
-
+    
 }
 
 - (void)clickSortButton:(UIButton *)sender {
     UIWindow *window = [[UIApplication sharedApplication].windows lastObject];
     if (sender.selected == YES) {
-        if (self.tableView.contentOffset.y != hua_scale(250)) {
-        [self.tableView setContentOffset:CGPointMake(0, hua_scale(250)) animated:YES];
-            HUASortView *sortView = [[HUASortView alloc] initWithFrame:CGRectMake(0, SCREEN_HEIGHT, SCREEN_WIDTH, 0) ];
-            sortView.delegate = self;
-            
-            [window addSubview:sortView];
+        if (self.tableView.contentOffset.y == 0) {
+            [self.tableView setContentOffset:CGPointMake(0, hua_scale(250)) animated:YES];
+            [window addSubview:self.sortView];
             [UIView animateWithDuration:0 delay:0.5 options:UIViewAnimationOptionLayoutSubviews animations:^{
-                sortView.frame = CGRectMake(0, 64+hua_scale(28), SCREEN_HEIGHT, 1000);
+                self.sortView.y = sortViewHeight;
+                
             } completion:nil];
             
         } else {
             [self.tableView setContentOffset:CGPointMake(0, hua_scale(250)) animated:YES];
-            HUASortView *sortView = [[HUASortView alloc] initWithFrame:CGRectMake(0, SCREEN_HEIGHT, SCREEN_WIDTH, 0) ];
-            sortView.delegate = self;
-            
-            [window addSubview:sortView];
+            [window addSubview:self.sortView];
             [UIView animateWithDuration:0 delay:0 options:UIViewAnimationOptionLayoutSubviews animations:^{
-                sortView.frame = CGRectMake(0, 64+hua_scale(28), SCREEN_HEIGHT, 1000);
+                self.sortView.y = sortViewHeight;
             } completion:nil];
-            
-        }
-    
-    }else {
         
-        for (UIView *view in [window subviews]) {
-            if ([view isKindOfClass:[HUASortView class]]) {
-                [view removeFromSuperview];
-            }
         }
+    }else {
+        [UIView animateWithDuration:0.1 animations:^{
+            self.sortView.y = screenHeight;
+        }];
+          [self.sortView removeFromSuperview];
+        
     }
 }
 
-- (void)tap:(UITapGestureRecognizer *)tap {
+
+
+- (void)sortMenuDidDismiss:(HUASortViewButtonType)buttonType {
+
     UIButton * button =  [self.header viewWithTag:1000];
     button.selected = NO;
-    for (UIView *view in [[[UIApplication sharedApplication].windows lastObject] subviews]) {
-        if ([view isKindOfClass:[HUASortView class]]) {
-            [view removeFromSuperview];
-        }
+
+    [self.shopsArray removeAllObjects];
+    self.page = 1;
+    switch (buttonType) {
+        case HUASortViewButtonTypePopularity:
+            self.order = @"bill_count_desc";
+            [HUAMBProgress MBProgressOnlywithLabelText: @"人气排序"];
+            break;
+        case HUASortViewButtonTypeDistance:
+            
+            break;
+        case HUASortViewButtonTypeShopName:
+            self.order = @"shopname_desc";
+            [HUAMBProgress MBProgressOnlywithLabelText: @"名字排序"];
+            break;
+        default:
+            break;
     }
+    [self getData];
+    
     
 }
 
-- (void)sortMenuDidDismiss:(UIButton *)sender {
-    if (sender.tag == 10086) {
-       self.order = @"bill_count_desc";
-        [self getData];
-        [HUAMBProgress MBProgressOnlywithLabelText: @"人气排序"];
+
+#pragma mark - Table view data source
+
+
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    
+    return self.shopsArray.count;
+}
+
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    HUAShopTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
+    if (!cell) {
+        cell = [[HUAShopTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
     }
-    if (sender.tag == 10087) {
-        HUALog(@"点击了距离排序");
+    //设置cell的背景颜色
+    cell.backgroundColor = HUAColor(0xeeeeee);
+    //设置点击cell不变颜色
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    cell.shopInfo = self.shopsArray[indexPath.row];
+    return cell;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    HUAUserDetailInfo *detailInfo = [HUAUserDefaults getUserDetailInfo];
+    HUAVipShopFrontPageController *vipFrontPageVC = [[HUAVipShopFrontPageController alloc] init];
+    HUAShopInfo *shopInfo = self.shopsArray[indexPath.row];
+    vipFrontPageVC.shop_id = shopInfo.shop_id;
+    vipFrontPageVC.user_id = detailInfo.user_id;
+    vipFrontPageVC.shopName = shopInfo.shopname;
+    vipFrontPageVC.block  = ^(NSUInteger prase_count){
+        shopInfo.praise_count = [NSString stringWithFormat:@"%lu",(unsigned long)prase_count];
         [self.tableView reloadData];
-    }
-    if (sender.tag == 10088) {
-        self.order = @"shopname_desc";
-        [self getData];
-        [HUAMBProgress MBProgressOnlywithLabelText: @"名字排序"];
-    }
-    
-    UIButton * button =  [self.header viewWithTag:1000];
-    button.selected = NO;
+    };
+    [self.navigationController pushViewController:vipFrontPageVC animated:YES];
     
 }
+
+
 
 
 //分区高度

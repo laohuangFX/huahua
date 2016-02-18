@@ -15,6 +15,10 @@
 @property (nonatomic, strong) NSString *vip_discount;
 @property (nonatomic, strong) NSString *size;
 @property (nonatomic, strong) NSString *desc;
+@property (nonatomic, strong) NSString *praise_count;
+@property (nonatomic, strong) NSString *product_id;
+@property (nonatomic, strong) NSNumber *have_praised;
+@property (nonatomic, strong) NSString *shop_id;
 
 
 + (id)getProductDetailInfoWithDictionary:(NSDictionary *)dic;

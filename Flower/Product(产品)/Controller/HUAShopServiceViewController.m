@@ -212,7 +212,11 @@
 -(BOOL)haveRightTableViewInColumn:(NSInteger)column{
     
     if (column==0) {
+<<<<<<< HEAD
         return NO;
+=======
+        return YES;
+>>>>>>> 161e90b72aeef0bf6cfcae085d89524d0765c3da
     }
     return NO;
 }
@@ -223,7 +227,11 @@
 -(CGFloat)widthRatioOfLeftColumn:(NSInteger)column{
     
     if (column==0) {
+<<<<<<< HEAD
         return 1;
+=======
+        return 0.5;
+>>>>>>> 161e90b72aeef0bf6cfcae085d89524d0765c3da
     }
     
     return 1;

@@ -93,6 +93,8 @@
 #define Service_list @"service/service_list"
 #define Master_list @"master/master_list"
 
+//获取当前网络
+#define kNetworkNotReachability ([AFNetworkReachabilityManager sharedManager].networkReachabilityStatus <= 0)
 
 
 #pragma mark ---

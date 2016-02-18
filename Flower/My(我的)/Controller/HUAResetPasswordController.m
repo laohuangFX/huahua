@@ -48,7 +48,7 @@
     self.secondPassWordTF.secureTextEntry = YES;
     [self.view addSubview:self.secondPassWordTF];
     
-    CGRect makeSureFrame = CGRectMake(hua_scale(20), hua_scale(125), hua_scale(screenWidth-hua_scale(40)), hua_scale(40));
+    CGRect makeSureFrame = CGRectMake(hua_scale(20), hua_scale(125), screenWidth-hua_scale(40), hua_scale(40));
     UIButton *makeSureButton = [UIButton buttonWithFrame:makeSureFrame title:@"确认" image:nil font:hua_scale(15) titleColor:HUAColor(0xffffff)];
     [makeSureButton addTarget:self action:@selector(makeSure:) forControlEvents:UIControlEventTouchUpInside];
     makeSureButton.backgroundColor = HUAColor(0x4da800);

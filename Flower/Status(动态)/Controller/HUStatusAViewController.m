@@ -29,7 +29,14 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+<<<<<<< HEAD
 
+=======
+    
+   
+    
+    
+>>>>>>> 161e90b72aeef0bf6cfcae085d89524d0765c3da
     NSArray *vcsArray = [self.navigationController viewControllers];
     NSInteger vcCount = vcsArray.count;
     if (vcCount == 1) {

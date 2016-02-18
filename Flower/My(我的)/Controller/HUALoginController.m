@@ -76,7 +76,7 @@
 #pragma mark -- 登录页面搭建
 - (void)setLoginPage {
     self.topImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, screenWidth, hua_scale(114))];
-    self.topImageView.image = [UIImage imageNamed:@"12"];
+    self.topImageView.image = [UIImage imageNamed:@"background"];
     [self.view addSubview:self.topImageView];
     
     self.headPortraitImageView = [[UIImageView alloc] initWithFrame:CGRectMake(hua_scale(130), hua_scale(84), hua_scale(60), hua_scale(60))];
