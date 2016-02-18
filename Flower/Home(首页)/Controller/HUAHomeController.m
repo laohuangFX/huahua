@@ -91,6 +91,7 @@ static NSString *identifier = @"cell";
 
     //定位
     [self getAddress];
+    self.currentCity = [[NSUserDefaults standardUserDefaults] objectForKey:@"currentCity"];
 }
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
@@ -114,6 +115,14 @@ static NSString *identifier = @"cell";
     NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
     parameter[@"order"] = self.order;
     parameter[@"per_page"] = @(self.page);
+    
+    if (self.currentCity != nil && self.currentCity.length != 0) {
+        parameter[@"regoin_pid"] = self.currentCity;
+        parameter[@"x"] = [NSNumber numberWithDouble: self.currentCoord.latitude];
+        parameter[@"y"] = [NSNumber numberWithDouble: self.currentCoord.longitude];
+    }
+   
+    
     [HUAHttpTool POST:url params:parameter success:^(id responseObject) {
         NSArray *shopArray = [HUADataTool homeShop:responseObject];
         [self.shopsArray addObjectsFromArray:shopArray];
@@ -160,6 +169,13 @@ static NSString *identifier = @"cell";
     NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
     parameter[@"order"] = self.order;
     parameter[@"per_page"] = @(self.page);
+    
+    if (self.currentCity != nil && self.currentCity.length != 0) {
+        parameter[@"regoin_pid"] = self.currentCity;
+        parameter[@"x"] = [NSNumber numberWithDouble: self.currentCoord.latitude];
+        parameter[@"y"] = [NSNumber numberWithDouble: self.currentCoord.longitude];
+    }
+    
     [HUAHttpTool POST:url params:parameter success:^(id responseObject) {
         NSArray *shopArray = [HUADataTool homeShop:responseObject];
         [self.shopsArray insertObjects:shopArray atIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, shopArray.count)]];
@@ -189,6 +205,13 @@ static NSString *identifier = @"cell";
     NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
     parameter[@"order"] = self.order;
     parameter[@"per_page"] = @(self.page);
+    
+    if (self.currentCity != nil && self.currentCity.length != 0) {
+        parameter[@"regoin_pid"] = self.currentCity;
+        parameter[@"x"] = [NSNumber numberWithDouble: self.currentCoord.latitude];
+        parameter[@"y"] = [NSNumber numberWithDouble: self.currentCoord.longitude];
+    }
+    
     [HUAHttpTool POST:url params:parameter success:^(id responseObject) {
         NSArray *shopArray = [HUADataTool homeShop:responseObject];
         [self.shopsArray addObjectsFromArray:shopArray];
@@ -323,6 +346,8 @@ static NSString *identifier = @"cell";
             if (cityName.length != 0) {
                 wself.currentCity = cityName;
                 [chooseCity setTitle:cityName forState:UIControlStateNormal];
+                wself.page = 1;
+                [wself getData];
             }
             
         };
@@ -482,10 +507,13 @@ static NSString *identifier = @"cell";
     [geocoder reverseGeocodeLocation:location completionHandler:^(NSArray<CLPlacemark *> * _Nullable placemarks, NSError * _Nullable error) {
         for (CLPlacemark *place in placemarks) {
             NSLog(@" **************** name = %@,thorough = %@ ,locality = %@",place.name,place.thoroughfare,place.locality);
+            self.currentCity = place.locality;
             [_chooseCity setTitle:place.locality forState:UIControlStateNormal];
             _chooseCity.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
             [_chooseCity setTitleEdgeInsets:UIEdgeInsetsMake(0, -(_chooseCity.imageView.frame.size.width), 0, 0)];
             [_chooseCity setImageEdgeInsets:UIEdgeInsetsMake(0, (_chooseCity.titleLabel.frame.size.width+20), 0, 0)];
+            self.page = 1;
+            [self getData];
         }
     }];
     
