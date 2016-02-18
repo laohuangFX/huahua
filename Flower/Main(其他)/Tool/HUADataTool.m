@@ -358,7 +358,7 @@
     
     for (NSDictionary *dynamicDic in array) {
         HUAmodel *model = [HUAmodel new];
-        model.commentArray = dynamicDic[@"reply"];
+        model.commentArray = [dynamicDic[@"reply"] mutableCopy];
         model.name = dynamicDic[@"comment_info"][@"nickname"];
         model.icon = dynamicDic[@"comment_info"][@"headicon"];
         model.content = dynamicDic[@"comment_info"][@"content"];

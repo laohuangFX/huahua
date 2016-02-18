@@ -37,7 +37,7 @@
         _tablewView = [[UITableView alloc] initWithFrame:CGRectMake(0, hua_scale(30), screenWidth, screenHeight-navigationBarHeight-hua_scale(30))];
         _tablewView.delegate = self;
         _tablewView.dataSource = self;
-       // [_tablewView registerClass:[HUAMyOrderTableViewCell class] forCellReuseIdentifier:@"cell"];
+ 
     }
     return _tablewView;
 }
@@ -45,9 +45,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self.view addSubview:self.tablewView];
-
-    //假数据
-    //self.array = @[@[@"jjj",@"jjj"],@[],@[@"jjj",@"jjj",],@[@"ffff"],@[],@[@"fffff"],@[],@[@"ffff"],@[],@[],@[@"ffff"],@[],@[@"ffff"]];
     
     self.title = @"我的订单";
     self.view.backgroundColor = [UIColor whiteColor];
@@ -80,14 +77,14 @@
 - (void)headDownMenu{
     
 
-    NSArray *food = @[@"不限", @"服务1", @"服务2", @"服务3", @"服务4",@"服务5"];
-    NSArray *travel = @[@"不限", @"蜂花护发素", @"潘婷护发素", @"沙宣护发素", @"飘柔护发素", @"欧莱雅护发素", @"百雀羚护发素", @"迪彩护发素", @"资生堂护发素", @"露华浓护发素"];
-    NSArray *exercise =@[@"不限", @"活动1", @"活动2", @"活动3", @"活动4", @"活动5"];
+    NSArray *food = @[@"不限服务", @"未使用", @"已交易完成"];
+    NSArray *travel = @[@"不限产品",@"等待发货",@"待确认收货",@"交易完成"];
+    NSArray *exercise =@[@"不限活动", @"未使用", @"已使用", @"已过期"];
     NSArray *noLimit = @[@"全部"];
-    _data1 = [NSMutableArray arrayWithObjects:@{@"title":@"全部", @"data":noLimit},@{@"title":@"服务",@"data":food}, @{@"title":@"产品", @"data":travel},@{@"title":@"活动", @"data":exercise},nil];
+    _data1 = [NSMutableArray arrayWithObjects:@{@"title":@"全部", @"data":noLimit},@{@"title":@"产品",@"data":food}, @{@"title":@"服务", @"data":travel},@{@"title":@"活动", @"data":exercise},nil];
     
     _data2 = [NSMutableArray arrayWithObjects:@"全部", @"一天内", @"一周内",@"一个月内",@"三个月内",nil];
-_data3 = [NSMutableArray arrayWithObjects:@"不限",@"最少",@"最多",nil];
+    _data3 = [NSMutableArray arrayWithObjects:@"不限",@"最少",@"最多",nil];
     
     JSDropDownMenu *menu = [[JSDropDownMenu alloc] initWithOrigin:CGPointMake(0, 0) andHeight:hua_scale(30)];
     //menu.indicatorColor = [UIColor colorWithRed:175.0f/255.0f green:175.0f/255.0f blue:175.0f/255.0f alpha:1.0];
@@ -98,6 +95,13 @@ _data3 = [NSMutableArray arrayWithObjects:@"不限",@"最少",@"最多",nil];
     menu.rowHeigth = 80;
     menu.dataSource = self;
     menu.delegate = self;
+    [menu setGetDataBlock:^(NSString *text1, NSString *text2, NSString *text3, NSString *text4) {
+        NSLog(@"%@",text1);
+        NSLog(@"%@",text2);
+        NSLog(@"%@",text3);
+        NSLog(@"%@",text4);
+        
+    }];
     
     [self.view addSubview:menu];
 }
@@ -282,7 +286,7 @@ _data3 = [NSMutableArray arrayWithObjects:@"不限",@"最少",@"最多",nil];
     switch (column) {
         case 0: return @"类别";//[[_data1[0] objectForKey:@"data"] objectAtIndex:0];
             break;
-        case 1: return @"价格"; //_data2[0];
+        case 1: return @"时间"; //_data2[0];
             break;
         case 2: return @"点赞数";//_data3[0];
             break;

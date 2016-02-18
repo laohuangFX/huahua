@@ -15,5 +15,6 @@
 @property (nonatomic, strong) NSString *price;
 @property (nonatomic, strong) NSString *product_id;
 @property (nonatomic, strong) NSString *service_id;
+@property (nonatomic, strong) NSString *shop_id;
 + (id)parseWithDictionary:(NSDictionary *)dic;
 @end
