@@ -21,7 +21,18 @@
     NSInteger _currentData2Index;
     NSInteger _currentData3Index;
     
+    //参数
+    //左边
+    NSString *_leftText;
+    //左边的子类
+    NSString *_leftSubText;
+    //中间
+    NSString *_midstText;
+    //右边
+    NSString *_rightText;
     
+    //存放产品分类id
+    NSMutableDictionary *_dataDic;
 }
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) NSArray *productsArray;
@@ -52,15 +63,36 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    //获取下拉菜单数据
+    [self getDownData];
+    _dataDic = [NSMutableDictionary dictionary];
     [self.view addSubview:self.tableView];
     self.title = self.shopName;
     [self setNavigationItem];
-    [self category];
+ 
     self.searchplaceholder = @"搜索";
     
     [self geDataWithSubParameters:nil];
     
 }
+//获取下拉菜单数据
+- (void)getDownData{
+    
+    AFHTTPRequestOperationManager *manager = [[AFHTTPRequestOperationManager alloc] init];
+    NSString *url = [HUA_URL stringByAppendingPathComponent:@"service/service_cat"];
+    NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
+    parameters[@"shop_id"] = self.shop_id;
+    [manager GET:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation,NSDictionary* responseObject) {
+        //HUALog(@"%@",responseObject);
+        
+        [self category:responseObject];
+    } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
+        HUALog(@"%@",error);
+    }];
+    
+}
+
+
 - (void)geDataWithSubParameters:(NSDictionary *)SubParameters{
     
     AFHTTPRequestOperationManager *manager = [[AFHTTPRequestOperationManager alloc] init];
@@ -71,7 +103,7 @@
         [parameters setValuesForKeysWithDictionary:SubParameters];
     }
     [manager GET:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-        HUALog(@"%@",responseObject);
+        //HUALog(@"%@",responseObject);
         if ([[responseObject objectForKey:@"info"] isKindOfClass:[NSString class]]) {
             [HUAMBProgress MBProgressOnlywithLabelText:[responseObject objectForKey:@"info"]];
             return ;
@@ -81,16 +113,25 @@
     } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
         HUALog(@"%@",error);
     }];
-    
 }
 #pragma --设置三个选择按钮
 //设置三个选择按钮
-- (void)category {
+- (void)category:(NSDictionary *)downDic {
     
-    NSArray *food = @[@"不限", @"海飞丝", @"飘柔", @"清扬", @"沙宣",@"霸王"];
-    NSArray *travel = @[@"不限", @"蜂花护发素", @"潘婷护发素", @"沙宣护发素", @"飘柔护发素", @"欧莱雅护发素", @"百雀羚护发素", @"迪彩护发素", @"资生堂护发素", @"露华浓护发素"];
+    _data1 = [NSMutableArray array];
+    
+    NSArray *array = downDic[@"info"];
+    
+    for (NSDictionary *dic in array) {
+        
+        [_dataDic setValue:dic[@"category_id"] forKey:dic[@"name"]];
+        
+        [_data1 addObject:@{@"title":dic[@"name"]}];
+    }
+    
     NSArray *noLimit = @[@"不限"];
-    _data1 = [NSMutableArray arrayWithObjects:@{@"title":@"不限", @"data":noLimit},@{@"title":@"沐浴露",@"data":food}, @{@"title":@"护发素", @"data":travel}, @{@"title":@"洗面奶",@"data":food},@{@"title":@"啫喱水",@"data":travel},@{@"title":@"BB霜",@"data":food},@{@"title":@"眼霜",@"data":travel},@{@"title":@"指甲油",@"data":food},@{@"title":@"卸甲油",@"data":travel},nil];
+
+    [_data1 insertObject:@{@"title":@"不限"} atIndex:0];
     
     _data2 = [NSMutableArray arrayWithObjects:@"不限", @"从低到高", @"从高到低",nil];
     _data3 = [NSMutableArray arrayWithObjects:@"不限",@"最少",@"最多",nil];
@@ -101,13 +142,57 @@
     menu.textColor = [UIColor colorWithRed:83.f/255.0f green:83.f/255.0f blue:83.f/255.0f alpha:1.0f];
     //图标颜色
     menu.indicatorColor = HUAColor(0x4da800);
-    
+    menu.typeStr = @"服务菜单";
     menu.dataSource = self;
     menu.delegate = self;
-    
+    [menu setGetDataBlock:^(NSString *leftText, NSString *leftSubText, NSString *midstText, NSString *lastText) {
+        
+        NSLog(@"%@",leftText);
+        NSLog(@"%@",leftSubText);
+        NSLog(@"%@",midstText);
+        NSLog(@"%@",lastText);
+        
+        if(leftText.length != 0){
+            _leftText = leftText;
+        }else if (midstText.length != 0){
+            _midstText = midstText;
+        }else if (lastText.length != 0 ){
+            _rightText = lastText;
+        }
+
+
+        AFHTTPRequestOperationManager *manager = [[AFHTTPRequestOperationManager alloc] init];
+        NSString *url =[HUA_URL stringByAppendingPathComponent:@"service/service_list"];
+        NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
+        if (![_leftText isEqualToString:@"不限"] && _leftText != nil) {
+            parameters[@"parent_id"] =_dataDic[_leftText];
+        }
+        if (![_midstText isEqualToString:@"不限"] && _midstText != nil) {
+            parameters[@"order_price"] =[_midstText isEqualToString:@"从高到底"]? @"price_desc":@"price_asc";
+        }
+        if (![_rightText isEqualToString:@"不限"] && _rightText != nil) {
+            parameters[@"order_praise"] =[_rightText isEqualToString:@"点赞降序"]? @"praise_desc":@"praise_asc";
+        }
+        parameters[@"shop_id"] = self.shop_id;
+        
+        [manager GET:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+           // HUALog(@"%@",responseObject);
+            if ([[responseObject objectForKey:@"info"] isKindOfClass:[NSString class]]) {
+                [HUAMBProgress MBProgressOnlywithLabelText:[responseObject objectForKey:@"info"]];
+                return ;
+            }
+            self.productsArray =nil;
+            self.productsArray = [HUADataTool shopProduct:responseObject];
+            [self.tableView reloadData];
+        } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
+            HUALog(@"%@",error);
+        }];
+
+        
+        
+    }];
+
     [self.view addSubview:menu];
-    
-    
 }
 
 

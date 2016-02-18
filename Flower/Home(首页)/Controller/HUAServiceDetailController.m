@@ -136,10 +136,10 @@
     parameters[@"service_id"] = self.service_id;
     [HUAHttpTool GETWithTokenAndUrl:url params:parameters success:^(id responseObject) {
         HUALog(@"response%@",responseObject);
-        //self.shop_id = responseObject[@"item"][@"shop_id"];
+        self.shop_id = responseObject[@"item"][@"shop_id"];
         self.serviceInfo = [HUAServiceInfo mj_objectWithKeyValues:responseObject[@"item"]];
         HUALog(@"%@",self.serviceInfo.have_praised);
-        //self.category = responseObject[@"item"][@"category"];
+        self.category = responseObject[@"item"][@"category"];
         self.serviceArray = responseObject[@"info"][@"media_lis"];
         self.masterArray = [HUADataTool getMasterArray:responseObject];
         [self setHeaderView:self.serviceInfo];
