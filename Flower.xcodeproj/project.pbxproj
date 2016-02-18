@@ -261,6 +261,7 @@
 		590746151C59B11D005AEC7C /* HUAConsumption.m in Sources */ = {isa = PBXBuildFile; fileRef = 590746141C59B11D005AEC7C /* HUAConsumption.m */; };
 		5907461B1C5A0732005AEC7C /* Foundation+Log.m in Sources */ = {isa = PBXBuildFile; fileRef = 5907461A1C5A0732005AEC7C /* Foundation+Log.m */; };
 		590747C71C5A0960005AEC7C /* HUASortView.m in Sources */ = {isa = PBXBuildFile; fileRef = 590747C61C5A0960005AEC7C /* HUASortView.m */; };
+		5908EB541C756F330016CC9F /* HUAcardTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5908EB531C756F330016CC9F /* HUAcardTableViewCell.m */; };
 		590A4F601C50AA93008C8130 /* HUAUserDetailInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 590A4F5F1C50AA93008C8130 /* HUAUserDetailInfo.m */; };
 		590AAD3E1C531757007E1ECB /* HUAForgetPasswordController.m in Sources */ = {isa = PBXBuildFile; fileRef = 590AAD3D1C531757007E1ECB /* HUAForgetPasswordController.m */; };
 		590AAD411C531E45007E1ECB /* HUAResetPasswordController.m in Sources */ = {isa = PBXBuildFile; fileRef = 590AAD401C531E45007E1ECB /* HUAResetPasswordController.m */; };
@@ -802,6 +803,8 @@
 		5907461A1C5A0732005AEC7C /* Foundation+Log.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Foundation+Log.m"; sourceTree = "<group>"; };
 		590747C51C5A0960005AEC7C /* HUASortView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HUASortView.h; sourceTree = "<group>"; };
 		590747C61C5A0960005AEC7C /* HUASortView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HUASortView.m; sourceTree = "<group>"; };
+		5908EB521C756F330016CC9F /* HUAcardTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HUAcardTableViewCell.h; sourceTree = "<group>"; };
+		5908EB531C756F330016CC9F /* HUAcardTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HUAcardTableViewCell.m; sourceTree = "<group>"; };
 		590A4F5E1C50AA93008C8130 /* HUAUserDetailInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HUAUserDetailInfo.h; sourceTree = "<group>"; };
 		590A4F5F1C50AA93008C8130 /* HUAUserDetailInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HUAUserDetailInfo.m; sourceTree = "<group>"; };
 		590AAD3C1C531757007E1ECB /* HUAForgetPasswordController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HUAForgetPasswordController.h; sourceTree = "<group>"; };
@@ -1824,6 +1827,8 @@
 		189319661C488990005D230F /* View */ = {
 			isa = PBXGroup;
 			children = (
+				5908EB521C756F330016CC9F /* HUAcardTableViewCell.h */,
+				5908EB531C756F330016CC9F /* HUAcardTableViewCell.m */,
 				189319691C488990005D230F /* HUAHeadCell.h */,
 				1893196A1C488990005D230F /* HUAHeadCell.m */,
 				189319671C488990005D230F /* HUACollectTableViewCell.h */,
@@ -2350,6 +2355,7 @@
 				17B7E2921C71BD9C0032C6D5 /* MASLayoutConstraint.m in Sources */,
 				17B7E2B31C71BD9C0032C6D5 /* MJRefreshStateHeader.m in Sources */,
 				189319781C488990005D230F /* HUAMyController.m in Sources */,
+				5908EB541C756F330016CC9F /* HUAcardTableViewCell.m in Sources */,
 				189319461C48896B005D230F /* HUAShopProductCell.m in Sources */,
 				17B7E2EB1C71BD9C0032C6D5 /* UIProgressView+AFNetworking.m in Sources */,
 				590A4F601C50AA93008C8130 /* HUAUserDetailInfo.m in Sources */,
