@@ -22,9 +22,22 @@
 @property (nonatomic, strong)NSDictionary *membersInformation;
 
 @property (nonatomic, strong) HUAUserDetailInfo *detailInfo;
+
+@property (nonatomic, strong) NSDictionary *information;
+
+@property (nonatomic, strong) UILabel *keyLabel;
+
+@property (nonatomic, strong) UILabel *valueLabel;
 @end
 
 @implementation HUAProductDetailController
+
+- (NSDictionary *)information {
+    if (!_information) {
+        _information = [NSDictionary dictionary];
+    }
+    return _information;
+}
 
 - (HUAUserDetailInfo *)detailInfo {
     if (!_detailInfo) {
@@ -124,9 +137,8 @@
     parameters[@"user_id"] = [HUAUserDefaults getUserDetailInfo].user_id;
     parameters[@"product_id"] = self.product_id;
     [HUAHttpTool GETWithTokenAndUrl:url params:parameters success:^(id responseObject) {
-        
         self.productDetailInfo = [HUAProductDetailInfo mj_objectWithKeyValues:responseObject[@"item"]];
-        HUALog(@"%@,,%@",responseObject,self.productDetailInfo.have_praised);
+        self.information = responseObject[@"information"];
         self.photoArray = responseObject[@"media_lis"];
         [self setTableViewHeadrView:self.productDetailInfo];
         [self setNavigationBar];
@@ -158,9 +170,35 @@
 #pragma mark - tableViewHeaderView
 
 - (void)setTableViewHeadrView:(HUAProductDetailInfo *)detailInfo {
+    HUATopInfoView *header = [[HUATopInfoView alloc] init];
+    header.detailInfo = detailInfo;
+
+
     
+    
+    
+    NSArray *informationArray = [self.information allKeys];
+    for (int i = 0; i < informationArray.count; i++) {
+        NSString *keyString = informationArray[i];
+        NSString *valueString = self.information[keyString];
+        
+        self.keyLabel = [UILabel labelText:[NSString stringWithFormat:@"%@ :",keyString] color:HUAColor(0x999999) font:hua_scale(11)];
+        self.keyLabel.frame = CGRectMake(hua_scale(10), hua_scale(402)+hua_scale(21)*i, hua_scale(100), hua_scale(11));
+        [header addSubview:self.keyLabel];
+        self.valueLabel = [UILabel labelText:valueString color:HUAColor(0x4da800) font:hua_scale(11)];
+        self.valueLabel.frame = CGRectMake(hua_scale(137), hua_scale(402)+hua_scale(21)*i, hua_scale(100), hua_scale(11));
+        [header addSubview:self.valueLabel];
+    }
+    UIView *topSeparateLine = [[UIView alloc] init];
+    topSeparateLine.frame =  CGRectMake(hua_scale(10), CGRectGetMaxY(self.valueLabel.frame)+hua_scale(25), screenWidth-hua_scale(20), 0.5);
+    topSeparateLine.backgroundColor = HUAColor(0xeeeeee);
+    
+    
+    UILabel *instructionTitle = [UILabel labelWithFrame:CGRectZero text:@"使用说明" color:HUAColor(0x000000) font:hua_scale(13)];
+    instructionTitle.frame = CGRectMake(hua_scale(10), CGRectGetMaxY(self.valueLabel.frame)+hua_scale(50), hua_scale(100), hua_scale(13));
+
     UILabel *instructionLabel = [[UILabel alloc]init];
-    instructionLabel.frame = CGRectMake(hua_scale(10), hua_scale(617), screenWidth- hua_scale(20), 0);
+    instructionLabel.frame = CGRectMake(hua_scale(10), CGRectGetMaxY(instructionTitle.frame)+hua_scale(15), screenWidth- hua_scale(20), 0);
     instructionLabel.font = [UIFont systemFontOfSize:hua_scale(11)];
     instructionLabel.numberOfLines = 0;
     instructionLabel.textColor = HUAColor(0x494949);
@@ -175,18 +213,22 @@
     
     [instructionLabel sizeToFit];
     
-    UIView *seperateLine = [[UIView alloc]initWithFrame:CGRectMake(hua_scale(10), instructionLabel.y+instructionLabel.height+hua_scale(25), screenWidth-hua_scale(20), 0.5)];
+    UIView *seperateLine = [[UIView alloc]initWithFrame:CGRectMake(hua_scale(10), CGRectGetMaxY(instructionLabel.frame)+hua_scale(25), screenWidth-hua_scale(20), 0.5)];
     seperateLine.backgroundColor = HUAColor(0xeeeeee);
     
-    CGRect frame = CGRectMake(hua_scale(10), instructionLabel.y+instructionLabel.height+hua_scale(50), hua_scale(100), hua_scale(13));
+    CGRect frame = CGRectMake(hua_scale(10),  CGRectGetMaxY(instructionLabel.frame)+hua_scale(50), hua_scale(100), hua_scale(13));
     UILabel *goodsDetailLabel = [UILabel labelWithFrame:frame text:@"商品详情" color:HUAColor(0x000000) font:hua_scale(13)];
+    
 
-    CGFloat height = instructionLabel.height + hua_scale(697);
-    HUATopInfoView *header = [[HUATopInfoView alloc] initWithFrame:CGRectMake(0, 0, screenWidth, height)];
+    CGFloat height = CGRectGetMaxY(goodsDetailLabel.frame)+hua_scale(15);
+    header.frame = CGRectMake(0, 0, screenWidth, height);
+    
+    [header addSubview:topSeparateLine];
+    [header addSubview:instructionTitle];
     [header addSubview:instructionLabel];
     [header addSubview:seperateLine];
     [header addSubview:goodsDetailLabel];
-    header.detailInfo = detailInfo;
+    
     self.tableView.tableHeaderView = header;
     //回调block，跳转到购买页面
     [header setPusViewsBlock:^{

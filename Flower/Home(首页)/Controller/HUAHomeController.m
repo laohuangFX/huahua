@@ -29,19 +29,29 @@
 static NSString *identifier = @"cell";
 
 @interface HUAHomeController ()<ClickDelegate, UIScrollViewDelegate,UITabBarControllerDelegate,HUASortMenuDelegate,HomeHeaderViewDelegate,UITextFieldDelegate,CLLocationManagerDelegate>
-//@property (nonatomic, strong) NSArray *shopsArray;
-@property (nonatomic, strong) NSMutableArray *shopsMutableArray;
-@property (nonatomic, strong) NSMutableArray *shopsArray;
 
+/**商铺的可变数组*/
+@property (nonatomic, strong) NSMutableArray *shopsArray;
+/**当前的页数*/
 @property (nonatomic, assign) NSUInteger page;
+/**头部滚动视图的数组*/
 @property (nonatomic, strong) NSArray *bannerArray;
+/**分类的数组*/
 @property (nonatomic, strong) NSArray *categoryArray;
+/**排序*/
 @property (nonatomic, strong) NSString *order;
+/**自定义头部view*/
 @property (nonatomic, strong) HUASectionHeaderView *header;
+/**自定义的排序view*/
 @property (nonatomic, strong) HUASortView *sortView;
+/**自定义的搜索bar*/
 @property (nonatomic, strong) UITextField *searchBar;
+/**城市选择*/
 @property (nonatomic, strong) UIButton *chooseCity;
+/**自定义城市选择view*/
 @property (nonatomic, strong) HUASelectCityView *selectView;
+/**商铺的可变数组*/
+@property (nonatomic, assign) NSNumber *totalPage;;
 
 
 @property (nonatomic, strong) CLLocationManager * mgr;
@@ -79,13 +89,14 @@ static NSString *identifier = @"cell";
     [super viewDidLoad];
     //设置tableView没有分割线
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    //self.tableView.showsVerticalScrollIndicator = NO;
+  
     self.tabBarController.delegate = self;
-    self.page = 0;
+    self.page = 1;
+    
+    [self getData];
     //设置导航栏
     [self setNavigationBar];
-    // 集成上拉刷新控件
-    [self setupUpRefresh];
+    
     // 集成下拉刷新控件
     [self setupDownRefresh];
 
@@ -115,6 +126,10 @@ static NSString *identifier = @"cell";
     parameter[@"order"] = self.order;
     parameter[@"per_page"] = @(self.page);
     [HUAHttpTool POST:url params:parameter success:^(id responseObject) {
+
+        self.totalPage = responseObject[@"info"][@"pages"];
+        
+        
         NSArray *shopArray = [HUADataTool homeShop:responseObject];
         [self.shopsArray addObjectsFromArray:shopArray];
         self.categoryArray = [HUADataTool getCategoryList:responseObject];
@@ -134,18 +149,13 @@ static NSString *identifier = @"cell";
     self.tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(loadNewData)];
     
     // 马上进入刷新状态
-    [self.tableView.mj_header beginRefreshing];
-    
-}
-// 集成上拉刷新控件
-- (void)setupUpRefresh {
-    self.tableView.mj_footer = [MJRefreshBackNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(loadMoreData)];
+    //[self.tableView.mj_header beginRefreshing];
     
 }
 
 - (void)loadNewData {
     self.page++;
-    if (self.page > 4) {
+    if (self.page > [self.totalPage integerValue]) {
         [HUAMBProgress MBProgressOnlywithLabelText:@"没有更多数据了"];
         [self.tableView.mj_header endRefreshing];
         return;
@@ -155,20 +165,20 @@ static NSString *identifier = @"cell";
         [self.tableView.mj_header endRefreshing];
         return;
     }
-    
     NSString *url = [HUA_URL stringByAppendingPathComponent:App_index];
     NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
     parameter[@"order"] = self.order;
     parameter[@"per_page"] = @(self.page);
     [HUAHttpTool POST:url params:parameter success:^(id responseObject) {
+        HUALog(@"123%@",responseObject);
+        //加载数据插入到可变数组最前面
         NSArray *shopArray = [HUADataTool homeShop:responseObject];
         [self.shopsArray insertObjects:shopArray atIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, shopArray.count)]];
-        self.categoryArray = [HUADataTool getCategoryList:responseObject];
-        HUALog(@"%@",self.categoryArray[0]);
-        NSArray *array = [HUADataTool homeBanner:responseObject];
-        HUAShopInfo *banner = array.firstObject;
-        self.bannerArray = banner.bannerArr;
-        [self createHeaderView:self.bannerArray];
+//        self.categoryArray = [HUADataTool getCategoryList:responseObject];
+//        NSArray *array = [HUADataTool homeBanner:responseObject];
+//        HUAShopInfo *banner = array.firstObject;
+//        self.bannerArray = banner.bannerArr;
+//        [self createHeaderView:self.bannerArray];
         [self.tableView reloadData];
         [self.tableView.mj_header endRefreshing];
     } failure:^(NSError *error) {
@@ -178,9 +188,29 @@ static NSString *identifier = @"cell";
     }];
 }
 
+
+// 集成上拉刷新控件
+//- (void)setupUpRefresh {
+//    self.tableView.mj_footer = [MJRefreshBackNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(loadMoreData)];
+//
+//    [self.tableView.mj_footer beginRefreshing];
+//}
+
+/**cell即将到最后一个的时候自动加载数据*/
+-(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (indexPath.row == self.shopsArray.count-1) {
+        // 集成上拉刷新控件
+        [self loadMoreData];
+    }
+    //HUALog(@"%ld",(long)indexPath.row);
+    
+}
+
+
 - (void)loadMoreData {
     self.page++;
-    if (self.page > 4) {
+    if (self.page > [self.totalPage integerValue]) {
         [HUAMBProgress MBProgressOnlywithLabelText:@"没有更多数据了"];
         [self.tableView.mj_footer endRefreshing];
         return;
@@ -192,18 +222,16 @@ static NSString *identifier = @"cell";
     [HUAHttpTool POST:url params:parameter success:^(id responseObject) {
         NSArray *shopArray = [HUADataTool homeShop:responseObject];
         [self.shopsArray addObjectsFromArray:shopArray];
-        self.categoryArray = [HUADataTool getCategoryList:responseObject];
-        HUALog(@"%@",self.categoryArray[0]);
-        NSArray *array = [HUADataTool homeBanner:responseObject];
-        HUAShopInfo *banner = array.firstObject;
-        self.bannerArray = banner.bannerArr;
-        [self createHeaderView:self.bannerArray];
+//        self.categoryArray = [HUADataTool getCategoryList:responseObject];
+//        HUALog(@"%@",self.categoryArray[0]);
+//        NSArray *array = [HUADataTool homeBanner:responseObject];
+//        HUAShopInfo *banner = array.firstObject;
+//        self.bannerArray = banner.bannerArr;
+//        [self createHeaderView:self.bannerArray];
         [self.tableView reloadData];
-        [self.tableView.mj_footer endRefreshing];
     } failure:^(NSError *error) {
         self.page--;
         [HUAMBProgress MBProgressFromWindowWithLabelText:@"请检查网络设置"];
-        [self.tableView.mj_footer endRefreshing];
     }];
 }
 
@@ -633,7 +661,6 @@ static NSString *identifier = @"cell";
     [self.navigationController pushViewController:vipFrontPageVC animated:YES];
     
 }
-
 
 
 

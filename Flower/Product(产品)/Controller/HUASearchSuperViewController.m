@@ -39,7 +39,8 @@
     self.searchBar.height = hua_scale(22.5);
     self.navigationItem.titleView = self.searchBar;
     [self.searchBar becomeFirstResponder];
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithTitle:@"取消" style:UIBarButtonItemStyleDone target:self action:@selector(dismissBlackView)];
+    
+    self.navigationItem.rightBarButtonItems = @[[[UIBarButtonItem alloc]initWithTitle:@"取消" style:UIBarButtonItemStyleDone target:self action:@selector(dismissBlackView)]];
 }
 
 - (void)dismissBlackView{
