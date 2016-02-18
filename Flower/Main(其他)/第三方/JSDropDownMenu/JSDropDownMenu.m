@@ -893,32 +893,76 @@ UITableViewCell *lastCell = nil;
         UITableViewCell *rightCell = [_rightTableView cellForRowAtIndexPath:indexPath];
          cell.textLabel.textColor = HUAColor(0xffffff);
         
-        if (_leftTableView == tableView && leftOrRight==0 && haveRightTableView) {
- 
-            lastCell = cell;
-            leftText = cell.textLabel.text;
+        if ([self.typeStr isEqualToString:@"产品菜单"]) {
+            if (_leftTableView == tableView && leftOrRight==0 && haveRightTableView) {
+                
+                lastCell = cell;
+                leftText = cell.textLabel.text;
+                
+                
+            }else if(_rightTableView == tableView && leftOrRight==1 && haveRightTableView){
+                
+                lastCell = rightCell;
+                
+                rightCell.textLabel.textColor = HUAColor(0xffffff);
+                
+                rightText = rightCell.textLabel.text;
+            }
+            
+            if (_leftTableView == tableView && leftOrRight==0 && !haveRightTableView &&_currentSelectedMenudIndex ==1) {
+                
+                towStr = cell.textLabel.text;
+            }else if(_currentSelectedMenudIndex ==2){
+                
+                threeStr = cell.textLabel.text;
+            }
+            //        else{
+            //
+            //            lastCell = cell;
+            //            leftText = cell.textLabel.text;
+            //        }
             
             
-        }else if(_rightTableView == tableView && leftOrRight==1 && haveRightTableView){
- 
-            lastCell = rightCell;
-    
-            rightCell.textLabel.textColor = HUAColor(0xffffff);
-       
-            rightText = rightCell.textLabel.text;
-        }
-        
-        if (_leftTableView == tableView && leftOrRight==0 && !haveRightTableView &&_currentSelectedMenudIndex ==1) {
+            if (self.getDataBlock != nil){
+                self.getDataBlock(leftText,rightText,towStr,threeStr);
+            }
 
-            towStr = cell.textLabel.text;
-        }else if(_currentSelectedMenudIndex ==2){
-  
-            threeStr = cell.textLabel.text;
+        }else if ([self.typeStr isEqualToString:@"服务菜单"]){
+        
+            if (_leftTableView == tableView && leftOrRight==0 && haveRightTableView) {
+                
+                lastCell = cell;
+                leftText = cell.textLabel.text;
+                
+                
+            }else if(_rightTableView == tableView && leftOrRight==1 && haveRightTableView){
+                
+                lastCell = rightCell;
+                
+                rightCell.textLabel.textColor = HUAColor(0xffffff);
+                
+                rightText = rightCell.textLabel.text;
+            }
+            
+            if (_leftTableView == tableView && leftOrRight==0 && !haveRightTableView &&_currentSelectedMenudIndex ==1) {
+                
+                towStr = cell.textLabel.text;
+            }else if(_currentSelectedMenudIndex ==2){
+                
+                threeStr = cell.textLabel.text;
+            }else{
+    
+                lastCell = cell;
+                leftText = cell.textLabel.text;
+                }
+            
+            
+            if (self.getDataBlock != nil){
+                self.getDataBlock(leftText,rightText,towStr,threeStr);
+            }
+        
         }
         
-        if (self.getDataBlock != nil){
-               self.getDataBlock(leftText,rightText,towStr,threeStr);
-        }
         
      
         

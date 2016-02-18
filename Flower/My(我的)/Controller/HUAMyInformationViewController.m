@@ -83,13 +83,12 @@
     [self setSexPickerView];
     
     NSData *data = [[NSUserDefaults standardUserDefaults] objectForKey:@"data"];
-    HUAUserDetailInfo *detailInfo = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+    //HUAUserDetailInfo *detailInfo = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+
     
-    self.nameLabel.text = detailInfo.nickname;
-    self.sexLable.text = [detailInfo.sex isEqualToString:@"0"]?@"女":@"男";
-    self.birthdayLabel.text = [HUATranslateTime translateTimeIntoCurrurent:detailInfo.birth.longLongValue];
-    HUALog(@"dfsfsdfsfs%@,,%@,,%@",detailInfo.nickname,detailInfo.sex,detailInfo.birth);
-    self.model =@[@"jjj",detailInfo.nickname,[detailInfo.sex isEqualToString:@"0"]?@"女":@"男",[HUATranslateTime translateTimeIntoCurrurent:detailInfo.birth.longLongValue],@" "];
+    
+   // HUALog(@"dfsfsdfsfs%@,,%@,,%@",detailInfo.nickname,detailInfo.sex,detailInfo.birth);
+    self.model =@[self.userDic[@"info"][@"headicon"],self.userDic[@"info"][@"nickname"],[self.userDic[@"info"][@"sex"] isEqualToString:@"0"]?@"女":@"男",[HUATranslateTime translateTimeIntoCurrurent:self.birthString.longLongValue],@" "];
     [self setbirthdayPickerView];
 }
 
@@ -110,8 +109,9 @@
     HUALog(@"shengri%@,,,%@,,%@,%@",birthday,self.nameLabel.text,self.sexLable.text,self.birthdayLabel.text);
     NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
     parameters[@"nickname"] = self.nameLabel.text;
-    parameters[@"sex"] = [_sexLable.text isEqualToString:@"男"]?@"1":@"0";
+    //parameters[@"sex"] = [_sexLable.text isEqualToString:@"男"]?@"1":@"0";
     //parameters[@"birth"] = birthday;
+    NSLog(@"%@",parameters);
     [manager POST:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
         HUALog(@"data%@",responseObject);
       
@@ -122,6 +122,7 @@
 }
 
 - (void) getDate{
+  
     _yearArray =[NSMutableArray array];
     _moonArray = [NSMutableArray array];
     _sunArray = [NSMutableArray array];
@@ -328,9 +329,10 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     NSData *data = [[NSUserDefaults standardUserDefaults] objectForKey:@"data"];
     HUAUserDetailInfo *detailInfo = [NSKeyedUnarchiver unarchiveObjectWithData:data];
-    self.nameLabel.text = detailInfo.nickname;
-    self.sexLable.text = [detailInfo.sex isEqualToString:@"0"]?@"女":@"男";
-    self.birthdayLabel.text = [HUATranslateTime translateTimeIntoCurrurent:self.birthString.longLongValue];
+    
+    //self.nameLabel.text = detailInfo.nickname;
+    //self.sexLable.text = [detailInfo.sex isEqualToString:@"0"]?@"女":@"男";
+    //self.birthdayLabel.text = [HUATranslateTime translateTimeIntoCurrurent:self.birthString.longLongValue];
 
     static NSString *identifier  = @"cell";
     HUAMyInformationTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
@@ -341,7 +343,8 @@
     if (indexPath.row==0) {
         cell.InformationLabel.hidden = YES;
         cell.headImage.hidden=NO;
-        cell.headImage.image = [UIImage imageNamed:self.model[indexPath.row]];
+        [cell.headImage sd_setImageWithURL:[NSURL URLWithString:self.model[indexPath.row]] placeholderImage:[UIImage imageNamed:@"placeholder"]];
+    
         NSLog(@"%@",self.model[indexPath.row]);
         //添加手势进入浏览大图
         [cell.headImage addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(browseImage:)]];
@@ -351,14 +354,14 @@
         self.imageView = cell.headImage;
         
     }
-  
+    
     cell.InformationLabel.text = self.model[indexPath.row];
 
     cell.textLabel.text = self.myInformationArray[indexPath.row];
     cell.textLabel.textColor = HUAColor(0x333333);
     cell.textLabel.font = [UIFont systemFontOfSize:hua_scale(13)];
-    return cell;
     
+    return cell;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{

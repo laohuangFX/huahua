@@ -342,7 +342,7 @@
             //申明请求的数据是json类型
              //manager.requestSerializer=[AFJSONRequestSerializer serializer];
             //如果报接受类型不一致请替换一致text/html或别的
-            manager.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"text/json"];
+            manager.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"application/json"];
             //传入的参数
             NSDictionary *parameters = @{@"consignee":fiel.text,@"consignee_phone":fiel2.text,@"province":_province,@"city":_city,@"region":_region,@"address":fiel3.text};
             
@@ -351,6 +351,8 @@
             [manager POST:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
                 NSLog(@"%@",responseObject);
                 
+                //给block语句赋值
+                _inFoBlock(array);
             } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
                 
                 NSLog(@"%@",error);
@@ -365,8 +367,7 @@
         }
         
         
-        //给block语句赋值
-        _inFoBlock(array);
+
         [self.navigationController popViewControllerAnimated:YES];
     }
 

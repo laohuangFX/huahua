@@ -245,9 +245,7 @@ static NSString * const identifier = @"head";
     }else if (indexPath.section ==0 &&indexPath.row ==0){
         HUAMyInformationViewController *vc = [HUAMyInformationViewController new];
         vc.birthString = self.birthString;
-        
-        
-        
+        vc.userDic = self.userDic;
         [self.navigationController pushViewController:vc animated:YES];
 
     }else if (indexPath.section == 2 && indexPath.row == 0) {

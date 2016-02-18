@@ -16,5 +16,7 @@ typedef void(^SexBlock)(NSString *showSex);
 
 @property (nonatomic, strong)NSString *birthString;
 
+//个人信息
+@property (nonatomic, strong)NSDictionary *userDic;
 
 @end

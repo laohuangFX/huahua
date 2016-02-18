@@ -286,6 +286,7 @@ static NSString *identifier = @"cell";
 - (UIButton *)chooseCity{
     if (!_chooseCity) {
         _chooseCity = [UIButton buttonWithType:0];
+        _chooseCity.backgroundColor = HUAColor(0x4da800);
         _chooseCity.width = 60;
         _chooseCity.height = 44;
         [_chooseCity setImage:[UIImage imageNamed:@"select"] forState:UIControlStateNormal];
@@ -295,7 +296,7 @@ static NSString *identifier = @"cell";
         [_chooseCity setTitleColor:HUAColor(0x575757) forState:UIControlStateNormal];
         [_chooseCity setTitleColor:HUAColor(0x4da800) forState:UIControlStateSelected];
         
-        _chooseCity.titleLabel.font = [UIFont systemFontOfSize:16];
+        _chooseCity.titleLabel.font = [UIFont systemFontOfSize:hua_scale(10)];
         [_chooseCity addTarget:self action:@selector(chooseCity:) forControlEvents:UIControlEventTouchUpInside];
         _chooseCity.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
         [_chooseCity setTitleEdgeInsets:UIEdgeInsetsMake(0, -(_chooseCity.imageView.frame.size.width), 0, 0)];
@@ -317,7 +318,7 @@ static NSString *identifier = @"cell";
     logoIcon.width = hua_scale(45);
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:logoIcon];
     //设置右边选择城市按钮
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:self.chooseCity];
+    self.navigationItem.rightBarButtonItems = @[[[UIBarButtonItem alloc] initWithCustomView:self.chooseCity]];
 
 }
 
@@ -340,6 +341,7 @@ static NSString *identifier = @"cell";
     button.selected = NO;
     self.sortView.y = screenHeight;
      [self.sortView removeFromSuperview];
+    
     chooseCity.selected = !chooseCity.selected;
     if (chooseCity.selected == YES) {
         self.selectView = [[HUASelectCityView alloc]initWithFrame:self.view.bounds];
@@ -371,9 +373,7 @@ static NSString *identifier = @"cell";
 - (void)textFieldDidBeginEditing:(UITextField *)textField{
     UIButton * button =  [self.header viewWithTag:1000];
     button.selected = NO;
-    [UIView animateWithDuration:0.1 animations:^{
-        self.sortView.y = screenHeight;
-    }];
+    self.sortView.y = screenHeight;
     [self.sortView removeFromSuperview];
     NSLog(@"beginEditing");
     UIView *blackView  = [[UIView alloc]initWithFrame:self.view.bounds];
@@ -568,10 +568,11 @@ static NSString *identifier = @"cell";
 - (void)clickSortButton:(UIButton *)sender {
     UIWindow *window = [[UIApplication sharedApplication].windows lastObject];
     if (sender.selected == YES) {
+        self.tableView.userInteractionEnabled = NO;
         if (self.tableView.contentOffset.y == 0) {
             [self.tableView setContentOffset:CGPointMake(0, hua_scale(250)) animated:YES];
             [window addSubview:self.sortView];
-            [UIView animateWithDuration:0 delay:0.5 options:UIViewAnimationOptionLayoutSubviews animations:^{
+            [UIView animateWithDuration:0.5 delay:0 options:UIViewAnimationOptionLayoutSubviews animations:^{
                 self.sortView.y = sortViewHeight;
                 
             } completion:nil];
@@ -579,16 +580,15 @@ static NSString *identifier = @"cell";
         } else {
             [self.tableView setContentOffset:CGPointMake(0, hua_scale(250)) animated:YES];
             [window addSubview:self.sortView];
-            [UIView animateWithDuration:0 delay:0 options:UIViewAnimationOptionLayoutSubviews animations:^{
+            [UIView animateWithDuration:1 delay:0 options:UIViewAnimationOptionLayoutSubviews animations:^{
                 self.sortView.y = sortViewHeight;
             } completion:nil];
         
         }
     }else {
-        [UIView animateWithDuration:0.1 animations:^{
-            self.sortView.y = screenHeight;
-        }];
-          [self.sortView removeFromSuperview];
+        self.tableView.userInteractionEnabled = YES;
+        self.sortView.y = screenHeight;
+        [self.sortView removeFromSuperview];
         
     }
 }
@@ -597,9 +597,8 @@ static NSString *identifier = @"cell";
 
 - (void)sortMenuDidDismiss:(HUASortViewButtonType)buttonType {
 
-    UIButton * button =  [self.header viewWithTag:1000];
-    button.selected = NO;
 
+    
     [self.shopsArray removeAllObjects];
     self.page = 1;
     switch (buttonType) {
@@ -614,11 +613,13 @@ static NSString *identifier = @"cell";
             self.order = @"shopname_desc";
             [HUAMBProgress MBProgressOnlywithLabelText: @"名字排序"];
             break;
-        default:
-            break;
+
     }
     [self getData];
-    
+    UIButton * button =  [self.header viewWithTag:1000];
+    button.selected = NO;
+    self.sortView.y = screenHeight;
+    [self.sortView removeFromSuperview];
     
 }
 

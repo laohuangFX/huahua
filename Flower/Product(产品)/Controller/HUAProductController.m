@@ -265,6 +265,7 @@ static NSString * const reuseIdentifier = @"cell";
         }
         
         self.page = 1;
+        [self.productArray removeAllObjects];
         AFHTTPRequestOperationManager *manager = [[AFHTTPRequestOperationManager alloc] init];
         NSString *url =[HUA_URL stringByAppendingPathComponent:@"product/product_list"];
         NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
@@ -288,8 +289,6 @@ static NSString * const reuseIdentifier = @"cell";
                 [HUAMBProgress MBProgressOnlywithLabelText:[responseObject objectForKey:@"info"]];
                 return ;
             }
-
-            [self.productArray removeAllObjects];
             NSArray *array = [HUADataTool getProductArray:responseObject];
             [self.productArray addObjectsFromArray:array];
             [self.collectionView reloadData];

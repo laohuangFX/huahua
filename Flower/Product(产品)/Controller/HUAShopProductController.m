@@ -44,21 +44,11 @@
 /**总页数*/
 @property (nonatomic, strong) NSNumber *totalPage;
 
-//@property (nonatomic, strong) UILabel *label;
 @end
 
 @implementation HUAShopProductController
 
-//- (UILabel *)label {
-//    if (!_label) {
-//        _label = [UILabel labelText:[NSString stringWithFormat:@"%lu/%@",(unsigned long)self.page,self.totalPage] color:HUAColor(0xffffff) font:hua_scale(10)];
-//        [self.tableView addSubview:_label];
-//        _label.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
-//        _label.frame = CGRectMake(screenWidth/2-hua_scale(10), screenHeight - hua_scale(10), hua_scale(20), hua_scale(10));
-//        HUALog(@"%@",_label.text);
-//    }
-//    return _label;
-//}
+
 
 - (NSMutableArray *)productsArray {
     if (!_productsArray) {
@@ -102,9 +92,6 @@
 }
 
 
-//- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
-//    self.label.hidden = NO;
-//}
  //获取下拉菜单数据
 - (void)getDownData{
 
@@ -260,13 +247,16 @@
     //存放一级
     for (NSDictionary *dic in titelDic[@"info"]) {
         [_dataDic setValue:dic[@"category_id"] forKey:dic[@"name"]];
+        
     }
+
 
     //NSLog(@"%@",_dataDic);
     
 
     //_data1 = [NSMutableArray arrayWithObjects:@{@"title":@"不限", @"data":noLimit},@{@"title":@"沐浴露",@"data":food}, @{@"title":@"护发素", @"data":travel}, @{@"title":@"洗面奶",@"data":food},@{@"title":@"啫喱水",@"data":travel},@{@"title":@"BB霜",@"data":food},@{@"title":@"眼霜",@"data":travel},@{@"title":@"指甲油",@"data":food},@{@"title":@"卸甲油",@"data":travel},nil];
    // NSLog(@"%@",_data1);
+
     _data2 = [NSMutableArray arrayWithObjects:@"不限", @"价格降序", @"价格升序",nil];
     _data3 = [NSMutableArray arrayWithObjects:@"不限",@"点赞降序",@"点赞升序",nil];
     
@@ -275,7 +265,7 @@
     menu.textColor = [UIColor colorWithRed:83.f/255.0f green:83.f/255.0f blue:83.f/255.0f alpha:1.0f];
     //图标颜色
     menu.indicatorColor = HUAColor(0x4da800);
-    
+    menu.typeStr = @"产品菜单";
     menu.dataSource = self;
     menu.delegate = self;
     
@@ -300,6 +290,7 @@
         }
         
         self.page = 1;
+        [self.productsArray removeAllObjects];
         AFHTTPRequestOperationManager *manager = [[AFHTTPRequestOperationManager alloc] init];
         NSString *url =[HUA_URL stringByAppendingPathComponent:@"product/product_list"];
         NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
@@ -316,21 +307,19 @@
         if (![_rightText isEqualToString:@"不限"] && _rightText != nil) {
             parameters[@"order_praise"] =[_rightText isEqualToString:@"点赞降序"]? @"desc":@"asc";
         }
-        
+
         [manager GET:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
         //HUALog(@"%@",responseObject);
         if ([[responseObject objectForKey:@"info"] isKindOfClass:[NSString class]]) {
             [HUAMBProgress MBProgressOnlywithLabelText:[responseObject objectForKey:@"info"]];
             return ;
         }
-        [self.productsArray removeAllObjects];
         NSArray *array = [HUADataTool shopProduct:responseObject];
         [self.productsArray addObjectsFromArray:array];
         [self.tableView reloadData];
     } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
         HUALog(@"%@",error);
     }];
-
         
     }];
     [self.view addSubview:menu];

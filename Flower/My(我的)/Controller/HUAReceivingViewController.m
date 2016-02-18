@@ -124,7 +124,6 @@
     vc.remoerBlock = ^(NSString *infoAddr_id){
 
         NSString *token = [HUAUserDefaults getToken];
-        HUALog(@"token:%@",token);
         AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
         [manager.requestSerializer setValue:token forHTTPHeaderField:@"token"];
         //申明返回的结果是json类型
@@ -132,27 +131,25 @@
         //申明请求的数据是json类型
          //manager.requestSerializer=[AFJSONRequestSerializer serializer];
         //如果报接受类型不一致请替换一致text/html或别的
-       // manager.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"application/json"];
+        //manager.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"application/json"];
         //传入的参数
         NSDictionary *parameters = @{@"addr_id":infoAddr_id};
          NSString *url = [HUA_URL stringByAppendingPathComponent:@"user/update_shopping_addr"];
         [manager POST:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-            NSLog(@"%@",responseObject);
-            //刷新cell
             [self getData];
+            
+            NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:responseObject options:0 error:nil];
+            NSLog(@"%@",dic);
+            //刷新cell
             
         } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
             
             NSLog(@"%@",error);
-            
-            [self getData];
-            
         }];
-
-        //刷新数据
-       // [self.tablewView reloadData];
-    
     };
+    
+    
+    
     
     //修改地址的block语句
     vc.infoBlock = ^(NSDictionary *inFotextDic){
@@ -164,11 +161,11 @@
         AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
         [manager.requestSerializer setValue:token forHTTPHeaderField:@"token"];
         //申明返回的结果是json类型
-        //manager.responseSerializer = [AFHTTPResponseSerializer serializer];
+        manager.responseSerializer = [AFHTTPResponseSerializer serializer];
         //申明请求的数据是json类型
         // manager.requestSerializer=[AFJSONRequestSerializer serializer];
         //如果报接受类型不一致请替换一致text/html或别的
-        manager.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"text/json"];
+        manager.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"application/json"];
         //传入的参数
         NSDictionary *parameters = @{@"addr_id":inFotextDic[@"addr_id"],@"consignee":inFotextDic[@"consignee"],@"consignee_phone":inFotextDic[@"consignee_phone"],@"province":inFotextDic[@"province"],@"city":inFotextDic[@"city"],@"region":inFotextDic[@"region"],@"address":inFotextDic[@"address"]};
         
@@ -209,12 +206,6 @@
     vc.inFoBlock = ^(NSArray *InFotext){
         [self getData];
       
-        //[_ReceivingArrar addObjectsFromArray:InFotext];
-     
-        
-        //刷新列表
-        
-        //[self.tablewView reloadData];
     };
     
     
