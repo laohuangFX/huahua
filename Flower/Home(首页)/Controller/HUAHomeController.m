@@ -27,14 +27,12 @@
 #import <CoreLocation/CoreLocation.h>
 
 static NSString *identifier = @"cell";
-<<<<<<< HEAD
+
 @interface HUAHomeController ()<ClickDelegate, UIScrollViewDelegate,UITabBarControllerDelegate,HUASortMenuDelegate,HomeHeaderViewDelegate,UITextFieldDelegate,CLLocationManagerDelegate>
-@property (nonatomic, strong) NSArray *shopsArray;
+//@property (nonatomic, strong) NSArray *shopsArray;
 @property (nonatomic, strong) NSMutableArray *shopsMutableArray;
-=======
-@interface HUAHomeController ()<ClickDelegate, UIScrollViewDelegate,UITabBarControllerDelegate,HUASortMenuDelegate,HomeHeaderViewDelegate,UITextFieldDelegate>
 @property (nonatomic, strong) NSMutableArray *shopsArray;
->>>>>>> fcc4650b057d5f79d73be10235a9a364b01f2e36
+
 @property (nonatomic, assign) NSUInteger page;
 @property (nonatomic, strong) NSArray *bannerArray;
 @property (nonatomic, strong) NSArray *categoryArray;
@@ -45,13 +43,11 @@ static NSString *identifier = @"cell";
 @property (nonatomic, strong) UIButton *chooseCity;
 @property (nonatomic, strong) HUASelectCityView *selectView;
 
-<<<<<<< HEAD
+
 @property (nonatomic, strong) CLLocationManager * mgr;
 @property (nonatomic, assign) CLLocationCoordinate2D currentCoord;
 @property (nonatomic, strong) NSString *currentCity;
 
-=======
->>>>>>> fcc4650b057d5f79d73be10235a9a364b01f2e36
 @end
 
 @implementation HUAHomeController
@@ -92,15 +88,12 @@ static NSString *identifier = @"cell";
     [self setupUpRefresh];
     // 集成下拉刷新控件
     [self setupDownRefresh];
-<<<<<<< HEAD
+
     //定位
     [self getAddress];
 }
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    
-=======
->>>>>>> fcc4650b057d5f79d73be10235a9a364b01f2e36
 }
 - (void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
@@ -314,14 +307,11 @@ static NSString *identifier = @"cell";
 //选择城市按钮
 #pragma --选择城市按钮的点击事件
 - (void)chooseCity:(UIButton *)chooseCity{
-<<<<<<< HEAD
-    
-=======
+
     UIButton * button =  [self.header viewWithTag:1000];
     button.selected = NO;
     self.sortView.y = screenHeight;
      [self.sortView removeFromSuperview];
->>>>>>> fcc4650b057d5f79d73be10235a9a364b01f2e36
     chooseCity.selected = !chooseCity.selected;
     if (chooseCity.selected == YES) {
         self.selectView = [[HUASelectCityView alloc]initWithFrame:self.view.bounds];
@@ -416,7 +406,6 @@ static NSString *identifier = @"cell";
     }];
 }
 
-<<<<<<< HEAD
 #pragma mark 定位
 - (void)setCurrentCity:(NSString *)currentCity{
     _currentCity = currentCity;
@@ -504,7 +493,7 @@ static NSString *identifier = @"cell";
      [self.mgr stopUpdatingLocation];
 }
 
-
+/*
 #pragma mark - Table view data source
 
 
@@ -539,9 +528,7 @@ static NSString *identifier = @"cell";
         [self.navigationController pushViewController:vipFrontPageVC animated:YES];
     
 }
-
-=======
->>>>>>> fcc4650b057d5f79d73be10235a9a364b01f2e36
+*/
 
 #pragma mark --- 创建分区头视图
 //创建分区头视图
