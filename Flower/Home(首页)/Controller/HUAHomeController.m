@@ -26,9 +26,10 @@
 #import "HUASelectCityView.h"
 #import "HUAGetCity.h"
 #import "EmojiBool.h"
+#import <CoreLocation/CoreLocation.h>
 
 static NSString *identifier = @"cell";
-@interface HUAHomeController ()<ClickDelegate, UIScrollViewDelegate,UITabBarControllerDelegate,HUASortMenuDelegate,HomeHeaderViewDelegate,UITextFieldDelegate>
+@interface HUAHomeController ()<ClickDelegate, UIScrollViewDelegate,UITabBarControllerDelegate,HUASortMenuDelegate,HomeHeaderViewDelegate,UITextFieldDelegate,CLLocationManagerDelegate>
 @property (nonatomic, strong) NSArray *shopsArray;
 @property (nonatomic, strong) NSMutableArray *shopsMutableArray;
 @property (nonatomic, assign) NSUInteger page;
@@ -39,6 +40,11 @@ static NSString *identifier = @"cell";
 @property (nonatomic, strong) UITextField *searchBar;
 @property (nonatomic, strong) UIButton *chooseCity;
 @property (nonatomic, strong) HUASelectCityView *selectView;
+
+@property (nonatomic, strong) CLLocationManager * mgr;
+@property (nonatomic, assign) CLLocationCoordinate2D currentCoord;
+@property (nonatomic, strong) NSString *currentCity;
+
 @end
 
 @implementation HUAHomeController
@@ -79,9 +85,8 @@ static NSString *identifier = @"cell";
     [self setupUpRefresh];
     // 集成下拉刷新控件
     [self setupDownRefresh];
-    
-   
-    
+    //定位
+    [self getAddress];
 }
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
@@ -95,6 +100,10 @@ static NSString *identifier = @"cell";
         [self.selectView dismissView];
     }
 }
+//- (void)getData{
+//    
+//}
+
 
 - (void)getData {
 
@@ -120,7 +129,6 @@ static NSString *identifier = @"cell";
 }
  // 集成下拉刷新控件
 - (void)setupDownRefresh {
-    
     self.tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(loadNewData)];
     
     // 马上进入刷新状态
@@ -272,7 +280,8 @@ static NSString *identifier = @"cell";
         _chooseCity.height = 44;
         [_chooseCity setImage:[UIImage imageNamed:@"select"] forState:UIControlStateNormal];
         [_chooseCity setImage:[UIImage imageNamed:@"select_green"] forState:UIControlStateSelected];
-        [_chooseCity setTitle:@"广州市" forState:UIControlStateNormal];
+       
+        [_chooseCity setTitle: [[NSUserDefaults standardUserDefaults]objectForKey:@"currentCity"] forState:UIControlStateNormal];
         [_chooseCity setTitleColor:HUAColor(0x575757) forState:UIControlStateNormal];
         [_chooseCity setTitleColor:HUAColor(0x4da800) forState:UIControlStateSelected];
         
@@ -302,6 +311,7 @@ static NSString *identifier = @"cell";
 }
 
 - (void)setSearchNav{
+    self.tableView.scrollEnabled = NO;
     self.navigationItem.leftBarButtonItems = @[];
     
     self.searchBar.width = hua_scale(300.0);
@@ -314,6 +324,7 @@ static NSString *identifier = @"cell";
 //选择城市按钮
 #pragma --选择城市按钮的点击事件
 - (void)chooseCity:(UIButton *)chooseCity{
+    
     chooseCity.selected = !chooseCity.selected;
     if (chooseCity.selected == YES) {
         self.selectView = [[HUASelectCityView alloc]initWithFrame:self.view.bounds];
@@ -321,8 +332,9 @@ static NSString *identifier = @"cell";
         __block HUAHomeController * wself = self;
         self.selectView.cityBlock = ^(NSString *cityName){
             chooseCity.selected = NO;
-            wself.tableView.scrollEnabled = NO;
+            wself.tableView.scrollEnabled = YES;
             if (cityName.length != 0) {
+                wself.currentCity = cityName;
                 [chooseCity setTitle:cityName forState:UIControlStateNormal];
             }
             
@@ -390,7 +402,7 @@ static NSString *identifier = @"cell";
     return YES;
 }
 - (void)dismissBlackView{
-    
+    self.tableView.scrollEnabled = YES;
     UIView *blackView = [self.view viewWithTag:1001];
     if (blackView == nil) {
         return;
@@ -404,6 +416,94 @@ static NSString *identifier = @"cell";
         [blackView removeFromSuperview];
     }];
 }
+
+#pragma mark 定位
+- (void)setCurrentCity:(NSString *)currentCity{
+    _currentCity = currentCity;
+    NSUserDefaults *userD  = [NSUserDefaults standardUserDefaults];
+    [userD setObject:currentCity forKey:@"currentCity"];
+    self.currentCoord = [self getCoord:currentCity];
+    
+}
+- (CLLocationCoordinate2D)getCoord:(NSString *)city{
+//    NSString *oreillyAddress = @"1005 Gravenstein Highway North, Sebastopol, CA 95472, USA";
+    CLGeocoder *myGeocoder = [[CLGeocoder alloc] init];
+    __block CLLocationCoordinate2D coord;
+    [myGeocoder geocodeAddressString:city completionHandler:^(NSArray *placemarks, NSError *error) {
+        if ([placemarks count] > 0 && error == nil) {
+            NSLog(@"Found %lu placemark(s).", (unsigned long)[placemarks count]);
+            CLPlacemark *firstPlacemark = [placemarks objectAtIndex:0];
+            NSLog(@"Longitude = %f", firstPlacemark.location.coordinate.longitude);
+            NSLog(@"Latitude = %f", firstPlacemark.location.coordinate.latitude);
+            coord = firstPlacemark.location.coordinate;
+        }
+        else if ([placemarks count] == 0 && error == nil) {
+            NSLog(@"Found no placemarks.");
+        } else if (error != nil) {
+            NSLog(@"An error occurred = %@", error);
+        }  
+    }];
+    return coord;
+}
+- (void)getAddress{
+    self.mgr = [[CLLocationManager alloc]init];
+    self.mgr.delegate = self;
+    //用于判断当前是ios7.0还是ios8.0
+    if ([[UIDevice currentDevice].systemVersion doubleValue] >= 8.0) {
+        //NSLocationAlwaysUsageDescription   允许在前后台都可以授权
+//        NSLocationWhenInUseUsageDescription   允许在前台授权
+        //手动授权
+        
+//        主动请求前后台授权
+        [self.mgr requestAlwaysAuthorization];
+        
+        //主动请求前台授权
+//                [self.mgr requestWhenInUseAuthorization];
+    }else {
+        [self.mgr startUpdatingLocation];
+    }
+
+}
+//判断授权状态
+- (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status{
+    
+    if (status == kCLAuthorizationStatusAuthorizedAlways || status == kCLAuthorizationStatusAuthorizedWhenInUse) {
+        //开启定位
+        [self.mgr startUpdatingLocation];
+        // 定位的精确度
+        self.mgr.desiredAccuracy = kCLLocationAccuracyBestForNavigation;
+//        //每隔一点距离定位一次 （单位：米）
+//        self.mgr.distanceFilter = 10;
+    }
+    
+}
+//获取定位的位置信息
+- (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray<CLLocation *> *)locations{
+    NSLog(@"%@",locations);
+    //获取我当前的位置
+    CLLocation *location = [locations lastObject];
+    
+    //当前经纬度
+    self.currentCoord  = location.coordinate;
+    NSLog(@" **************** coord.x = %f,coord.y = %f ",self.currentCoord.latitude,self.currentCoord.longitude);
+    //地理反编码
+    //创建反编码对象
+    CLGeocoder *geocoder = [[CLGeocoder alloc]init];
+    //调用方法，使用位置反编码对象获取位置信息
+    [geocoder reverseGeocodeLocation:location completionHandler:^(NSArray<CLPlacemark *> * _Nullable placemarks, NSError * _Nullable error) {
+        for (CLPlacemark *place in placemarks) {
+            NSLog(@" **************** name = %@,thorough = %@ ,locality = %@",place.name,place.thoroughfare,place.locality);
+            [_chooseCity setTitle:place.locality forState:UIControlStateNormal];
+            _chooseCity.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
+            [_chooseCity setTitleEdgeInsets:UIEdgeInsetsMake(0, -(_chooseCity.imageView.frame.size.width), 0, 0)];
+            [_chooseCity setImageEdgeInsets:UIEdgeInsetsMake(0, (_chooseCity.titleLabel.frame.size.width+20), 0, 0)];
+        }
+    }];
+    
+    //停止定位
+     [self.mgr stopUpdatingLocation];
+}
+
 
 #pragma mark - Table view data source
 
