@@ -10,16 +10,21 @@
 #import "HUAActivityGoodsCell.h"
 #import "HUADetailController.h"
 @interface HUAActivityController ()<UICollectionViewDelegateFlowLayout>
-@property (nonatomic, strong) NSArray *goodsArray;
+//活动商品数组
+@property (nonatomic, strong) NSMutableArray *goodsArray;
+//分页数
+@property (nonatomic, assign) NSInteger page;
+//总页数
+@property (nonatomic, strong) NSNumber *totalPage;
 @end
 
 @implementation HUAActivityController
 
 static NSString * const reuseIdentifier = @"goods";
 
-- (NSArray *)goodsArray {
+- (NSMutableArray *)goodsArray {
     if (!_goodsArray) {
-        _goodsArray = [[NSArray alloc]init];;
+        _goodsArray = [[NSMutableArray alloc]init];;
     }
     return _goodsArray;
 }
@@ -35,28 +40,93 @@ static NSString * const reuseIdentifier = @"goods";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.page = 1;
+    //设置导航栏
     [self setNavigationBar];
-    
-    AFHTTPRequestOperationManager *manager = [[AFHTTPRequestOperationManager alloc]init];
+    //请求数据
+    [self getData];
+    //下拉刷新数据
+    [self setupDownRefresh];
+}
+#pragma mark -- 下拉刷新数据
+- (void)setupDownRefresh {
+    self.collectionView.mj_header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(loadNewData)];
+}
 
+- (void)loadNewData {
+    self.page++;
+    if (self.page > [self.totalPage integerValue]) {
+        [HUAMBProgress MBProgressOnlywithLabelText:@"没有更多数据了"];
+        [self.collectionView.mj_header endRefreshing];
+        return;
+    }
     NSString *url = [HUA_URL stringByAppendingPathComponent:Active_list];
-    [manager GET:url parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-        //HUALog(@"%@",responseObject);
-        self.goodsArray = [HUADataTool activity:responseObject];
-        
+    NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+    parameter[@"per_page"] = @(self.page);
+    [HUAHttpTool GET:url params:parameter success:^(id responseObject) {
+        HUALog(@"123%@",responseObject);
+        self.totalPage = responseObject[@"info"][@"pages"];
+        NSArray *array = [HUADataTool activity:responseObject];
+        [self.goodsArray insertObjects:array atIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, array.count)]];
         [self.collectionView reloadData];
-    } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
+        [self.collectionView.mj_header endRefreshing];
+    } failure:^(NSError *error) {
+        self.page--;
+        [HUAMBProgress MBProgressFromWindowWithLabelText:@"请检查网络设置"];
+        HUALog(@"%@",error);
+        [self.collectionView.mj_header endRefreshing];
+    }];
+
+}
+
+#pragma mark -- 上拉自动加载数据
+- (void)collectionView:(UICollectionView *)collectionView willDisplayCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.row == self.goodsArray.count-1) {
+        [self loadMoreData];
+    }
+}
+
+- (void)loadMoreData {
+    self.page++;
+    if (self.page > [self.totalPage integerValue]) {
+        [HUAMBProgress MBProgressOnlywithLabelText:@"没有更多数据了"];
+        return;
+    }
+    NSString *url = [HUA_URL stringByAppendingPathComponent:Active_list];
+    NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+    parameter[@"per_page"] = @(self.page);
+    [HUAHttpTool GET:url params:parameter success:^(id responseObject) {
+        self.totalPage = responseObject[@"info"][@"pages"];
+        NSArray *array = [HUADataTool activity:responseObject];
+        [self.goodsArray addObjectsFromArray:array];
+        [self.collectionView reloadData];
+    } failure:^(NSError *error) {
+        self.page--;
+        [HUAMBProgress MBProgressFromWindowWithLabelText:@"请检查网络设置"];
         HUALog(@"%@",error);
     }];
+
+
 }
 
 
 #pragma mark -- 数据
-
-
-
-
-
+- (void)getData {
+   
+    NSString *url = [HUA_URL stringByAppendingPathComponent:Active_list];
+    NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+    parameter[@"per_page"] = @(self.page);
+    [HUAHttpTool GET:url params:parameter success:^(id responseObject) {
+        HUALog(@"123%@",responseObject);
+        self.totalPage = responseObject[@"info"][@"pages"];
+         NSArray *array = [HUADataTool activity:responseObject];
+        [self.goodsArray addObjectsFromArray:array];
+        [self.collectionView reloadData];
+    } failure:^(NSError *error) {
+        [HUAMBProgress MBProgressFromWindowWithLabelText:@"请检查网络设置"];
+        HUALog(@"%@",error);
+    }];
+}
 
 
 #pragma mark -- 导航栏按钮

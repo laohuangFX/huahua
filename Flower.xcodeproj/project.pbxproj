@@ -251,7 +251,6 @@
 		59015DD61C4C94A100524B6F /* HUAMienCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 59015DD51C4C94A100524B6F /* HUAMienCell.m */; };
 		59015DD91C4C99BE00524B6F /* HUAMasterDetailInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 59015DD81C4C99BE00524B6F /* HUAMasterDetailInfo.m */; };
 		5901A4121C55CCEC0004EAA5 /* HUAMyMemberCard.m in Sources */ = {isa = PBXBuildFile; fileRef = 5901A4111C55CCEC0004EAA5 /* HUAMyMemberCard.m */; };
-		59027C2A1C62F9A600A394B5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 59027C291C62F9A600A394B5 /* Assets.xcassets */; };
 		590321C61C6EE87800741D14 /* HUAHttpTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 590321C51C6EE87800741D14 /* HUAHttpTool.m */; };
 		590321E91C6F0D6A00741D14 /* NSString+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 590321E81C6F0D6A00741D14 /* NSString+Extension.m */; };
 		5903E6941C58632500FF5B3D /* HUAConsumptionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5903E6931C58632500FF5B3D /* HUAConsumptionCell.m */; };
@@ -308,6 +307,7 @@
 		59AC011C1C3A4AFE00F453F5 /* FlowerUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 59AC011B1C3A4AFE00F453F5 /* FlowerUITests.m */; };
 		59E09D9C1C740EEB0058D9AD /* HUAProductInformation.m in Sources */ = {isa = PBXBuildFile; fileRef = 59E09D9B1C740EEB0058D9AD /* HUAProductInformation.m */; };
 		59E09D9F1C7410D40058D9AD /* HUAUserInfomation.m in Sources */ = {isa = PBXBuildFile; fileRef = 59E09D9E1C7410D40058D9AD /* HUAUserInfomation.m */; };
+		59E09DA11C74632E0058D9AD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 59E09DA01C74632E0058D9AD /* Assets.xcassets */; };
 		59EAC7041C60ABB900651534 /* HUAProductDetailCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 59EAC7031C60ABB900651534 /* HUAProductDetailCell.m */; };
 		59FA2FDE1C4B637B00A4F606 /* HUAChooseMasterCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 59FA2FDD1C4B637B00A4F606 /* HUAChooseMasterCell.m */; };
 		59FA2FE11C4B692700A4F606 /* HUAChooseMaster.m in Sources */ = {isa = PBXBuildFile; fileRef = 59FA2FE01C4B692700A4F606 /* HUAChooseMaster.m */; };
@@ -783,7 +783,6 @@
 		59015DD81C4C99BE00524B6F /* HUAMasterDetailInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HUAMasterDetailInfo.m; sourceTree = "<group>"; };
 		5901A4101C55CCEC0004EAA5 /* HUAMyMemberCard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HUAMyMemberCard.h; sourceTree = "<group>"; };
 		5901A4111C55CCEC0004EAA5 /* HUAMyMemberCard.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HUAMyMemberCard.m; sourceTree = "<group>"; };
-		59027C291C62F9A600A394B5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		590321C41C6EE87800741D14 /* HUAHttpTool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HUAHttpTool.h; sourceTree = "<group>"; };
 		590321C51C6EE87800741D14 /* HUAHttpTool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HUAHttpTool.m; sourceTree = "<group>"; };
 		590321E71C6F0D6A00741D14 /* NSString+Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Extension.h"; sourceTree = "<group>"; };
@@ -892,6 +891,7 @@
 		59E09D9B1C740EEB0058D9AD /* HUAProductInformation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HUAProductInformation.m; sourceTree = "<group>"; };
 		59E09D9D1C7410D40058D9AD /* HUAUserInfomation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HUAUserInfomation.h; sourceTree = "<group>"; };
 		59E09D9E1C7410D40058D9AD /* HUAUserInfomation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HUAUserInfomation.m; sourceTree = "<group>"; };
+		59E09DA01C74632E0058D9AD /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		59EAC7021C60ABB900651534 /* HUAProductDetailCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HUAProductDetailCell.h; sourceTree = "<group>"; };
 		59EAC7031C60ABB900651534 /* HUAProductDetailCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HUAProductDetailCell.m; sourceTree = "<group>"; };
 		59FA2FDC1C4B637B00A4F606 /* HUAChooseMasterCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HUAChooseMasterCell.h; sourceTree = "<group>"; };
@@ -1749,9 +1749,9 @@
 				59FBFD4F1C48994C00EB00B1 /* HUATopInfoView.h */,
 				59FBFD501C48994C00EB00B1 /* HUATopInfoView.m */,
 				59FBFD641C48ED0600EB00B1 /* HUAServiceMasterCell.h */,
+				59FA2FDD1C4B637B00A4F606 /* HUAChooseMasterCell.m */,
 				59FBFD651C48ED0600EB00B1 /* HUAServiceMasterCell.m */,
 				59FA2FDC1C4B637B00A4F606 /* HUAChooseMasterCell.h */,
-				59FA2FDD1C4B637B00A4F606 /* HUAChooseMasterCell.m */,
 				59015DC51C4C785000524B6F /* HUAMasterListCell.h */,
 				59015DC61C4C785000524B6F /* HUAMasterListCell.m */,
 				59015DD41C4C94A100524B6F /* HUAMienCell.h */,
@@ -1958,7 +1958,7 @@
 				59AC01381C3A4B4200F453F5 /* Product(产品) */,
 				59AC01351C3A4B4200F453F5 /* My(我的) */,
 				189319871C4889AA005D230F /* PrefixHeader.pch */,
-				59027C291C62F9A600A394B5 /* Assets.xcassets */,
+				59E09DA01C74632E0058D9AD /* Assets.xcassets */,
 				59AC01041C3A4AFE00F453F5 /* LaunchScreen.storyboard */,
 				1893198A1C488B13005D230F /* area.plist */,
 				59AC01071C3A4AFE00F453F5 /* Info.plist */,
@@ -2189,6 +2189,7 @@
 				17B7E2661C71BD9C0032C6D5 /* chatBar_moreSelected.png in Resources */,
 				17B7E2791C71BD9C0032C6D5 /* chatBar_colorMore_videoSelected@2x.png in Resources */,
 				17B7E28A1C71BD9C0032C6D5 /* btn-close-black@2x.png in Resources */,
+				59E09DA11C74632E0058D9AD /* Assets.xcassets in Resources */,
 				17B7E2861C71BD9C0032C6D5 /* messageToolbarBg@2x.png in Resources */,
 				17B7E25D1C71BD9C0032C6D5 /* chatBar_face@2x.png in Resources */,
 				17B7E25A1C71BD9C0032C6D5 /* faceDelete.png in Resources */,
@@ -2197,7 +2198,6 @@
 				17B7E2811C71BD9C0032C6D5 /* chatBar_more_locationSelected@2x.png in Resources */,
 				17B7E2611C71BD9C0032C6D5 /* chatBar_keyboard@2x.png in Resources */,
 				17B7E2891C71BD9C0032C6D5 /* btn-close-black.png in Resources */,
-				59027C2A1C62F9A600A394B5 /* Assets.xcassets in Resources */,
 				17B7E2801C71BD9C0032C6D5 /* chatBar_more_locationSelected.png in Resources */,
 				17B7E2D31C71BD9C0032C6D5 /* progresshud.bundle in Resources */,
 				17B7E2681C71BD9C0032C6D5 /* chatBar_record.png in Resources */,
