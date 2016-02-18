@@ -289,7 +289,7 @@
             parameters[@"order_price"] =[_midstText isEqualToString:@"价格降序"]? @"desc":@"asc";
         }
         if (![_rightText isEqualToString:@"不限"] && _rightText != nil) {
-            parameters[@"order_praise"] =[_midstText isEqualToString:@"点赞降序"]? @"desc":@"asc";
+            parameters[@"order_praise"] =[_rightText isEqualToString:@"点赞降序"]? @"desc":@"asc";
         }
         
 

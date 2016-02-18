@@ -125,11 +125,13 @@ static NSString * const reuseIdentifier = @"cell";
     NSMutableArray *food= [NSMutableArray array];
     NSMutableArray *travel = [NSMutableArray array];
     
+    
     //    NSArray *food = @[@"不限", @"海飞丝", @"飘柔", @"清扬", @"沙宣",@"霸王"];
     //    NSArray *travel = @[@"不限", @"蜂花护发素", @"潘婷护发素", @"沙宣护发素", @"飘柔护发素", @"欧莱雅护发素", @"百雀羚护发素", @"迪彩护发素", @"资生堂护发素", @"露华浓护发素"];
     NSArray *noLimit = @[@"不限"];
     
     _data1 = [NSMutableArray array];
+    
     
     for (int i=0; i<[titelDic[@"info"] count]+1; i++) {
         if (i==0) {
@@ -176,7 +178,13 @@ static NSString * const reuseIdentifier = @"cell";
     
     [menu setGetDataBlock:^(NSString *leftText, NSString *leftSubText, NSString *midstText, NSString *lastText) {
         
-
+        
+        
+        
+        //NSLog(@"%@",leftText);
+        //        NSLog(@"%@",leftSubText);
+        //        NSLog(@"%@",midstText);
+        //        NSLog(@"%@",lastText);
         if (leftText.length != 0) {
             _leftText = leftText;
             return ;
@@ -202,20 +210,21 @@ static NSString * const reuseIdentifier = @"cell";
             parameters[@"order_price"] =[_midstText isEqualToString:@"价格降序"]? @"desc":@"asc";
         }
         if (![_rightText isEqualToString:@"不限"] && _rightText != nil) {
-            parameters[@"order_praise"] =[_midstText isEqualToString:@"点赞降序"]? @"desc":@"asc";
+            parameters[@"order_praise"] =[_rightText isEqualToString:@"点赞降序"]? @"desc":@"asc";
         }
         
-        
+        NSLog(@"%@",parameters);
         [manager GET:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-            HUALog(@"%@",responseObject);
+           // HUALog(@"%@",responseObject);
             if ([[responseObject objectForKey:@"info"] isKindOfClass:[NSString class]]) {
                 [HUAMBProgress MBProgressOnlywithLabelText:[responseObject objectForKey:@"info"]];
                 return ;
             }
-
+            
             self.productArray = nil;
             self.productArray = [HUADataTool getProductArray:responseObject];
             [self.collectionView reloadData];
+
         } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
             HUALog(@"%@",error);
         }];
@@ -226,7 +235,6 @@ static NSString * const reuseIdentifier = @"cell";
     
     
 }
-
 #pragma --设置导航栏的BarButtonItem
 //设置导航栏的BarButtonItem
 - (void)setNavigationItem{
