@@ -5,7 +5,7 @@
 //  Created by 程召华 on 16/1/13.
 //  Copyright © 2016年 readchen.com. All rights reserved.
 //
-#define Create_praise        @"user/create_praise"
+#define Create_praise        @"user/praise"
 #define Create_collection    @"user/create_collection"
 #define Is_vip               @"user/is_vip"
 #define Shop_index           @"general/shop_index"
@@ -16,16 +16,18 @@
 #import "HUAShopFooterView.h"
 #import "HUADetailController.h"
 #import "HUAShopProductController.h"
+#import "HUAShopServiceViewController.h"
 #import "HUAMasterListController.h"
 #import "HUStatusAViewController.h"
 #import "HUAConsumptionController.h"
 #import "HUARechargeViewController.h"
+#import "HUAUserInfomation.h"
 
 @interface HUAVipShopFrontPageController ()<UITableViewDataSource, UITableViewDelegate>
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) NSArray *shopArray;
 @property (nonatomic, strong) HUAShopIntroduce *shopIntroduce;
-@property (nonatomic, strong) HUAShopIntroduce *userInfo;
+@property (nonatomic, strong) HUAUserInfomation *userInfo;
 @property (nonatomic, strong) NSArray *coverArray;
 @property (nonatomic, strong) NSArray *idArray;
 @property (nonatomic, strong) HUAUserDetailInfo *detailInfo;
@@ -88,7 +90,6 @@
 - (void)isVip {
     NSString *url = [HUA_URL stringByAppendingPathComponent:Is_vip];
     NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
-    parameter[@"user_id"] = self.detailInfo.user_id;
     parameter[@"shop_id"] = self.shop_id;
     [HUAHttpTool GETWithTokenAndUrl:url params:parameter success:^(id responseObject) {
         HUALog(@"是不是会员%@",responseObject);
@@ -102,7 +103,7 @@
 - (void)setNavigationItem {
     UIButton *collectButton = [UIButton buttonWithType:0];
     collectButton.frame = CGRectMake(hua_scale(239), hua_scale(9), hua_scale(16), hua_scale(16));
-    if ([[[[NSNumberFormatter alloc] init] stringFromNumber:self.userInfo.have_collected] isEqualToString:@"1"] ) {
+    if ([self.userInfo.have_collected isEqualToString:@"1"] ) {
         collectButton.selected = YES;
     }
     [collectButton setImage:[UIImage imageNamed:@"collect_white"] forState:UIControlStateNormal];
@@ -118,9 +119,8 @@
     [praiseButton setTitleColor:HUAColor(0x000000) forState:UIControlStateNormal];
     praiseButton.titleEdgeInsets = UIEdgeInsetsMake(0, 5, 0, 0);
     praiseButton.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 5);
-    if ([[[[NSNumberFormatter alloc] init] stringFromNumber:self.userInfo.have_praised] isEqualToString:@"1"] ) {
+    if ([self.userInfo.hava_praised isEqualToString:@"1"] ) {
         praiseButton.selected = YES;
-        
     }
     [praiseButton setTitle:[NSString stringWithFormat:@"%ld",self.shopIntroduce.praise_count.integerValue] forState:UIControlStateNormal];
     [praiseButton addTarget:self action:@selector(clickToPraise:) forControlEvents:UIControlEventTouchUpInside];
@@ -149,7 +149,7 @@
             }else {
                 [HUAMBProgress MBProgressOnlywithLabelText:@"取消收藏"];
             }
-            
+        self.block([sender.titleLabel.text integerValue]);
         } failure:^(NSError *error) {
             HUALog(@"%@",error);
         }];
@@ -168,8 +168,8 @@
         sender.selected = !sender.selected;
         NSString *url = [HUA_URL stringByAppendingPathComponent:Create_praise];
         NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
-        parameter[@"user_id"] = self.detailInfo.user_id;
-        parameter[@"shop_id"] = self.shop_id;
+        parameter[@"target"] = @"shop";
+        parameter[@"id"] = self.shop_id;
         [HUAHttpTool POSTWithTokenAndUrl:url params:parameter success:^(id responseObject) {
             HUALog(@"%@",responseObject);
             if ([responseObject[@"info"][0] isKindOfClass:[NSDictionary class]]) {
@@ -179,7 +179,7 @@
                 [HUAMBProgress MBProgressOnlywithLabelText:@"取消点赞"];
                 [sender setTitle:[NSString stringWithFormat:@"%ld",sender.titleLabel.text.integerValue-1] forState:UIControlStateNormal];
             }
-            
+            self.block([sender.titleLabel.text integerValue]);
         } failure:^(NSError *error) {
                 HUALog(@"%@",error);
         }];
@@ -192,10 +192,11 @@
     NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
     parameters[@"shop_id"] = self.shop_id;
     parameters[@"user_id"] = self.detailInfo.user_id;
-    [HUAHttpTool GET:url params:parameters success:^(id responseObject) {
-        HUALog(@"%@",self.shop_id);
+    [HUAHttpTool GETWithTokenAndUrl:url params:parameters success:^(id responseObject) {
+        HUALog(@"%@",responseObject);
         self.shopIntroduce = [HUAShopIntroduce parseFrontShopPageWithDictionary:responseObject[@"info"][@"shop_info"]];
-        self.userInfo = [HUAShopIntroduce parseUserInfoDictionary:responseObject[@"info"][@"user_info"]];
+        self.userInfo = [HUAUserInfomation mj_objectWithKeyValues:responseObject[@"info"][@"user_info"]];
+        
         [self setHeaderView:self.shopIntroduce];
         NSArray *cover = [HUADataTool activeCover:responseObject];
         HUAShopIntroduce *coverIntroduce = cover.firstObject;
@@ -209,12 +210,6 @@
 
     } failure:^(NSError *error) {
         HUALog(@"%@",error);
-        if ([error.userInfo[@"headers"] isKindOfClass:[NSDictionary class]]) {
-            [HUAMBProgress MBProgressFromWindowWithLabelText:@"账号在别的手机上登录,请重新登录" dispatch_get_main_queue:^{
-                HUALoginController *loginVC = [[HUALoginController alloc] init];
-                [self.navigationController pushViewController:loginVC animated:YES];
-            }];
-        }
 
     }];
 }
@@ -543,11 +538,11 @@
         [self.navigationController pushViewController:shopProductVC animated:YES];
     }
     if (indexPath.row == 1) {
-        HUAShopProductController *shopProductVC = [HUAShopProductController new];
-        shopProductVC.shop_id = self.shop_id;
-        shopProductVC.url = [HUA_URL stringByAppendingPathComponent:Service_list];
-        shopProductVC.shopName = self.shopName;
-        [self.navigationController pushViewController:shopProductVC animated:YES];
+        HUAShopServiceViewController *shopServiceVC = [HUAShopServiceViewController new];
+        shopServiceVC.shop_id = self.shop_id;
+        shopServiceVC.url = [HUA_URL stringByAppendingPathComponent:Service_list];
+        shopServiceVC.shopName = self.shopName;
+        [self.navigationController pushViewController:shopServiceVC animated:YES];
     }
     if (indexPath.row == 2) {
         HUAMasterListController *masterListVC = [HUAMasterListController new];

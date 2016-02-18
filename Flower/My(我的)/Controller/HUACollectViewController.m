@@ -8,7 +8,6 @@
 #define User_collection  @"user/user_collection"
 #import "HUACollectViewController.h"
 #import "HUACollectTableViewCell.h"
-#import "HUAShopFrontPageController.h"
 #import "HUAVipShopFrontPageController.h"
 
 @interface HUACollectViewController ()<UITableViewDataSource,UITableViewDelegate>

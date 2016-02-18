@@ -34,7 +34,8 @@
 //活动标题
 //@property (nonatomic, strong) NSString *article;
 
-
+//判断是否点赞
+@property (nonatomic, strong) NSNumber *have_praised;
 //活动图片地址
 @property (nonatomic, strong) NSString *pic;
 

@@ -1,17 +1,18 @@
 //
-//  HUAShopProductController.m
+//  HUAShopServiceViewController.m
 //  Flower
 //
-//  Created by 程召华 on 16/1/13.
+//  Created by 程召华 on 16/2/16.
 //  Copyright © 2016年 readchen.com. All rights reserved.
 //
 
-#import "HUAShopProductController.h"
+#import "HUAShopServiceViewController.h"
 #import "HUADataTool.h"
 #import "HUAShopProductCell.h"
 #import "HUAProductDetailController.h"
 #import "HUAServiceDetailController.h"
-@interface HUAShopProductController ()<UITableViewDelegate, UITableViewDataSource,JSDropDownMenuDataSource,JSDropDownMenuDelegate>{
+
+@interface HUAShopServiceViewController ()<UITableViewDelegate, UITableViewDataSource,JSDropDownMenuDataSource,JSDropDownMenuDelegate>{
     NSMutableArray *_data1;
     NSMutableArray *_data2;
     NSMutableArray *_data3;
@@ -22,14 +23,13 @@
     
     
 }
-
 @property (nonatomic, strong) UITableView *tableView;
-
 @property (nonatomic, strong) NSArray *productsArray;
 @property (nonatomic, strong) NSString *service_id;
+
 @end
 
-@implementation HUAShopProductController
+@implementation HUAShopServiceViewController
 
 - (NSArray *)productsArray {
     if (!_productsArray) {
@@ -44,7 +44,7 @@
         _tableView.dataSource = self;
         _tableView.delegate = self;
         [_tableView registerClass:[HUAShopProductCell class] forCellReuseIdentifier:@"cell"];
- 
+        
     }
     return _tableView;
 }
@@ -52,33 +52,14 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    //获取下拉菜单数据
-    [self getDownData];
-    
     [self.view addSubview:self.tableView];
     self.title = self.shopName;
     [self setNavigationItem];
-    
+    [self category];
     self.searchplaceholder = @"搜索";
     
     [self geDataWithSubParameters:nil];
     
-}
- //获取下拉菜单数据
-- (void)getDownData{
-
-    AFHTTPRequestOperationManager *manager = [[AFHTTPRequestOperationManager alloc] init];
-    NSString *url = [HUA_URL stringByAppendingPathComponent:@"product/product_cat"];
-    NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
-    parameters[@"shop_id"] = self.shop_id;
-    [manager GET:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation,NSDictionary* responseObject) {
-        //HUALog(@"%@",responseObject);
-        [self category:responseObject];
-    } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
-        HUALog(@"%@",error);
-    }];
-
-
 }
 - (void)geDataWithSubParameters:(NSDictionary *)SubParameters{
     
@@ -104,55 +85,29 @@
 }
 #pragma --设置三个选择按钮
 //设置三个选择按钮
-- (void)category:(NSDictionary *)titelDic{
+- (void)category {
     
-    NSMutableArray *food= [NSMutableArray array];
-    NSMutableArray *travel = [NSMutableArray array];
-    
-//    NSArray *food = @[@"不限", @"海飞丝", @"飘柔", @"清扬", @"沙宣",@"霸王"];
-//    NSArray *travel = @[@"不限", @"蜂花护发素", @"潘婷护发素", @"沙宣护发素", @"飘柔护发素", @"欧莱雅护发素", @"百雀羚护发素", @"迪彩护发素", @"资生堂护发素", @"露华浓护发素"];
+    NSArray *food = @[@"不限", @"海飞丝", @"飘柔", @"清扬", @"沙宣",@"霸王"];
+    NSArray *travel = @[@"不限", @"蜂花护发素", @"潘婷护发素", @"沙宣护发素", @"飘柔护发素", @"欧莱雅护发素", @"百雀羚护发素", @"迪彩护发素", @"资生堂护发素", @"露华浓护发素"];
     NSArray *noLimit = @[@"不限"];
+    _data1 = [NSMutableArray arrayWithObjects:@{@"title":@"不限", @"data":noLimit},@{@"title":@"沐浴露",@"data":food}, @{@"title":@"护发素", @"data":travel}, @{@"title":@"洗面奶",@"data":food},@{@"title":@"啫喱水",@"data":travel},@{@"title":@"BB霜",@"data":food},@{@"title":@"眼霜",@"data":travel},@{@"title":@"指甲油",@"data":food},@{@"title":@"卸甲油",@"data":travel},nil];
     
-    _data1 = [NSMutableArray array];
-   
-    for (int i=0; i<[titelDic[@"info"] count]+1; i++) {
-        if (i==0) {
-            [_data1 addObject:@{@"title":@"不限",@"data":noLimit}];
-        }else{
-            NSMutableArray *array = [NSMutableArray array];
-            
-            for (int y = 0; y< [titelDic[@"info"][i-1][@"sub"] count]+1; y++) {
-                if (y==0){
-                    [array addObject:@"不限"];
-                }else{
-                    [array addObject:titelDic[@"info"][i-1][@"sub"][y-1][@"name"]];
-                    //[array insertObject:titelDic[@"info"][i-1][@"sub"][y-1][@"name"] atIndex:y];
-                }
-            }
-            [food addObject:titelDic[@"info"][i-1][@"name"]];
-            [_data1 insertObject:@{@"title":food[i-1],@"data":array} atIndex:i];
-
-        }
-    }
-    
-    //_data1 = [NSMutableArray arrayWithObjects:@{@"title":@"不限", @"data":noLimit},@{@"title":@"沐浴露",@"data":food}, @{@"title":@"护发素", @"data":travel}, @{@"title":@"洗面奶",@"data":food},@{@"title":@"啫喱水",@"data":travel},@{@"title":@"BB霜",@"data":food},@{@"title":@"眼霜",@"data":travel},@{@"title":@"指甲油",@"data":food},@{@"title":@"卸甲油",@"data":travel},nil];
-    NSLog(@"%@",_data1);
     _data2 = [NSMutableArray arrayWithObjects:@"不限", @"从低到高", @"从高到低",nil];
     _data3 = [NSMutableArray arrayWithObjects:@"不限",@"最少",@"最多",nil];
     
     JSDropDownMenu *menu = [[JSDropDownMenu alloc] initWithOrigin:CGPointMake(0, 0) andHeight:hua_scale(30)];
-
+    
     menu.separatorColor = [UIColor colorWithRed:210.0f/255.0f green:210.0f/255.0f blue:210.0f/255.0f alpha:1.0];
     menu.textColor = [UIColor colorWithRed:83.f/255.0f green:83.f/255.0f blue:83.f/255.0f alpha:1.0f];
     //图标颜色
     menu.indicatorColor = HUAColor(0x4da800);
-
+    
     menu.dataSource = self;
     menu.delegate = self;
     
     [self.view addSubview:menu];
     
-
+    
 }
 
 
@@ -219,10 +174,9 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     HUAShopProduct *product = self.productsArray[indexPath.row];
-    HUAProductDetailController *productVC = [HUAProductDetailController new];
-    productVC.product_id = product.product_id;
-    productVC.shop_id = self.shop_id;
-    [self.navigationController pushViewController:productVC animated:YES];
+    HUAServiceDetailController *serviceVC = [HUAServiceDetailController new];
+    serviceVC.service_id = product.service_id;
+    [self.navigationController pushViewController:serviceVC animated:YES];
    [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 

@@ -5,7 +5,7 @@
 //  Created by 程召华 on 16/1/15.
 //  Copyright © 2016年 readchen.com. All rights reserved.
 //
-
+#define Is_vip             @"user/is_vip"
 #import "HUATopInfoView.h"
 
 @interface HUATopInfoView ()
@@ -19,6 +19,7 @@
 @property (nonatomic, strong) UILabel *specialNote;
 @property (nonatomic, strong) UILabel *specificationModel;
 @property (nonatomic, strong) UILabel *instructionLabel;
+@property (nonatomic, strong) id is_Vip;
 @end
 
 @implementation HUATopInfoView
@@ -28,8 +29,23 @@
     [self.goodsImageView sd_setImageWithURL:[NSURL URLWithString:detailInfo.cover] placeholderImage:[UIImage imageNamed:@"placeholder"]];
     self.goodsNameLabel.text = detailInfo.name;
     self.specificationsLabel.text = [NSString stringWithFormat:@"规格:%@",detailInfo.size];
+    //非会员价格
     self.priceLabel.text = [NSString stringWithFormat:@"¥%@",detailInfo.price];
+    //如果是会员重新赋值
+    NSString *url = [HUA_URL stringByAppendingPathComponent:Is_vip];
+    NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+    parameter[@"shop_id"] = self.detailInfo.shop_id;
+    [HUAHttpTool GETWithTokenAndUrl:url params:parameter success:^(id responseObject) {
+        self.is_Vip = responseObject[@"info"];
+        if ([self.is_Vip isKindOfClass:[NSDictionary class]]) {
+            self.priceLabel.text = [NSString stringWithFormat:@"¥%@",detailInfo.vip_discount];
+        }
+    } failure:^(NSError *error) {
+        HUALog(@"%@",error);
+    }];
+    
 }
+
 
 - (id)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {

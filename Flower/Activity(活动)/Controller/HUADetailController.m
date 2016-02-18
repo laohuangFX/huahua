@@ -5,14 +5,13 @@
 //  Created by 程召华 on 16/1/9.
 //  Copyright © 2016年 readchen.com. All rights reserved.
 //
-#define Create_praise        @"user/create_praise"
+#define Create_praise @"user/praise"
 #define Is_vip        @"user/is_vip"
 #define Active_detail @"active/active_detail"
 #import "HUADetailController.h"
 #import "HUADetailTopCell.h"
 #import "HUAShopInfoCell.h"
 #import "HUAActivityTimeCell.h"
-#import "HUAShopFrontPageController.h"
 #import "HUAVipShopFrontPageController.h"
 #import "HUABuyViewController.h"
 
@@ -63,7 +62,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self.view addSubview:self.tableView];
-    [self setNavigationBar];
     [self getData];
 }
 
@@ -84,12 +82,14 @@
     }];
 }
 
+
 - (void)getData {
     NSString *url = [HUA_URL stringByAppendingPathComponent:Active_detail];
     NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
+    parameters[@"user_id"] = self.detailInfo.user_id;
     parameters[@"active_id"] = self.active_id;
-    parameters[@"shop_id"] = self.shop_id;
-    [HUAHttpTool GET:url params:parameters success:^(id responseObject) {
+
+    [HUAHttpTool GETWithTokenAndUrl:url params:parameters success:^(id responseObject) {
         HUALog(@"%@",responseObject);
         //NSDictionary *shopInfo = responseObject[@"info"];
         // = [HUADetailInfo parseDetailinfo:shopInfo];
@@ -102,19 +102,56 @@
     }];
 }
 
-#pragma mark -- 设置导航栏
 - (void)setNavigationBar {
     UIButton *praiseButton = [UIButton buttonWithType:0];
-    praiseButton.userInteractionEnabled = NO;
     praiseButton.frame = CGRectMake(hua_scale(268), hua_scale(9), hua_scale(42), hua_scale(16));
-    [praiseButton setImage:[UIImage imageNamed:@"praise_tech"] forState:UIControlStateNormal];
+    [praiseButton setImage:[UIImage imageNamed:@"praise_black_empty"] forState:UIControlStateNormal];
+    [praiseButton setImage:[UIImage imageNamed:@"praise_tech"] forState:UIControlStateSelected];
     [praiseButton setTitle:self.info.praise_count forState:UIControlStateNormal];
     [praiseButton setTitleColor:HUAColor(0x000000) forState:UIControlStateNormal];
     praiseButton.titleEdgeInsets = UIEdgeInsetsMake(0, 5, 0, 0);
     praiseButton.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 5);
+    if ([[[[NSNumberFormatter alloc] init] stringFromNumber:self.info.have_praised] isEqualToString:@"1"] ) {
+        praiseButton.selected = YES;
+        
+    }
+    [praiseButton setTitle:[NSString stringWithFormat:@"%ld",self.info.praise_count.integerValue] forState:UIControlStateNormal];
+    [praiseButton addTarget:self action:@selector(clickToPraise:) forControlEvents:UIControlEventTouchUpInside];
+    
     praiseButton.titleLabel.font = [UIFont systemFontOfSize:hua_scale(14)];
-    self.navigationItem.rightBarButtonItems = @[[[UIBarButtonItem alloc]initWithCustomView:praiseButton],];
+    self.navigationItem.rightBarButtonItems = @[[[UIBarButtonItem alloc]initWithCustomView:praiseButton]];
 }
+#pragma mark -- 点击点赞
+- (void)clickToPraise:(UIButton *)sender {
+    if (!self.detailInfo) {
+        [HUAMBProgress MBProgressFromWindowWithLabelText:@"未登录,正在跳转登录页面..." dispatch_get_main_queue:^{
+            HUALoginController *loginVC = [[HUALoginController alloc] init];
+            [self.navigationController pushViewController:loginVC animated:YES];
+        }];
+        
+    }else {
+        sender.selected = !sender.selected;
+        NSString *url = [HUA_URL stringByAppendingPathComponent:Create_praise];
+        NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+        parameter[@"target"] = @"active";
+        parameter[@"id"] = self.active_id;
+        [HUAHttpTool POSTWithTokenAndUrl:url params:parameter success:^(id responseObject) {
+            HUALog(@"dianzan%@",responseObject);
+            if ([responseObject[@"info"][0] isKindOfClass:[NSDictionary class]]) {
+                [HUAMBProgress MBProgressOnlywithLabelText:@"点赞成功"];
+                [sender setTitle:[NSString stringWithFormat:@"%ld",sender.titleLabel.text.integerValue+1] forState:UIControlStateNormal];
+            }else {
+                [HUAMBProgress MBProgressOnlywithLabelText:@"取消点赞"];
+                [sender setTitle:[NSString stringWithFormat:@"%ld",sender.titleLabel.text.integerValue-1] forState:UIControlStateNormal];
+            }
+        } failure:^(NSError *error) {
+            HUALog(@"%@",error);
+        }];
+    }
+}
+
+
+
 
 
 #pragma mark - Table view data source
