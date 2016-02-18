@@ -287,18 +287,15 @@
             cell = [[HUDynamicATableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
         }
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
-<<<<<<< HEAD
            __weak typeof(self) weakSelf = self;
-=======
-    
->>>>>>> 161e90b72aeef0bf6cfcae085d89524d0765c3da
+
+
         //点赞
         [cell setLoveBlock:^{
             NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
             //判断是否是游客模式
             if (token==nil) {
                 //判断是否是游客评论，
-<<<<<<< HEAD
                 UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"登陆" message:@"游客模式下不能点赞,请先登陆!" preferredStyle:UIAlertControllerStyleAlert];
                 
                 [alert addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
@@ -317,12 +314,6 @@
                 
                 [self presentViewController:alert animated:YES completion:nil];
                 return ;
-=======
-                [HUAMBProgress MBProgressFromWindowWithLabelText:@"未登录,正在跳转登录页面..." dispatch_get_main_queue:^{
-                    HUALoginController *loginVC = [[HUALoginController alloc] init];
-                    [self.navigationController pushViewController:loginVC animated:YES];
-                }];
->>>>>>> 161e90b72aeef0bf6cfcae085d89524d0765c3da
             }
             AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
             //申明返回的结果是json类型
