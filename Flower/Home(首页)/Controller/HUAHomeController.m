@@ -27,19 +27,12 @@
 #import <CoreLocation/CoreLocation.h>
 
 static NSString *identifier = @"cell";
-<<<<<<< HEAD
-@interface HUAHomeController ()<ClickDelegate, UIScrollViewDelegate,UITabBarControllerDelegate,HUASortMenuDelegate,HomeHeaderViewDelegate,UITextFieldDelegate,UIScrollViewDelegate>
+
+@interface HUAHomeController ()<ClickDelegate, UIScrollViewDelegate,UITabBarControllerDelegate,HUASortMenuDelegate,HomeHeaderViewDelegate,UITextFieldDelegate,CLLocationManagerDelegate>
+
 /**商铺的可变数组*/
 @property (nonatomic, strong) NSMutableArray *shopsArray;
 /**当前的页数*/
-=======
-
-@interface HUAHomeController ()<ClickDelegate, UIScrollViewDelegate,UITabBarControllerDelegate,HUASortMenuDelegate,HomeHeaderViewDelegate,UITextFieldDelegate,CLLocationManagerDelegate>
-//@property (nonatomic, strong) NSArray *shopsArray;
-@property (nonatomic, strong) NSMutableArray *shopsMutableArray;
-@property (nonatomic, strong) NSMutableArray *shopsArray;
-
->>>>>>> 3e102e1509a58be687feb508d413f38c8824ffdd
 @property (nonatomic, assign) NSUInteger page;
 /**头部滚动视图的数组*/
 @property (nonatomic, strong) NSArray *bannerArray;

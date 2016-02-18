@@ -96,12 +96,6 @@
     NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
     parameters[@"shop_id"] = self.shop_id;
     [manager GET:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation,NSDictionary* responseObject) {
-<<<<<<< HEAD
-        
-=======
-        //HUALog(@"%@",responseObject);
-
->>>>>>> 3e102e1509a58be687feb508d413f38c8824ffdd
         [self category:responseObject];
     } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
         HUALog(@"%@",error);
@@ -325,9 +319,9 @@
     self.navigationItem.hidesBackButton = NO;
     
     self.navigationItem.titleView = nil;
-    
+    UIBarButtonItem *leftSpace = [UIBarButtonItem leftSpace:hua_scale(-30)];
     UIBarButtonItem *searchBar = [UIBarButtonItem itemWithTarget:self action:@selector(search) image:@"search" highImage:@"search" text:nil];
-    self.navigationItem.rightBarButtonItem = searchBar;
+    self.navigationItem.rightBarButtonItems = @[leftSpace,searchBar];
     
 }
 
