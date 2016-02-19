@@ -558,10 +558,10 @@ static NSString *identifier = @"cell";
 - (void)clickSortButton:(UIButton *)sender {
     UIWindow *window = [[UIApplication sharedApplication].windows lastObject];
     if (sender.selected == YES) {
-        if (self.tableView.contentOffset.y == 0) {
+        if (self.tableView.contentOffset.y <= hua_scale(250)) {
             [self.tableView setContentOffset:CGPointMake(0, hua_scale(250)) animated:YES];
             [window addSubview:self.sortView];
-            [UIView animateWithDuration:0.5 delay:0 options:UIViewAnimationOptionLayoutSubviews animations:^{
+            [UIView animateWithDuration:0 delay:0.4 options:UIViewAnimationOptionLayoutSubviews animations:^{
                 self.sortView.y = sortViewHeight;
                 
             } completion:nil];
@@ -569,7 +569,7 @@ static NSString *identifier = @"cell";
         } else {
             [self.tableView setContentOffset:CGPointMake(0, hua_scale(250)) animated:YES];
             [window addSubview:self.sortView];
-            [UIView animateWithDuration:1 delay:0 options:UIViewAnimationOptionLayoutSubviews animations:^{
+            [UIView animateWithDuration:0 delay:0 options:UIViewAnimationOptionLayoutSubviews animations:^{
                 self.sortView.y = sortViewHeight;
             } completion:nil];
         

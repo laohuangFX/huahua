@@ -134,7 +134,6 @@ static NSString * const reuseIdentifier = @"goods";
         self.totalCount = responseObject[@"info"][@"total"];
          NSArray *array = [HUADataTool activity:responseObject];
         [self.goodsArray addObjectsFromArray:array];
-        HUALog(@"123%@",self.goodsArray);
         [self.collectionView reloadData];
     } failure:^(NSError *error) {
         [HUAMBProgress MBProgressFromWindowWithLabelText:@"请检查网络设置"];
