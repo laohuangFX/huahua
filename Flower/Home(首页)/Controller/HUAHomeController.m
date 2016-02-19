@@ -32,8 +32,6 @@ static NSString *identifier = @"cell";
 
 /**商铺的可变数组*/
 @property (nonatomic, strong) NSMutableArray *shopsArray;
-/**当前的页数*/
-@property (nonatomic, assign) NSUInteger page;
 /**头部滚动视图的数组*/
 @property (nonatomic, strong) NSArray *bannerArray;
 /**分类的数组*/
@@ -50,8 +48,10 @@ static NSString *identifier = @"cell";
 @property (nonatomic, strong) UIButton *chooseCity;
 /**自定义城市选择view*/
 @property (nonatomic, strong) HUASelectCityView *selectView;
+/**当前的页数*/
+@property (nonatomic, assign) NSUInteger page;
 /**商铺的可变数组*/
-@property (nonatomic, assign) NSNumber *totalPage;;
+@property (nonatomic, assign) NSNumber *totalPage;
 
 
 @property (nonatomic, strong) CLLocationManager * mgr;
@@ -126,14 +126,10 @@ static NSString *identifier = @"cell";
     parameter[@"order"] = self.order;
     parameter[@"per_page"] = @(self.page);
     [HUAHttpTool POST:url params:parameter success:^(id responseObject) {
-
         self.totalPage = responseObject[@"info"][@"pages"];
-        
-        
         NSArray *shopArray = [HUADataTool homeShop:responseObject];
         [self.shopsArray addObjectsFromArray:shopArray];
         self.categoryArray = [HUADataTool getCategoryList:responseObject];
-        HUALog(@"self.shopsArray  %lu",(unsigned long)self.shopsArray.count);
         NSArray *array = [HUADataTool homeBanner:responseObject];
         HUAShopInfo *banner = array.firstObject;
         self.bannerArray = banner.bannerArr;
@@ -154,17 +150,8 @@ static NSString *identifier = @"cell";
 }
 
 - (void)loadNewData {
-    self.page++;
-    if (self.page > [self.totalPage integerValue]) {
-        [HUAMBProgress MBProgressOnlywithLabelText:@"没有更多数据了"];
-        [self.tableView.mj_header endRefreshing];
-        return;
-    }else if (self.order) {
-        self.page--;
-        [HUAMBProgress MBProgressOnlywithLabelText:@"没有更多数据了"];
-        [self.tableView.mj_header endRefreshing];
-        return;
-    }
+    self.page=1;
+    [self.shopsArray removeAllObjects];
     NSString *url = [HUA_URL stringByAppendingPathComponent:App_index];
     NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
     parameter[@"order"] = self.order;
