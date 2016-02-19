@@ -27,10 +27,21 @@
 
 @implementation HUStatusAViewController
 
+//+ (HUStatusAViewController *)standardVC{
+//    static HUStatusAViewController *vc = nil;
+//    static dispatch_once_t onceToken;
+//    dispatch_once(&onceToken, ^{
+//        vc = [HUStatusAViewController new];
+//    });
+//    return vc;
+//}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
 
+    
+    
     NSArray *vcsArray = [self.navigationController viewControllers];
     NSInteger vcCount = vcsArray.count;
     if (vcCount == 1) {
@@ -41,20 +52,32 @@
         self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, Scw, Sch-44-20) style:UITableViewStylePlain];
     }
     //获取沙盒临时路径
-    self.pathStr = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask,YES)firstObject];
     
+    NSString *path = NSTemporaryDirectory();
+    self.pathStr = [path stringByAppendingPathComponent:@"array.plist"];
     
      //初始化表视图
     [self initTbaleView];
     
-}
-
-- (void)viewWillAppear:(BOOL)animated{
+    
+    NSArray *newPersonsArr = [NSKeyedUnarchiver unarchiveObjectWithFile:self.pathStr];
     
     self.page=1;
     
+    if (newPersonsArr.count!=0) {
+        
+        self.array = [newPersonsArr mutableCopy];
+        [self.tableView reloadData];
+    }
+    
+    
+    //刷新数据
     [self refreshData];
+    
 }
+- (void)viewWillAppear:(BOOL)animated{
+    
+   }
 //下拉刷新
 - (void)refreshData{
     
@@ -70,6 +93,7 @@
 }
 //上拉刷新
 - (void)footRefreshData{
+    
     self.page++;
     
     [self getData:@"尾部"];
@@ -83,7 +107,6 @@
     self.tableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
         
         [self.tableView.mj_footer endRefreshingWithNoMoreData];
-       // [self getData:@"尾部"];
         
     }];
 
@@ -121,8 +144,7 @@
     [manager GET:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
 
         NSString *maxPage = responseObject[@"info"][@"pages"];
-        
-        
+
         if ([marker isEqualToString:@"尾部"]) {
       
             NSArray *array = [HUADataTool status:responseObject];
@@ -136,43 +158,31 @@
             
             [self.array addObjectsFromArray:array];
             [self.tableView reloadData];
-            //存入临时文件
-            NSString *path = [self.pathStr stringByAppendingPathComponent:@"testArray.txt"];
-            //写入文件
-            BOOL isSuccess = [self.array writeToFile:path atomically:YES];
-            if (isSuccess) {
-                NSLog(@"写入成功");
-            }
-
             [self.tableView.mj_footer endRefreshing];
-            
+            //缓存
+            [NSKeyedArchiver archiveRootObject:self.array toFile:self.pathStr];
+
         }else{
             if (self.array!=nil) {
                 [self.array removeAllObjects];
             }
-            NSArray *aray = @[@"1111",@"2222"];
+     
             self.array = [HUADataTool status:responseObject];
-            HUALog(@"shop_id..%@",self.shop_id);
-            NSString *path = [self.pathStr stringByAppendingPathComponent:@"testArray.txt"];
-            //写入文件
-            NSError *error = nil;
-            
-            BOOL isSuccess = [[self.array copy] writeToFile:path atomically:YES];
-            if (isSuccess) {
-                NSLog(@"写入成功");
-            }
 
+            HUALog(@"shop_id..%@",self.shop_id);
+      
+    
             [self.tableView reloadData];
-            //存入临时文件
-  
+          
             [self.tableView.mj_header endRefreshing];
-        }
+            
+            [NSKeyedArchiver archiveRootObject:[self.array copy] toFile:self.pathStr];
+            
+            }
         
-        
-       
     } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
         HUALog(@"%@",error);
-        
+        self.page--;
     }];
 }
 
@@ -314,7 +324,6 @@
         [self footRefreshData];
         
     }
-
 }
 - (NSMutableArray *)array{
 
@@ -324,6 +333,8 @@
     }
     return _array;
 }
+
+
 /*
  #pragma mark - Navigation
  

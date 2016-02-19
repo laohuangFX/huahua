@@ -178,6 +178,8 @@
 		17B7E2F01C71C09C0032C6D5 /* HUAAddressModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 17B7E2EF1C71C09C0032C6D5 /* HUAAddressModel.m */; };
 		17B7E2FB1C71E0400032C6D5 /* HUAChooseAddressTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 17B7E2F81C71E0400032C6D5 /* HUAChooseAddressTableViewCell.m */; };
 		189001561C755C1A000DD611 /* HUAUserInfomation.m in Sources */ = {isa = PBXBuildFile; fileRef = 189001551C755C1A000DD611 /* HUAUserInfomation.m */; };
+		189001581C75A35C000DD611 /* AliyunOSSiOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 189001571C75A35C000DD611 /* AliyunOSSiOS.framework */; };
+		1890015B1C75B23B000DD611 /* AliyunOSSDemo.m in Sources */ = {isa = PBXBuildFile; fileRef = 1890015A1C75B23B000DD611 /* AliyunOSSDemo.m */; };
 		189317E41C4887C3005D230F /* HUAConstRowHeight.m in Sources */ = {isa = PBXBuildFile; fileRef = 189317DD1C4887C3005D230F /* HUAConstRowHeight.m */; };
 		189317E51C4887C3005D230F /* HUACreateButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 189317DF1C4887C3005D230F /* HUACreateButton.m */; };
 		189317E61C4887C3005D230F /* HUADataTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 189317E11C4887C3005D230F /* HUADataTool.m */; };
@@ -639,6 +641,9 @@
 		17B7E2F81C71E0400032C6D5 /* HUAChooseAddressTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HUAChooseAddressTableViewCell.m; sourceTree = "<group>"; };
 		189001541C755C1A000DD611 /* HUAUserInfomation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HUAUserInfomation.h; sourceTree = "<group>"; };
 		189001551C755C1A000DD611 /* HUAUserInfomation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HUAUserInfomation.m; sourceTree = "<group>"; };
+		189001571C75A35C000DD611 /* AliyunOSSiOS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AliyunOSSiOS.framework; sourceTree = "<group>"; };
+		189001591C75B23B000DD611 /* AliyunOSSDemo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AliyunOSSDemo.h; sourceTree = "<group>"; };
+		1890015A1C75B23B000DD611 /* AliyunOSSDemo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AliyunOSSDemo.m; sourceTree = "<group>"; };
 		189317DC1C4887C3005D230F /* HUAConstRowHeight.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HUAConstRowHeight.h; sourceTree = "<group>"; };
 		189317DD1C4887C3005D230F /* HUAConstRowHeight.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HUAConstRowHeight.m; sourceTree = "<group>"; };
 		189317DE1C4887C3005D230F /* HUACreateButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HUACreateButton.h; sourceTree = "<group>"; };
@@ -923,6 +928,7 @@
 				592CB9231C4E2A6B002FD56C /* libstdc++.tbd in Frameworks */,
 				592CB9211C4E2A61002FD56C /* JavaScriptCore.framework in Frameworks */,
 				592CB91F1C4E2A55002FD56C /* MessageUI.framework in Frameworks */,
+				189001581C75A35C000DD611 /* AliyunOSSiOS.framework in Frameworks */,
 				17B7E2DC1C71BD9C0032C6D5 /* SMS_SDK.framework in Frameworks */,
 				592CB91D1C4E2A4B002FD56C /* libicucore.tbd in Frameworks */,
 				592CB91B1C4E2A3B002FD56C /* libz.tbd in Frameworks */,
@@ -1845,6 +1851,8 @@
 		5907461C1C5A078D005AEC7C /* 第三方 */ = {
 			isa = PBXGroup;
 			children = (
+				189001591C75B23B000DD611 /* AliyunOSSDemo.h */,
+				1890015A1C75B23B000DD611 /* AliyunOSSDemo.m */,
 				17B7E1031C71BD9B0032C6D5 /* AFNetworking */,
 				17B7E11C1C71BD9B0032C6D5 /* BCKeyBoard */,
 				17B7E15F1C71BD9B0032C6D5 /* EMMallSectionView */,
@@ -1927,6 +1935,7 @@
 			isa = PBXGroup;
 			children = (
 				592CB9221C4E2A6B002FD56C /* libstdc++.tbd */,
+				189001571C75A35C000DD611 /* AliyunOSSiOS.framework */,
 				592CB9201C4E2A61002FD56C /* JavaScriptCore.framework */,
 				592CB91E1C4E2A55002FD56C /* MessageUI.framework */,
 				592CB91C1C4E2A4B002FD56C /* libicucore.tbd */,
@@ -2304,6 +2313,7 @@
 				5901A4121C55CCEC0004EAA5 /* HUAMyMemberCard.m in Sources */,
 				189317E71C4887C3005D230F /* HUATranslateTime.m in Sources */,
 				189318F11C488930005D230F /* HUAActivityController.m in Sources */,
+				1890015B1C75B23B000DD611 /* AliyunOSSDemo.m in Sources */,
 				189319861C488990005D230F /* HUAMyProductTableViewCell.m in Sources */,
 				189319241C488951005D230F /* HUAVIPShopTopView.m in Sources */,
 				17B7E29F1C71BD9C0032C6D5 /* MJPropertyKey.m in Sources */,
@@ -2571,6 +2581,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = "-objc";
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -2607,6 +2618,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_LDFLAGS = "-objc";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -2622,6 +2634,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flower/Main(其他)/Tool/第三方/SMS_SDK",
 					"$(PROJECT_DIR)/Flower/Main(其他)/第三方/SMS_SDK",
+					"$(PROJECT_DIR)",
 				);
 				GCC_PREFIX_HEADER = Flower/PrefixHeader.pch;
 				INFOPLIST_FILE = Flower/Info.plist;
@@ -2643,6 +2656,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flower/Main(其他)/Tool/第三方/SMS_SDK",
 					"$(PROJECT_DIR)/Flower/Main(其他)/第三方/SMS_SDK",
+					"$(PROJECT_DIR)",
 				);
 				GCC_PREFIX_HEADER = Flower/PrefixHeader.pch;
 				INFOPLIST_FILE = Flower/Info.plist;

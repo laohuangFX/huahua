@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface HUAStatusModel : NSObject
+@interface HUAStatusModel : NSObject<NSCoding>
 @property (nonatomic, strong)NSString *user_id;
 @property (nonatomic, strong)NSString *time;
 @property (nonatomic, strong)NSString *name;
