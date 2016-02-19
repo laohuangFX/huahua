@@ -70,5 +70,18 @@ extern const CGFloat maxContentLabelHeight;
     return statusModel;
 }
 
++ (id)jsonData:(NSDictionary *)dic{
+    HUAmodel *model = [HUAmodel new];
+    //model.commentArray = [dynamicDic[@"reply"] mutableCopy];
+    model.name = dic[@"info"][@"nickname"];
+    model.icon = dic[@"info"][@"headicon"];
+    model.content = dic[@"info"][@"content"];
+    model.user_id = dic[@"info"][@"user_id"];
+    model.comment_id = dic[@"info"][@"comment_id"];
+
+    return model;
+}
+
+
 
 @end

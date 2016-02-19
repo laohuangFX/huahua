@@ -13,6 +13,11 @@
 #import "HUAUserDetailInfo.h"
 #import "HATransparentView.h"
 #import "STPhotoBrowserController.h"
+#import "AliyunOSSDemo.h"
+
+#define AccessKey @"RR18P8i4SfivX79SrUtbvjGnRNla57"
+
+#define secretKey @"dwLuSQ0DAqiuue7s"
 
 @interface HUAMyInformationViewController ()<UITableViewDataSource,UITableViewDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate,UIPickerViewDelegate,UIPickerViewDataSource,UIActionSheetDelegate,HATransparentViewDelegate>{
     NSString *yearStr ;
@@ -82,11 +87,9 @@
     
     [self setSexPickerView];
     
-    NSData *data = [[NSUserDefaults standardUserDefaults] objectForKey:@"data"];
+    //NSData *data = [[NSUserDefaults standardUserDefaults] objectForKey:@"data"];
     //HUAUserDetailInfo *detailInfo = [NSKeyedUnarchiver unarchiveObjectWithData:data];
 
-    
-    
    // HUALog(@"dfsfsdfsfs%@,,%@,,%@",detailInfo.nickname,detailInfo.sex,detailInfo.birth);
     self.model =@[self.userDic[@"info"][@"headicon"],self.userDic[@"info"][@"nickname"],[self.userDic[@"info"][@"sex"] isEqualToString:@"0"]?@"女":@"男",[HUATranslateTime translateTimeIntoCurrurent:self.birthString.longLongValue],@" "];
     [self setbirthdayPickerView];
@@ -99,25 +102,32 @@
 
 - (void) viewWillDisappear:(BOOL)animated {
     
-    NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-
-    [manager.requestSerializer setValue:token forHTTPHeaderField:@"token"];
-    NSString *url = [HUA_URL stringByAppendingPathComponent:Update_info];
+    AliyunOSSDemo *alyData = [AliyunOSSDemo new];
     
-    NSString *birthday = [HUATranslateTime translateDateIntoTimestamp:self.birthdayLabel.text];
-    HUALog(@"shengri%@,,,%@,,%@,%@",birthday,self.nameLabel.text,self.sexLable.text,self.birthdayLabel.text);
-    NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
-    parameters[@"nickname"] = self.nameLabel.text;
-    //parameters[@"sex"] = [_sexLable.text isEqualToString:@"男"]?@"1":@"0";
-    //parameters[@"birth"] = birthday;
-    NSLog(@"%@",parameters);
-    [manager POST:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-        HUALog(@"data%@",responseObject);
-      
-    } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
-        HUALog(@"%@",error);
-    }];
+    alyData.AlYdata = UIImagePNGRepresentation(self.imageView.image);
+    
+    [alyData runDemo];
+    
+   
+//    NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
+//    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+//
+//    [manager.requestSerializer setValue:token forHTTPHeaderField:@"token"];
+//    NSString *url = [HUA_URL stringByAppendingPathComponent:Update_info];
+//    
+//    NSString *birthday = [HUATranslateTime translateDateIntoTimestamp:self.birthdayLabel.text];
+//    HUALog(@"shengri%@,,,%@,,%@,%@",birthday,self.nameLabel.text,self.sexLable.text,self.birthdayLabel.text);
+//    NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
+//    parameters[@"nickname"] = self.nameLabel.text;
+//    //parameters[@"sex"] = [_sexLable.text isEqualToString:@"男"]?@"1":@"0";
+//    //parameters[@"birth"] = birthday;
+//    NSLog(@"%@",parameters);
+//    [manager POST:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+//        HUALog(@"data%@",responseObject);
+//      
+//    } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
+//        HUALog(@"%@",error);
+//    }];
     
 }
 
@@ -619,7 +629,7 @@
         NSString *url = [HUA_URL stringByAppendingPathComponent:@"user/update_info"];
         [manager POST:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
             NSLog(@"%@",responseObject);
-  
+        [HUAMBProgress MBProgressFromWindowWithLabelText:@"修改成功!"];
         } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
             
             NSLog(@"%@",error);
@@ -683,7 +693,7 @@
 
             [[NSUserDefaults standardUserDefaults] setObject:[NSKeyedArchiver archivedDataWithRootObject:detailInfo] forKey:@"data"];
             
-            //修改性别
+            //修改生日
             NSString *token = [HUAUserDefaults getToken];
             
             AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
@@ -696,6 +706,7 @@
             [manager POST:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
                 NSLog(@"%@",responseObject);
                 
+                [HUAMBProgress MBProgressFromWindowWithLabelText:@"修改成功!"];
             } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
                 
                 NSLog(@"%@",error);
@@ -949,5 +960,7 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
+
 @end
 

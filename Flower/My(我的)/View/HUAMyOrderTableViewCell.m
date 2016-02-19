@@ -238,6 +238,19 @@
         }
     }
     
+    
+    if ([model.type isEqualToString:@"1"]) {
+        if ([model.is_receipt isEqualToString:@"1"]) {
+            
+            [self setupAutoHeightWithBottomView:_confirmbutton bottomMargin:hua_scale(11)];
+        }
+    }else{
+    
+        [self setupAutoHeightWithBottomView:_state bottomMargin:hua_scale(15)];
+
+    }
+    
+    
 }
 - (void)click:(UIButton *)button{
 

@@ -481,6 +481,7 @@
 - (void)click:(UITapGestureRecognizer *)tap{
     HUADetailController *vc = [HUADetailController new];
     vc.active_id = self.active_id;
+    vc.shop_id =self.shop_id;
     [self.navigationController pushViewController:vc animated:YES];
     HUALog(@"跳转页面");
 

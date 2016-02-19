@@ -45,20 +45,20 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.title = @"选择日期";
-    
-    
+    [HUAMBProgress MBProgressFromWindowWithLabelText:@"正在加载!"];
     //初始化
     _page = 7;
     _lastTbaleView = nil;
     
     self.dateArray = [NSMutableArray array];
     
+       //获取数据
+    [self getData];
+    
     //获取会员消息
     [self membersData];
     
-    //获取数据
-    [self getData];
-    
+
     //获取日期
     [self getDate:0];
     

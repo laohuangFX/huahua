@@ -56,7 +56,7 @@
     _lastTbaleView = nil;
     
     self.dateArray = [NSMutableArray array];
-    
+    [HUAMBProgress MBProgressFromWindowWithLabelText:@"正在加载!"];
     //获取会员信息
     [self membersData];
     
@@ -704,7 +704,6 @@
         NSString *url = [HUA_URL stringByAppendingPathComponent:[NSString stringWithFormat:@"master/master_appointment?master_id=%@&range_type_id=%@",self.master_id,range_type_id]];
         
         [manager GET:url parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-            
             
             NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:responseObject options:0 error:nil];
             NSLog(@"%@",dic);

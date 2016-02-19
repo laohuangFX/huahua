@@ -372,8 +372,12 @@
     shopServiceVC.url = [HUA_URL stringByAppendingPathComponent:Service_list];
     shopServiceVC.shopName = self.shopName;
     [self.navigationController pushViewController:shopServiceVC animated:YES];
+<<<<<<< HEAD
     
     
+=======
+
+>>>>>>> 673e3bd39d8985bd472e877fdafd53d92f9cd9a4
 }
 
 
