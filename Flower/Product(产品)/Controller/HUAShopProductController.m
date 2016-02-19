@@ -283,9 +283,6 @@
     
     [menu setGetDataBlock:^(NSString *leftText, NSString *leftSubText, NSString *midstText, NSString *lastText) {
 
-        
-        
-        
         //NSLog(@"%@",leftText);
 //        NSLog(@"%@",leftSubText);
 //        NSLog(@"%@",midstText);
@@ -313,10 +310,10 @@
             parameters[@"category_id"] =_towDataDic[_leftSubText];
         }
         if (![_midstText isEqualToString:@"不限"] && _midstText != nil) {
-            parameters[@"order_price"] =[_midstText isEqualToString:@"价格降序"]? @"desc":@"asc";
+            parameters[@"order"] =[_midstText isEqualToString:@"价格降序"]? @"desc":@"asc";
         }
         if (![_rightText isEqualToString:@"不限"] && _rightText != nil) {
-            parameters[@"order_praise"] =[_rightText isEqualToString:@"点赞降序"]? @"desc":@"asc";
+            parameters[@"order"] =[_rightText isEqualToString:@"点赞降序"]? @"desc":@"asc";
         }
 
         

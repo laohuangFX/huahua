@@ -278,7 +278,7 @@
     confirmButton.backgroundColor = HUAColor(0x4da800);
     [confirmButton setTitle:@"确认收货" forState:0];
     [confirmButton setTitleColor:HUAColor(0xffffff) forState:0];
-    if ([self.is_receipt isEqualToString:@"2"]) {
+    if ([self.is_receipt isEqualToString:@"1"]) {
         confirmButton.hidden = NO;
     }else{
         confirmButton.hidden = YES;

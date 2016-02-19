@@ -24,6 +24,16 @@
     NSInteger _currentData2Index;
     NSInteger _currentData3Index;
 
+    //参数
+    //左边
+    NSString *_leftText;
+    //左边的子类
+    NSString *_leftSubText;
+    //中间
+    NSString *_midstText;
+    //右边
+    NSString *_rightText;
+
 
 }
 @property (nonatomic,strong)UITableView *tablewView;
@@ -64,7 +74,6 @@
         NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:responseObject options:0 error:nil];
  
         self.array = [HUADataTool MyOrder:dic];
-        //NSLog(@"%ld",self.array.count);
 
         [self.tablewView reloadData];
     } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
@@ -81,7 +90,7 @@
     NSArray *travel = @[@"不限产品",@"等待发货",@"待确认收货",@"交易完成"];
     NSArray *exercise =@[@"不限活动", @"未使用", @"已使用", @"已过期"];
     NSArray *noLimit = @[@"全部"];
-    _data1 = [NSMutableArray arrayWithObjects:@{@"title":@"全部", @"data":noLimit},@{@"title":@"产品",@"data":food}, @{@"title":@"服务", @"data":travel},@{@"title":@"活动", @"data":exercise},nil];
+    _data1 = [NSMutableArray arrayWithObjects:@{@"title":@"全部", @"data":noLimit},@{@"title":@"服务",@"data":food}, @{@"title":@"产品", @"data":travel},@{@"title":@"活动", @"data":exercise},nil];
     
     _data2 = [NSMutableArray arrayWithObjects:@"全部", @"一天内", @"一周内",@"一个月内",@"三个月内",nil];
     _data3 = [NSMutableArray arrayWithObjects:@"不限",@"最少",@"最多",nil];
@@ -93,14 +102,93 @@
     //图标颜色
     menu.indicatorColor = HUAColor(0x4da800);
     menu.rowHeigth = 80;
+    menu.typeStr = @"订单菜单";
     menu.dataSource = self;
     menu.delegate = self;
     [menu setGetDataBlock:^(NSString *text1, NSString *text2, NSString *text3, NSString *text4) {
-        NSLog(@"%@",text1);
-        NSLog(@"%@",text2);
-        NSLog(@"%@",text3);
-        NSLog(@"%@",text4);
+        NSLog(@"text1%@",text1);
+        NSLog(@"text2%@",text2);
+        NSLog(@"text3%@",text3);
+    
         
+        if (text1.length != 0) {
+            _leftText = text1;
+            return ;
+        }else if (text2.length !=0){
+            _leftSubText = text2;
+        }else if (text3.length !=0){
+            _midstText = text3;
+        }
+        
+        AFHTTPRequestOperationManager *manager = [[AFHTTPRequestOperationManager alloc] init];
+        NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
+        
+        [manager.requestSerializer setValue:token forHTTPHeaderField:@"token"];
+        NSString *url =[HUA_URL stringByAppendingPathComponent:@"user/bill_list"];
+        NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
+       
+        if (![_leftText isEqualToString:@"全部"] && _leftText != nil) {
+            if ([_leftText isEqualToString:@"产品"]) {
+               parameters[@"Product_filter"] = @"1";
+            }else if ([_leftText isEqualToString:@"服务"]){
+               parameters[@"Product_filter"] = @"5";
+            }else{
+               parameters[@"Product_filter"] = @"8";
+            }
+        }
+        if (![_leftSubText isEqualToString:@"全部"] && _leftSubText != nil) {
+            if ([_leftText isEqualToString:@"服务"]) {
+                if ([_leftSubText isEqualToString:@"未使用"]) {
+                     parameters[@"Product_filter"] = @"6";
+                }else{
+                     parameters[@"Product_filter"] = @"7";
+                }
+            }else if ([_leftText isEqualToString:@"产品"]){
+                if ([_leftSubText isEqualToString:@"等待发货"]) {
+                    parameters[@"Product_filter"] = @"2";
+                }else if([_leftSubText isEqualToString:@"待确认收货货"]){
+                    parameters[@"Product_filter"] = @"3";
+                }else{
+                  parameters[@"Product_filter"] = @"4";
+                }
+            }else if ([_leftText isEqualToString:@"活动"]){
+                if ([_leftSubText isEqualToString:@"未使用"]) {
+                    parameters[@"Product_filter"] = @"9";
+                }else if([_leftSubText isEqualToString:@"已使用"]){
+                    parameters[@"Product_filter"] = @"10";
+                }else{
+                    parameters[@"Product_filter"] = @"11";
+                }
+            }
+        }
+        if (![_midstText isEqualToString:@"全部"] && _midstText != nil) {
+         
+            if ([_midstText isEqualToString:@"一天内"]) {
+                 parameters[@"Time_filter"] = @(3600*24);
+            }else if ([_midstText isEqualToString:@"一周内"]){
+                parameters[@"Time_filter"] = @(3600*24*7);
+            }else if ([_midstText isEqualToString:@"一个月内"]){
+                parameters[@"Time_filter"] = @(3600*24*30);
+            }else {
+                parameters[@"Time_filter"] = @(3600*24*90);
+            }
+        }
+
+        [manager GET:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+          //  HUALog(@"%@",responseObject);
+        
+            if ([[responseObject objectForKey:@"info"] isKindOfClass:[NSString class]]) {
+                [HUAMBProgress MBProgressOnlywithLabelText:[responseObject objectForKey:@"info"]];
+                return ;
+            }
+            self.array = nil;
+            self.array = [HUADataTool MyOrder:responseObject];
+            
+            [self.tablewView reloadData];
+        } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
+            HUALog(@"%@",error);
+        }];
+    
     }];
     
     [self.view addSubview:menu];
@@ -197,8 +285,6 @@
         vc.shop_id = model.shop_id;
         [self.navigationController pushViewController:vc animated:YES];
     }
-    
-
 }
 
 #pragma mark --- headDownMenuDelegate

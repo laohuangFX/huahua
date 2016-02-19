@@ -168,10 +168,10 @@
             parameters[@"parent_id"] =_dataDic[_leftText];
         }
         if (![_midstText isEqualToString:@"不限"] && _midstText != nil) {
-            parameters[@"order_price"] =[_midstText isEqualToString:@"从高到底"]? @"price_desc":@"price_asc";
+            parameters[@"order"] =[_midstText isEqualToString:@"从高到底"]? @"price_desc":@"price_asc";
         }
         if (![_rightText isEqualToString:@"不限"] && _rightText != nil) {
-            parameters[@"order_praise"] =[_rightText isEqualToString:@"点赞降序"]? @"praise_desc":@"praise_asc";
+            parameters[@"order"] =[_rightText isEqualToString:@"点赞降序"]? @"praise_desc":@"praise_asc";
         }
         parameters[@"shop_id"] = self.shop_id;
         

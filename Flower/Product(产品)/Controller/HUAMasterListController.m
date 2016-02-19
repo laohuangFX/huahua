@@ -19,6 +19,19 @@
     
     NSInteger _currentData1Index;
     NSInteger _currentData2Index;
+    
+    //参数
+    //左边
+    NSString *_leftText;
+    //左边的子类
+    NSString *_leftSubText;
+    //中间
+    NSString *_midstText;
+    //右边
+    NSString *_rightText;
+    
+    //存放产品分类id
+    NSMutableDictionary *_dataDic;
 
 }
 
@@ -52,12 +65,29 @@
     [super viewDidLoad];
     [self.view addSubview:self.tableView];
     self.title = self.shopName;
-
-    [self category];
+    //这个放第一加载、、要不然会空白;
+    [self getDownData];
+    
     [self setNavigationItem];
     self.searchplaceholder = @"搜索";
     [self getdataWithSubParameters:nil];
+    
 }
+//获取下拉菜单数据
+- (void)getDownData{
+    
+    AFHTTPRequestOperationManager *manager = [[AFHTTPRequestOperationManager alloc] init];
+    NSString *url = [HUA_URL stringByAppendingPathComponent:@"master/master_level"];
+    NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
+    parameters[@"shop_id"] = self.shop_id;
+    [manager GET:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation,NSDictionary* responseObject) {
+        [self category:responseObject];
+    } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
+        HUALog(@"%@",error);
+    }];
+    
+}
+
 - (void)getdataWithSubParameters:(NSDictionary *)SubParameters{
     
     
@@ -81,26 +111,76 @@
     }];
 }
 
-- (void)category {
+- (void)category:(NSDictionary *)downDic{
+    _dataDic = [NSMutableDictionary dictionary];
+    _data1 = [NSMutableArray array];
     
-    NSArray *food = @[@"不限", @"海飞丝", @"飘柔", @"清扬", @"沙宣",@"霸王"];
-    NSArray *travel = @[@"不限", @"蜂花护发素", @"潘婷护发素", @"沙宣护发素", @"飘柔护发素", @"欧莱雅护发素", @"百雀羚护发素", @"迪彩护发素", @"资生堂护发素", @"露华浓护发素"];
-    NSArray *noLimit = @[@"不限"];
-    _data1 = [NSMutableArray arrayWithObjects:@{@"title":@"不限", @"data":noLimit},@{@"title":@"沐浴露",@"data":food}, @{@"title":@"护发素", @"data":travel}, @{@"title":@"洗面奶",@"data":food},@{@"title":@"啫喱水",@"data":travel},@{@"title":@"BB霜",@"data":food},@{@"title":@"眼霜",@"data":travel},@{@"title":@"指甲油",@"data":food},@{@"title":@"卸甲油",@"data":travel},nil];
+    NSArray *array = downDic[@"info"];
     
-    _data2 = [NSMutableArray arrayWithObjects:@"不限", @"从低到高", @"从高到低",nil];
-   
+    for (NSDictionary *dic in array) {
+        
+        [_dataDic setValue:dic[@"type_id"] forKey:dic[@"name"]];
+        
+        [_data1 addObject:@{@"title":dic[@"name"]}];
+    }
+    
+    [_data1 insertObject:@{@"title":@"全部"} atIndex:0];
+    
+    _data2 = [NSMutableArray arrayWithObjects:@"不限", @"点赞降序", @"点赞升序",nil];
+    //_data3 = [NSMutableArray arrayWithObjects:@"不限",@"最少",@"最多",nil];
     
     JSDropDownMenu *menu = [[JSDropDownMenu alloc] initWithOrigin:CGPointMake(0, 0) andHeight:hua_scale(30)];
-    //menu.indicatorColor = [UIColor colorWithRed:175.0f/255.0f green:175.0f/255.0f blue:175.0f/255.0f alpha:1.0];
+    
     menu.separatorColor = [UIColor colorWithRed:210.0f/255.0f green:210.0f/255.0f blue:210.0f/255.0f alpha:1.0];
     menu.textColor = [UIColor colorWithRed:83.f/255.0f green:83.f/255.0f blue:83.f/255.0f alpha:1.0f];
     //图标颜色
     menu.indicatorColor = HUAColor(0x4da800);
-    //    //menu.separatorColor = [UIColor grayColor];
-    //    menu.textColor = HUAColor(0x4da800);
+    menu.typeStr = @"技师菜单";
     menu.dataSource = self;
     menu.delegate = self;
+    [menu setGetDataBlock:^(NSString *leftText, NSString *leftSubText, NSString *midstText, NSString *lastText) {
+        
+        NSLog(@"%@",leftText);
+        NSLog(@"%@",leftSubText);
+        NSLog(@"%@",midstText);
+        NSLog(@"%@",lastText);
+        
+        if(leftText.length != 0){
+            _leftText = leftText;
+        }else if (leftSubText.length != 0){
+            _leftSubText = leftSubText;
+        }else if (lastText.length != 0 ){
+            _rightText = lastText;
+        }
+        
+        
+        AFHTTPRequestOperationManager *manager = [[AFHTTPRequestOperationManager alloc] init];
+        NSString *url =[HUA_URL stringByAppendingPathComponent:@"master/master_list"];
+        NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
+        if (![_leftText isEqualToString:@"不限"] && _leftText != nil) {
+            parameters[@"type_id"] =_dataDic[_leftText];
+        }
+        if (![_leftSubText isEqualToString:@"不限"] && _leftSubText != nil) {
+            parameters[@"order"] =[_leftSubText isEqualToString:@"点赞降序"]? @"praise_desc":@"praise_asc";
+        }
+        parameters[@"shop_id"] = self.shop_id;
+        NSLog(@"%@",parameters);
+        [manager GET:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+            HUALog(@"%@",responseObject);
+            if ([[responseObject objectForKey:@"info"] isKindOfClass:[NSString class]]) {
+                [HUAMBProgress MBProgressOnlywithLabelText:[responseObject objectForKey:@"info"]];
+                return ;
+            }
+            self.masterListArray =nil;
+            self.masterListArray = [HUADataTool getMasterList:responseObject];
+            [self.tableView reloadData];
+        } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
+            HUALog(@"%@",error);
+        }];
+        
+        
+        
+    }];
     
     [self.view addSubview:menu];
     
@@ -196,7 +276,7 @@
 -(BOOL)haveRightTableViewInColumn:(NSInteger)column{
     
     if (column==0) {
-        return YES;
+        return NO;
     }
     return NO;
 }
@@ -207,7 +287,7 @@
 -(CGFloat)widthRatioOfLeftColumn:(NSInteger)column{
     
     if (column==0) {
-        return 0.5;
+        return 1;
     }
     
     return 1;
