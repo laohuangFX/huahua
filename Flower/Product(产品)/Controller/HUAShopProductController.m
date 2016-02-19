@@ -43,22 +43,14 @@
 @property (nonatomic, assign) NSUInteger page;
 /**总页数*/
 @property (nonatomic, strong) NSNumber *totalPage;
+/**总数量*/
+@property (nonatomic, assign) NSString *totalCount;
 
-//@property (nonatomic, strong) UILabel *label;
 @end
 
 @implementation HUAShopProductController
 
-//- (UILabel *)label {
-//    if (!_label) {
-//        _label = [UILabel labelText:[NSString stringWithFormat:@"%lu/%@",(unsigned long)self.page,self.totalPage] color:HUAColor(0xffffff) font:hua_scale(10)];
-//        [self.tableView addSubview:_label];
-//        _label.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
-//        _label.frame = CGRectMake(screenWidth/2-hua_scale(10), screenHeight - hua_scale(10), hua_scale(20), hua_scale(10));
-//        HUALog(@"%@",_label.text);
-//    }
-//    return _label;
-//}
+
 
 - (NSMutableArray *)productsArray {
     if (!_productsArray) {
@@ -102,9 +94,6 @@
 }
 
 
-//- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
-//    self.label.hidden = NO;
-//}
  //获取下拉菜单数据
 - (void)getDownData{
 
@@ -131,25 +120,24 @@
 }
 
 - (void)loadNewData {
-    self.page++;
-    if (self.page > [self.totalPage integerValue]) {
-        [HUAMBProgress MBProgressOnlywithLabelText:@"没有更多数据了"];
-        [self.tableView.mj_header endRefreshing];
-        return;
-    }else if (_leftText || _leftSubText || _midstText || _rightText) {
-        self.page--;
+    if (_leftText || _leftSubText || _midstText || _rightText) {
         [HUAMBProgress MBProgressOnlywithLabelText:@"没有更多数据了"];
         [self.tableView.mj_header endRefreshing];
         return;
     }
-    
+    self.page = 1;
     NSString *url = self.url;
     NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
     parameters[@"shop_id"] = self.shop_id;
     parameters[@"per_page"] = @(self.page);
     [HUAHttpTool GET:url params:parameters success:^(id responseObject) {
+        [self.productsArray removeAllObjects];
+        NSString *newCount = responseObject[@"info"][@"total"];
+        if (newCount == self.totalCount) {
+            [HUAMBProgress MBProgressOnlywithLabelText:@"没有更多新的活动了"];
+        }
         NSArray *array = [HUADataTool shopProduct:responseObject];
-        [self.productsArray insertObjects:array atIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, array.count)]];
+        [self.productsArray addObjectsFromArray:array];
         [self.tableView reloadData];
         [self.tableView.mj_header endRefreshing];
     } failure:^(NSError *error) {
@@ -162,34 +150,49 @@
 /**cell即将到最后一个的时候自动加载数据*/
 -(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (indexPath.row == self.productsArray.count-2) {
-        // 集成上拉刷新控件
-        [self loadMoreData];
+    //到达最后一页数据
+    if (self.page == [self.totalPage integerValue]) {
+        if (indexPath.row == self.productsArray.count-1) {
+            // 集成上拉刷新控件
+            self.tableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(loadMoreData)];
+        }
+    }else {
+        if (indexPath.row == self.productsArray.count-1) {
+            // 自动上啦刷新
+            [self loadMoreData];
+        }
     }
-    HUALog(@"%ld",(long)indexPath.row);
-    
 }
 
 
 - (void)loadMoreData {
     self.page++;
     if (self.page > [self.totalPage integerValue]) {
-        [HUAMBProgress MBProgressOnlywithLabelText:@"没有更多数据了"];
-        [self.tableView.mj_footer endRefreshing];
+        [self.tableView.mj_footer endRefreshingWithNoMoreData];
         return;
     }
     NSString *url = self.url;
     NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
+    if (![_leftText isEqualToString:@"不限"] && _leftText != nil) {
+        parameters[@"parent_id"] =_dataDic[_leftText];
+    }
+    if (![_leftSubText isEqualToString:@"不限"] && _leftSubText != nil) {
+        parameters[@"category_id"] =_towDataDic[_leftSubText];
+    }
+    if (![_midstText isEqualToString:@"不限"] && _midstText != nil) {
+        parameters[@"order_price"] =[_midstText isEqualToString:@"价格降序"]? @"desc":@"asc";
+    }
+    if (![_rightText isEqualToString:@"不限"] && _rightText != nil) {
+        parameters[@"order_praise"] =[_midstText isEqualToString:@"点赞降序"]? @"desc":@"asc";
+    }
     parameters[@"shop_id"] = self.shop_id;
     parameters[@"per_page"] = @(self.page);
     [HUAHttpTool GET:url params:parameters success:^(id responseObject) {
         NSArray *array = [HUADataTool shopProduct:responseObject];
         [self.productsArray addObjectsFromArray:array];
         [self.tableView reloadData];
-        [self.tableView.mj_header endRefreshing];
     } failure:^(NSError *error) {
         [HUAMBProgress MBProgressFromWindowWithLabelText:@"请检查网络设置"];
-        [self.tableView.mj_header endRefreshing];
         self.page--;
     }];
 }
@@ -213,11 +216,12 @@
             return ;
         }
         self.totalPage = responseObject[@"info"][@"pages"];
+        self.totalCount = responseObject[@"info"][@"total"];
         NSArray *array = [HUADataTool shopProduct:responseObject];
         [self.productsArray addObjectsFromArray:array];
         [self.tableView reloadData];
     } failure:^(NSError *error) {
-        [HUAMBProgress MBProgressOnlywithLabelText:@"网络异常"];
+        [HUAMBProgress MBProgressOnlywithLabelText:@"请检查网络设置"];
         HUALog(@"%@",error);
 
     }];
@@ -263,6 +267,7 @@
         
     }
 
+
     //NSLog(@"%@",_dataDic);
     
 
@@ -299,6 +304,7 @@
         }
         
         self.page = 1;
+        [self.productsArray removeAllObjects];
         AFHTTPRequestOperationManager *manager = [[AFHTTPRequestOperationManager alloc] init];
         NSString *url =[HUA_URL stringByAppendingPathComponent:@"product/product_list"];
         NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
@@ -316,21 +322,18 @@
             parameters[@"order"] =[_rightText isEqualToString:@"点赞降序"]? @"desc":@"asc";
         }
 
-        
         [manager GET:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
         //HUALog(@"%@",responseObject);
         if ([[responseObject objectForKey:@"info"] isKindOfClass:[NSString class]]) {
             [HUAMBProgress MBProgressOnlywithLabelText:[responseObject objectForKey:@"info"]];
             return ;
         }
-        [self.productsArray removeAllObjects];
         NSArray *array = [HUADataTool shopProduct:responseObject];
         [self.productsArray addObjectsFromArray:array];
         [self.tableView reloadData];
     } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
         HUALog(@"%@",error);
     }];
-
 
         
     }];
@@ -345,7 +348,7 @@
     self.navigationItem.hidesBackButton = NO;
     
     self.navigationItem.titleView = nil;
-    UIBarButtonItem *leftSpace = [UIBarButtonItem leftSpace:hua_scale(-30)];
+    UIBarButtonItem *leftSpace = [UIBarButtonItem leftSpace:-30];
     UIBarButtonItem *searchBar = [UIBarButtonItem itemWithTarget:self action:@selector(search) image:@"search" highImage:@"search" text:nil];
     self.navigationItem.rightBarButtonItems = @[leftSpace,searchBar];
     

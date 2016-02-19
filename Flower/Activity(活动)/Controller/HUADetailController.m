@@ -95,6 +95,7 @@
         //NSDictionary *shopInfo = responseObject[@"info"];
         // = [HUADetailInfo parseDetailinfo:shopInfo];
         self.info = [HUADetailInfo mj_objectWithKeyValues:responseObject[@"info"]];
+        HUALog(@"%@",self.info.have_praised);
         self.detailArray = [HUADataTool activityDetail:responseObject];
         [self setNavigationBar];
         [self.tableView reloadData];
@@ -146,6 +147,7 @@
                 [sender setTitle:[NSString stringWithFormat:@"%ld",sender.titleLabel.text.integerValue-1] forState:UIControlStateNormal];
             }
         } failure:^(NSError *error) {
+            [HUAMBProgress MBProgressFromWindowWithLabelText:@"请检查网络设置"];
             HUALog(@"%@",error);
         }];
     }

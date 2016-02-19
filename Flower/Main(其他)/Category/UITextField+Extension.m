@@ -36,7 +36,7 @@
     
     UITextField *textField = [[UITextField alloc]initWithFrame:frame];
     textField.placeholder = placeholder;
-    textField.font = [UIFont systemFontOfSize:hua_scale(13)];
+    textField.font = [UIFont systemFontOfSize:hua_scale(11)];
     textField.leftView = imageView;
     textField.leftViewMode = UITextFieldViewModeAlways;
     return textField;

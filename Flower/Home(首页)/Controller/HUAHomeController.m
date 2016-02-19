@@ -32,8 +32,6 @@ static NSString *identifier = @"cell";
 
 /**商铺的可变数组*/
 @property (nonatomic, strong) NSMutableArray *shopsArray;
-/**当前的页数*/
-@property (nonatomic, assign) NSUInteger page;
 /**头部滚动视图的数组*/
 @property (nonatomic, strong) NSArray *bannerArray;
 /**分类的数组*/
@@ -50,9 +48,12 @@ static NSString *identifier = @"cell";
 @property (nonatomic, strong) UIButton *chooseCity;
 /**自定义城市选择view*/
 @property (nonatomic, strong) HUASelectCityView *selectView;
-/**商铺的可变数组*/
-@property (nonatomic, assign) NSNumber *totalPage;;
-
+/**当前的页数*/
+@property (nonatomic, assign) NSUInteger page;
+/**总页数*/
+@property (nonatomic, assign) NSNumber *totalPage;
+/**总数量*/
+@property (nonatomic, assign) NSString *totalCount;
 
 @property (nonatomic, strong) CLLocationManager * mgr;
 @property (nonatomic, assign) CLLocationCoordinate2D currentCoord;
@@ -114,9 +115,7 @@ static NSString *identifier = @"cell";
         [self.selectView dismissView];
     }
 }
-//- (void)getData{
-//    
-//}
+
 
 
 - (void)getData {
@@ -126,14 +125,11 @@ static NSString *identifier = @"cell";
     parameter[@"order"] = self.order;
     parameter[@"per_page"] = @(self.page);
     [HUAHttpTool POST:url params:parameter success:^(id responseObject) {
-
+        self.totalCount = responseObject[@"info"][@"total"];
         self.totalPage = responseObject[@"info"][@"pages"];
-        
-        
         NSArray *shopArray = [HUADataTool homeShop:responseObject];
         [self.shopsArray addObjectsFromArray:shopArray];
         self.categoryArray = [HUADataTool getCategoryList:responseObject];
-        HUALog(@"self.shopsArray  %lu",(unsigned long)self.shopsArray.count);
         NSArray *array = [HUADataTool homeBanner:responseObject];
         HUAShopInfo *banner = array.firstObject;
         self.bannerArray = banner.bannerArr;
@@ -154,17 +150,13 @@ static NSString *identifier = @"cell";
 }
 
 - (void)loadNewData {
-    self.page++;
-    if (self.page > [self.totalPage integerValue]) {
-        [HUAMBProgress MBProgressOnlywithLabelText:@"没有更多数据了"];
-        [self.tableView.mj_header endRefreshing];
-        return;
-    }else if (self.order) {
-        self.page--;
+    if (self.order) {
         [HUAMBProgress MBProgressOnlywithLabelText:@"没有更多数据了"];
         [self.tableView.mj_header endRefreshing];
         return;
     }
+    self.page=1;
+    [self.shopsArray removeAllObjects];
     NSString *url = [HUA_URL stringByAppendingPathComponent:App_index];
     NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
     parameter[@"order"] = self.order;
@@ -172,13 +164,12 @@ static NSString *identifier = @"cell";
     [HUAHttpTool POST:url params:parameter success:^(id responseObject) {
         HUALog(@"123%@",responseObject);
         //加载数据插入到可变数组最前面
-        NSArray *shopArray = [HUADataTool homeShop:responseObject];
-        [self.shopsArray insertObjects:shopArray atIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, shopArray.count)]];
-//        self.categoryArray = [HUADataTool getCategoryList:responseObject];
-//        NSArray *array = [HUADataTool homeBanner:responseObject];
-//        HUAShopInfo *banner = array.firstObject;
-//        self.bannerArray = banner.bannerArr;
-//        [self createHeaderView:self.bannerArray];
+        NSString *newCount = responseObject[@"info"][@"total"];
+        if (newCount == self.totalCount) {
+            [HUAMBProgress MBProgressOnlywithLabelText:@"没有更多新的商户了"];
+        }
+        NSArray *array = [HUADataTool homeShop:responseObject];
+        [self.shopsArray addObjectsFromArray:array];
         [self.tableView reloadData];
         [self.tableView.mj_header endRefreshing];
     } failure:^(NSError *error) {
@@ -196,23 +187,30 @@ static NSString *identifier = @"cell";
 //    [self.tableView.mj_footer beginRefreshing];
 //}
 
-/**cell即将到最后一个的时候自动加载数据*/
+//*cell即将到最后一个的时候自动加载数据
 -(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (indexPath.row == self.shopsArray.count-1) {
-        // 集成上拉刷新控件
-        [self loadMoreData];
+    //到达最后一页数据
+    if (self.page == [self.totalPage integerValue]) {
+        if (indexPath.row == self.shopsArray.count-1) {
+            // 集成上拉刷新控件
+           self.tableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(loadMoreData)];
+        }
+    }else {
+        if (indexPath.row == self.shopsArray.count-1) {
+            // 自动上啦刷新
+            [self loadMoreData];
+        }
     }
-    //HUALog(@"%ld",(long)indexPath.row);
-    
 }
 
 
 - (void)loadMoreData {
     self.page++;
     if (self.page > [self.totalPage integerValue]) {
-        [HUAMBProgress MBProgressOnlywithLabelText:@"没有更多数据了"];
-        
+
+        [self.tableView.mj_footer endRefreshingWithNoMoreData];
+
         return;
     }
     NSString *url = [HUA_URL stringByAppendingPathComponent:App_index];
@@ -222,12 +220,6 @@ static NSString *identifier = @"cell";
     [HUAHttpTool POST:url params:parameter success:^(id responseObject) {
         NSArray *shopArray = [HUADataTool homeShop:responseObject];
         [self.shopsArray addObjectsFromArray:shopArray];
-//        self.categoryArray = [HUADataTool getCategoryList:responseObject];
-//        HUALog(@"%@",self.categoryArray[0]);
-//        NSArray *array = [HUADataTool homeBanner:responseObject];
-//        HUAShopInfo *banner = array.firstObject;
-//        self.bannerArray = banner.bannerArr;
-//        [self createHeaderView:self.bannerArray];
         [self.tableView reloadData];
     } failure:^(NSError *error) {
         self.page--;
@@ -286,6 +278,7 @@ static NSString *identifier = @"cell";
 - (UIButton *)chooseCity{
     if (!_chooseCity) {
         _chooseCity = [UIButton buttonWithType:0];
+        _chooseCity.backgroundColor = HUAColor(0x4da800);
         _chooseCity.width = 60;
         _chooseCity.height = 44;
         [_chooseCity setImage:[UIImage imageNamed:@"select"] forState:UIControlStateNormal];
@@ -295,7 +288,7 @@ static NSString *identifier = @"cell";
         [_chooseCity setTitleColor:HUAColor(0x575757) forState:UIControlStateNormal];
         [_chooseCity setTitleColor:HUAColor(0x4da800) forState:UIControlStateSelected];
         
-        _chooseCity.titleLabel.font = [UIFont systemFontOfSize:16];
+        _chooseCity.titleLabel.font = [UIFont systemFontOfSize:hua_scale(10)];
         [_chooseCity addTarget:self action:@selector(chooseCity:) forControlEvents:UIControlEventTouchUpInside];
         _chooseCity.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
         [_chooseCity setTitleEdgeInsets:UIEdgeInsetsMake(0, -(_chooseCity.imageView.frame.size.width), 0, 0)];
@@ -317,7 +310,7 @@ static NSString *identifier = @"cell";
     logoIcon.width = hua_scale(45);
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:logoIcon];
     //设置右边选择城市按钮
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:self.chooseCity];
+    self.navigationItem.rightBarButtonItems = @[[[UIBarButtonItem alloc] initWithCustomView:self.chooseCity]];
 
 }
 
@@ -340,6 +333,7 @@ static NSString *identifier = @"cell";
     button.selected = NO;
     self.sortView.y = screenHeight;
      [self.sortView removeFromSuperview];
+    
     chooseCity.selected = !chooseCity.selected;
     if (chooseCity.selected == YES) {
         self.selectView = [[HUASelectCityView alloc]initWithFrame:self.view.bounds];
@@ -371,9 +365,7 @@ static NSString *identifier = @"cell";
 - (void)textFieldDidBeginEditing:(UITextField *)textField{
     UIButton * button =  [self.header viewWithTag:1000];
     button.selected = NO;
-    [UIView animateWithDuration:0.1 animations:^{
-        self.sortView.y = screenHeight;
-    }];
+    self.sortView.y = screenHeight;
     [self.sortView removeFromSuperview];
     NSLog(@"beginEditing");
     UIView *blackView  = [[UIView alloc]initWithFrame:self.view.bounds];
@@ -568,10 +560,10 @@ static NSString *identifier = @"cell";
 - (void)clickSortButton:(UIButton *)sender {
     UIWindow *window = [[UIApplication sharedApplication].windows lastObject];
     if (sender.selected == YES) {
-        if (self.tableView.contentOffset.y == 0) {
+        if (self.tableView.contentOffset.y <= hua_scale(250)) {
             [self.tableView setContentOffset:CGPointMake(0, hua_scale(250)) animated:YES];
             [window addSubview:self.sortView];
-            [UIView animateWithDuration:0 delay:0.5 options:UIViewAnimationOptionLayoutSubviews animations:^{
+            [UIView animateWithDuration:0 delay:0.4 options:UIViewAnimationOptionLayoutSubviews animations:^{
                 self.sortView.y = sortViewHeight;
                 
             } completion:nil];
@@ -585,10 +577,8 @@ static NSString *identifier = @"cell";
         
         }
     }else {
-        [UIView animateWithDuration:0.1 animations:^{
-            self.sortView.y = screenHeight;
-        }];
-          [self.sortView removeFromSuperview];
+        self.sortView.y = screenHeight;
+        [self.sortView removeFromSuperview];
         
     }
 }
@@ -597,11 +587,6 @@ static NSString *identifier = @"cell";
 
 - (void)sortMenuDidDismiss:(HUASortViewButtonType)buttonType {
 
-    UIButton * button =  [self.header viewWithTag:1000];
-    button.selected = NO;
-
-    [self.shopsArray removeAllObjects];
-    self.page = 1;
     switch (buttonType) {
         case HUASortViewButtonTypePopularity:
             self.order = @"bill_count_desc";
@@ -614,11 +599,15 @@ static NSString *identifier = @"cell";
             self.order = @"shopname_desc";
             [HUAMBProgress MBProgressOnlywithLabelText: @"名字排序"];
             break;
-        default:
-            break;
+
     }
+    [self.shopsArray removeAllObjects];
+    self.page = 1;
     [self getData];
-    
+    UIButton * button =  [self.header viewWithTag:1000];
+    button.selected = NO;
+    self.sortView.y = screenHeight;
+    [self.sortView removeFromSuperview];
     
 }
 

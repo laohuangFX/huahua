@@ -94,7 +94,7 @@
         praiseButton.selected = YES;
         
     }
-    [praiseButton setTitle:[NSString stringWithFormat:@"%ld",self.productDetailInfo.praise_count.integerValue] forState:UIControlStateNormal];
+//    [praiseButton setTitle:[NSString stringWithFormat:@"%ld",self.productDetailInfo.praise_count.integerValue] forState:UIControlStateNormal];
     [praiseButton addTarget:self action:@selector(clickToPraise:) forControlEvents:UIControlEventTouchUpInside];
     
     praiseButton.titleLabel.font = [UIFont systemFontOfSize:hua_scale(14)];

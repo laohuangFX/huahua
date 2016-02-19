@@ -45,7 +45,7 @@
         seperateTop.backgroundColor = HUAColor(0xcdcdcd);
         [self.chooseView addSubview:seperateTop];
         
-        UIView *seperateBottom= [[UIView alloc] initWithFrame:CGRectMake(0, 59.5, SCREEN_WIDTH, 0.5)];
+        UIView *seperateBottom= [[UIView alloc] initWithFrame:CGRectMake(0, hua_scale(59.5), SCREEN_WIDTH, 0.5)];
         seperateBottom.backgroundColor = HUAColor(0xcdcdcd);
         [self.chooseView addSubview:seperateBottom];
         
@@ -102,7 +102,7 @@
 }
 
 - (void)click:(UIButton *)sender {
-    self.y = screenHeight;
+    
     if (self.lastButton) {
         self.lastButton.selected = NO;
         [self.lastButton setTitleColor:HUAColor(0x666666) forState:UIControlStateNormal];
@@ -116,9 +116,7 @@
     self.lastButton = sender;
     //选中按钮取消交互功能
     self.lastButton.userInteractionEnabled = NO;
-    
-    [self removeFromSuperview];
-    
+
     if ([self.delegate respondsToSelector:@selector(sortMenuDidDismiss:)]) {
         [self.delegate sortMenuDidDismiss:sender.tag];
     }

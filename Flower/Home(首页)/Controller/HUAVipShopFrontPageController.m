@@ -122,7 +122,7 @@
     if ([self.userInfo.hava_praised isEqualToString:@"1"] ) {
         praiseButton.selected = YES;
     }
-    [praiseButton setTitle:[NSString stringWithFormat:@"%ld",self.shopIntroduce.praise_count.integerValue] forState:UIControlStateNormal];
+//    [praiseButton setTitle:[NSString stringWithFormat:@"%ld",self.shopIntroduce.praise_count.integerValue] forState:UIControlStateNormal];
     [praiseButton addTarget:self action:@selector(clickToPraise:) forControlEvents:UIControlEventTouchUpInside];
     
     praiseButton.titleLabel.font = [UIFont systemFontOfSize:hua_scale(14)];
@@ -188,6 +188,7 @@
 
     }
 }
+
 
 - (void)getData {
     NSString *url = [HUA_URL stringByAppendingPathComponent:Shop_index];
