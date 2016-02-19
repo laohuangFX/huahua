@@ -101,15 +101,11 @@
     
 }
 
-<<<<<<< HEAD
-//获取下拉菜单数据
-=======
 
 //- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
 //    self.label.hidden = NO;
 //}
  //获取下拉菜单数据
->>>>>>> d54a7c06aee7d3d44b75515a7b3021959cc4e370
 - (void)getDownData{
 
     AFHTTPRequestOperationManager *manager = [[AFHTTPRequestOperationManager alloc] init];
@@ -267,14 +263,12 @@
         
     }
 
-<<<<<<< HEAD
-=======
     //NSLog(@"%@",_dataDic);
     
 
     //_data1 = [NSMutableArray arrayWithObjects:@{@"title":@"不限", @"data":noLimit},@{@"title":@"沐浴露",@"data":food}, @{@"title":@"护发素", @"data":travel}, @{@"title":@"洗面奶",@"data":food},@{@"title":@"啫喱水",@"data":travel},@{@"title":@"BB霜",@"data":food},@{@"title":@"眼霜",@"data":travel},@{@"title":@"指甲油",@"data":food},@{@"title":@"卸甲油",@"data":travel},nil];
    // NSLog(@"%@",_data1);
->>>>>>> d54a7c06aee7d3d44b75515a7b3021959cc4e370
+
     _data2 = [NSMutableArray arrayWithObjects:@"不限", @"价格降序", @"价格升序",nil];
     _data3 = [NSMutableArray arrayWithObjects:@"不限",@"点赞降序",@"点赞升序",nil];
     
@@ -324,22 +318,7 @@
         if (![_rightText isEqualToString:@"不限"] && _rightText != nil) {
             parameters[@"order_praise"] =[_rightText isEqualToString:@"点赞降序"]? @"desc":@"asc";
         }
-<<<<<<< HEAD
-        //parameters[@"shop_id"] = self.shop_id;
 
-            [manager GET:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-            HUALog(@"%@",responseObject);
-            if ([[responseObject objectForKey:@"info"] isKindOfClass:[NSString class]]) {
-                [HUAMBProgress MBProgressOnlywithLabelText:[responseObject objectForKey:@"info"]];
-                return ;
-            }
-            self.productsArray =nil;
-            self.productsArray = [HUADataTool shopProduct:responseObject];
-            [self.tableView reloadData];
-        } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
-            HUALog(@"%@",error);
-        }];
-=======
         
         [manager GET:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
         //HUALog(@"%@",responseObject);
@@ -354,7 +333,7 @@
     } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
         HUALog(@"%@",error);
     }];
->>>>>>> d54a7c06aee7d3d44b75515a7b3021959cc4e370
+
 
         
     }];

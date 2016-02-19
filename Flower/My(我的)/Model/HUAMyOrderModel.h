@@ -39,4 +39,6 @@
 @property (nonatomic, strong)NSString *type;
 //活动id
 @property (nonatomic, strong)NSString *active_id;
+//商店id
+@property (nonatomic, strong)NSString *shop_id;
 @end

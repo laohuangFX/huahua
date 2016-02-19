@@ -17,4 +17,6 @@
 @property (nonatomic, strong)NSString *type;
 //状态
 @property (nonatomic, strong)NSString *is_receipt;
+
+@property (nonatomic, strong)NSString *shop_id;
 @end

@@ -69,6 +69,28 @@ extern const CGFloat maxContentLabelHeight;
     
     return statusModel;
 }
+//content = 在一起是的,
+//essay_id = 100,
+//comment_id = 283,
+//nickname = nick玉面with,
+//headicon = http://oss-cn-shenzhen.aliyuncs.com/daihuanqi/20151027202400562f6ce07c6e7.jpg,
+//parent_user_id = 0,
+//parent_id = 0,
+//shop_id = 23,
+//type = 1,
+//user_id = 15,
+//create_time = 1455852127
 
++ (id)jsonData:(NSDictionary *)dic{
+    HUAmodel *model = [HUAmodel new];
+    //model.commentArray = [dynamicDic[@"reply"] mutableCopy];
+    model.name = dic[@"info"][@"nickname"];
+    model.icon = dic[@"info"][@"headicon"];
+    model.content = dic[@"info"][@"content"];
+    model.user_id = dic[@"info"][@"user_id"];
+    model.comment_id = dic[@"info"][@"comment_id"];
+
+    return model;
+}
 
 @end

@@ -299,15 +299,15 @@
 }
 
 //动态
-+ (NSArray *)status:(NSDictionary *)dic{
++ (NSMutableArray *)status:(NSDictionary *)dic{
     NSArray *_array = nil;
     if (!_array) {
         _array = [[self alloc] getStatusModel:(dic)];
     }
-    return [_array copy];
+    return [_array mutableCopy];
 }
 
-- (NSArray *)getStatusModel:(NSDictionary *)dic{
+- (NSMutableArray *)getStatusModel:(NSDictionary *)dic{
     NSArray *array = dic[@"info"][@"list"];
     
     NSMutableArray *mutableArray = [NSMutableArray array];
@@ -335,22 +335,22 @@
         
     }
     
-    return [mutableArray copy];
+    return [mutableArray mutableCopy];
     
 }
 //动态详情
 
-+ (NSArray *)DynamicDetails:(NSDictionary *)dic{
++ (NSMutableArray *)DynamicDetails:(NSDictionary *)dic{
     
     NSArray *_array = nil;
     if (!_array) {
         _array = [[self alloc] getDynamicDetailsModel:(dic)];
     }
-    return [_array copy];
+    return [_array mutableCopy];
     
 }
 
-- (NSArray *)getDynamicDetailsModel:(NSDictionary *)dic{
+- (NSMutableArray *)getDynamicDetailsModel:(NSDictionary *)dic{
    
     NSArray *array = dic[@"info"][@"comment_info"];
 
@@ -399,6 +399,7 @@ static NSArray *_array = nil;
         myOrder.product_id = myOrderDic[@"product"][@"product_id"];
         myOrder.service_id = myOrderDic[@"product"][@"service_id"];
         myOrder.type = myOrderDic[@"type"];
+        myOrder.shop_id = myOrderDic[@"shop_id"];
         NSLog(@"%@",myOrder.type);
         if ([myOrderDic[@"type"] isEqualToString:@"1"]) {
             myOrder.titleNmae = myOrderDic[@"product"][@"name"];

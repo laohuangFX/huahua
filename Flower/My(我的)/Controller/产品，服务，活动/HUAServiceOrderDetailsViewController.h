@@ -17,4 +17,6 @@
 
 //状态id
 @property (nonatomic, strong)NSString *is_use;
+
+@property (nonatomic, strong)NSString *shop_id;
 @end

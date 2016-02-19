@@ -52,6 +52,8 @@
 @property (nonatomic, strong)UIButton *tagButton;
 
 @property (nonatomic,retain)NSMutableDictionary *dongtaiDic;
+
+@property (nonatomic,assign)NSString *page;
 @end
 
 @implementation HUADynamicDetailsViewController
@@ -65,6 +67,7 @@
     self.view.backgroundColor = [UIColor whiteColor];
     //设置返回按钮图片的颜色
     [[UINavigationBar appearance] setTintColor:[UIColor whiteColor]];
+ 
     
     [self getData:NO];
     
@@ -74,6 +77,7 @@
     //自定义键盘
     [self initKeyBoard];
     
+   
     
 }
 - (void)initTbaleView{
@@ -87,6 +91,7 @@
     [self.view addSubview:self.tableView];
     
 }
+
 //自定义键盘
 - (void)initKeyBoard{
     
@@ -160,9 +165,9 @@
     [manager.requestSerializer setValue:token forHTTPHeaderField:@"token"];
     manager.responseSerializer = [AFHTTPResponseSerializer serializer];
     
-    NSString *url = [HUA_URL stringByAppendingPathComponent:[NSString stringWithFormat:@"essay/essay_detail?essay_id=%@",self.essay_id]];
+    NSString *url = [HUA_URL stringByAppendingPathComponent:[NSString stringWithFormat:@"essay/essay_detail?essay_id=%@&user_id=%@",self.essay_id,detailInfo.user_id]];
     NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
-    //parameter[@"per_page"] = @"1";
+ 
     [manager GET:url parameters:parameter success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
         NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:responseObject options:0 error:nil];
   
@@ -188,14 +193,13 @@
 
                 if (_indexPath ==nil ||_indexPath.row == 0 ) {
 
-                  //  [self.tableView reloadData];
+                    [self.tableView reloadData];
 
                 }else{
 
-                    
                     [self.tableView reloadRowsAtIndexPaths:@[_indexPath] withRowAnimation:0];
                 }
-                
+
                 //清空
                 _indexPath = nil;
             }
@@ -204,67 +208,7 @@
     } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
         HUALog(@"%@",error);
     }];
-    
-
-//
-//    
-//    //获取当前用户名
-//    HUAUserDetailInfo *detailInfo = [HUAUserDefaults getUserDetailInfo];
-//    
-//    NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
-// 
-//    
-//    NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
-//    AFURLSessionManager *manager = [[AFURLSessionManager alloc] initWithSessionConfiguration:configuration];
-//    [manager.requestSerializer setValue:token forHTTPHeaderField:@"token"];
-//    NSURL *URL =  [NSURL URLWithString: [HUA_URL stringByAppendingPathComponent:[NSString stringWithFormat:@"essay/essay_detail?essay_id=%@",self.essay_id]]];
-//    NSLog(@"%@",[HUA_URL stringByAppendingPathComponent:[NSString stringWithFormat:@"essay/essay_detail?essay_id=%@",self.essay_id]]);
-//    NSURLRequest *request = [NSURLRequest requestWithURL:URL];
-//    
-//    NSURLSessionDataTask *dataTask = [manager dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
-//        if (error) {
-//            NSLog(@"Error: %@", error);
-//        } else {
-//           // NSLog(@"%@",responseObject);
-//            
-//            self.statusModel.praise = responseObject[@"info"][@"praise_count"];
-//            self.statusModel.is_praise = responseObject[@"info"][@"is_praise"];
-//            self.pinlunArray = [HUADataTool DynamicDetails:responseObject];
-//            
-//            
-//            for (HUAmodel *model in self.pinlunArray) {
-//                
-//                for (NSDictionary *dic in model.commentArray) {
-//                    
-//                    [self.dongtaiDic setValue:dic[@"nickname"] forKey:dic[@"user_id"]];
-//                    
-//                }
-//                [self.dongtaiDic setValue:model.name forKey:model.user_id];
-//                
-//                model.nameDic = self.dongtaiDic;
-//            }
-//            if (type==NO) {
-//                [self.tableView reloadData];
-//            }else{
-//                
-//                if (_indexPath ==nil ||_indexPath.row == 0 ) {
-//                    
-//                    [self.tableView reloadData];
-//                    
-//                }else{
-//                    
-//                    [self.tableView reloadRowsAtIndexPaths:@[_indexPath] withRowAnimation:0];
-//                }
-//                
-//                //清空
-//                _indexPath = nil;
-//            }
-//            
-//            
-//        }
-//    }];
-//    [dataTask resume];
-    
+      
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
@@ -300,8 +244,6 @@
                 
                 [alert addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
                     
-//                    UIWindow *window = [UIApplication sharedApplication].keyWindow;
-//                    window.rootViewController= [[HUALoginController alloc] init];
                     [weakSelf.navigationController pushViewController:[HUALoginController new] animated:YES];
                     [alert removeFromParentViewController];
                     
@@ -523,7 +465,7 @@ int cellRow = 000;
             return;
             
         }
-        
+    
         NSString *token = [HUAUserDefaults getToken];
         AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
         [manager.requestSerializer setValue:token forHTTPHeaderField:@"token"];
@@ -543,39 +485,29 @@ int cellRow = 000;
             
                NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:responseObject options:0 error:nil];
             NSLog(@"JSON: %@", dic);
-           // [self getData:YES];
-            HUAmodel *model = self.pinlunArray[_indexPath.row-2];
-            [model.commentArray addObject:dic[@"info"]];
-            [self.tableView reloadRowsAtIndexPaths:@[_indexPath] withRowAnimation:0];
+            
+            if (_indexPath.row == 0) {
+                
+                [self.pinlunArray addObject:[HUAmodel jsonData:dic]];
+                NSMutableArray *array = [NSMutableArray array];
+                HUAmodel *model = self.pinlunArray.lastObject;
+                model.commentArray = array;
+    
+                [self.tableView reloadData];
+                
+            }else {
+            
+                HUAmodel *model = self.pinlunArray[_indexPath.row-2];
+                [model.commentArray addObject:dic[@"info"]];
+                [self.tableView reloadRowsAtIndexPaths:@[_indexPath] withRowAnimation:0];
+            }
+            
+            [HUAMBProgress MBProgressFromWindowWithLabelText:@"发表成功!"];
+             _indexPath = nil;
         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
             NSLog(@"Error: %@", error);
         }];
-        
-        
-        //      上传到服务器类型
-        //        NSMutableDictionary *dic = [[NSMutableDictionary alloc] init];
-        //        if (_nikeName == nil) {
-        //            dic = [[NSMutableDictionary alloc] initWithDictionary:@{@"comment_id":@"131",@"parent_id":_parent_id,@"nickname":detailInfo.nickname,@"content":text} copyItems:YES];
-        //        }else{
-        //          dic = [[NSMutableDictionary alloc] initWithDictionary:@{@"comment_id":@"131",@"parent_id":_parent_id,@"nickname":detailInfo.nickname,@"content":text} copyItems:YES];
-        //        }
-        //
-        
-        // [self.pinlunArray insertObject:dic atIndex:self.pinlunArray.count];
-        
-        
-        //
-        //        if (_nikeName != nil) {
-        //            //刷新点击cell的lable刷新
-        //            HUAcommentsTableViewCell *cell = (HUAcommentsTableViewCell *)self.tagButton.superview.superview;
-        //            NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
-        //            [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-        //        }else{
-        //            //普通的回复
-        //            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:self.cellIndex inSection:0];
-        //            [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-        //        }
-        //
+
         
         //清空内容
         _nikeName = nil;
@@ -583,6 +515,7 @@ int cellRow = 000;
         _parent_id = nil;
         _type = nil;
         self.cellIndex = 0;
+       
     }
     
     //记录上一次行
@@ -641,4 +574,6 @@ int cellRow = 000;
         }
     }
 }
+
+
 @end

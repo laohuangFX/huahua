@@ -16,9 +16,9 @@
 + (NSArray *)activityDetail:(NSDictionary *)dic;
 
 //动态
-+ (NSArray *)status:(NSDictionary *)dic;
++ (NSMutableArray *)status:(NSDictionary *)dic;
 //动态详情
-+ (NSArray *)DynamicDetails:(NSDictionary *)dic;
++ (NSMutableArray *)DynamicDetails:(NSDictionary *)dic;
 //我的订单
 + (NSArray *)MyOrder:(NSDictionary *)dic;
 //技师列表

@@ -106,7 +106,7 @@ static NSString * const identifier = @"head";
         NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:responseObject options:0 error:nil];
         self.userDic = dic;
         self.birthString = dic[@"info"][@"birth"];
-  
+        [self.tableView reloadData];
         NSString *string = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
         HUALog(@"%@",string);
         
@@ -160,7 +160,8 @@ static NSString * const identifier = @"head";
         NSData *data = [[NSUserDefaults standardUserDefaults] objectForKey:@"data"];
         HUAUserDetailInfo *detailInfo = [NSKeyedUnarchiver unarchiveObjectWithData:data];
         HUALog(@"nick%@",detailInfo.nickname);
-        cell.nameLabel.text = [detailInfo.nickname isEqualToString:@""]?detailInfo.phone:detailInfo.nickname;
+        //cell.nameLabel.text = [detailInfo.nickname isEqualToString:@""]?detailInfo.phone:detailInfo.nickname;
+        cell.nameLabel.text = self.userDic[@"info"][@"nickname"];
         cell.sexLabel.text = [detailInfo.sex isEqualToString:@"1"]?@"男":@"女";
 
         [cell.headImageView sd_setImageWithURL:[NSURL URLWithString:detailInfo.headicon] placeholderImage:[UIImage imageNamed:@"placeholder"]];

@@ -47,6 +47,8 @@
 #import "HUAConstRowHeight.h"
 #import "HUAUserDefaults.h"
 #import "HATransparentView.h"
+#import <AliyunOSSiOS/OSSService.h>
+
 
 //常用宏定义
 //颜色

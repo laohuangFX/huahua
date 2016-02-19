@@ -62,6 +62,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self.view addSubview:self.tableView];
+    [self isVip];
     [self getData];
 }
 

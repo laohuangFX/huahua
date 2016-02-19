@@ -135,29 +135,28 @@
        
         NSString *token = [HUAUserDefaults getToken];
         NSLog(@"%@",model.bill_num);
-//        AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-//        [manager.requestSerializer setValue:token forHTTPHeaderField:@"token"];
-//        //申明返回的结果是json类型
-//        manager.responseSerializer = [AFHTTPResponseSerializer serializer];
-//        //申明请求的数据是json类型
-//        //manager.requestSerializer=[AFJSONRequestSerializer serializer];
-//        //如果报接受类型不一致请替换一致text/html或别的
-//        manager.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"text/json"];
-//        //传入的参数
-//        NSDictionary *parameters = @{@"bill_id":model.bill_num};
-//        
-//        NSString *url = [HUA_URL stringByAppendingPathComponent:@"user/create_shopping_addr"];
-//        
-//        [manager POST:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-//            NSLog(@"%@",responseObject);
-//            
-//        } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
-//            
-//            NSLog(@"%@",error);
-//            
-//        }];
-
+      
+        AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+        [manager.requestSerializer setValue:token forHTTPHeaderField:@"token"];
+        //申明返回的结果是json类型
+        manager.responseSerializer = [AFHTTPResponseSerializer serializer];
+        //申明请求的数据是json类型
+        //manager.requestSerializer=[AFJSONRequestSerializer serializer];
+        //如果报接受类型不一致请替换一致text/html或别的
+        manager.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"text/json"];
+        //传入的参数
+        NSDictionary *parameters = @{@"bill_id":model.bill_num};
         
+        NSString *url = [HUA_URL stringByAppendingPathComponent:@"user/confirm_receipt"];
+        
+        [manager POST:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+            NSLog(@"%@",responseObject);
+            
+        } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
+            
+            NSLog(@"%@",error);
+            
+        }];
         
     }];
     cell.model = self.array[indexPath.row];
@@ -179,6 +178,7 @@
         vc.type = model.type;
         vc.product_id = model.product_id;
         vc.is_receipt = model.is_receipt;
+        vc.shop_id = model.shop_id;
         [self.navigationController pushViewController:vc animated:YES];
     } else if ([model.type isEqualToString:@"2"]){
        //服务
@@ -194,6 +194,7 @@
         vc.bill_id = model.bill_num;
         vc.active_id = model.active_id;
         vc.number = model.remainNum;
+        vc.shop_id = model.shop_id;
         [self.navigationController pushViewController:vc animated:YES];
     }
     

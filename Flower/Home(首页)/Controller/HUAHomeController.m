@@ -212,7 +212,7 @@ static NSString *identifier = @"cell";
     self.page++;
     if (self.page > [self.totalPage integerValue]) {
         [HUAMBProgress MBProgressOnlywithLabelText:@"没有更多数据了"];
-        [self.tableView.mj_footer endRefreshing];
+        
         return;
     }
     NSString *url = [HUA_URL stringByAppendingPathComponent:App_index];

@@ -265,6 +265,7 @@
     
     //状态
     _state = [UILabel labelText:@"等待发货/等待取货" color:HUAColor(0x999999) font:hua_scale(11)];
+    _state.tag = 289;
     [_scrollView addSubview:_state];
     [_state mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(_time.mas_bottom).mas_equalTo(hua_scale(10));
@@ -277,7 +278,13 @@
     confirmButton.backgroundColor = HUAColor(0x4da800);
     [confirmButton setTitle:@"确认收货" forState:0];
     [confirmButton setTitleColor:HUAColor(0xffffff) forState:0];
-    confirmButton.hidden = YES;
+    if ([self.is_receipt isEqualToString:@"2"]) {
+        confirmButton.hidden = NO;
+    }else{
+        confirmButton.hidden = YES;
+    }
+
+    [confirmButton addTarget:self action:@selector(confirm:) forControlEvents:UIControlEventTouchUpInside];
     [_scrollView addSubview:confirmButton];
     [confirmButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(_state.mas_bottom).mas_equalTo(hua_scale(20));
@@ -288,6 +295,7 @@
     //2线
     UIView *thView2 = [UIView new];
     thView2.backgroundColor = HUAColor(0xeeeeee);
+    thView2.tag = 288;
     [_scrollView addSubview:thView2];
     //判断button是否存在
     if (confirmButton.hidden == YES) {
@@ -528,9 +536,6 @@
     _instructions.text = informationDic[@"yuanlai"];//特别说明
     //UILabel     *_specifications;//规格型号
     
-
-    
-    
     
     //商品详情
     UILabel *label = [UILabel labelText:@"商品详情" color:nil font:hua_scale(13)];
@@ -572,6 +577,7 @@
    
     HUAProductDetailController *vc = [HUAProductDetailController new];
     vc.product_id = self.product_id;
+    vc.shop_id = self.shop_id;
     [self.navigationController pushViewController:vc animated:YES];
     
     HUALog(@"点击跳转");
@@ -582,7 +588,53 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+- (void)confirm:(UIButton *)sender{
 
+    NSString *token = [HUAUserDefaults getToken];
+   
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    [manager.requestSerializer setValue:token forHTTPHeaderField:@"token"];
+    //申明返回的结果是json类型
+    manager.responseSerializer = [AFHTTPResponseSerializer serializer];
+    //申明请求的数据是json类型
+    //manager.requestSerializer=[AFJSONRequestSerializer serializer];
+    //如果报接受类型不一致请替换一致text/html或别的
+    manager.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"application/json"];
+    //传入的参数
+    NSDictionary *parameters = @{@"bill_id":self.bill_num};
+
+    NSString *url = [HUA_URL stringByAppendingPathComponent:@"user/confirm_receipt"];
+
+    [manager POST:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:responseObject options:0 error:nil];
+        
+        NSLog(@"%@",dic);
+
+    } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
+
+        NSLog(@"%@",error);
+        
+    }];
+
+    
+    sender.hidden = YES;
+    UIView *thview = [_scrollView viewWithTag:288];
+    UILabel *lable = [_scrollView viewWithTag:289];
+    
+    [UIView animateWithDuration:0.5 animations:^{
+      
+        [thview mas_updateConstraints:^(MASConstraintMaker *make) {
+            make.top.mas_equalTo(lable.mas_bottom).mas_equalTo(hua_scale(25));
+         
+        }];
+    }];
+  
+    lable.text = @"确认收货完成";
+    lable.textColor = HUAColor(0x4da800);
+    [_scrollView layoutSubviews];
+    
+
+}
 /*
 #pragma mark - Navigation
 

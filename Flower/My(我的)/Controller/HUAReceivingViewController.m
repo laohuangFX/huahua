@@ -136,6 +136,7 @@
         NSDictionary *parameters = @{@"addr_id":infoAddr_id};
          NSString *url = [HUA_URL stringByAppendingPathComponent:@"user/update_shopping_addr"];
         [manager POST:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+            [HUAMBProgress MBProgressFromWindowWithLabelText:@"删除成功!"];
             [self getData];
             
             NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:responseObject options:0 error:nil];
@@ -172,6 +173,7 @@
         [manager POST:[HUA_URL stringByAppendingPathComponent:@"user/update_shopping_addr"] parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
             NSLog(@"%@",responseObject);
             //刷新cell
+            [HUAMBProgress MBProgressFromWindowWithLabelText:@"修改成功!"];
             [self getData];
             
         } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
@@ -204,6 +206,7 @@
 
     //调用回调block
     vc.inFoBlock = ^(NSArray *InFotext){
+        [HUAMBProgress MBProgressFromWindowWithLabelText:@"添加成功!"];
         [self getData];
       
     };
