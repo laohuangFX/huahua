@@ -284,7 +284,7 @@ static NSString * const reuseIdentifier = @"cell";
         }else if (midstText.length !=0){
             _midstText = midstText;
         }else if (lastText.length !=0){
-            _rightText = lastText;
+            _midstText = lastText;
         }
         
         self.page = 1;
@@ -299,10 +299,16 @@ static NSString * const reuseIdentifier = @"cell";
             parameters[@"category_id"] =_towDataDic[_leftSubText];
         }
         if (![_midstText isEqualToString:@"不限"] && _midstText != nil) {
-            parameters[@"order"] =[_midstText isEqualToString:@"价格降序"]? @"price_desc":@"price_asc";
-        }
-        if (![_rightText isEqualToString:@"不限"] && _rightText != nil) {
-            parameters[@"order"] =[_midstText isEqualToString:@"点赞降序"]? @"praise_desc":@"praise_asc";
+            if ([_midstText isEqualToString:@"价格降序"]) {
+                parameters[@"order"] =@"price_desc";
+            }else if ([_midstText isEqualToString:@"价格升序"]){
+                
+                parameters[@"order"] =@"price_asc";
+            }else if ([_midstText isEqualToString:@"点赞降序"]){
+                parameters[@"order"] =@"praise_desc";
+            }else{
+                parameters[@"order"] =@"praise_asc";
+            }
         }
         
         NSLog(@"%@",parameters);
