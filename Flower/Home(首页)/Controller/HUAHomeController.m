@@ -50,9 +50,10 @@ static NSString *identifier = @"cell";
 @property (nonatomic, strong) HUASelectCityView *selectView;
 /**当前的页数*/
 @property (nonatomic, assign) NSUInteger page;
-/**商铺的可变数组*/
+/**总页数*/
 @property (nonatomic, assign) NSNumber *totalPage;
-
+/**总数量*/
+@property (nonatomic, assign) NSString *totalCount;
 
 @property (nonatomic, strong) CLLocationManager * mgr;
 @property (nonatomic, assign) CLLocationCoordinate2D currentCoord;
@@ -114,9 +115,7 @@ static NSString *identifier = @"cell";
         [self.selectView dismissView];
     }
 }
-//- (void)getData{
-//    
-//}
+
 
 
 - (void)getData {
@@ -126,6 +125,7 @@ static NSString *identifier = @"cell";
     parameter[@"order"] = self.order;
     parameter[@"per_page"] = @(self.page);
     [HUAHttpTool POST:url params:parameter success:^(id responseObject) {
+        self.totalCount = responseObject[@"info"][@"total"];
         self.totalPage = responseObject[@"info"][@"pages"];
         NSArray *shopArray = [HUADataTool homeShop:responseObject];
         [self.shopsArray addObjectsFromArray:shopArray];
@@ -150,6 +150,11 @@ static NSString *identifier = @"cell";
 }
 
 - (void)loadNewData {
+    if (self.order) {
+        [HUAMBProgress MBProgressOnlywithLabelText:@"没有更多数据了"];
+        [self.tableView.mj_header endRefreshing];
+        return;
+    }
     self.page=1;
     [self.shopsArray removeAllObjects];
     NSString *url = [HUA_URL stringByAppendingPathComponent:App_index];
@@ -159,8 +164,12 @@ static NSString *identifier = @"cell";
     [HUAHttpTool POST:url params:parameter success:^(id responseObject) {
         HUALog(@"123%@",responseObject);
         //加载数据插入到可变数组最前面
-        NSArray *shopArray = [HUADataTool homeShop:responseObject];
-        [self.shopsArray insertObjects:shopArray atIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, shopArray.count)]];
+        NSString *newCount = responseObject[@"info"][@"total"];
+        if (newCount == self.totalCount) {
+            [HUAMBProgress MBProgressOnlywithLabelText:@"没有更多新的商户了"];
+        }
+        NSArray *array = [HUADataTool homeShop:responseObject];
+        [self.shopsArray addObjectsFromArray:array];
         [self.tableView reloadData];
         [self.tableView.mj_header endRefreshing];
     } failure:^(NSError *error) {
@@ -576,10 +585,6 @@ static NSString *identifier = @"cell";
 
 - (void)sortMenuDidDismiss:(HUASortViewButtonType)buttonType {
 
-
-    
-    [self.shopsArray removeAllObjects];
-    self.page = 1;
     switch (buttonType) {
         case HUASortViewButtonTypePopularity:
             self.order = @"bill_count_desc";
@@ -594,6 +599,8 @@ static NSString *identifier = @"cell";
             break;
 
     }
+    [self.shopsArray removeAllObjects];
+    self.page = 1;
     [self getData];
     UIButton * button =  [self.header viewWithTag:1000];
     button.selected = NO;

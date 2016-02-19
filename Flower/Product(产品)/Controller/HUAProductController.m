@@ -52,6 +52,8 @@
 @property (nonatomic, assign) NSUInteger page;
 /**总页数*/
 @property (nonatomic, strong) NSNumber *totalPage;
+/**总数量*/
+@property (nonatomic, assign) NSString *totalCount;
 @end
 
 @implementation HUAProductController
@@ -117,23 +119,23 @@ static NSString * const reuseIdentifier = @"cell";
 }
 
 - (void)loadNewData {
-    self.page++;
-    if (self.page > [self.totalPage integerValue]) {
-        [HUAMBProgress MBProgressOnlywithLabelText:@"没有更多数据了"];
-        [self.collectionView.mj_header endRefreshing];
-        return;
-    }else if (_leftText || _leftSubText || _midstText || _rightText) {
-        self.page--;
+    if (_leftText || _leftSubText || _midstText || _rightText) {
         [HUAMBProgress MBProgressOnlywithLabelText:@"没有更多数据了"];
         [self.collectionView.mj_header endRefreshing];
         return;
     }
+    self.page=1;
     NSString *url = [HUA_URL stringByAppendingPathComponent:Product_list];
     NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
     parameters[@"per_page"] = @(self.page);
     [HUAHttpTool GET:url params:parameters success:^(id responseObject) {
+        [self.productArray removeAllObjects];
+        NSString *newCount = responseObject[@"info"][@"total"];
+        if (newCount == self.totalCount) {
+            [HUAMBProgress MBProgressOnlywithLabelText:@"没有更多新的产品了"];
+        }
         NSArray *array = [HUADataTool shopProduct:responseObject];
-        [self.productArray insertObjects:array atIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, array.count)]];
+        [self.productArray addObjectsFromArray:array];
         [self.collectionView reloadData];
         [self.collectionView.mj_header endRefreshing];
     } failure:^(NSError *error) {
@@ -168,6 +170,18 @@ static NSString * const reuseIdentifier = @"cell";
     }
     NSString *url = [HUA_URL stringByAppendingPathComponent:Product_list];
     NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
+    if (![_leftText isEqualToString:@"不限"] && _leftText != nil) {
+        parameters[@"parent_id"] =_dataDic[_leftText];
+    }
+    if (![_leftSubText isEqualToString:@"不限"] && _leftSubText != nil) {
+        parameters[@"category_id"] =_towDataDic[_leftSubText];
+    }
+    if (![_midstText isEqualToString:@"不限"] && _midstText != nil) {
+        parameters[@"order_price"] =[_midstText isEqualToString:@"价格降序"]? @"desc":@"asc";
+    }
+    if (![_rightText isEqualToString:@"不限"] && _rightText != nil) {
+        parameters[@"order_praise"] =[_midstText isEqualToString:@"点赞降序"]? @"desc":@"asc";
+    }
     parameters[@"per_page"] = @(self.page);
     [HUAHttpTool GET:url params:parameters success:^(id responseObject) {
         NSArray *array = [HUADataTool shopProduct:responseObject];
@@ -187,13 +201,13 @@ static NSString * const reuseIdentifier = @"cell";
     NSString *url = [HUA_URL stringByAppendingPathComponent:Product_list];
     
     [manager GET:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-        HUALog(@"%@",responseObject);
         if ([[responseObject objectForKey:@"info"] isKindOfClass:[NSString class]]) {
             [HUAMBProgress MBProgressOnlywithLabelText:[responseObject objectForKey:@"info"]];
             return ;
         }
         NSArray *array = [HUADataTool getProductArray:responseObject];
         [self.productArray addObjectsFromArray:array];
+        self.totalCount = responseObject[@"info"][@"total"];
         self.totalPage = responseObject[@"info"][@"pages"];
         [self.collectionView reloadData];
     } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {

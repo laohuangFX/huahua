@@ -43,6 +43,8 @@
 @property (nonatomic, assign) NSUInteger page;
 /**总页数*/
 @property (nonatomic, strong) NSNumber *totalPage;
+/**总数量*/
+@property (nonatomic, assign) NSString *totalCount;
 @end
 
 @implementation HUAShopServiceViewController
@@ -112,31 +114,29 @@
 }
 
 - (void)loadNewData {
-    self.page++;
-    if (self.page > [self.totalPage integerValue]) {
-        [HUAMBProgress MBProgressOnlywithLabelText:@"没有更多数据了"];
-        [self.tableView.mj_header endRefreshing];
-        return;
-    }else if (_leftText || _leftSubText || _midstText || _rightText) {
-        self.page--;
+    if (_leftText || _leftSubText || _midstText || _rightText) {
         [HUAMBProgress MBProgressOnlywithLabelText:@"没有更多数据了"];
         [self.tableView.mj_header endRefreshing];
         return;
     }
-    
+    self.page = 1;
     NSString *url = self.url;
     NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
     parameters[@"shop_id"] = self.shop_id;
     parameters[@"per_page"] = @(self.page);
     [HUAHttpTool GET:url params:parameters success:^(id responseObject) {
+        [self.productsArray removeAllObjects];
+        NSString *newCount = responseObject[@"info"][@"total"];
+        if (newCount == self.totalCount) {
+            [HUAMBProgress MBProgressOnlywithLabelText:@"没有更多新的服务了"];
+        }
         NSArray *array = [HUADataTool shopProduct:responseObject];
-        [self.productsArray insertObjects:array atIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, array.count)]];
+        [self.productsArray addObjectsFromArray:array];
         [self.tableView reloadData];
         [self.tableView.mj_header endRefreshing];
     } failure:^(NSError *error) {
         [HUAMBProgress MBProgressFromWindowWithLabelText:@"请检查网络设置"];
         [self.tableView.mj_header endRefreshing];
-        self.page--;
     }];
 }
 
@@ -189,12 +189,12 @@
         [parameters setValuesForKeysWithDictionary:SubParameters];
     }
     [manager GET:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-        //HUALog(@"%@",responseObject);
         if ([[responseObject objectForKey:@"info"] isKindOfClass:[NSString class]]) {
             [HUAMBProgress MBProgressOnlywithLabelText:[responseObject objectForKey:@"info"]];
             return ;
         }
         self.totalPage = responseObject[@"info"][@"pages"];
+        self.totalCount = responseObject[@"info"][@"total"];
         NSArray *array = [HUADataTool shopProduct:responseObject];
         [self.productsArray addObjectsFromArray:array];
         [self.tableView reloadData];

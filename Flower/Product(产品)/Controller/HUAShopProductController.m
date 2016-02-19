@@ -43,6 +43,8 @@
 @property (nonatomic, assign) NSUInteger page;
 /**总页数*/
 @property (nonatomic, strong) NSNumber *totalPage;
+/**总数量*/
+@property (nonatomic, assign) NSString *totalCount;
 
 @end
 
@@ -118,25 +120,24 @@
 }
 
 - (void)loadNewData {
-    self.page++;
-    if (self.page > [self.totalPage integerValue]) {
-        [HUAMBProgress MBProgressOnlywithLabelText:@"没有更多数据了"];
-        [self.tableView.mj_header endRefreshing];
-        return;
-    }else if (_leftText || _leftSubText || _midstText || _rightText) {
-        self.page--;
+    if (_leftText || _leftSubText || _midstText || _rightText) {
         [HUAMBProgress MBProgressOnlywithLabelText:@"没有更多数据了"];
         [self.tableView.mj_header endRefreshing];
         return;
     }
-    
+    self.page = 1;
     NSString *url = self.url;
     NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
     parameters[@"shop_id"] = self.shop_id;
     parameters[@"per_page"] = @(self.page);
     [HUAHttpTool GET:url params:parameters success:^(id responseObject) {
+        [self.productsArray removeAllObjects];
+        NSString *newCount = responseObject[@"info"][@"total"];
+        if (newCount == self.totalCount) {
+            [HUAMBProgress MBProgressOnlywithLabelText:@"没有更多新的活动了"];
+        }
         NSArray *array = [HUADataTool shopProduct:responseObject];
-        [self.productsArray insertObjects:array atIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, array.count)]];
+        [self.productsArray addObjectsFromArray:array];
         [self.tableView reloadData];
         [self.tableView.mj_header endRefreshing];
     } failure:^(NSError *error) {
@@ -172,6 +173,18 @@
     }
     NSString *url = self.url;
     NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
+    if (![_leftText isEqualToString:@"不限"] && _leftText != nil) {
+        parameters[@"parent_id"] =_dataDic[_leftText];
+    }
+    if (![_leftSubText isEqualToString:@"不限"] && _leftSubText != nil) {
+        parameters[@"category_id"] =_towDataDic[_leftSubText];
+    }
+    if (![_midstText isEqualToString:@"不限"] && _midstText != nil) {
+        parameters[@"order_price"] =[_midstText isEqualToString:@"价格降序"]? @"desc":@"asc";
+    }
+    if (![_rightText isEqualToString:@"不限"] && _rightText != nil) {
+        parameters[@"order_praise"] =[_midstText isEqualToString:@"点赞降序"]? @"desc":@"asc";
+    }
     parameters[@"shop_id"] = self.shop_id;
     parameters[@"per_page"] = @(self.page);
     [HUAHttpTool GET:url params:parameters success:^(id responseObject) {
@@ -203,6 +216,7 @@
             return ;
         }
         self.totalPage = responseObject[@"info"][@"pages"];
+        self.totalCount = responseObject[@"info"][@"total"];
         NSArray *array = [HUADataTool shopProduct:responseObject];
         [self.productsArray addObjectsFromArray:array];
         [self.tableView reloadData];

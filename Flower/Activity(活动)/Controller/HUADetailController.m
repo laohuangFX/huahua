@@ -94,6 +94,7 @@
         //NSDictionary *shopInfo = responseObject[@"info"];
         // = [HUADetailInfo parseDetailinfo:shopInfo];
         self.info = [HUADetailInfo mj_objectWithKeyValues:responseObject[@"info"]];
+        HUALog(@"%@",self.info.have_praised);
         self.detailArray = [HUADataTool activityDetail:responseObject];
         [self setNavigationBar];
         [self.tableView reloadData];

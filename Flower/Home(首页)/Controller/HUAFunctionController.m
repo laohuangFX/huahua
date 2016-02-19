@@ -18,6 +18,8 @@
 @property (nonatomic, assign) NSUInteger page;
 /**商铺的可变数组*/
 @property (nonatomic, assign) NSNumber *totalPage;
+/**总数量*/
+@property (nonatomic, assign) NSString *totalCount;
 @end
 
 @implementation HUAFunctionController
@@ -59,19 +61,19 @@
 }
 
 - (void)loadNewData {
-    self.page++;
-    if (self.page > [self.totalPage integerValue]) {
-        [HUAMBProgress MBProgressOnlywithLabelText:@"没有更多数据了"];
-        [self.tableView.mj_header endRefreshing];
-        return;
-    }
+    self.page = 1;
+    
     NSString *url = [HUA_URL stringByAppendingPathComponent:App_index];
     NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
     parameter[@"per_page"] = @(self.page);
     parameter[@"category_id"] = self.category_id;
     [HUAHttpTool POST:url params:parameter success:^(id responseObject) {
-        HUALog(@"123%@",responseObject);
         //加载数据插入到可变数组最前面
+        [self.shopsArray removeAllObjects];
+        NSString *newCount = responseObject[@"info"][@"total"];
+        if (newCount == self.totalCount) {
+            [HUAMBProgress MBProgressOnlywithLabelText:@"没有更多新的商户了"];
+        }
         NSArray *shopArray = [HUADataTool homeShop:responseObject];
         [self.shopsArray insertObjects:shopArray atIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, shopArray.count)]];
         [self.tableView reloadData];
@@ -79,7 +81,6 @@
     } failure:^(NSError *error) {
         [HUAMBProgress MBProgressFromWindowWithLabelText:@"请检查网络设置"];
         [self.tableView.mj_header endRefreshing];
-        self.page--;
     }];
 }
 
@@ -149,7 +150,8 @@
             [self.navigationController popViewControllerAnimated:YES];
             return ;
         }
-         self.totalPage = responseObject[@"info"][@"pages"];
+        self.totalCount = responseObject[@"info"][@"total"];
+        self.totalPage = responseObject[@"info"][@"pages"];
         NSArray *array = [HUADataTool homeShop:responseObject];
         [self.shopsArray addObjectsFromArray:array];
         [self.tableView reloadData];

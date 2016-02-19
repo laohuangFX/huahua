@@ -28,6 +28,8 @@
 @property (nonatomic, assign) NSUInteger page;
 /**总页数*/
 @property (nonatomic, strong) NSNumber *totalPage;
+/**总数量*/
+@property (nonatomic, assign) NSString *totalCount;
 @end
 
 @implementation HUAMasterListController
@@ -81,20 +83,19 @@
 
 
 - (void)loadNewData {
-    self.page++;
-    if (self.page > [self.totalPage integerValue]) {
-        [HUAMBProgress MBProgressOnlywithLabelText:@"没有更多数据了"];
-        [self.tableView.mj_header endRefreshing];
-        return;
-    }
-    
+    self.page = 1;
     NSString *url = self.url;
     NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
     parameters[@"shop_id"] = self.shop_id;
     parameters[@"per_page"] = @(self.page);
     [HUAHttpTool GET:url params:parameters success:^(id responseObject) {
+        [self.masterListArray removeAllObjects];
+        NSString *newCount = responseObject[@"info"][@"total"];
+        if (newCount == self.totalCount) {
+            [HUAMBProgress MBProgressOnlywithLabelText:@"没有更多新的技师了"];
+        }
         NSArray *array = [HUADataTool getMasterList:responseObject];
-        [self.masterListArray insertObjects:array atIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, array.count)]];
+        [self.masterListArray  addObjectsFromArray:array];
         [self.tableView reloadData];
         [self.tableView.mj_header endRefreshing];
     } failure:^(NSError *error) {
@@ -161,7 +162,7 @@
             return ;
         }
         self.totalPage = responseObject[@"info"][@"pages"];
-        HUALog(@"self.totalPage:%@",self.totalPage);
+        self.totalCount = responseObject[@"info"][@"total"];
         NSArray *array = [HUADataTool getMasterList:responseObject];
         [self.masterListArray addObjectsFromArray:array];
         [self.tableView reloadData];
