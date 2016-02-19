@@ -13,7 +13,7 @@
 #import "HUAUserDetailInfo.h"
 #import "HATransparentView.h"
 #import "STPhotoBrowserController.h"
-#import "AliyunOSSDemo.h"
+
 
 #define AccessKey @"RR18P8i4SfivX79SrUtbvjGnRNla57"
 
@@ -102,11 +102,11 @@
 
 - (void) viewWillDisappear:(BOOL)animated {
     
-    AliyunOSSDemo *alyData = [AliyunOSSDemo new];
-    
-    alyData.AlYdata = UIImagePNGRepresentation(self.imageView.image);
-    
-    [alyData runDemo];
+//    AliyunOSSDemo *alyData = [AliyunOSSDemo new];
+//    
+//    alyData.AlYdata = UIImagePNGRepresentation(self.imageView.image);
+//    
+//    [alyData runDemo];
     
    
 //    NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];

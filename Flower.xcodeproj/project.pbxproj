@@ -261,6 +261,7 @@
 		590746151C59B11D005AEC7C /* HUAConsumption.m in Sources */ = {isa = PBXBuildFile; fileRef = 590746141C59B11D005AEC7C /* HUAConsumption.m */; };
 		5907461B1C5A0732005AEC7C /* Foundation+Log.m in Sources */ = {isa = PBXBuildFile; fileRef = 5907461A1C5A0732005AEC7C /* Foundation+Log.m */; };
 		590747C71C5A0960005AEC7C /* HUASortView.m in Sources */ = {isa = PBXBuildFile; fileRef = 590747C61C5A0960005AEC7C /* HUASortView.m */; };
+		590749391C772AE90050654B /* AliyunOSSiOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 590749381C772AE90050654B /* AliyunOSSiOS.framework */; };
 		5908EB541C756F330016CC9F /* HUAcardTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5908EB531C756F330016CC9F /* HUAcardTableViewCell.m */; };
 		590A4F601C50AA93008C8130 /* HUAUserDetailInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 590A4F5F1C50AA93008C8130 /* HUAUserDetailInfo.m */; };
 		590AAD3E1C531757007E1ECB /* HUAForgetPasswordController.m in Sources */ = {isa = PBXBuildFile; fileRef = 590AAD3D1C531757007E1ECB /* HUAForgetPasswordController.m */; };
@@ -803,6 +804,7 @@
 		5907461A1C5A0732005AEC7C /* Foundation+Log.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Foundation+Log.m"; sourceTree = "<group>"; };
 		590747C51C5A0960005AEC7C /* HUASortView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HUASortView.h; sourceTree = "<group>"; };
 		590747C61C5A0960005AEC7C /* HUASortView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HUASortView.m; sourceTree = "<group>"; };
+		590749381C772AE90050654B /* AliyunOSSiOS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AliyunOSSiOS.framework; sourceTree = "<group>"; };
 		5908EB521C756F330016CC9F /* HUAcardTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HUAcardTableViewCell.h; sourceTree = "<group>"; };
 		5908EB531C756F330016CC9F /* HUAcardTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HUAcardTableViewCell.m; sourceTree = "<group>"; };
 		590A4F5E1C50AA93008C8130 /* HUAUserDetailInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HUAUserDetailInfo.h; sourceTree = "<group>"; };
@@ -926,6 +928,7 @@
 				592CB9231C4E2A6B002FD56C /* libstdc++.tbd in Frameworks */,
 				592CB9211C4E2A61002FD56C /* JavaScriptCore.framework in Frameworks */,
 				592CB91F1C4E2A55002FD56C /* MessageUI.framework in Frameworks */,
+				590749391C772AE90050654B /* AliyunOSSiOS.framework in Frameworks */,
 				17B7E2DC1C71BD9C0032C6D5 /* SMS_SDK.framework in Frameworks */,
 				592CB91D1C4E2A4B002FD56C /* libicucore.tbd in Frameworks */,
 				592CB91B1C4E2A3B002FD56C /* libz.tbd in Frameworks */,
@@ -1931,6 +1934,7 @@
 		59AC00EA1C3A4AFE00F453F5 = {
 			isa = PBXGroup;
 			children = (
+				590749381C772AE90050654B /* AliyunOSSiOS.framework */,
 				592CB9221C4E2A6B002FD56C /* libstdc++.tbd */,
 				592CB9201C4E2A61002FD56C /* JavaScriptCore.framework */,
 				592CB91E1C4E2A55002FD56C /* MessageUI.framework */,
@@ -2627,6 +2631,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flower/Main(其他)/Tool/第三方/SMS_SDK",
 					"$(PROJECT_DIR)/Flower/Main(其他)/第三方/SMS_SDK",
+					"$(PROJECT_DIR)",
 				);
 				GCC_PREFIX_HEADER = Flower/PrefixHeader.pch;
 				INFOPLIST_FILE = Flower/Info.plist;
@@ -2646,6 +2651,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flower/Main(其他)/Tool/第三方/SMS_SDK",
 					"$(PROJECT_DIR)/Flower/Main(其他)/第三方/SMS_SDK",
+					"$(PROJECT_DIR)",
 				);
 				GCC_PREFIX_HEADER = Flower/PrefixHeader.pch;
 				INFOPLIST_FILE = Flower/Info.plist;

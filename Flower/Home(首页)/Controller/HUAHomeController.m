@@ -208,12 +208,9 @@ static NSString *identifier = @"cell";
 - (void)loadMoreData {
     self.page++;
     if (self.page > [self.totalPage integerValue]) {
-<<<<<<< HEAD
+
         [self.tableView.mj_footer endRefreshingWithNoMoreData];
-=======
-        [HUAMBProgress MBProgressOnlywithLabelText:@"没有更多数据了"];
-        
->>>>>>> 673e3bd39d8985bd472e877fdafd53d92f9cd9a4
+
         return;
     }
     NSString *url = [HUA_URL stringByAppendingPathComponent:App_index];

@@ -267,10 +267,7 @@
         
     }
 
-<<<<<<< HEAD
 
-=======
->>>>>>> 673e3bd39d8985bd472e877fdafd53d92f9cd9a4
     //NSLog(@"%@",_dataDic);
     
 
@@ -328,10 +325,6 @@
             parameters[@"order_praise"] =[_rightText isEqualToString:@"点赞降序"]? @"desc":@"asc";
         }
 
-<<<<<<< HEAD
-=======
-        
->>>>>>> 673e3bd39d8985bd472e877fdafd53d92f9cd9a4
         [manager GET:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
         //HUALog(@"%@",responseObject);
         if ([[responseObject objectForKey:@"info"] isKindOfClass:[NSString class]]) {
@@ -344,11 +337,7 @@
     } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
         HUALog(@"%@",error);
     }];
-<<<<<<< HEAD
-=======
 
-
->>>>>>> 673e3bd39d8985bd472e877fdafd53d92f9cd9a4
         
     }];
     [self.view addSubview:menu];
