@@ -149,20 +149,25 @@
 /**cell即将到最后一个的时候自动加载数据*/
 -(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (indexPath.row == self.productsArray.count-2) {
-        // 集成上拉刷新控件
-        [self loadMoreData];
+    //到达最后一页数据
+    if (self.page == [self.totalPage integerValue]) {
+        if (indexPath.row == self.productsArray.count-1) {
+            // 集成上拉刷新控件
+            self.tableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(loadMoreData)];
+        }
+    }else {
+        if (indexPath.row == self.productsArray.count-1) {
+            // 自动上啦刷新
+            [self loadMoreData];
+        }
     }
-    HUALog(@"%ld",(long)indexPath.row);
-    
 }
 
 
 - (void)loadMoreData {
     self.page++;
     if (self.page > [self.totalPage integerValue]) {
-        [HUAMBProgress MBProgressOnlywithLabelText:@"没有更多数据了"];
-        [self.tableView.mj_footer endRefreshing];
+        [self.tableView.mj_footer endRefreshingWithNoMoreData];
         return;
     }
     NSString *url = self.url;
@@ -173,10 +178,8 @@
         NSArray *array = [HUADataTool shopProduct:responseObject];
         [self.productsArray addObjectsFromArray:array];
         [self.tableView reloadData];
-        [self.tableView.mj_header endRefreshing];
     } failure:^(NSError *error) {
         [HUAMBProgress MBProgressFromWindowWithLabelText:@"请检查网络设置"];
-        [self.tableView.mj_header endRefreshing];
         self.page--;
     }];
 }
@@ -204,7 +207,7 @@
         [self.productsArray addObjectsFromArray:array];
         [self.tableView reloadData];
     } failure:^(NSError *error) {
-        [HUAMBProgress MBProgressOnlywithLabelText:@"网络异常"];
+        [HUAMBProgress MBProgressOnlywithLabelText:@"请检查网络设置"];
         HUALog(@"%@",error);
 
     }];
@@ -333,7 +336,7 @@
     self.navigationItem.hidesBackButton = NO;
     
     self.navigationItem.titleView = nil;
-    UIBarButtonItem *leftSpace = [UIBarButtonItem leftSpace:hua_scale(-30)];
+    UIBarButtonItem *leftSpace = [UIBarButtonItem leftSpace:-30];
     UIBarButtonItem *searchBar = [UIBarButtonItem itemWithTarget:self action:@selector(search) image:@"search" highImage:@"search" text:nil];
     self.navigationItem.rightBarButtonItems = @[leftSpace,searchBar];
     

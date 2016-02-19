@@ -144,8 +144,17 @@ static NSString * const reuseIdentifier = @"cell";
 }
 /**cell即将到最后一个的时候自动加载数据*/
 - (void)collectionView:(UICollectionView *)collectionView willDisplayCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.row == self.productArray.count-1) {
-        [self loadMoreData];
+    //到达最后一页数据
+    if (self.page == [self.totalPage integerValue]) {
+        if (indexPath.row == self.productArray.count-1) {
+            // 集成上拉刷新控件
+            self.collectionView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(loadMoreData)];
+        }
+    }else {
+        if (indexPath.row == self.productArray.count-1) {
+            // 自动上啦刷新
+            [self loadMoreData];
+        }
     }
 }
 
@@ -154,7 +163,7 @@ static NSString * const reuseIdentifier = @"cell";
 - (void)loadMoreData {
     self.page++;
     if (self.page > [self.totalPage integerValue]) {
-        [HUAMBProgress MBProgressOnlywithLabelText:@"没有更多数据了"];
+        [self.collectionView.mj_footer endRefreshingWithNoMoreData];
         return;
     }
     NSString *url = [HUA_URL stringByAppendingPathComponent:Product_list];

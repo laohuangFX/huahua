@@ -174,11 +174,6 @@ static NSString *identifier = @"cell";
         //加载数据插入到可变数组最前面
         NSArray *shopArray = [HUADataTool homeShop:responseObject];
         [self.shopsArray insertObjects:shopArray atIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, shopArray.count)]];
-//        self.categoryArray = [HUADataTool getCategoryList:responseObject];
-//        NSArray *array = [HUADataTool homeBanner:responseObject];
-//        HUAShopInfo *banner = array.firstObject;
-//        self.bannerArray = banner.bannerArr;
-//        [self createHeaderView:self.bannerArray];
         [self.tableView reloadData];
         [self.tableView.mj_header endRefreshing];
     } failure:^(NSError *error) {
@@ -196,23 +191,28 @@ static NSString *identifier = @"cell";
 //    [self.tableView.mj_footer beginRefreshing];
 //}
 
-/**cell即将到最后一个的时候自动加载数据*/
+//*cell即将到最后一个的时候自动加载数据
 -(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (indexPath.row == self.shopsArray.count-1) {
-        // 集成上拉刷新控件
-        [self loadMoreData];
+    //到达最后一页数据
+    if (self.page == [self.totalPage integerValue]) {
+        if (indexPath.row == self.shopsArray.count-1) {
+            // 集成上拉刷新控件
+           self.tableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(loadMoreData)];
+        }
+    }else {
+        if (indexPath.row == self.shopsArray.count-1) {
+            // 自动上啦刷新
+            [self loadMoreData];
+        }
     }
-    //HUALog(@"%ld",(long)indexPath.row);
-    
 }
 
 
 - (void)loadMoreData {
     self.page++;
     if (self.page > [self.totalPage integerValue]) {
-        [HUAMBProgress MBProgressOnlywithLabelText:@"没有更多数据了"];
-        [self.tableView.mj_footer endRefreshing];
+        [self.tableView.mj_footer endRefreshingWithNoMoreData];
         return;
     }
     NSString *url = [HUA_URL stringByAppendingPathComponent:App_index];
@@ -222,12 +222,6 @@ static NSString *identifier = @"cell";
     [HUAHttpTool POST:url params:parameter success:^(id responseObject) {
         NSArray *shopArray = [HUADataTool homeShop:responseObject];
         [self.shopsArray addObjectsFromArray:shopArray];
-//        self.categoryArray = [HUADataTool getCategoryList:responseObject];
-//        HUALog(@"%@",self.categoryArray[0]);
-//        NSArray *array = [HUADataTool homeBanner:responseObject];
-//        HUAShopInfo *banner = array.firstObject;
-//        self.bannerArray = banner.bannerArr;
-//        [self createHeaderView:self.bannerArray];
         [self.tableView reloadData];
     } failure:^(NSError *error) {
         self.page--;
@@ -568,7 +562,6 @@ static NSString *identifier = @"cell";
 - (void)clickSortButton:(UIButton *)sender {
     UIWindow *window = [[UIApplication sharedApplication].windows lastObject];
     if (sender.selected == YES) {
-        self.tableView.userInteractionEnabled = NO;
         if (self.tableView.contentOffset.y == 0) {
             [self.tableView setContentOffset:CGPointMake(0, hua_scale(250)) animated:YES];
             [window addSubview:self.sortView];
@@ -586,7 +579,6 @@ static NSString *identifier = @"cell";
         
         }
     }else {
-        self.tableView.userInteractionEnabled = YES;
         self.sortView.y = screenHeight;
         [self.sortView removeFromSuperview];
         

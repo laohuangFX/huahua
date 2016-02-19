@@ -83,15 +83,16 @@ static NSString * const reuseIdentifier = @"goods";
 #pragma mark -- 上拉自动加载数据
 
 - (void)collectionView:(UICollectionView *)collectionView willDisplayCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.row == self.goodsArray.count-2) {
-        [self loadMoreData];
+    //到达最后一页数据
+    if (indexPath.row == self.goodsArray.count-1) {
+        // 自动上啦刷新
+        self.collectionView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(loadMoreData)];
+    }else {
+        if (indexPath.row == self.goodsArray.count-1) {
+        // 自动上啦刷新
+            [self loadMoreData];
+        }
     }
-    HUALog(@"%ld",indexPath.row % 3);
-}
-
-
-- (void)collectionView:(UICollectionView *)collectionView didEndDisplayingCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
- 
 }
 
 
@@ -99,7 +100,7 @@ static NSString * const reuseIdentifier = @"goods";
 - (void)loadMoreData {
     self.page++;
     if (self.page > [self.totalPage integerValue]) {
-        [HUAMBProgress MBProgressOnlywithLabelText:@"没有更多数据了"];
+        [self.collectionView.mj_footer endRefreshingWithNoMoreData];
         return;
     }
     NSString *url = [HUA_URL stringByAppendingPathComponent:Active_list];
