@@ -180,10 +180,10 @@
         parameters[@"category_id"] =_towDataDic[_leftSubText];
     }
     if (![_midstText isEqualToString:@"不限"] && _midstText != nil) {
-        parameters[@"order_price"] =[_midstText isEqualToString:@"价格降序"]? @"desc":@"asc";
+        parameters[@"order"] =[_midstText isEqualToString:@"价格降序"]? @"price_desc":@"price_asc";
     }
     if (![_rightText isEqualToString:@"不限"] && _rightText != nil) {
-        parameters[@"order_praise"] =[_midstText isEqualToString:@"点赞降序"]? @"desc":@"asc";
+        parameters[@"order"] =[_midstText isEqualToString:@"点赞降序"]? @"praise_desc":@"praise_asc";
     }
     parameters[@"shop_id"] = self.shop_id;
     parameters[@"per_page"] = @(self.page);
@@ -316,10 +316,10 @@
             parameters[@"category_id"] =_towDataDic[_leftSubText];
         }
         if (![_midstText isEqualToString:@"不限"] && _midstText != nil) {
-            parameters[@"order"] =[_midstText isEqualToString:@"价格降序"]? @"desc":@"asc";
+            parameters[@"order"] =[_midstText isEqualToString:@"价格降序"]? @"price_desc":@"price_asc";
         }
         if (![_rightText isEqualToString:@"不限"] && _rightText != nil) {
-            parameters[@"order"] =[_rightText isEqualToString:@"点赞降序"]? @"desc":@"asc";
+            parameters[@"order"] =[_rightText isEqualToString:@"点赞降序"]? @"praise_desc":@"praise_asc";
         }
 
         [manager GET:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {

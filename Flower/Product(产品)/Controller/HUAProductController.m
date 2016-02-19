@@ -299,13 +299,13 @@ static NSString * const reuseIdentifier = @"cell";
             parameters[@"category_id"] =_towDataDic[_leftSubText];
         }
         if (![_midstText isEqualToString:@"不限"] && _midstText != nil) {
-            parameters[@"order_price"] =[_midstText isEqualToString:@"价格降序"]? @"desc":@"asc";
+            parameters[@"order"] =[_midstText isEqualToString:@"价格降序"]? @"price_desc":@"price_asc";
         }
         if (![_rightText isEqualToString:@"不限"] && _rightText != nil) {
-            parameters[@"order_praise"] =[_midstText isEqualToString:@"点赞降序"]? @"desc":@"asc";
+            parameters[@"order"] =[_midstText isEqualToString:@"点赞降序"]? @"praise_desc":@"praise_asc";
         }
         
-        
+        NSLog(@"%@",parameters);
         [manager GET:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
             HUALog(@"%@",responseObject);
             if ([[responseObject objectForKey:@"info"] isKindOfClass:[NSString class]]) {
