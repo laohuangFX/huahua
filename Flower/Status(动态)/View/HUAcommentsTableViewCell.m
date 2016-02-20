@@ -149,6 +149,8 @@ const CGFloat maxContentLabelHeight = 54;
         
         self.contentLbale.text = modell.content;
         
+        [self.timeButton setTitle:[HUATranslateTime translateTimeIntoCurrurents:[modell.time integerValue]] forState:0];
+        
         [self.headImage sd_setImageWithURL:[NSURL URLWithString:modell.icon] placeholderImage:[UIImage imageNamed:@"placeholder"]];
         
         if (modell.commentArray.count>=4) {

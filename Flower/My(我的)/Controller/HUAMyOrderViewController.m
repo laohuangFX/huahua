@@ -37,7 +37,9 @@
 
 }
 @property (nonatomic,strong)UITableView *tablewView;
-@property (nonatomic, strong)NSArray *array;
+@property (nonatomic, strong)NSMutableArray *array;
+//分页
+@property (nonatomic, assign)NSInteger page;
 @end
 
 @implementation HUAMyOrderViewController
@@ -58,34 +60,15 @@
     
     self.title = @"我的订单";
     self.view.backgroundColor = [UIColor whiteColor];
-    
+    self.page = 1;
     [self headDownMenu];
+    [self getData:nil];
+    [self refreshData];
     
-    NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
-  
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    [manager.requestSerializer setValue:token forHTTPHeaderField:@"token"];
-    manager.responseSerializer = [AFHTTPResponseSerializer serializer];
-
-    NSString *url = [HUA_URL stringByAppendingPathComponent:Bill_list];
-    NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
-    //parameter[@"per_page"] = @"1";
-    [manager GET:url parameters:parameter success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:responseObject options:0 error:nil];
- 
-        self.array = [HUADataTool MyOrder:dic];
-
-        [self.tablewView reloadData];
-    } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
-        HUALog(@"%@",error);
-    }];
-
-   
-}
+  }
 //下拉菜单
 - (void)headDownMenu{
     
-
     NSArray *food = @[@"不限服务", @"未使用", @"已交易完成"];
     NSArray *travel = @[@"不限产品",@"等待发货",@"待确认收货",@"交易完成"];
     NSArray *exercise =@[@"不限活动", @"未使用", @"已使用", @"已过期"];
@@ -193,8 +176,82 @@
     
     [self.view addSubview:menu];
 }
-//tableview
 
+- (void)getData:(NSString *)Type{
+
+    NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
+    
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    [manager.requestSerializer setValue:token forHTTPHeaderField:@"token"];
+    manager.responseSerializer = [AFHTTPResponseSerializer serializer];
+    
+    NSString *url = [HUA_URL stringByAppendingPathComponent:Bill_list];
+    NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+    parameter[@"per_page"] = @(self.page);
+    [manager GET:url parameters:parameter success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:responseObject options:0 error:nil];
+        if ([Type isEqualToString:@"尾部"]) {
+    
+            NSArray *dataArray = [HUADataTool MyOrder:dic];
+            
+            if (self.page > [dic[@"info"][@"pages"]integerValue]) {
+                [self footEnd];
+                return ;
+            }
+            
+            [self.array addObjectsFromArray:dataArray];
+            [self.tablewView reloadData];
+            [self.tablewView.mj_footer endRefreshing];
+        }else{
+        
+            [self.array removeAllObjects];
+            self.array = [[HUADataTool MyOrder:dic] mutableCopy];
+            [self.tablewView reloadData];
+            [self.tablewView.mj_header endRefreshing];
+        }
+        
+     
+    } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
+        HUALog(@"%@",error);
+    }];
+}
+
+//下拉刷新
+- (void)refreshData{
+    
+    self.tablewView.mj_header = [MJRefreshStateHeader headerWithRefreshingBlock:^{
+        
+        //刷新数据的把页数还原
+        self.page= 1;
+        
+        [self getData:nil];
+    }];
+    // 马上进入刷新状态
+    [self.tablewView.mj_header beginRefreshing];
+}
+//上拉刷新
+- (void)footRefreshData{
+    
+    self.page++;
+    
+    [self getData:@"尾部"];
+    //上拉刷新
+    
+}
+//上拉刷新
+- (void)footEnd{
+    
+    
+    self.tablewView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
+        
+        [self.tablewView.mj_footer endRefreshingWithNoMoreData];
+        
+    }];
+    
+    [self.tablewView.mj_footer beginRefreshing];
+}
+
+//tableview
 #pragma  mark ----UITableView Delegate
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)sectio{
     
@@ -231,7 +288,7 @@
         //申明请求的数据是json类型
         //manager.requestSerializer=[AFJSONRequestSerializer serializer];
         //如果报接受类型不一致请替换一致text/html或别的
-        manager.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"text/json"];
+        manager.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"application/json"];
         //传入的参数
         NSDictionary *parameters = @{@"bill_id":model.bill_num};
         
@@ -239,7 +296,9 @@
         
         [manager POST:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
             NSLog(@"%@",responseObject);
-            
+            NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:responseObject options:0 error:nil];
+            model.is_receipt = [dic[@"info"][@"is_receipt"] stringValue];
+            [self.tablewView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:0];
         } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
             
             NSLog(@"%@",error);
@@ -429,6 +488,21 @@
     // Dispose of any resources that can be recreated.
 }
 
+-(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (indexPath.row == self.array.count-2) {
+        
+        [self footRefreshData];
+        
+    }
+}
+- (NSMutableArray *)array{
+    if (_array==nil) {
+        _array = [NSMutableArray array];
+    }
+
+    return _array;
+}
 /*
  #pragma mark - Navigation
  

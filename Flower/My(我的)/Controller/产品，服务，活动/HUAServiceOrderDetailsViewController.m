@@ -287,11 +287,12 @@
         make.top.mas_equalTo(_serve.mas_bottom).mas_equalTo(hua_scale(25));
         make.height.mas_equalTo(1);
     }];
-    
+   
     NSDictionary *itemDic = self.modelDic[@"item"];
     //赋值
+    
     _name.text = itemDic[@"name"];//商品名称
-    _money.text = [NSString stringWithFormat:@"¥ %@",itemDic[@"price"]];//金钱
+    _money.text = [NSString stringWithFormat:@"¥ %ld",[itemDic[@"price"] integerValue]];//金钱
     
     //订单信息类
     _orderID.text = self.bill_id;//订单号
@@ -301,16 +302,17 @@
     //UILabel     *_time;//预约时间
 
     if ([self.is_use isEqualToString:@"0"]) {
-        _state.text = @"未使用" ;//状态
-        _state.textColor = HUAColor(0x4da800);
+        _state.text = @"未使用 / 已完成交易" ;//状态
+        [HUAConstRowHeight adjustTheLabel:_state adjustColor:HUAColor(0x4da800) adjustRang:NSMakeRange(0, 3)];
+        
     }else{
-        _state.text = @"已交易完成";//状态
-        _state.textColor = HUAColor(0x999999);
+        _state.text = @"未使用 / 已完成交易" ;//状态
+        [HUAConstRowHeight adjustTheLabel:_state adjustColor:HUAColor(0x4da800) adjustRang:NSMakeRange(6, 5)];
     }
     
     
     //服务内容类
-    //_serve.text = itemDic[@"desc"];//服务内容文本
+    _serve.text = itemDic[@"desc"];//服务内容文本
     
 
     

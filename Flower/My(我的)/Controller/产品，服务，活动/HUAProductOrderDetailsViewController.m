@@ -54,10 +54,8 @@
     self.title = @"订单详情";
     //获取网络数据
     [self getData];
-    
-   
-
 }
+
 //获取网络数据
 - (void)getData{
     NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
@@ -347,11 +345,7 @@
         //记录上一个视图
         lastLabel2 = label;
     }
-    
-    
 
-   
-    
     //品牌
     _brand = [UILabel labelText:@"蓝格子" color:HUAColor(0x4da800) font:hua_scale(11)];
     [_scrollView addSubview:_brand];
@@ -504,22 +498,22 @@
     //商品名称
     _name.text = itmeDic[@"name"];
     //规格
-    _specificationsLabel.text = itmeDic[@"size"];
+    _specificationsLabel.text = [NSString stringWithFormat:@"规格 :%@",itmeDic[@"size"]];
     //金钱
-    _money.text = [NSString stringWithFormat:@"¥ %@",itmeDic[@"price"]];
+    _money.text = [NSString stringWithFormat:@"¥ %ld",[itmeDic[@"price"] integerValue]];
     //会员价
-    _memberMoney.text = [NSString stringWithFormat:@"(会员价 : ¥%@)",itmeDic[@"vip_discount"]];
+    _memberMoney.text = [NSString stringWithFormat:@"(会员价 : ¥%ld)",[itmeDic[@"vip_discount"] integerValue]];
     
     //订单信息类
     _orderID.text = self.bill_num;//订单号
     //_number;//数量
-    _sumMoney.text = [NSString stringWithFormat:@"¥ %@",itmeDic[@"price"]];//总价
+    _sumMoney.text = [NSString stringWithFormat:@"%ld元",[itmeDic[@"price"] integerValue]];//总价
    // _time.text = ;//下单时间
     
-    if ([self.is_receipt isEqualToString:@"1"]) {
+    if ([self.is_receipt isEqualToString:@"0"]) {
         _state.text = @"等待发货";//状态
-    }else if ([self.is_receipt isEqualToString:@"2"]){
-    _state.text = @"已经发货";//状态
+    }else if ([self.is_receipt isEqualToString:@"1"]){
+    _state.text = @"已发货";//状态
     }else{
     _state.text = @"已经收货";//状态
     
@@ -588,52 +582,64 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+//确认收货
 - (void)confirm:(UIButton *)sender{
 
-    NSString *token = [HUAUserDefaults getToken];
-   
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    [manager.requestSerializer setValue:token forHTTPHeaderField:@"token"];
-    //申明返回的结果是json类型
-    manager.responseSerializer = [AFHTTPResponseSerializer serializer];
-    //申明请求的数据是json类型
-    //manager.requestSerializer=[AFJSONRequestSerializer serializer];
-    //如果报接受类型不一致请替换一致text/html或别的
-    manager.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"application/json"];
-    //传入的参数
-    NSDictionary *parameters = @{@"bill_id":self.bill_num};
-
-    NSString *url = [HUA_URL stringByAppendingPathComponent:@"user/confirm_receipt"];
-
-    [manager POST:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:responseObject options:0 error:nil];
-        
-        NSLog(@"%@",dic);
-
-    } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
-
-        NSLog(@"%@",error);
-        
-    }];
-
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"收货" message:@"确认收货" preferredStyle:UIAlertControllerStyleAlert];
     
-    sender.hidden = YES;
-    UIView *thview = [_scrollView viewWithTag:288];
-    UILabel *lable = [_scrollView viewWithTag:289];
-    
-    [UIView animateWithDuration:0.5 animations:^{
-      
-        [thview mas_updateConstraints:^(MASConstraintMaker *make) {
-            make.top.mas_equalTo(lable.mas_bottom).mas_equalTo(hua_scale(25));
-         
+    [alert addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        
+        NSString *token = [HUAUserDefaults getToken];
+        
+        AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+        [manager.requestSerializer setValue:token forHTTPHeaderField:@"token"];
+        //申明返回的结果是json类型
+        manager.responseSerializer = [AFHTTPResponseSerializer serializer];
+        //申明请求的数据是json类型
+        //manager.requestSerializer=[AFJSONRequestSerializer serializer];
+        //如果报接受类型不一致请替换一致text/html或别的
+        manager.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"application/json"];
+        //传入的参数
+        NSDictionary *parameters = @{@"bill_id":self.bill_num};
+        
+        NSString *url = [HUA_URL stringByAppendingPathComponent:@"user/confirm_receipt"];
+        
+        [manager POST:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+            NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:responseObject options:0 error:nil];
+            
+            NSLog(@"%@",dic);
+            
+        } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
+            
+            NSLog(@"%@",error);
+            
         }];
-    }];
-  
-    lable.text = @"确认收货完成";
-    lable.textColor = HUAColor(0x4da800);
-    [_scrollView layoutSubviews];
-    
+        
+        
+        sender.hidden = YES;
+        UIView *thview = [_scrollView viewWithTag:288];
+        UILabel *lable = [_scrollView viewWithTag:289];
+        
+        [UIView animateWithDuration:0.5 animations:^{
+            
+            [thview mas_updateConstraints:^(MASConstraintMaker *make) {
+                make.top.mas_equalTo(lable.mas_bottom).mas_equalTo(hua_scale(25));
+                
+            }];
+        }];
+        
+        lable.text = @"确认收货完成";
+        lable.textColor = HUAColor(0x4da800);
+        [_scrollView layoutSubviews];
 
+        
+    }]];
+    [alert addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        
+        [alert removeFromParentViewController];
+    }]];
+    
+    [self presentViewController:alert animated:YES completion:nil];
 }
 /*
 #pragma mark - Navigation

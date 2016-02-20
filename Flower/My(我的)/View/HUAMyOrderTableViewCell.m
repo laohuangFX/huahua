@@ -92,6 +92,7 @@
     _state.textColor = HUAColor(0x4da800);
     _state.font = [UIFont systemFontOfSize:hua_scale(11)];
     //_state.backgroundColor = [UIColor redColor];
+    [_state sizeToFit];
      //_state.hidden = YES;
     
     _moneyLabel = [UILabel new];
@@ -99,6 +100,7 @@
     _moneyLabel.textColor = HUAColor(0x4da800);
     _moneyLabel.text = @"¥200元";
     _moneyLabel.font = [UIFont systemFontOfSize:hua_scale(11)];
+    [_moneyLabel sizeToFit];
     
     _confirmbutton = [UIButton buttonWithType:UIButtonTypeSystem];
     _confirmbutton.backgroundColor = HUAColor(0x4da800);
@@ -155,23 +157,25 @@
     .autoHeightRatio(0);
     [_time setSingleLineAutoResizeWithMaxWidth:200];
     
-    _moneyLabel.sd_layout
-    .topEqualToView(_numbersLabel)
-    .autoHeightRatio(0)
-    .rightSpaceToView(contentView,hua_scale(20));
+    
+    [_moneyLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(_thView.mas_bottom).mas_equalTo(hua_scale(8));
+        make.right.mas_equalTo(self.contentView.mas_right).mas_equalTo(hua_scale(-20));
+    }];
     [_moneyLabel setSingleLineAutoResizeWithMaxWidth:200];
     
     _stateLabel.sd_layout
     .leftEqualToView(_time)
     .topSpaceToView(_time,hua_scale(9))
     .autoHeightRatio(0);
-    [_stateLabel setSingleLineAutoResizeWithMaxWidth:50];
+    [_stateLabel setSingleLineAutoResizeWithMaxWidth:300];
     
     _state.sd_layout
     .leftSpaceToView(_stateLabel,hua_scale(2))
     .topEqualToView(_stateLabel)
+    .widthIs(hua_scale(200))
     .autoHeightRatio(0);
-    [_state setSingleLineAutoResizeWithMaxWidth:200];
+
     
     _confirmbutton.sd_layout
     .leftEqualToView(_time)
@@ -180,8 +184,7 @@
     .widthIs(hua_scale(64));
     
     
-    
-    [self setupAutoHeightWithBottomView:_iconImageView bottomMargin:hua_scale(60)];
+    [self setupAutoHeightWithBottomViewsArray:@[_state,_confirmbutton] bottomMargin:hua_scale(15)];
 }
 
 - (void)setModel:(HUAMyOrderModel *)model{
@@ -193,7 +196,7 @@
     
     _numbersLabel.text = [NSString stringWithFormat:@"单号 :%@",model.bill_num];
     
-    _moneyLabel.text = [NSString stringWithFormat:@"¥%@",model.money];
+    _moneyLabel.text = [NSString stringWithFormat:@"¥ %ld元",model.money.integerValue];
     
    
     _time.text = [HUATranslateTime translateTimeIntoCurrurents:model.time.integerValue];
@@ -206,7 +209,8 @@
         if ([model.is_receipt isEqualToString:@"0"]) {
             _state.text = @"未发货";
         }else if ([model.is_receipt isEqualToString:@"2"]){
-             _state.text = @"已收货";
+             _state.text = @"已完成交易";
+             _state.textColor = HUAColor(0x999999);
         }else{
             _confirmbutton.hidden = NO;
             _stateLabel.hidden = YES;
@@ -214,14 +218,22 @@
              //_state.text = @"已发货";
         }
     }else if ([model.type isEqualToString:@"2"]){
+          _confirmbutton.hidden = YES;
+          _stateLabel.hidden = NO;
+          _state.hidden = NO;
+  
         //服务
         if ([model.is_use isEqualToString:@"0"]){
             _state.text = @"未使用";
+            _state.textColor = HUAColor(0x4da800);
         }else if ([model.is_use isEqualToString:@"1"]){
             _state.text = @"已使用";
         }
     }else{
         //活动
+        _confirmbutton.hidden = YES;
+        _stateLabel.hidden = NO;
+        _state.hidden = NO;
         if (model.remainNum.integerValue>0) {
             _state.text = [NSString stringWithFormat:@"剩余 %ld 次",model.remainNum.integerValue];
             _state.textColor = [UIColor grayColor];
@@ -231,8 +243,6 @@
             
             [att addAttributes:@{NSForegroundColorAttributeName:HUAColor(0x4ad800)} range:NSMakeRange(range1.location, range1.length)];
             _state.attributedText = att;
-            
-            
         }else{
           _state.text = @"交易已完成";
         }
@@ -242,7 +252,7 @@
     if ([model.type isEqualToString:@"1"]) {
         if ([model.is_receipt isEqualToString:@"1"]) {
             
-            [self setupAutoHeightWithBottomView:_confirmbutton bottomMargin:hua_scale(11)];
+        [self setupAutoHeightWithBottomView:_confirmbutton bottomMargin:hua_scale(11)];
         }
     }else{
     
@@ -264,14 +274,9 @@
         _stateLabel.hidden = NO;
         _state.hidden = NO;
         
+        _state.text = @"收货成功";
+        _state.textColor = HUAColor(0x4da800);
         self.goodsBlock(self.indexPath);
-        
-//      _state.text = @"收货完成";
-//      _state.textColor = HUAColor(0x999999);
-        
-        
-        
-  
 
     }]];
     [alert addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {

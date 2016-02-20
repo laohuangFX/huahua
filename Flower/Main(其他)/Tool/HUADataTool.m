@@ -364,6 +364,7 @@
         model.content = dynamicDic[@"comment_info"][@"content"];
         model.user_id = dynamicDic[@"comment_info"][@"user_id"];
         model.comment_id = dynamicDic[@"comment_info"][@"comment_id"];
+        model.time = dynamicDic[@"comment_info"][@"create_time"];
         [mutableArray addObject:model];
     }
     
