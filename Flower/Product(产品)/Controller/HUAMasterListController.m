@@ -70,6 +70,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.view.backgroundColor = [UIColor whiteColor];
     self.page = 1;
     [self.view addSubview:self.tableView];
     self.title = self.shopName;

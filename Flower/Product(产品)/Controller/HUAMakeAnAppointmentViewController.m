@@ -19,6 +19,8 @@
     UIView *_lastView;
     NSDictionary *_dic;
     UIButton *_selecteTimeButton;//选中的时间
+    UIImageView *_imageViewTimeImage;
+    
     NSArray *_appointmentTime;//早班时间
     //底部弹出的视图
     UIView  *_tanBgview;
@@ -29,7 +31,7 @@
 }
 @property (nonatomic,strong)UIScrollView *scrollView;
 @property (nonatomic, strong)UITableView *tableView;
-@property (nonatomic, strong)NSMutableArray *dateArray;
+@property (nonatomic, strong)NSArray *dateArray;
 @property (nonatomic, strong)UIButton *loadingButton;
 @property (nonatomic, strong)UITableView *lastTbaleView;
 //选择项目table
@@ -52,20 +54,14 @@
     
     
     //初始化
-    _page = 7;
-    _lastTbaleView = nil;
-    
-    self.dateArray = [NSMutableArray array];
+    self.dateArray = self.model.about_arrange[@"day"];
+
     [HUAMBProgress MBProgressFromWindowWithLabelText:@"正在加载!"];
     //获取会员信息
     [self membersData];
     
     //获取数据
     //[self getData];
-    
-    
-    //获取日期
-    [self getDate:0];
     
     [self initScrollView];
     
@@ -114,35 +110,6 @@
     }];
     
     
-}
-- (void)getDate:(int )page{
-    
-    
-    //获取当前时间戳的方法
-    for (int i= 0; i<7; i++) {
-        NSDate *date=[NSDate dateWithTimeIntervalSinceNow:24*60*60*(i+page)];
-        
-        NSTimeInterval time=[date timeIntervalSince1970];
-        
-        
-        NSString *strTime=[NSString stringWithFormat:@"%.0f",time];
-        
-        
-        NSString *weekStr = [HUADate getWeekDayFordate:[strTime integerValue]];
-        // NSLog(@"%@",weekStr);
-        
-        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-        [formatter setDateFormat:@"MM-dd"];
-        NSString *timeStr = [formatter stringFromDate:date];
-        //NSLog(@"%@",timeStr);
-        
-        NSDictionary *dic = @{@"date":timeStr,@"week":weekStr};
-        
-        
-        
-        [self.dateArray addObject:dic];
-        
-    }
 }
 - (void)initScrollView{
     self.scrollView = [[UIScrollView alloc] init];
@@ -569,8 +536,8 @@
         
     }];
     
-    [self.dateArray removeAllObjects];
-    [self getDate:_page];
+//    [self.dateArray removeAllObjects];
+//    [self getDate:_page];
     [_lastTbaleView reloadData];
     
     _page+=7;
@@ -616,11 +583,13 @@
     }
     cell.backgroundColor = [UIColor clearColor];
     cell.range_list = self.model.about_arrange[@"item"][@"range_list"][indexPath.row];
+    cell.dateDic = self.dateArray[indexPath.row];
     if (tableView == self.tableView) {
         
         cell.typeDic = _dic;
         cell.dateDic = self.dateArray[indexPath.row];
     }else if (tableView == self.lastTbaleView){
+        
         cell.dateDic = self.dateArray[indexPath.row];
         
     }else if (tableView == self.serviceTableView){
@@ -840,8 +809,9 @@
     
 }
 //取消弹窗button事件
+//记录上一次随机的上一次随机的时间
 - (void)clear:(UIButton *)sender{
-    NSLog(@"sss");
+    
     if (sender.tag == 340) {
         //取消
         [_transparentView close];
@@ -890,7 +860,19 @@
             [HUAMBProgress MBProgressFromView:_transparentView wrongLabelText:@"请选择时间"];
         }
     }else{
+        //清除上一次随机选中的时间
+        _selecteImageView.hidden = YES;
+        _selecteTimeButton.selected = NO;
+        
         //任意时间
+        UIButton *timeBut = [_transparentView viewWithTag:800+(arc4random() % _appointmentTime.count)];
+        UIImageView *timeImag = [_transparentView viewWithTag:900+timeBut.tag-800];
+        timeBut.selected = YES;
+        timeImag.hidden = NO;
+
+        _selecteImageView =timeImag;
+        _selecteTimeButton = timeBut;
+        NSLog(@"%@",_selecteTimeButton.titleLabel.text);
     }
 }
 //选中要预约的时间
@@ -898,6 +880,9 @@ UIButton *selectButtonn =nil;
 UIImageView *lastImagee = nil;
 - (void)slecteTime:(UIButton *)sender{
     UIImageView *imageView = [sender viewWithTag:sender.tag+100];
+    //清除上一次随机选中的时间
+    _selecteImageView.hidden = YES;
+    _selecteTimeButton.selected = NO;
     
     if (selectButtonn!=sender) {
         sender.selected = YES;
@@ -912,7 +897,10 @@ UIImageView *lastImagee = nil;
     
     lastImagee = imageView;
     selectButtonn = sender;
+    //最后选定的时间
+    _selecteImageView = imageView;
     _selecteTimeButton = sender;
+    NSLog(@"%@",_selecteTimeButton.titleLabel.text);
 }
 //选择项目按钮
 - (void)serviceButton:(UIButton *)sender{

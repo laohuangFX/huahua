@@ -17,18 +17,20 @@
 @interface HUAServiceDateViewController ()<UITableViewDataSource,UITableViewDelegate,HATransparentViewDelegate>{
     UILabel *_project;//项目
     UILabel *_name;//技师名字
-    int _page;
+
     UIView *_bgView;
     //记录上一次视图的位置;
     UIView *_lastView;
     NSDictionary *_dic;
     NSArray *_appointmentTime;//时间
     UIButton *_selecteTimeButton;//选中的时间
+    UIImageView *_selecteTimeImage;
+    
     NSArray *_earlyTime;//预约时间
+    NSArray *_dateArray;//预约的日期
 }
 @property (nonatomic,strong)UIScrollView *scrollView;
 @property (nonatomic, strong)UITableView *tableView;
-@property (nonatomic, strong)NSMutableArray *dateArray;
 @property (nonatomic, strong)UIButton *loadingButton;
 @property (nonatomic, strong)UITableView *lastTbaleView;
 //会员信息
@@ -46,11 +48,9 @@
     [super viewDidLoad];
     self.title = @"选择日期";
     [HUAMBProgress MBProgressFromWindowWithLabelText:@"正在加载!"];
-    //初始化
-    _page = 7;
+
     _lastTbaleView = nil;
     
-    self.dateArray = [NSMutableArray array];
     
        //获取数据
     [self getData];
@@ -60,7 +60,7 @@
     
 
     //获取日期
-    [self getDate:0];
+    //[self getDate:0];
     
     [self initScrollView];
     
@@ -96,50 +96,18 @@
     
     manager.responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@"application/json", @"text/html",@"text/json", @"text/javascript", nil];
     NSString *url = [HUA_URL stringByAppendingPathComponent:[NSString stringWithFormat:@"service/select_date?master_id=%@&time_str=%@",self.model.master_id,timeStr]];
-    
+    NSLog(@"%@",url);
     [manager GET:url parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
         
-        
+        _dateArray = responseObject[@"info"][@"day"];
         _earlyTime = responseObject[@"info"][@"item"][@"range_list"];
         NSLog(@"%ld",_earlyTime.count);
-        
-        //_dic = @{@"type":type,@"array":array,};
-        //NSLog(@"%@",_dic[@"type"]);
         
         [self.tableView reloadData];
         
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         NSLog(@"Error: %@", error);
     }];
-}
-- (void)getDate:(int )page{
-    
-    
-    //获取当前时间戳的方法
-    for (int i= 0; i<7; i++) {
-        NSDate *date=[NSDate dateWithTimeIntervalSinceNow:24*60*60*(i+page)];
-        
-        NSTimeInterval time=[date timeIntervalSince1970];
-        
-        
-        NSString *strTime=[NSString stringWithFormat:@"%.0f",time];
-        
-        
-        NSString *weekStr = [HUADate getWeekDayFordate:[strTime integerValue]];
-        // NSLog(@"%@",weekStr);
-        
-        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-        [formatter setDateFormat:@"MM-dd"];
-        NSString *timeStr = [formatter stringFromDate:date];
-        //NSLog(@"%@",timeStr);
-        
-        NSDictionary *dic = @{@"date":timeStr,@"week":weekStr};
-        
-        
-        
-        [self.dateArray addObject:dic];
-        
-    }
 }
 - (void)initScrollView{
     self.scrollView = [[UIScrollView alloc] init];
@@ -397,8 +365,7 @@
                 make.left.mas_equalTo(hua_scale(78*i)+(hua_scale(78.0/2.0-label.width/2.0))+hua_scale(73));
             }];
             
-            
-            // NSLog(@"%f",label.width);
+
         }
         lastView1 = view1;
     }
@@ -441,11 +408,9 @@
         
     }];
     
-    [self.dateArray removeAllObjects];
-    [self getDate:_page];
+    [self getData];
     [_lastTbaleView reloadData];
-    
-    _page+=7;
+
     _lastView = bgView;
     
     [_loadingButton sd_resetLayout];
@@ -468,7 +433,7 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)sectio{
     
     if (tableView == self.tableView || tableView == _lastTbaleView) {
-        return self.dateArray.count;
+        return _dateArray.count;
     }else{
         return _appointmentTime.count;
     }
@@ -481,21 +446,20 @@
         cell = [[HUAMakeAnAppointmentTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
     }
     cell.backgroundColor = [UIColor clearColor];
-    cell.dateDic = self.dateArray[indexPath.row];
+    cell.dateDic = _dateArray[indexPath.row];
     //预约的时间
     cell.jsonType = @"1";
     cell.range_list = _earlyTime;
     
     if (tableView == self.tableView) {
-        
-        
+
         cell.typeDic = _dic;
-        cell.dateDic = self.dateArray[indexPath.row];
+        cell.dateDic = _dateArray[indexPath.row];
         
         
     }else if(tableView == _lastTbaleView){
         
-        cell.dateDic = self.dateArray[indexPath.row];
+        cell.dateDic = _dateArray[indexPath.row];
         
     }else{
         UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
@@ -713,16 +677,31 @@
             [HUAMBProgress MBProgressFromView:_transparentView wrongLabelText:@"请选择时间!"];
         }
     }else{
-        //任意时间
+        //清除上一次随机的时间
+        _selecteTimeImage.hidden = YES;
+        _selecteTimeButton.selected = NO;
         
+        //任意时间
+        UIButton *timeBut = [_transparentView viewWithTag:800+(arc4random() % _appointmentTime.count)];
+        UIImageView *timeImag = [_transparentView viewWithTag:900+timeBut.tag-800];
+        timeBut.selected = YES;
+        timeImag.hidden = NO;
+        _selecteTimeImage = timeImag;
+        _selecteTimeButton = timeBut;
+        NSLog(@"%@",_selecteTimeButton.titleLabel.text);
     }
 }
 //选中要预约的时间
 UIButton *selebutton =nil;
 UIImageView *lastImage = nil;
 - (void)slecteTime:(UIButton *)sender{
-    UIImageView *imageView = [sender viewWithTag:sender.tag+100];
+    //清除上一次随机的时间
+    _selecteTimeImage.hidden = YES;
+    _selecteTimeButton.selected = NO;
+
     
+    UIImageView *imageView = [sender viewWithTag:sender.tag+100];
+
     if (selebutton!=sender) {
         sender.selected = YES;
         selebutton.selected = NO;
@@ -736,7 +715,9 @@ UIImageView *lastImage = nil;
     
     lastImage = imageView;
     selebutton = sender;
+    _selecteTimeImage = imageView;
     _selecteTimeButton = sender;
+    NSLog(@"%@",_selecteTimeButton.titleLabel.text);
 }
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
