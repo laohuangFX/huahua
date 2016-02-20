@@ -239,10 +239,10 @@
             [label sizeToFit];
             
             [label mas_makeConstraints:^(MASConstraintMaker *make) {
-                NSLog(@"%f",label.width);
-                make.top.mas_equalTo(hua_scale(hua_scale(25.0/2.0-10.0/2.0)-2));
-                make.left.mas_equalTo(hua_scale(78*i)+(hua_scale(78.0/2.0-label.width/2.0))+hua_scale(73));
-                
+                make.height.mas_equalTo(hua_scale(25));
+                make.width.mas_equalTo(hua_scale(156/2));
+                make.top.mas_equalTo(1);
+                make.left.mas_equalTo(hua_scale(78*i)+(hua_scale(78.0/2.0-label.width/2.0))+hua_scale(73-2));
             }];
             
             [label updateLayout];
@@ -361,11 +361,11 @@
             [label sizeToFit];
             
             [label mas_makeConstraints:^(MASConstraintMaker *make) {
-                make.top.mas_equalTo(hua_scale(hua_scale(25.0/2.0-10.0/2.0)-2));
-                make.left.mas_equalTo(hua_scale(78*i)+(hua_scale(78.0/2.0-label.width/2.0))+hua_scale(73));
+                make.height.mas_equalTo(hua_scale(25));
+                make.width.mas_equalTo(hua_scale(156/2));
+                make.top.mas_equalTo(1);
+                make.left.mas_equalTo(hua_scale(78*i)+(hua_scale(78.0/2.0-label.width/2.0))+hua_scale(73-2));
             }];
-            
-
         }
         lastView1 = view1;
     }
