@@ -9,6 +9,10 @@
 #import "HUAShopInfo.h"
 
 @implementation HUAShopInfo
+
+MJCodingImplementation;
+
+
 + (id)parseHomeDataWithDictionary:(NSDictionary *)dic {
     return [[self alloc]initWithDataDictionary:dic];
 }

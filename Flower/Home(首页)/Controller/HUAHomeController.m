@@ -192,10 +192,10 @@ static NSString *identifier = @"cell";
 {
     //到达最后一页数据
     if (self.page == [self.totalPage integerValue]) {
-        if (indexPath.row == self.shopsArray.count-1) {
+//        if (indexPath.row == self.shopsArray.count-1) {
             // 集成上拉刷新控件
            self.tableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(loadMoreData)];
-        }
+       // }
     }else {
         if (indexPath.row == self.shopsArray.count-1) {
             // 自动上啦刷新
@@ -223,6 +223,7 @@ static NSString *identifier = @"cell";
         [self.tableView reloadData];
     } failure:^(NSError *error) {
         self.page--;
+        [self.tableView.mj_footer endRefreshingWithNoNoHTTP];
         [HUAMBProgress MBProgressFromWindowWithLabelText:@"请检查网络设置"];
     }];
 }
@@ -560,7 +561,7 @@ static NSString *identifier = @"cell";
 - (void)clickSortButton:(UIButton *)sender {
     UIWindow *window = [[UIApplication sharedApplication].windows lastObject];
     if (sender.selected == YES) {
-        if (self.tableView.contentOffset.y <= hua_scale(250)) {
+        if (self.tableView.contentOffset.y < hua_scale(250)) {
             [self.tableView setContentOffset:CGPointMake(0, hua_scale(250)) animated:YES];
             [window addSubview:self.sortView];
             [UIView animateWithDuration:0 delay:0.4 options:UIViewAnimationOptionLayoutSubviews animations:^{

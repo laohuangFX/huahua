@@ -34,6 +34,8 @@
     [self addSubview:self.shopImageView];
     
     self.iconImageView = [[UIImageView alloc] initWithFrame:CGRectMake(hua_scale(10), hua_scale(65), hua_scale(60), hua_scale(47))];
+    self.iconImageView.layer.borderWidth = 1;
+    self.iconImageView.layer.borderColor = HUAColor(0xffffff).CGColor;
     self.iconImageView.backgroundColor = [UIColor redColor];
     [self addSubview:self.iconImageView];
     

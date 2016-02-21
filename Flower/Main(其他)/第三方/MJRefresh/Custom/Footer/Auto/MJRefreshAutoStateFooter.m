@@ -60,7 +60,7 @@
     [self setTitle:MJRefreshAutoFooterIdleText forState:MJRefreshStateIdle];
     [self setTitle:MJRefreshAutoFooterRefreshingText forState:MJRefreshStateRefreshing];
     [self setTitle:MJRefreshAutoFooterNoMoreDataText forState:MJRefreshStateNoMoreData];
-    
+    [self setTitle:MJRefreshAutoFooterNoHTTPText forState:MJRefreshStateNoHTTP];
     // 监听label
     self.stateLabel.userInteractionEnabled = YES;
     [self.stateLabel addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(stateLabelClick)]];
