@@ -608,6 +608,8 @@
             NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:responseObject options:0 error:nil];
             
             NSLog(@"%@",dic);
+            //刷新我的订单里面的收货状态
+            self.refreshBlock(dic);
             
         } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
             
@@ -631,7 +633,6 @@
         lable.text = @"确认收货完成";
         lable.textColor = HUAColor(0x4da800);
         [_scrollView layoutSubviews];
-
         
     }]];
     [alert addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {

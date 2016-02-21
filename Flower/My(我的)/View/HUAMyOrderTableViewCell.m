@@ -74,6 +74,7 @@
     //_numbersLabel.backgroundColor = [UIColor redColor];
     _numbersLabel.text = @"单号 : 123267678216431451";
     _numbersLabel.font = [UIFont systemFontOfSize:hua_scale(11)];
+    _numbersLabel.numberOfLines = 1;
     
     _time = [UILabel new];
     //_time.backgroundColor = [UIColor redColor];
@@ -100,7 +101,7 @@
     _moneyLabel.textColor = HUAColor(0x4da800);
     _moneyLabel.text = @"¥200元";
     _moneyLabel.font = [UIFont systemFontOfSize:hua_scale(11)];
-    [_moneyLabel sizeToFit];
+    //[_moneyLabel sizeToFit];
     
     _confirmbutton = [UIButton buttonWithType:UIButtonTypeSystem];
     _confirmbutton.backgroundColor = HUAColor(0x4da800);
@@ -149,7 +150,7 @@
     .topSpaceToView(_thView,hua_scale(8))
     .leftEqualToView(_serveName)
     .autoHeightRatio(0);
-    [_numbersLabel setSingleLineAutoResizeWithMaxWidth:200];
+    [_numbersLabel setSingleLineAutoResizeWithMaxWidth:hua_scale(300)];
     
     _time.sd_layout
     .topSpaceToView(_numbersLabel,hua_scale(9))
@@ -157,12 +158,16 @@
     .autoHeightRatio(0);
     [_time setSingleLineAutoResizeWithMaxWidth:200];
     
-    
+    _moneyLabel.sd_layout
+    .topSpaceToView(_thView,hua_scale(8))
+    .autoHeightRatio(0)
+    .rightSpaceToView(self.contentView,hua_scale(20));
+    [_thView updateLayout];
     [_moneyLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(_thView.mas_bottom).mas_equalTo(hua_scale(8));
         make.right.mas_equalTo(self.contentView.mas_right).mas_equalTo(hua_scale(-20));
     }];
-    [_moneyLabel setSingleLineAutoResizeWithMaxWidth:200];
+    [_moneyLabel updateLayout];
+
     
     _stateLabel.sd_layout
     .leftEqualToView(_time)

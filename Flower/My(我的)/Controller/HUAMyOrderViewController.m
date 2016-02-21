@@ -40,6 +40,7 @@
 @property (nonatomic, strong)NSMutableArray *array;
 //分页
 @property (nonatomic, assign)NSInteger page;
+
 @end
 
 @implementation HUAMyOrderViewController
@@ -317,6 +318,7 @@
 }
 //点击跳转
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    
     HUAMyOrderModel *model = self.array[indexPath.row];
     if ([model.type isEqualToString:@"1"]) {
        //产品
@@ -326,6 +328,11 @@
         vc.product_id = model.product_id;
         vc.is_receipt = model.is_receipt;
         vc.shop_id = model.shop_id;
+        //从订单详情收货后跳转回来刷新我的订单里面的收货状态
+        [vc setRefreshBlock:^(NSDictionary *dic) {
+            model.is_receipt = dic[@"info"][@"is_receipt"];
+            [self.tablewView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:0];
+        }];
         [self.navigationController pushViewController:vc animated:YES];
     } else if ([model.type isEqualToString:@"2"]){
        //服务

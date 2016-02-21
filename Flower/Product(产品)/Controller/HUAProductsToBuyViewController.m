@@ -255,6 +255,7 @@
     
     //4线
     UIView *thView4 = [UIView new];
+    thView4.tag = 1414;
     thView4.backgroundColor = HUAColor(0xe1e1e1);
     [scrollView addSubview:thView4];
     thView4.sd_layout
@@ -795,6 +796,7 @@
     
     UIView *thView4 = [UIView new];
     thView4.backgroundColor = HUAColor(0xe1e1e1);
+    thView4.tag = 1414;
     [_contentView addSubview:thView4];
     [thView4 mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(thView3);
@@ -998,24 +1000,32 @@ UIButton *btn = nil;
     }else{
         UIView   *bgView  = [self.view viewWithTag:166];
         UIView   *thView5 = [self.view viewWithTag:1002];
+        UIView   *thView4 = [self.view viewWithTag:1414];
         UILabel  *lable   = [self.view viewWithTag:1001];
         UIButton *address = [self.view viewWithTag:1000];
         UIButton *button1 = [_contentView viewWithTag:157];
         UIButton *button2 = [self.view viewWithTag:159];
         //判断当前的按钮的选中状态
         if (button1.selected == YES) {
+            address.hidden = YES;
+            thView5.hidden = YES;
+            bgView.hidden = YES;
+            [button2 setTitle:@"上门取货" forState:0];
+            [lable mas_remakeConstraints:^(MASConstraintMaker *make) {
+                make.top.mas_equalTo(thView4.mas_bottom).mas_equalTo(hua_scale(15));
+                make.left.mas_equalTo(hua_scale(15));
+            }];
+            [self.scrollView layoutSubviews];
+        }else{
             address.hidden = NO;
             thView5.hidden = NO;
             bgView.hidden = NO;
+            [button2 setTitle:@"送货上门" forState:0];
             [lable mas_remakeConstraints:^(MASConstraintMaker *make) {
                 make.top.mas_equalTo(thView5.mas_bottom).mas_equalTo(hua_scale(15));
                 make.left.mas_equalTo(hua_scale(15));
             }];
             [self.scrollView layoutSubviews];
-            [button2 setTitle:@"上门取货" forState:0];
-        }else{
-            address.hidden = NO;
-            [button2 setTitle:@"送货上门" forState:0];
         }
         
         [UIView animateWithDuration:0.3 animations:^{
