@@ -9,6 +9,9 @@
 #import "HUAActivityGoods.h"
 
 @implementation HUAActivityGoods
+
+MJCodingImplementation
+
 + (id)parseActivity:(NSDictionary *)dic {
     return [[self alloc]initWithDic:dic];
 }

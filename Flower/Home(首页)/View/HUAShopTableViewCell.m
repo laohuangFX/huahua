@@ -31,9 +31,15 @@
 
 - (void)setCell {
     self.shopImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, screenWidth, hua_scale(125))];
+
     [self addSubview:self.shopImageView];
+    UIImageView *imageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, screenWidth, hua_scale(125))];
+    imageView.image = [UIImage imageNamed:@"gradual_change"];
+    [self.shopImageView addSubview:imageView];
     
     self.iconImageView = [[UIImageView alloc] initWithFrame:CGRectMake(hua_scale(10), hua_scale(65), hua_scale(60), hua_scale(47))];
+    self.iconImageView.layer.borderWidth = 1;
+    self.iconImageView.layer.borderColor = HUAColor(0xffffff).CGColor;
     self.iconImageView.backgroundColor = [UIColor redColor];
     [self addSubview:self.iconImageView];
     

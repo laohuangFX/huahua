@@ -54,6 +54,10 @@ static NSString *identifier = @"cell";
 @property (nonatomic, assign) NSNumber *totalPage;
 /**总数量*/
 @property (nonatomic, assign) NSString *totalCount;
+/**页数缓存路径*/
+@property (nonatomic, strong) NSString *pagePath;
+/**缓存路径*/
+@property (nonatomic, strong) NSString *homePath;
 
 @property (nonatomic, strong) CLLocationManager * mgr;
 @property (nonatomic, assign) CLLocationCoordinate2D currentCoord;
@@ -62,6 +66,20 @@ static NSString *identifier = @"cell";
 @end
 
 @implementation HUAHomeController
+- (NSString *)pagePath {
+    if (!_pagePath) {
+        _pagePath = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)firstObject] stringByAppendingPathComponent:@"page.plist"];
+    }
+    return _pagePath;
+}
+
+- (NSString *)homePath {
+    if (!_homePath) {
+        _homePath = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)firstObject] stringByAppendingPathComponent:@"home.plist"];
+    }
+    return _homePath;
+}
+
 - (HUASortView *)sortView {
     if (!_sortView) {
         _sortView = [[HUASortView alloc] initWithFrame:CGRectMake(0, screenHeight, screenWidth, screenHeight-sortViewHeight) ];
@@ -94,7 +112,7 @@ static NSString *identifier = @"cell";
     self.tabBarController.delegate = self;
     self.page = 1;
     
-    [self getData];
+    //[self getData];
     //设置导航栏
     [self setNavigationBar];
     
@@ -120,6 +138,7 @@ static NSString *identifier = @"cell";
 
 - (void)getData {
     
+    
     NSString *url = [HUA_URL stringByAppendingPathComponent:App_index];
     NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
     parameter[@"order"] = self.order;
@@ -136,16 +155,31 @@ static NSString *identifier = @"cell";
         [self createHeaderView:self.bannerArray];
         [self.tableView reloadData];
     } failure:^(NSError *error) {
-        [HUAMBProgress MBProgressFromWindowWithLabelText:@"请检查网络设置"];
+        [HUAMBProgress MBProgressFromWindowWithLabelText:@"还没有联网哦，去设置网络吧"];
     }];
     
 }
 // 集成下拉刷新控件
 - (void)setupDownRefresh {
+    if (kNetworkNotReachability == YES) {
+        NSDictionary *responseObject = [NSDictionary dictionaryWithContentsOfFile:self.homePath];
+        self.totalPage = responseObject[@"info"][@"pages"];
+        
+        [self.shopsArray removeAllObjects];
+        NSArray *shopArray = [HUADataTool homeShop:responseObject];
+        [self.shopsArray addObjectsFromArray:shopArray];
+        self.categoryArray = [HUADataTool getCategoryList:responseObject];
+        NSArray *array = [HUADataTool homeBanner:responseObject];
+        HUAShopInfo *banner = array.firstObject;
+        self.bannerArray = banner.bannerArr;
+        [self createHeaderView:self.bannerArray];
+        [self.tableView reloadData];
+        
+    }
     self.tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(loadNewData)];
     
     // 马上进入刷新状态
-    //[self.tableView.mj_header beginRefreshing];
+    [self.tableView.mj_header beginRefreshing];
     
 }
 
@@ -156,50 +190,58 @@ static NSString *identifier = @"cell";
         return;
     }
     self.page=1;
-    [self.shopsArray removeAllObjects];
     NSString *url = [HUA_URL stringByAppendingPathComponent:App_index];
     NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
     parameter[@"order"] = self.order;
     parameter[@"per_page"] = @(self.page);
     [HUAHttpTool POST:url params:parameter success:^(id responseObject) {
         HUALog(@"123%@",responseObject);
+        [responseObject writeToFile:self.homePath atomically:YES];
         //加载数据插入到可变数组最前面
+        self.totalPage = responseObject[@"info"][@"pages"];
         NSString *newCount = responseObject[@"info"][@"total"];
-        if (newCount == self.totalCount) {
+        [NSKeyedArchiver archiveRootObject:newCount toFile:self.pagePath];
+        if ([newCount isEqualToString:[NSKeyedUnarchiver unarchiveObjectWithFile:self.pagePath]]) {
             [HUAMBProgress MBProgressOnlywithLabelText:@"没有更多新的商户了"];
         }
-        NSArray *array = [HUADataTool homeShop:responseObject];
-        [self.shopsArray addObjectsFromArray:array];
+        [self.shopsArray removeAllObjects];
+        NSArray *shopArray = [HUADataTool homeShop:responseObject];
+        [self.shopsArray addObjectsFromArray:shopArray];
+        self.categoryArray = [HUADataTool getCategoryList:responseObject];
+        NSArray *array = [HUADataTool homeBanner:responseObject];
+        HUAShopInfo *banner = array.firstObject;
+        self.bannerArray = banner.bannerArr;
+        [self createHeaderView:self.bannerArray];
         [self.tableView reloadData];
         [self.tableView.mj_header endRefreshing];
     } failure:^(NSError *error) {
-        [HUAMBProgress MBProgressFromWindowWithLabelText:@"请检查网络设置"];
+        [HUAMBProgress MBProgressFromWindowWithLabelText:@"还没有联网哦，去设置网络吧"];
         [self.tableView.mj_header endRefreshing];
         self.page--;
     }];
 }
 
 
-// 集成上拉刷新控件
-//- (void)setupUpRefresh {
-//    self.tableView.mj_footer = [MJRefreshBackNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(loadMoreData)];
-//
-//    [self.tableView.mj_footer beginRefreshing];
-//}
 
 //*cell即将到最后一个的时候自动加载数据
 -(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    if (kNetworkNotReachability == YES) {
+        self.tableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(loadMoreData)];
+        return;
+    }
     //到达最后一页数据
     if (self.page == [self.totalPage integerValue]) {
-        if (indexPath.row == self.shopsArray.count-1) {
-            // 集成上拉刷新控件
-           self.tableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(loadMoreData)];
-        }
+        //        if (indexPath.row == self.shopsArray.count-1) {
+        // 集成上拉刷新控件
+        self.tableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(loadMoreData)];
+        // }
     }else {
         if (indexPath.row == self.shopsArray.count-1) {
             // 自动上啦刷新
             [self loadMoreData];
+            //            self.tableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(loadMoreData)];
+            //            [self.tableView.mj_footer beginRefreshing];
         }
     }
 }
@@ -208,9 +250,9 @@ static NSString *identifier = @"cell";
 - (void)loadMoreData {
     self.page++;
     if (self.page > [self.totalPage integerValue]) {
-
+        
         [self.tableView.mj_footer endRefreshingWithNoMoreData];
-
+        
         return;
     }
     NSString *url = [HUA_URL stringByAppendingPathComponent:App_index];
@@ -223,7 +265,7 @@ static NSString *identifier = @"cell";
         [self.tableView reloadData];
     } failure:^(NSError *error) {
         self.page--;
-        [HUAMBProgress MBProgressFromWindowWithLabelText:@"请检查网络设置"];
+        [self.tableView.mj_footer endRefreshingWithNoNoHTTP];
     }];
 }
 
@@ -560,7 +602,7 @@ static NSString *identifier = @"cell";
 - (void)clickSortButton:(UIButton *)sender {
     UIWindow *window = [[UIApplication sharedApplication].windows lastObject];
     if (sender.selected == YES) {
-        if (self.tableView.contentOffset.y <= hua_scale(250)) {
+        if (self.tableView.contentOffset.y < hua_scale(250)) {
             [self.tableView setContentOffset:CGPointMake(0, hua_scale(250)) animated:YES];
             [window addSubview:self.sortView];
             [UIView animateWithDuration:0 delay:0.4 options:UIViewAnimationOptionLayoutSubviews animations:^{
@@ -586,7 +628,14 @@ static NSString *identifier = @"cell";
 
 
 - (void)sortMenuDidDismiss:(HUASortViewButtonType)buttonType {
-
+    UIButton * button =  [self.header viewWithTag:1000];
+    button.selected = NO;
+    self.sortView.y = screenHeight;
+    [self.sortView removeFromSuperview];
+    if (kNetworkNotReachability == YES) {
+        [HUAMBProgress MBProgressOnlywithLabelText: @"还没有联网哦，去设置网络吧"];
+        return;
+    }
     switch (buttonType) {
         case HUASortViewButtonTypePopularity:
             self.order = @"bill_count_desc";
@@ -604,10 +653,7 @@ static NSString *identifier = @"cell";
     [self.shopsArray removeAllObjects];
     self.page = 1;
     [self getData];
-    UIButton * button =  [self.header viewWithTag:1000];
-    button.selected = NO;
-    self.sortView.y = screenHeight;
-    [self.sortView removeFromSuperview];
+
     
 }
 

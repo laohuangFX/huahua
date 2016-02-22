@@ -6,7 +6,7 @@
 //  Copyright (c) 2015年 小码哥. All rights reserved.
 //
 
-#import "MJRefreshAutoStateFooter.h"
+#import "MJRefreshAutoStateFooter.h"   
 
 @interface MJRefreshAutoNormalFooter : MJRefreshAutoStateFooter
 /** 菊花的样式 */
