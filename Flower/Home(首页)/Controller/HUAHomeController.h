@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface HUAHomeController : UITableViewController
+@interface HUAHomeController : UIViewController
 
 @end

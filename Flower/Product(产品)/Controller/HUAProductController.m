@@ -288,7 +288,8 @@ static NSString * const reuseIdentifier = @"cell";
 
 - (void)textFieldDidBeginEditing:(UITextField *)textField{
     NSLog(@"beginEditing");
-    UIView *blackView  = [[UIView alloc]initWithFrame:self.view.bounds];
+//    UIView *blackView  = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.intrinsicContentSize.height + self.view.frame.size.height)];
+    UIView *blackView  = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width,self.view.frame.size.height)];
     blackView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.8];
     blackView.tag = 1001;
     blackView.alpha = 0;
