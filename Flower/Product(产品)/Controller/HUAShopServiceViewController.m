@@ -97,7 +97,13 @@
  
     self.searchplaceholder = @"搜索";
     //搜索
+
     //[self geDataWithSubParameters:nil];
+
+    
+    //菜单
+    [self category:nil];
+
     // 集成下拉刷新控件
     [self setupDownRefresh];
     
@@ -111,8 +117,25 @@
     parameters[@"shop_id"] = self.shop_id;
     [manager GET:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation,NSDictionary* responseObject) {
         //HUALog(@"%@",responseObject);
+        _data1 = [NSMutableArray array];
         
-        [self category:responseObject];
+        NSArray *array = responseObject[@"info"];
+        
+        for (NSDictionary *dic in array) {
+            
+            [_dataDic setValue:dic[@"category_id"] forKey:dic[@"name"]];
+            
+            [_data1 addObject:@{@"title":dic[@"name"]}];
+        }
+        
+        NSArray *noLimit = @[@"不限"];
+        
+        [_data1 insertObject:@{@"title":@"不限"} atIndex:0];
+        
+        _data2 = [NSMutableArray arrayWithObjects:@"不限", @"价格降序", @"价格升序",nil];
+        _data3 = [NSMutableArray arrayWithObjects:@"不限",@"点赞降序",@"点赞升序",nil];
+
+        
     } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
         HUALog(@"%@",error);
     }];
@@ -145,6 +168,7 @@
         if ([newCount isEqualToString:[NSKeyedUnarchiver unarchiveObjectWithFile:self.pagePath]]) {
             [HUAMBProgress MBProgressOnlywithLabelText:@"没有更多新的服务了"];
         }
+        self.totalPage = responseObject[@"info"][@"pages"];
          [self.productsArray removeAllObjects];
         NSArray *array = [HUADataTool shopProduct:responseObject];
         [self.productsArray addObjectsFromArray:array];
@@ -220,24 +244,6 @@
 #pragma --设置三个选择按钮
 //设置三个选择按钮
 - (void)category:(NSDictionary *)downDic {
-    
-    _data1 = [NSMutableArray array];
-    
-    NSArray *array = downDic[@"info"];
-    
-    for (NSDictionary *dic in array) {
-        
-        [_dataDic setValue:dic[@"category_id"] forKey:dic[@"name"]];
-        
-        [_data1 addObject:@{@"title":dic[@"name"]}];
-    }
-    
-    NSArray *noLimit = @[@"不限"];
-
-    [_data1 insertObject:@{@"title":@"不限"} atIndex:0];
-    
-    _data2 = [NSMutableArray arrayWithObjects:@"不限", @"价格降序", @"价格升序",nil];
-    _data3 = [NSMutableArray arrayWithObjects:@"不限",@"点赞降序",@"点赞升序",nil];
     
     JSDropDownMenu *menu = [[JSDropDownMenu alloc] initWithOrigin:CGPointMake(0, 0) andHeight:hua_scale(30)];
     

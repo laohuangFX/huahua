@@ -44,10 +44,11 @@
     [self getData];
 }
 - (void)getData{
-    
+     NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager new];
+    [manager.requestSerializer setValue:token forHTTPHeaderField:@"token"];
     NSString *url = [HUA_URL stringByAppendingPathComponent:[NSString stringWithFormat:@"product/product_prepay?product_id=%@",self.product_id]];
-    
+    NSLog(@"%@",url);
     [manager GET:url parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
         HUALog(@"%@",responseObject);
         

@@ -85,7 +85,7 @@ static NSString * const reuseIdentifier = @"cell";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+    self.view.backgroundColor = [UIColor whiteColor];
     self.collectionView.userInteractionEnabled = YES;
     self.collectionView.backgroundColor = HUAColor(0xE4E4E4);
     _dataDic = [NSMutableDictionary dictionary];
@@ -102,6 +102,8 @@ static NSString * const reuseIdentifier = @"cell";
     [self setNavigationItem];
     //获取数据
     [self getDataWithparameters:nil];
+    //菜单
+    [self category:nil];
     // 集成下拉刷新控件
     [self setupDownRefresh];
     
@@ -115,7 +117,41 @@ static NSString * const reuseIdentifier = @"cell";
     //parameters[@"shop_id"] = self.shop_id;
     [manager GET:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation,NSDictionary* responseObject) {
         HUALog(@"%@",responseObject);
-        [self category:responseObject];
+        
+        NSMutableArray *food= [NSMutableArray array];
+        NSMutableArray *travel = [NSMutableArray array];
+        
+        NSArray *noLimit = @[@"不限"];
+        
+        _data1 = [NSMutableArray array];
+        
+        for (int i=0; i<[responseObject[@"info"] count]+1; i++) {
+            if (i==0) {
+                [_data1 addObject:@{@"title":@"不限",@"data":noLimit}];
+            }else{
+                NSMutableArray *array = [NSMutableArray array];
+                
+                for (int y = 0; y< [responseObject[@"info"][i-1][@"sub"] count]+1; y++) {
+                    if (y==0){
+                        [array addObject:@"不限"];
+                    }else{
+                        [array addObject:responseObject[@"info"][i-1][@"sub"][y-1][@"name"]];
+                        //存放二级
+                        [_towDataDic setValue:responseObject[@"info"][i-1][@"sub"][y-1][@"category_id"] forKey:responseObject[@"info"][i-1][@"sub"][y-1][@"name"]];
+                    }
+                }
+                [food addObject:responseObject[@"info"][i-1][@"name"]];
+                [_data1 insertObject:@{@"title":food[i-1],@"data":array} atIndex:i];
+                
+            }
+        }
+        //存放一级
+        for (NSDictionary *dic in responseObject[@"info"]) {
+            [_dataDic setValue:dic[@"category_id"] forKey:dic[@"name"]];
+        }
+        
+        _data2 = [NSMutableArray arrayWithObjects:@"不限", @"价格降序", @"价格升序",nil];
+        _data3 = [NSMutableArray arrayWithObjects:@"不限",@"点赞降序",@"点赞升序",nil];
     } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
         HUALog(@"%@",error);
     }];
@@ -150,6 +186,7 @@ static NSString * const reuseIdentifier = @"cell";
         if ([newCount isEqualToString:[NSKeyedUnarchiver unarchiveObjectWithFile:self.pagePath]]) {
             [HUAMBProgress MBProgressOnlywithLabelText:@"没有更多新的产品了"];
         }
+        self.totalPage = responseObject[@"info"][@"pages"];
         NSArray *array = [HUADataTool shopProduct:responseObject];
         [self.productArray addObjectsFromArray:array];
         [self.collectionView reloadData];
@@ -229,49 +266,7 @@ static NSString * const reuseIdentifier = @"cell";
 #pragma --设置三个选择按钮
 //设置三个选择按钮
 - (void)category:(NSDictionary *)titelDic{
-    
-    NSMutableArray *food= [NSMutableArray array];
-    NSMutableArray *travel = [NSMutableArray array];
-    
-    //    NSArray *food = @[@"不限", @"海飞丝", @"飘柔", @"清扬", @"沙宣",@"霸王"];
-    //    NSArray *travel = @[@"不限", @"蜂花护发素", @"潘婷护发素", @"沙宣护发素", @"飘柔护发素", @"欧莱雅护发素", @"百雀羚护发素", @"迪彩护发素", @"资生堂护发素", @"露华浓护发素"];
-    NSArray *noLimit = @[@"不限"];
-    
-    _data1 = [NSMutableArray array];
-    
-    for (int i=0; i<[titelDic[@"info"] count]+1; i++) {
-        if (i==0) {
-            [_data1 addObject:@{@"title":@"不限",@"data":noLimit}];
-        }else{
-            NSMutableArray *array = [NSMutableArray array];
-            
-            for (int y = 0; y< [titelDic[@"info"][i-1][@"sub"] count]+1; y++) {
-                if (y==0){
-                    [array addObject:@"不限"];
-                }else{
-                    [array addObject:titelDic[@"info"][i-1][@"sub"][y-1][@"name"]];
-                    //存放二级
-                    [_towDataDic setValue:titelDic[@"info"][i-1][@"sub"][y-1][@"category_id"] forKey:titelDic[@"info"][i-1][@"sub"][y-1][@"name"]];
-                }
-            }
-            [food addObject:titelDic[@"info"][i-1][@"name"]];
-            [_data1 insertObject:@{@"title":food[i-1],@"data":array} atIndex:i];
-            
-        }
-    }
-    //存放一级
-    for (NSDictionary *dic in titelDic[@"info"]) {
-        [_dataDic setValue:dic[@"category_id"] forKey:dic[@"name"]];
-    }
-    
-    NSLog(@"%@",_dataDic);
-    
-    
-    //_data1 = [NSMutableArray arrayWithObjects:@{@"title":@"不限", @"data":noLimit},@{@"title":@"沐浴露",@"data":food}, @{@"title":@"护发素", @"data":travel}, @{@"title":@"洗面奶",@"data":food},@{@"title":@"啫喱水",@"data":travel},@{@"title":@"BB霜",@"data":food},@{@"title":@"眼霜",@"data":travel},@{@"title":@"指甲油",@"data":food},@{@"title":@"卸甲油",@"data":travel},nil];
-    NSLog(@"%@",_data1);
-    _data2 = [NSMutableArray arrayWithObjects:@"不限", @"价格降序", @"价格升序",nil];
-    _data3 = [NSMutableArray arrayWithObjects:@"不限",@"点赞降序",@"点赞升序",nil];
-    
+
     JSDropDownMenu *menu = [[JSDropDownMenu alloc] initWithOrigin:CGPointMake(0, 0) andHeight:hua_scale(30)];
     
     menu.separatorColor = [UIColor colorWithRed:210.0f/255.0f green:210.0f/255.0f blue:210.0f/255.0f alpha:1.0];
