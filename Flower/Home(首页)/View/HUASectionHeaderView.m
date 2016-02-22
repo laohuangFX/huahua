@@ -27,7 +27,7 @@
         sortButton.tag = 1000;
         sortButton.frame = CGRectMake(0, 0, screenWidth, sortButtonHeight);
         sortButton.backgroundColor = HUAColor(0xF6F6F6);
-        sortButton.titleLabel.font = [UIFont systemFontOfSize:16];
+        sortButton.titleLabel.font = [UIFont systemFontOfSize:hua_scale(12)];
         [sortButton setTitle:@"排序" forState:UIControlStateNormal];
         [sortButton setTitleColor:HUAColor(0x575757) forState:UIControlStateNormal];
         [sortButton setTitleColor:HUAColor(0x4da800) forState:UIControlStateSelected];

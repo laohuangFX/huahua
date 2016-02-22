@@ -22,10 +22,15 @@
 @property (nonatomic, strong) UILabel *skinLabel;
 @property (nonatomic, strong) UILabel *specialNoteLabel;
 @property (nonatomic, strong) UILabel *specificationModelLabel;
+//信息字典
+@property (nonatomic, strong) NSDictionary *infomation;
 
 @property (nonatomic, strong) HUAProductDetailInfo *detailInfo;
 
+@property (nonatomic, assign) CGFloat topHeight;
 //回调跳转视图
 @property (nonatomic, copy) void (^pusViewsBlock)(void);
 
+
+@property (nonatomic, copy) void (^topHeightBlock)(CGFloat topHeight);
 @end

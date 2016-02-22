@@ -14,6 +14,11 @@
 #import "HATransparentView.h"
 #import "STPhotoBrowserController.h"
 
+
+#define AccessKey @"RR18P8i4SfivX79SrUtbvjGnRNla57"
+
+#define secretKey @"dwLuSQ0DAqiuue7s"
+
 @interface HUAMyInformationViewController ()<UITableViewDataSource,UITableViewDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate,UIPickerViewDelegate,UIPickerViewDataSource,UIActionSheetDelegate,HATransparentViewDelegate>{
     NSString *yearStr ;
     NSString *moonStr ;
@@ -82,14 +87,11 @@
     
     [self setSexPickerView];
     
-    NSData *data = [[NSUserDefaults standardUserDefaults] objectForKey:@"data"];
-    HUAUserDetailInfo *detailInfo = [NSKeyedUnarchiver unarchiveObjectWithData:data];
-    
-    self.nameLabel.text = detailInfo.nickname;
-    self.sexLable.text = [detailInfo.sex isEqualToString:@"0"]?@"女":@"男";
-    self.birthdayLabel.text = [HUATranslateTime translateTimeIntoCurrurent:detailInfo.birth.longLongValue];
-    HUALog(@"dfsfsdfsfs%@,,%@,,%@",detailInfo.nickname,detailInfo.sex,detailInfo.birth);
-    self.model =@[@"jjj",detailInfo.nickname,[detailInfo.sex isEqualToString:@"0"]?@"女":@"男",[HUATranslateTime translateTimeIntoCurrurent:detailInfo.birth.longLongValue],@" "];
+    //NSData *data = [[NSUserDefaults standardUserDefaults] objectForKey:@"data"];
+    //HUAUserDetailInfo *detailInfo = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+
+   // HUALog(@"dfsfsdfsfs%@,,%@,,%@",detailInfo.nickname,detailInfo.sex,detailInfo.birth);
+    self.model =@[self.userDic[@"info"][@"headicon"],self.userDic[@"info"][@"nickname"],[self.userDic[@"info"][@"sex"] isEqualToString:@"0"]?@"女":@"男",[HUATranslateTime translateTimeIntoCurrurent:self.birthString.longLongValue],@" "];
     [self setbirthdayPickerView];
 }
 
@@ -100,28 +102,37 @@
 
 - (void) viewWillDisappear:(BOOL)animated {
     
-    NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-
-    [manager.requestSerializer setValue:token forHTTPHeaderField:@"token"];
-    NSString *url = [HUA_URL stringByAppendingPathComponent:Update_info];
+//    AliyunOSSDemo *alyData = [AliyunOSSDemo new];
+//    
+//    alyData.AlYdata = UIImagePNGRepresentation(self.imageView.image);
+//    
+//    [alyData runDemo];
     
-    NSString *birthday = [HUATranslateTime translateDateIntoTimestamp:self.birthdayLabel.text];
-    HUALog(@"shengri%@,,,%@,,%@,%@",birthday,self.nameLabel.text,self.sexLable.text,self.birthdayLabel.text);
-    NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
-    parameters[@"nickname"] = self.nameLabel.text;
-    parameters[@"sex"] = [_sexLable.text isEqualToString:@"男"]?@"1":@"0";
-    //parameters[@"birth"] = birthday;
-    [manager POST:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-        HUALog(@"data%@",responseObject);
-      
-    } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
-        HUALog(@"%@",error);
-    }];
+   
+//    NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
+//    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+//
+//    [manager.requestSerializer setValue:token forHTTPHeaderField:@"token"];
+//    NSString *url = [HUA_URL stringByAppendingPathComponent:Update_info];
+//    
+//    NSString *birthday = [HUATranslateTime translateDateIntoTimestamp:self.birthdayLabel.text];
+//    HUALog(@"shengri%@,,,%@,,%@,%@",birthday,self.nameLabel.text,self.sexLable.text,self.birthdayLabel.text);
+//    NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
+//    parameters[@"nickname"] = self.nameLabel.text;
+//    //parameters[@"sex"] = [_sexLable.text isEqualToString:@"男"]?@"1":@"0";
+//    //parameters[@"birth"] = birthday;
+//    NSLog(@"%@",parameters);
+//    [manager POST:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+//        HUALog(@"data%@",responseObject);
+//      
+//    } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
+//        HUALog(@"%@",error);
+//    }];
     
 }
 
 - (void) getDate{
+  
     _yearArray =[NSMutableArray array];
     _moonArray = [NSMutableArray array];
     _sunArray = [NSMutableArray array];
@@ -328,9 +339,10 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     NSData *data = [[NSUserDefaults standardUserDefaults] objectForKey:@"data"];
     HUAUserDetailInfo *detailInfo = [NSKeyedUnarchiver unarchiveObjectWithData:data];
-    self.nameLabel.text = detailInfo.nickname;
-    self.sexLable.text = [detailInfo.sex isEqualToString:@"0"]?@"女":@"男";
-    self.birthdayLabel.text = [HUATranslateTime translateTimeIntoCurrurent:self.birthString.longLongValue];
+    
+    //self.nameLabel.text = detailInfo.nickname;
+    //self.sexLable.text = [detailInfo.sex isEqualToString:@"0"]?@"女":@"男";
+    //self.birthdayLabel.text = [HUATranslateTime translateTimeIntoCurrurent:self.birthString.longLongValue];
 
     static NSString *identifier  = @"cell";
     HUAMyInformationTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
@@ -341,7 +353,8 @@
     if (indexPath.row==0) {
         cell.InformationLabel.hidden = YES;
         cell.headImage.hidden=NO;
-        cell.headImage.image = [UIImage imageNamed:self.model[indexPath.row]];
+        [cell.headImage sd_setImageWithURL:[NSURL URLWithString:self.model[indexPath.row]] placeholderImage:[UIImage imageNamed:@"placeholder"]];
+    
         NSLog(@"%@",self.model[indexPath.row]);
         //添加手势进入浏览大图
         [cell.headImage addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(browseImage:)]];
@@ -351,14 +364,14 @@
         self.imageView = cell.headImage;
         
     }
-  
+    
     cell.InformationLabel.text = self.model[indexPath.row];
 
     cell.textLabel.text = self.myInformationArray[indexPath.row];
     cell.textLabel.textColor = HUAColor(0x333333);
     cell.textLabel.font = [UIFont systemFontOfSize:hua_scale(13)];
-    return cell;
     
+    return cell;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -616,7 +629,7 @@
         NSString *url = [HUA_URL stringByAppendingPathComponent:@"user/update_info"];
         [manager POST:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
             NSLog(@"%@",responseObject);
-  
+        [HUAMBProgress MBProgressFromWindowWithLabelText:@"修改成功!"];
         } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
             
             NSLog(@"%@",error);
@@ -680,7 +693,7 @@
 
             [[NSUserDefaults standardUserDefaults] setObject:[NSKeyedArchiver archivedDataWithRootObject:detailInfo] forKey:@"data"];
             
-            //修改性别
+            //修改生日
             NSString *token = [HUAUserDefaults getToken];
             
             AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
@@ -693,6 +706,7 @@
             [manager POST:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
                 NSLog(@"%@",responseObject);
                 
+                [HUAMBProgress MBProgressFromWindowWithLabelText:@"修改成功!"];
             } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
                 
                 NSLog(@"%@",error);
@@ -946,5 +960,7 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
+
 @end
 

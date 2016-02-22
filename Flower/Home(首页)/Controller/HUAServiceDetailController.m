@@ -15,19 +15,19 @@
 
 @interface HUAServiceDetailController ()<UITableViewDataSource, UITableViewDelegate>
 @property (nonatomic, strong) UITableView *tableView;
+/**服务模型*/
 @property (nonatomic, strong) HUAServiceInfo *serviceInfo;
+/**服务数组*/
 @property (nonatomic, strong) NSArray *serviceArray;
-
+/**技师数组*/
 @property (nonatomic, strong) NSArray *masterArray;
-
-//技师的聊表
-@property (nonatomic, strong)NSArray *technicianArray;
-
-//项目类容
-@property (nonatomic, strong)NSString *category;
-
-@property (nonatomic, strong)NSString *shop_id;
-
+/**技师的聊表*/
+@property (nonatomic, strong) NSArray *technicianArray;
+/**项目类容*/
+@property (nonatomic, strong) NSString *category;
+/**店铺id*/
+@property (nonatomic, strong) NSString *shop_id;
+/**用户信息*/
 @property (nonatomic, strong) HUAUserDetailInfo *detailInfo;
 @end
 
@@ -79,6 +79,30 @@
 
 }
 
+- (void)getData {
+    
+    NSString *url = [HUA_URL stringByAppendingPathComponent:Service_detail];
+    NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
+    parameters[@"user_id"] = self.detailInfo.user_id;
+    parameters[@"service_id"] = self.service_id;
+    [HUAHttpTool GETWithTokenAndUrl:url params:parameters success:^(id responseObject) {
+        HUALog(@"response%@",responseObject);
+        self.shop_id = responseObject[@"item"][@"shop_id"];
+        self.serviceInfo = [HUAServiceInfo mj_objectWithKeyValues:responseObject[@"item"]];
+        HUALog(@"%@",self.serviceInfo.have_praised);
+        self.category = responseObject[@"item"][@"category"];
+        self.serviceArray = responseObject[@"info"][@"media_lis"];
+        self.masterArray = [HUADataTool getMasterArray:responseObject];
+        [self setHeaderView:self.serviceInfo];
+        [self setNavigationBar];
+        [self.tableView reloadData];
+
+    } failure:^(NSError *error) {
+         HUALog(@"%@",error);
+    }];
+}
+
+#pragma mark -- 设置导航栏
 - (void)setNavigationBar {
     UIButton *praiseButton = [UIButton buttonWithType:0];
     praiseButton.frame = CGRectMake(hua_scale(268), hua_scale(9), hua_scale(42), hua_scale(16));
@@ -98,6 +122,7 @@
     praiseButton.titleLabel.font = [UIFont systemFontOfSize:hua_scale(14)];
     self.navigationItem.rightBarButtonItems = @[[[UIBarButtonItem alloc]initWithCustomView:praiseButton]];
 }
+
 #pragma mark -- 点击点赞
 - (void)clickToPraise:(UIButton *)sender {
     if (!self.detailInfo) {
@@ -127,29 +152,6 @@
     }
 }
 
-
-- (void)getData {
-    
-    NSString *url = [HUA_URL stringByAppendingPathComponent:Service_detail];
-    NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
-    parameters[@"user_id"] = self.detailInfo.user_id;
-    parameters[@"service_id"] = self.service_id;
-    [HUAHttpTool GETWithTokenAndUrl:url params:parameters success:^(id responseObject) {
-        HUALog(@"response%@",responseObject);
-        //self.shop_id = responseObject[@"item"][@"shop_id"];
-        self.serviceInfo = [HUAServiceInfo mj_objectWithKeyValues:responseObject[@"item"]];
-        HUALog(@"%@",self.serviceInfo.have_praised);
-        //self.category = responseObject[@"item"][@"category"];
-        self.serviceArray = responseObject[@"info"][@"media_lis"];
-        self.masterArray = [HUADataTool getMasterArray:responseObject];
-        [self setHeaderView:self.serviceInfo];
-        [self setNavigationBar];
-        [self.tableView reloadData];
-
-    } failure:^(NSError *error) {
-         HUALog(@"%@",error);
-    }];
-}
 
 #pragma mark - tableView代理
 - (void)setHeaderView:(HUAServiceInfo *)serviceInfo {

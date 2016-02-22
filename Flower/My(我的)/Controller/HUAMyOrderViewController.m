@@ -24,10 +24,23 @@
     NSInteger _currentData2Index;
     NSInteger _currentData3Index;
 
+    //参数
+    //左边
+    NSString *_leftText;
+    //左边的子类
+    NSString *_leftSubText;
+    //中间
+    NSString *_midstText;
+    //右边
+    NSString *_rightText;
+
 
 }
 @property (nonatomic,strong)UITableView *tablewView;
-@property (nonatomic, strong)NSArray *array;
+@property (nonatomic, strong)NSMutableArray *array;
+//分页
+@property (nonatomic, assign)NSInteger page;
+
 @end
 
 @implementation HUAMyOrderViewController
@@ -48,40 +61,20 @@
     
     self.title = @"我的订单";
     self.view.backgroundColor = [UIColor whiteColor];
-    
+    self.page = 1;
     [self headDownMenu];
+    [self getData:nil];
+    [self refreshData];
     
-    NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
-  
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    [manager.requestSerializer setValue:token forHTTPHeaderField:@"token"];
-    manager.responseSerializer = [AFHTTPResponseSerializer serializer];
-
-    NSString *url = [HUA_URL stringByAppendingPathComponent:Bill_list];
-    NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
-    //parameter[@"per_page"] = @"1";
-    [manager GET:url parameters:parameter success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:responseObject options:0 error:nil];
- 
-        self.array = [HUADataTool MyOrder:dic];
-        //NSLog(@"%ld",self.array.count);
-
-        [self.tablewView reloadData];
-    } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
-        HUALog(@"%@",error);
-    }];
-
-   
-}
+  }
 //下拉菜单
 - (void)headDownMenu{
     
-
     NSArray *food = @[@"不限服务", @"未使用", @"已交易完成"];
     NSArray *travel = @[@"不限产品",@"等待发货",@"待确认收货",@"交易完成"];
     NSArray *exercise =@[@"不限活动", @"未使用", @"已使用", @"已过期"];
     NSArray *noLimit = @[@"全部"];
-    _data1 = [NSMutableArray arrayWithObjects:@{@"title":@"全部", @"data":noLimit},@{@"title":@"产品",@"data":food}, @{@"title":@"服务", @"data":travel},@{@"title":@"活动", @"data":exercise},nil];
+    _data1 = [NSMutableArray arrayWithObjects:@{@"title":@"全部", @"data":noLimit},@{@"title":@"服务",@"data":food}, @{@"title":@"产品", @"data":travel},@{@"title":@"活动", @"data":exercise},nil];
     
     _data2 = [NSMutableArray arrayWithObjects:@"全部", @"一天内", @"一周内",@"一个月内",@"三个月内",nil];
     _data3 = [NSMutableArray arrayWithObjects:@"不限",@"最少",@"最多",nil];
@@ -93,20 +86,173 @@
     //图标颜色
     menu.indicatorColor = HUAColor(0x4da800);
     menu.rowHeigth = 80;
+    menu.typeStr = @"订单菜单";
     menu.dataSource = self;
     menu.delegate = self;
     [menu setGetDataBlock:^(NSString *text1, NSString *text2, NSString *text3, NSString *text4) {
-        NSLog(@"%@",text1);
-        NSLog(@"%@",text2);
-        NSLog(@"%@",text3);
-        NSLog(@"%@",text4);
+        NSLog(@"text1%@",text1);
+        NSLog(@"text2%@",text2);
+        NSLog(@"text3%@",text3);
+    
         
+        if (text1.length != 0) {
+            _leftText = text1;
+            return ;
+        }else if (text2.length !=0){
+            _leftSubText = text2;
+        }else if (text3.length !=0){
+            _midstText = text3;
+        }
+        
+        AFHTTPRequestOperationManager *manager = [[AFHTTPRequestOperationManager alloc] init];
+        NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
+        
+        [manager.requestSerializer setValue:token forHTTPHeaderField:@"token"];
+        NSString *url =[HUA_URL stringByAppendingPathComponent:@"user/bill_list"];
+        NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
+       
+        if (![_leftText isEqualToString:@"全部"] && _leftText != nil) {
+            if ([_leftText isEqualToString:@"产品"]) {
+               parameters[@"Product_filter"] = @"1";
+            }else if ([_leftText isEqualToString:@"服务"]){
+               parameters[@"Product_filter"] = @"5";
+            }else{
+               parameters[@"Product_filter"] = @"8";
+            }
+        }
+        if (![_leftSubText isEqualToString:@"全部"] && _leftSubText != nil) {
+            if ([_leftText isEqualToString:@"服务"]) {
+                if ([_leftSubText isEqualToString:@"未使用"]) {
+                     parameters[@"Product_filter"] = @"6";
+                }else{
+                     parameters[@"Product_filter"] = @"7";
+                }
+            }else if ([_leftText isEqualToString:@"产品"]){
+                if ([_leftSubText isEqualToString:@"等待发货"]) {
+                    parameters[@"Product_filter"] = @"2";
+                }else if([_leftSubText isEqualToString:@"待确认收货货"]){
+                    parameters[@"Product_filter"] = @"3";
+                }else{
+                  parameters[@"Product_filter"] = @"4";
+                }
+            }else if ([_leftText isEqualToString:@"活动"]){
+                if ([_leftSubText isEqualToString:@"未使用"]) {
+                    parameters[@"Product_filter"] = @"9";
+                }else if([_leftSubText isEqualToString:@"已使用"]){
+                    parameters[@"Product_filter"] = @"10";
+                }else{
+                    parameters[@"Product_filter"] = @"11";
+                }
+            }
+        }
+        if (![_midstText isEqualToString:@"全部"] && _midstText != nil) {
+         
+            if ([_midstText isEqualToString:@"一天内"]) {
+                 parameters[@"Time_filter"] = @(3600*24);
+            }else if ([_midstText isEqualToString:@"一周内"]){
+                parameters[@"Time_filter"] = @(3600*24*7);
+            }else if ([_midstText isEqualToString:@"一个月内"]){
+                parameters[@"Time_filter"] = @(3600*24*30);
+            }else {
+                parameters[@"Time_filter"] = @(3600*24*90);
+            }
+        }
+
+        [manager GET:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+          //  HUALog(@"%@",responseObject);
+        
+            if ([[responseObject objectForKey:@"info"] isKindOfClass:[NSString class]]) {
+                [HUAMBProgress MBProgressOnlywithLabelText:[responseObject objectForKey:@"info"]];
+                return ;
+            }
+            self.array = nil;
+            self.array = [HUADataTool MyOrder:responseObject];
+            
+            [self.tablewView reloadData];
+        } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
+            HUALog(@"%@",error);
+        }];
+    
     }];
     
     [self.view addSubview:menu];
 }
-//tableview
 
+- (void)getData:(NSString *)Type{
+
+    NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
+    
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    [manager.requestSerializer setValue:token forHTTPHeaderField:@"token"];
+    manager.responseSerializer = [AFHTTPResponseSerializer serializer];
+    
+    NSString *url = [HUA_URL stringByAppendingPathComponent:Bill_list];
+    NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+    parameter[@"per_page"] = @(self.page);
+    [manager GET:url parameters:parameter success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:responseObject options:0 error:nil];
+        if ([Type isEqualToString:@"尾部"]) {
+    
+            NSArray *dataArray = [HUADataTool MyOrder:dic];
+            
+            if (self.page > [dic[@"info"][@"pages"]integerValue]) {
+                [self footEnd];
+                return ;
+            }
+            
+            [self.array addObjectsFromArray:dataArray];
+            [self.tablewView reloadData];
+            [self.tablewView.mj_footer endRefreshing];
+        }else{
+        
+            [self.array removeAllObjects];
+            self.array = [[HUADataTool MyOrder:dic] mutableCopy];
+            [self.tablewView reloadData];
+            [self.tablewView.mj_header endRefreshing];
+        }
+        
+     
+    } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
+        HUALog(@"%@",error);
+    }];
+}
+
+//下拉刷新
+- (void)refreshData{
+    
+    self.tablewView.mj_header = [MJRefreshStateHeader headerWithRefreshingBlock:^{
+        
+        //刷新数据的把页数还原
+        self.page= 1;
+        
+        [self getData:nil];
+    }];
+    // 马上进入刷新状态
+    [self.tablewView.mj_header beginRefreshing];
+}
+//上拉刷新
+- (void)footRefreshData{
+    
+    self.page++;
+    
+    [self getData:@"尾部"];
+    //上拉刷新
+    
+}
+//上拉刷新
+- (void)footEnd{
+    
+    
+    self.tablewView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
+        
+        [self.tablewView.mj_footer endRefreshingWithNoMoreData];
+        
+    }];
+    
+    [self.tablewView.mj_footer beginRefreshing];
+}
+
+//tableview
 #pragma  mark ----UITableView Delegate
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)sectio{
     
@@ -135,29 +281,30 @@
        
         NSString *token = [HUAUserDefaults getToken];
         NSLog(@"%@",model.bill_num);
-//        AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-//        [manager.requestSerializer setValue:token forHTTPHeaderField:@"token"];
-//        //申明返回的结果是json类型
-//        manager.responseSerializer = [AFHTTPResponseSerializer serializer];
-//        //申明请求的数据是json类型
-//        //manager.requestSerializer=[AFJSONRequestSerializer serializer];
-//        //如果报接受类型不一致请替换一致text/html或别的
-//        manager.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"text/json"];
-//        //传入的参数
-//        NSDictionary *parameters = @{@"bill_id":model.bill_num};
-//        
-//        NSString *url = [HUA_URL stringByAppendingPathComponent:@"user/create_shopping_addr"];
-//        
-//        [manager POST:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-//            NSLog(@"%@",responseObject);
-//            
-//        } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
-//            
-//            NSLog(@"%@",error);
-//            
-//        }];
-
+      
+        AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+        [manager.requestSerializer setValue:token forHTTPHeaderField:@"token"];
+        //申明返回的结果是json类型
+        manager.responseSerializer = [AFHTTPResponseSerializer serializer];
+        //申明请求的数据是json类型
+        //manager.requestSerializer=[AFJSONRequestSerializer serializer];
+        //如果报接受类型不一致请替换一致text/html或别的
+        manager.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"application/json"];
+        //传入的参数
+        NSDictionary *parameters = @{@"bill_id":model.bill_num};
         
+        NSString *url = [HUA_URL stringByAppendingPathComponent:@"user/confirm_receipt"];
+        
+        [manager POST:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+            NSLog(@"%@",responseObject);
+            NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:responseObject options:0 error:nil];
+            model.is_receipt = [dic[@"info"][@"is_receipt"] stringValue];
+            [self.tablewView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:0];
+        } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
+            
+            NSLog(@"%@",error);
+            
+        }];
         
     }];
     cell.model = self.array[indexPath.row];
@@ -171,6 +318,7 @@
 }
 //点击跳转
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    
     HUAMyOrderModel *model = self.array[indexPath.row];
     if ([model.type isEqualToString:@"1"]) {
        //产品
@@ -179,6 +327,12 @@
         vc.type = model.type;
         vc.product_id = model.product_id;
         vc.is_receipt = model.is_receipt;
+        vc.shop_id = model.shop_id;
+        //从订单详情收货后跳转回来刷新我的订单里面的收货状态
+        [vc setRefreshBlock:^(NSDictionary *dic) {
+            model.is_receipt = dic[@"info"][@"is_receipt"];
+            [self.tablewView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:0];
+        }];
         [self.navigationController pushViewController:vc animated:YES];
     } else if ([model.type isEqualToString:@"2"]){
        //服务
@@ -194,10 +348,9 @@
         vc.bill_id = model.bill_num;
         vc.active_id = model.active_id;
         vc.number = model.remainNum;
+        vc.shop_id = model.shop_id;
         [self.navigationController pushViewController:vc animated:YES];
     }
-    
-
 }
 
 #pragma mark --- headDownMenuDelegate
@@ -342,6 +495,21 @@
     // Dispose of any resources that can be recreated.
 }
 
+-(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (indexPath.row == self.array.count-2) {
+        
+        [self footRefreshData];
+        
+    }
+}
+- (NSMutableArray *)array{
+    if (_array==nil) {
+        _array = [NSMutableArray array];
+    }
+
+    return _array;
+}
 /*
  #pragma mark - Navigation
  

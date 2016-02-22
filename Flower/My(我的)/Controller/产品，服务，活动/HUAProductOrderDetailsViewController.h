@@ -17,4 +17,8 @@
 @property (nonatomic, strong)NSString *type;
 //状态
 @property (nonatomic, strong)NSString *is_receipt;
+
+@property (nonatomic, strong)NSString *shop_id;
+//刷新我的订单里面的收货状态
+@property (nonatomic, copy)void (^refreshBlock)(NSDictionary *dic);
 @end

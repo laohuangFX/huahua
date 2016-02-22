@@ -204,30 +204,12 @@
     
     _dateDic = dateDic ;
     
-    _dateLabel.text = dateDic[@"date"];
-    _weekLabel.text = dateDic[@"week"];
+    _dateLabel.text = dateDic[@"day"];
+    _weekLabel.text =  [dateDic[@"xingqi"] substringWithRange:NSMakeRange([dateDic[@"xingqi"] length]-1, 1)];
     // NSLog(@"%@",dateDic[@"dic"]);
     
 }
 
-//- (void)setTypeDic:(NSDictionary *)typeDic{
-//    _typeDic = typeDic;
-//
-//    UIButton *button1 = [self.contentView viewWithTag:188];
-//    UIButton *button2 = [self.contentView viewWithTag:189];
-//    UIButton *button3 = [self.contentView viewWithTag:190];
-//    NSArray *array = typeDic[@"array"];
-//    if (typeDic!=nil) {
-//        if ([typeDic[@"type"] isEqualToString:@"早班"]) {
-//            button1.hidden = NO;
-//            button2.hidden = NO;
-//
-//            [button1 setTitle:[NSString stringWithFormat:@"剩 %ld",array.count] forState:0];
-//            button2.backgroundColor = HUAColor(0xdddddd);
-//            [button2 setTitle:@"约满" forState:0];
-//        }
-//    }
-//}
 
 - (void)setRange_list:(NSArray *)range_list{
     _range_list = range_list;

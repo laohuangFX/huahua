@@ -25,5 +25,9 @@ typedef enum {
 
 @interface HUASortView : UIView
 @property (nonatomic, weak) id<HUASortMenuDelegate> delegate;
+@property (nonatomic,assign)BOOL isShow;
 
+
+- (void)showView;
+- (void)dismissView;
 @end

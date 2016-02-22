@@ -38,4 +38,6 @@
 @property (nonatomic, assign, readonly) BOOL shouldShowMoreButton;
 
 + (HUAStatusModel *)status:(NSDictionary *)dic;
+
++ (id)jsonData:(NSDictionary *)dic;
 @end

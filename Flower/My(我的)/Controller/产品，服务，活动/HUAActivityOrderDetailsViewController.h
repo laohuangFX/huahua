@@ -16,4 +16,5 @@
 //次数
 @property (nonatomic, strong)NSString *number;
 
+@property (nonatomic, strong)NSString *shop_id;
 @end

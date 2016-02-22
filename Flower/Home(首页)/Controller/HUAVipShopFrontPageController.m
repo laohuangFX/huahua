@@ -122,7 +122,7 @@
     if ([self.userInfo.hava_praised isEqualToString:@"1"] ) {
         praiseButton.selected = YES;
     }
-    [praiseButton setTitle:[NSString stringWithFormat:@"%ld",self.shopIntroduce.praise_count.integerValue] forState:UIControlStateNormal];
+//    [praiseButton setTitle:[NSString stringWithFormat:@"%ld",self.shopIntroduce.praise_count.integerValue] forState:UIControlStateNormal];
     [praiseButton addTarget:self action:@selector(clickToPraise:) forControlEvents:UIControlEventTouchUpInside];
     
     praiseButton.titleLabel.font = [UIFont systemFontOfSize:hua_scale(14)];
@@ -188,6 +188,7 @@
 
     }
 }
+
 
 - (void)getData {
     NSString *url = [HUA_URL stringByAppendingPathComponent:Shop_index];
@@ -365,20 +366,13 @@
 //非会员和非注册用户（购买）
 - (void)purchase:(UIButton *)sender {
     //没有注册的用户点击购买跳转到登录页面
-    HUAUserDetailInfo *detailInfo = [HUAUserDefaults getUserDetailInfo];
-    if (!detailInfo.user_id) {
-        [HUAMBProgress MBProgressFromWindowWithLabelText:@"未登录,正在跳转登录页面..." dispatch_get_main_queue:^{
-            HUALoginController *loginVC = [[HUALoginController alloc] init];
-            [self.navigationController pushViewController:loginVC animated:YES];
-        }];
-    }else {
-        HUAShopProductController *shopProductVC = [HUAShopProductController new];
-        shopProductVC.shop_id = self.shop_id;
-        shopProductVC.shopName = self.shopName;
-        shopProductVC.url = [HUA_URL stringByAppendingPathComponent:Service_list];
-        [self.navigationController pushViewController:shopProductVC animated:YES];
-    }
-    
+
+    HUAShopServiceViewController *shopServiceVC = [HUAShopServiceViewController new];
+    shopServiceVC.shop_id = self.shop_id;
+    shopServiceVC.url = [HUA_URL stringByAppendingPathComponent:Service_list];
+    shopServiceVC.shopName = self.shopName;
+    [self.navigationController pushViewController:shopServiceVC animated:YES];
+
 }
 
 
