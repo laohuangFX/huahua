@@ -170,7 +170,7 @@
  
     [manager GET:url parameters:parameter success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
         NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:responseObject options:0 error:nil];
-  
+          
             self.statusModel.praise = dic[@"info"][@"praise_count"];
             self.statusModel.is_praise = dic[@"info"][@"have_praised"];
             self.pinlunArray = [HUADataTool DynamicDetails:dic];

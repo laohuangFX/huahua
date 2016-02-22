@@ -70,7 +70,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.view.backgroundColor = [UIColor whiteColor];
     self.page = 1;
     [self.view addSubview:self.tableView];
     self.title = self.shopName;
@@ -81,12 +80,9 @@
     self.searchplaceholder = @"搜索";
     //搜索
     [self getdataWithSubParameters:nil];
+<<<<<<< HEAD
     
-    // 集成下拉刷新控件
-    [self setupDownRefresh];
-  
 }
-
 //获取下拉菜单数据
 - (void)getDownData{
     
@@ -102,6 +98,11 @@
     
 }
 
+=======
+    // 集成下拉刷新控件
+    [self setupDownRefresh];
+
+}
 
 // 集成下拉刷新控件
 - (void)setupDownRefresh {
@@ -176,6 +177,8 @@
 }
 
 
+
+>>>>>>> c7917266a6087b7864f77797d85bcfe56bff30b4
 - (void)getdataWithSubParameters:(NSDictionary *)SubParameters{
     
     

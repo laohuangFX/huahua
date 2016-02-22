@@ -12,6 +12,7 @@
 #import "HUAServiceMasterCell.h"
 #import "HUAChooseMasterController.h"
 #import "HUATechnicianViewController.h"
+#import "HUAMasterDetailController.h"
 
 @interface HUAServiceDetailController ()<UITableViewDataSource, UITableViewDelegate>
 @property (nonatomic, strong) UITableView *tableView;
@@ -85,6 +86,7 @@
     NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
     parameters[@"user_id"] = self.detailInfo.user_id;
     parameters[@"service_id"] = self.service_id;
+    NSLog(@"%@",url);
     [HUAHttpTool GETWithTokenAndUrl:url params:parameters success:^(id responseObject) {
         HUALog(@"response%@",responseObject);
         self.shop_id = responseObject[@"item"][@"shop_id"];
@@ -287,10 +289,12 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    HUAChooseMasterController *chooseMasterVC = [HUAChooseMasterController new];
-    chooseMasterVC.service_id = self.service_id;
-    [self.navigationController pushViewController:chooseMasterVC animated:YES];
-    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    HUAServiceMasterInfo *model = self.masterArray[indexPath.row];
+    HUAMasterDetailController *vc = [HUAMasterDetailController new];
+    vc.master_id = model.master_id;
+    vc.shop_id = self.serviceInfo.shop_id;
+    [self.navigationController pushViewController:vc animated:YES];
+
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {

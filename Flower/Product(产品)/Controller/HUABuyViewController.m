@@ -12,6 +12,8 @@
 //个数
 @property(nonatomic,strong)UILabel *numberTypelabel ;
 @property (nonatomic, strong)UILabel *memberLabel;
+//选定的的支付方式
+@property (nonatomic, strong)UIButton *selecteButton;
 @end
 
 @implementation HUABuyViewController
@@ -231,6 +233,8 @@
     .heightIs(1)
     .widthIs(scrollView.width);
     
+
+    
     UILabel *modeLabel = [[UILabel alloc] init];
     modeLabel.text = @"支付方式";
     modeLabel.font = [UIFont systemFontOfSize:hua_scale(13)];
@@ -287,7 +291,17 @@
         make.width.mas_equalTo(hua_scale(15));
     }];
     
-    
+    //手势背景
+    UIView *bgView1 = [UIView new];
+    bgView1.backgroundColor = [UIColor clearColor];
+    bgView1.tag = 1231;
+    [bgView1 addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clickButton:)]];
+    [scrollView addSubview:bgView1];
+    [bgView1 mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(iocnImage.mas_top).mas_equalTo(hua_scale(-5));
+        make.bottom.mas_equalTo(thView4.mas_top);
+        make.right.left.mas_equalTo(self.view);
+    }];
     
     //5线
     UIView *thView5 = [UIView new];
@@ -297,6 +311,19 @@
     .topSpaceToView(thView4,hua_scale(44))
     .heightIs(1)
     .widthIs(scrollView.width);
+   
+    //手势背景
+    UIView *bgView2 = [UIView new];
+    bgView2.backgroundColor = [UIColor clearColor];
+    bgView2.tag = 1232;
+    [bgView2 addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clickButton:)]];
+    [scrollView addSubview:bgView2];
+    [bgView2 mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(thView4.mas_bottom);
+        make.bottom.mas_equalTo(thView5.mas_top);
+        make.right.left.mas_equalTo(self.view);
+    }];
+    
     
     UIImageView *iocnImageView = [[UIImageView alloc] init];
     iocnImageView.image = [UIImage imageNamed:@"zhifubao"];
@@ -354,6 +381,18 @@
     .heightIs(1)
     .widthIs(scrollView.width);
     
+    //手势背景
+    UIView *bgView3 = [UIView new];
+    bgView3.backgroundColor = [UIColor clearColor];
+    bgView3.tag = 1233;
+    [bgView3 addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clickButton:)]];
+    [scrollView addSubview:bgView3];
+    [bgView3 mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(thView5.mas_bottom);
+        make.bottom.mas_equalTo(thView6.mas_top);
+        make.right.left.mas_equalTo(self.view);
+    }];
+    
     UIImageView *winImageView = [[UIImageView alloc] init];
     winImageView.image = [UIImage imageNamed:@"weixin"];
     [scrollView addSubview:winImageView];
@@ -410,6 +449,8 @@
     .heightIs(1)
     .leftSpaceToView(scrollView,scrollView.width/2)
     .widthIs(scrollView.width/2);
+    
+
     
     
     UILabel *memberTitle  = [[UILabel alloc] init];
@@ -565,25 +606,38 @@ UIButton *lastButton = nil;
     lastButton = button;
 }
 //选择支付类型
-UIButton *selectBtn = nil;
 - (void)selectButton:(UIButton *)sender{
-    if (sender!=selectBtn) {
+    if (_selecteButton!=sender) {
         sender.selected = YES;
-        selectBtn.selected = NO;
+        _selecteButton.selected = NO;
     }else{
         
         sender.selected = YES;
     }
     
-    
-    selectBtn = sender;
+    _selecteButton = sender;
     
 }
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     
 }
+//手势
+- (void)clickButton:(UITapGestureRecognizer *)tap{
+    UIButton *button1 = [self.view viewWithTag:tap.view.tag-1231+191];
+    
+    if (_selecteButton != button1) {
+        button1.selected = YES;
+        _selecteButton.selected = NO;
+    }else{
+        button1.selected = YES;
+    }
+    
+    
+    _selecteButton = button1;
+    NSLog(@"%ld",_selecteButton.tag);
 
+}
 
 
 @end

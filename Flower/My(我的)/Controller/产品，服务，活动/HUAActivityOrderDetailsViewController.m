@@ -371,10 +371,24 @@
     
    
     _time.text = [NSString stringWithFormat:@"%@ 至 %@",[HUATranslateTime translateTimeIntoCurrurent:[self.modelDic[@"start_time"] integerValue]],[HUATranslateTime translateTimeIntoCurrurent:[self.modelDic[@"end_time"] integerValue]]];//活动时间
-    _state.text = [NSString stringWithFormat:@"剩余%@次",self.number];//状态
-    NSMutableAttributedString *attributed = [[NSMutableAttributedString alloc] initWithString:_state.text];
-    [attributed addAttributes:@{NSForegroundColorAttributeName:HUAColor(0x4da800)} range:NSMakeRange(2, self.number.length)];
-    _state.attributedText = attributed;
+    
+    if ([self.number integerValue] > 0 ) {
+        _state.text = [NSString stringWithFormat:@"剩余%@次 / 交易完成 / 已过期",self.number];//状态
+        [HUAConstRowHeight adjustTheLabel:_state adjustColor:HUAColor(0x4da800)adjustRang:NSMakeRange(2,self.number.length)];
+    }else{
+        _state.text = [NSString stringWithFormat:@"剩余%@次 / 交易完成 / 已过期",self.number];//状态
+        [HUAConstRowHeight adjustTheLabel:_state adjustColor:HUAColor(0x4da800)adjustRang:NSMakeRange(7,4)];
+    }
+
+    NSDate* dat = [NSDate dateWithTimeIntervalSinceNow:0];
+    NSTimeInterval a=[dat timeIntervalSince1970];
+    NSString *timeString = [NSString stringWithFormat:@"%f", a];
+    
+    if ([timeString integerValue] > [self.modelDic[@"end_time"] integerValue] ) {
+        
+        _state.text = [NSString stringWithFormat:@"剩余%@次 / 交易完成 / 已过期",self.number];//状态
+        [HUAConstRowHeight adjustTheLabel:_state adjustColor:HUAColor(0x4da800)adjustRang:NSMakeRange(_state.text.length-3,3)];
+    }
     
     //商家信息
     _shopName.text = self.modelDic[@"shopname"];//商店名称
@@ -387,9 +401,7 @@
     _activity.text = self.modelDic[@"name"];//活动
     //_activityCentent.text = self.modelDic[@"detail"][@"article"];//活动内容
 
-    
-    
-    
+
     
     //活动详情
     UILabel *activityTitle = [UILabel labelText:@"活动详情" color:nil font:hua_scale(13)];

@@ -12,4 +12,7 @@
 
 @property (nonatomic, strong)NSDictionary *dataDic;
 
+@property (nonatomic, copy)void (^selecteBlock)(UIButton *sender);
+
+@property (nonatomic, strong) UIButton *selecteBuuton;
 @end

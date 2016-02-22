@@ -51,10 +51,17 @@
     NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
 
     [manager GET:url parameters:parameter success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-       // NSLog(@"%@",responseObject);
+        NSLog(@"%@",responseObject);
+        if ([responseObject[@"code"] integerValue] == 6 ) {
+            //为空就返回
+            self.ReceivingArrar = nil;
+            [self.tablewView reloadData];
+            return ;
+        }
+        
         self.ReceivingArrar = [[HUADataTool addressJson:responseObject] mutableCopy];
         
-         [self setTableView];
+        [self setTableView];
         
         [self.tablewView reloadData];
         
@@ -131,10 +138,10 @@
         //申明请求的数据是json类型
          //manager.requestSerializer=[AFJSONRequestSerializer serializer];
         //如果报接受类型不一致请替换一致text/html或别的
-        //manager.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"application/json"];
+        manager.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"application/json"];
         //传入的参数
         NSDictionary *parameters = @{@"addr_id":infoAddr_id};
-         NSString *url = [HUA_URL stringByAppendingPathComponent:@"user/update_shopping_addr"];
+         NSString *url = [HUA_URL stringByAppendingPathComponent:@"user/delete_shopping_addr"];
         [manager POST:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
             [HUAMBProgress MBProgressFromWindowWithLabelText:@"删除成功!"];
             [self getData];

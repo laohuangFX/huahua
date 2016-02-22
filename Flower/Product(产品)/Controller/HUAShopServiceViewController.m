@@ -70,6 +70,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.view.backgroundColor = [UIColor whiteColor];
      self.page = 1;
     //获取下拉菜单数据
     [self getDownData];
@@ -222,8 +223,8 @@
 
     [_data1 insertObject:@{@"title":@"不限"} atIndex:0];
     
-    _data2 = [NSMutableArray arrayWithObjects:@"不限", @"从低到高", @"从高到低",nil];
-    _data3 = [NSMutableArray arrayWithObjects:@"不限",@"最少",@"最多",nil];
+    _data2 = [NSMutableArray arrayWithObjects:@"不限", @"价格降序", @"价格升序",nil];
+    _data3 = [NSMutableArray arrayWithObjects:@"不限",@"点赞降序",@"点赞升序",nil];
     
     JSDropDownMenu *menu = [[JSDropDownMenu alloc] initWithOrigin:CGPointMake(0, 0) andHeight:hua_scale(30)];
     
@@ -246,7 +247,7 @@
         }else if (midstText.length != 0){
             _midstText = midstText;
         }else if (lastText.length != 0 ){
-            _rightText = lastText;
+            _midstText = lastText;
         }
 
         self.page = 1;
@@ -258,10 +259,16 @@
             parameters[@"parent_id"] =_dataDic[_leftText];
         }
         if (![_midstText isEqualToString:@"不限"] && _midstText != nil) {
-            parameters[@"order_price"] =[_midstText isEqualToString:@"从高到底"]? @"price_desc":@"price_asc";
-        }
-        if (![_rightText isEqualToString:@"不限"] && _rightText != nil) {
-            parameters[@"order_praise"] =[_rightText isEqualToString:@"点赞降序"]? @"praise_desc":@"praise_asc";
+            if ([_midstText isEqualToString:@"价格降序"]) {
+                parameters[@"order"] =@"price_desc";
+            }else if ([_midstText isEqualToString:@"价格升序"]){
+                
+                parameters[@"order"] =@"price_asc";
+            }else if ([_midstText isEqualToString:@"点赞降序"]){
+                parameters[@"order"] =@"praise_desc";
+            }else{
+                parameters[@"order"] =@"praise_asc";
+            }
         }
         parameters[@"shop_id"] = self.shop_id;
         parameters[@"per_page"] = @(self.page);
@@ -321,11 +328,6 @@
     
     return YES;
 }
-
-
-
-
-
 
 #pragma mark -- delegate
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {

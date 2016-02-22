@@ -73,6 +73,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.view.backgroundColor = [UIColor whiteColor];
     self.page = 1;
     //获取下拉菜单数据
     [self getDownData];
@@ -180,10 +181,16 @@
         parameters[@"category_id"] =_towDataDic[_leftSubText];
     }
     if (![_midstText isEqualToString:@"不限"] && _midstText != nil) {
-        parameters[@"order_price"] =[_midstText isEqualToString:@"价格降序"]? @"desc":@"asc";
-    }
-    if (![_rightText isEqualToString:@"不限"] && _rightText != nil) {
-        parameters[@"order_praise"] =[_midstText isEqualToString:@"点赞降序"]? @"desc":@"asc";
+        if ([_midstText isEqualToString:@"价格降序"]) {
+            parameters[@"order"] =@"price_desc";
+        }else if ([_midstText isEqualToString:@"价格升序"]){
+            
+            parameters[@"order"] =@"price_asc";
+        }else if ([_midstText isEqualToString:@"点赞降序"]){
+            parameters[@"order"] =@"praise_desc";
+        }else{
+            parameters[@"order"] =@"praise_asc";
+        }
     }
     parameters[@"shop_id"] = self.shop_id;
     parameters[@"per_page"] = @(self.page);
@@ -288,9 +295,6 @@
     
     [menu setGetDataBlock:^(NSString *leftText, NSString *leftSubText, NSString *midstText, NSString *lastText) {
 
-        
-        
-        
         //NSLog(@"%@",leftText);
 //        NSLog(@"%@",leftSubText);
 //        NSLog(@"%@",midstText);
@@ -303,7 +307,7 @@
         }else if (midstText.length !=0){
         _midstText = midstText;
         }else if (lastText.length !=0){
-        _rightText = lastText;
+        _midstText = lastText;
         }
         
         self.page = 1;
@@ -319,12 +323,19 @@
             parameters[@"category_id"] =_towDataDic[_leftSubText];
         }
         if (![_midstText isEqualToString:@"不限"] && _midstText != nil) {
-            parameters[@"order_price"] =[_midstText isEqualToString:@"价格降序"]? @"desc":@"asc";
+            if ([_midstText isEqualToString:@"价格降序"]) {
+               parameters[@"order"] =@"price_desc";
+            }else if ([_midstText isEqualToString:@"价格升序"]){
+            
+               parameters[@"order"] =@"price_asc";
+            }else if ([_midstText isEqualToString:@"点赞降序"]){
+               parameters[@"order"] =@"praise_desc";
+            }else{
+               parameters[@"order"] =@"praise_asc";
+            }
         }
-        if (![_rightText isEqualToString:@"不限"] && _rightText != nil) {
-            parameters[@"order_praise"] =[_rightText isEqualToString:@"点赞降序"]? @"desc":@"asc";
-        }
-
+        
+        
         [manager GET:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
         //HUALog(@"%@",responseObject);
         if ([[responseObject objectForKey:@"info"] isKindOfClass:[NSString class]]) {

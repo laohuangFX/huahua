@@ -34,22 +34,15 @@
     NSMutableDictionary *_dataDic;
 
 }
+
 @property (nonatomic, strong) UITableView *tableView;
-/**技师列表*/
-@property (nonatomic, strong) NSMutableArray *masterListArray;
-/**分页数*/
-@property (nonatomic, assign) NSUInteger page;
-/**总页数*/
-@property (nonatomic, strong) NSNumber *totalPage;
-/**总数量*/
-@property (nonatomic, assign) NSString *totalCount;
+@property (nonatomic, strong) NSArray *masterListArray;
 @end
 
 @implementation HUAMasterListController
-
-- (NSMutableArray *)masterListArray {
+- (NSArray *)masterListArray {
     if (!_masterListArray) {
-        _masterListArray = [NSMutableArray array];
+        _masterListArray = [NSArray array];
     }
     return _masterListArray;
 }
@@ -70,8 +63,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.view.backgroundColor = [UIColor whiteColor];
-    self.page = 1;
     [self.view addSubview:self.tableView];
     self.title = self.shopName;
     //这个放第一加载、、要不然会空白;
@@ -79,14 +70,9 @@
     
     [self setNavigationItem];
     self.searchplaceholder = @"搜索";
-    //搜索
     [self getdataWithSubParameters:nil];
     
-    // 集成下拉刷新控件
-    [self setupDownRefresh];
-  
 }
-
 //获取下拉菜单数据
 - (void)getDownData{
     
@@ -102,87 +88,12 @@
     
 }
 
-
-// 集成下拉刷新控件
-- (void)setupDownRefresh {
-    
-    self.tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(loadNewData)];
-    
-    // 马上进入刷新状态
-    //[self.tableView.mj_header beginRefreshing];
-    
-}
-
-
-- (void)loadNewData {
-    self.page = 1;
-    NSString *url = self.url;
-    NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
-    parameters[@"shop_id"] = self.shop_id;
-    parameters[@"per_page"] = @(self.page);
-    [HUAHttpTool GET:url params:parameters success:^(id responseObject) {
-        [self.masterListArray removeAllObjects];
-        NSString *newCount = responseObject[@"info"][@"total"];
-        if (newCount == self.totalCount) {
-            [HUAMBProgress MBProgressOnlywithLabelText:@"没有更多新的技师了"];
-        }
-        NSArray *array = [HUADataTool getMasterList:responseObject];
-        [self.masterListArray  addObjectsFromArray:array];
-        [self.tableView reloadData];
-        [self.tableView.mj_header endRefreshing];
-    } failure:^(NSError *error) {
-        [HUAMBProgress MBProgressFromWindowWithLabelText:@"请检查网络设置"];
-        [self.tableView.mj_header endRefreshing];
-        self.page--;
-    }];
-}
-
-/**cell即将到最后一个的时候自动加载数据*/
--(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    //到达最后一页数据
-    if (self.page == [self.totalPage integerValue]) {
-        if (indexPath.row == self.masterListArray.count-1) {
-            // 集成上拉刷新控件
-            self.tableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(loadMoreData)];
-        }
-    }else {
-        if (indexPath.row == self.masterListArray.count-1) {
-            // 自动上啦刷新
-            [self loadMoreData];
-        }
-    }
-}
-
-
-- (void)loadMoreData {
-    self.page++;
-    if (self.page > [self.totalPage integerValue]) {
-        [self.tableView.mj_footer endRefreshingWithNoMoreData];
-        return;
-    }
-    NSString *url = self.url;
-    NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
-    parameters[@"shop_id"] = self.shop_id;
-    parameters[@"per_page"] = @(self.page);
-    [HUAHttpTool GET:url params:parameters success:^(id responseObject) {
-        NSArray *array = [HUADataTool getMasterList:responseObject];
-        [self.masterListArray addObjectsFromArray:array];
-        [self.tableView reloadData];
-    } failure:^(NSError *error) {
-        [HUAMBProgress MBProgressFromWindowWithLabelText:@"请检查网络设置"];
-        self.page--;
-    }];
-}
-
-
 - (void)getdataWithSubParameters:(NSDictionary *)SubParameters{
     
     
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager new];
     NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
     parameters[@"shop_id"] = self.shop_id;
-    parameters[@"per_page"] = @(self.page);
     if (SubParameters != nil) {
         [parameters setValuesForKeysWithDictionary:SubParameters];
     }
@@ -192,13 +103,10 @@
             [HUAMBProgress MBProgressOnlywithLabelText:[responseObject objectForKey:@"info"]];
             return ;
         }
-        self.totalPage = responseObject[@"info"][@"pages"];
-        self.totalCount = responseObject[@"info"][@"total"];
-        NSArray *array = [HUADataTool getMasterList:responseObject];
-        [self.masterListArray addObjectsFromArray:array];
+        self.masterListArray = [HUADataTool getMasterList:responseObject];
         [self.tableView reloadData];
+        HUALog(@"%lu",self.masterListArray.count);
     } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
-        [HUAMBProgress MBProgressFromWindowWithLabelText:@"请检查网络设置"];
         HUALog(@"%@",error);
     }];
 }
@@ -285,9 +193,8 @@
     
     self.navigationItem.titleView = nil;
     
-    UIBarButtonItem *leftSpace = [UIBarButtonItem leftSpace:-30];
     UIBarButtonItem *searchBar = [UIBarButtonItem itemWithTarget:self action:@selector(search) image:@"search" highImage:@"search" text:nil];
-    self.navigationItem.rightBarButtonItems = @[leftSpace,searchBar];
+    self.navigationItem.rightBarButtonItem = searchBar;
 }
 
 #pragma mark -- searchTextFiled

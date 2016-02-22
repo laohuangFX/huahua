@@ -39,9 +39,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-
-    
-    
     NSArray *vcsArray = [self.navigationController viewControllers];
     NSInteger vcCount = vcsArray.count;
     if (vcCount == 1) {
@@ -53,7 +50,7 @@
     }
     //获取沙盒临时路径
     
-    NSString *path = NSTemporaryDirectory();
+    NSString *path =[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
     self.pathStr = [path stringByAppendingPathComponent:@"array.plist"];
     
      //初始化表视图
@@ -75,9 +72,7 @@
     [self refreshData];
     
 }
-- (void)viewWillAppear:(BOOL)animated{
-    
-   }
+
 //下拉刷新
 - (void)refreshData{
     
@@ -140,7 +135,7 @@
     parameters[@"shop_id"] = self.shop_id;
     parameters[@"user_id"] = detailInfo.user_id;
     parameters[@"per_page"] = @(self.page);
-    NSLog(@"%@",url);
+
     [manager GET:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
 
         NSString *maxPage = responseObject[@"info"][@"pages"];

@@ -27,6 +27,9 @@
 @property (nonatomic, strong)NSDictionary *moneyDic;
 
 @property (nonatomic, strong)UIScrollView *scrollView;
+//记录选定的支付方式
+@property (nonatomic, strong)UIButton *selecteButton;
+
 @end
 
 @implementation HUAProductsToBuyViewController
@@ -255,6 +258,7 @@
     
     //4线
     UIView *thView4 = [UIView new];
+    thView4.tag = 1414;
     thView4.backgroundColor = HUAColor(0xe1e1e1);
     [scrollView addSubview:thView4];
     thView4.sd_layout
@@ -441,6 +445,21 @@
     .heightIs(1)
     .widthIs(scrollView.width);
     
+    [thView6 updateLayout];
+    [iocnImage updateLayout];
+    //手势背景
+    UIView *tapView1 = [UIView new];
+    tapView1.backgroundColor = [UIColor clearColor];
+    tapView1.tag = 1231;
+    [tapView1 addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clickButton:)]];
+    [scrollView addSubview:tapView1];
+    tapView1.sd_layout
+    .topEqualToView(iocnImage)
+    .leftEqualToView(self.view)
+    .rightEqualToView(self.view)
+    .bottomEqualToView(thView6);
+    
+    
     UIButton *selectBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     selectBtn.tag = 191;
     [selectBtn setBackgroundImage:[UIImage imageNamed:@"do_not_select"] forState:0];
@@ -498,6 +517,20 @@
     .heightIs(1)
     .leftSpaceToView(scrollView,hua_scale(15))
     .widthIs(scrollView.width);
+    
+    //手势背景
+    UIView *tapView2 = [UIView new];
+    tapView2.backgroundColor = [UIColor clearColor];
+    tapView2.tag = 1232;
+    [tapView2 addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clickButton:)]];
+    [scrollView addSubview:tapView2];
+    [tapView2 mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(thView6.mas_bottom);
+        make.bottom.mas_equalTo(thView7.mas_top);
+        make.right.left.mas_equalTo(self.view);
+    }];
+
+    
     
     UIButton *selectsBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     selectsBtn.tag = 192;
@@ -570,6 +603,19 @@
         make.width.mas_equalTo(scrollView.width);
         
     }];
+    
+    //手势背景
+    UIView *tapView3 = [UIView new];
+    tapView3.backgroundColor = [UIColor clearColor];
+    tapView3.tag = 1233;
+    [tapView3 addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clickButton:)]];
+    [scrollView addSubview:tapView3];
+    [tapView3 mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(thView7.mas_bottom);
+        make.bottom.mas_equalTo(thView8.mas_top);
+        make.right.left.mas_equalTo(self.view);
+    }];
+
     
     
     
@@ -795,6 +841,7 @@
     
     UIView *thView4 = [UIView new];
     thView4.backgroundColor = HUAColor(0xe1e1e1);
+    thView4.tag = 1414;
     [_contentView addSubview:thView4];
     [thView4 mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(thView3);
@@ -925,12 +972,13 @@ UIButton *senderButton = nil;
 - (void)seleteAdd:(UIButton *)sender{
     if (senderButton!=sender) {
         sender.selected = YES;
-        senderButton.selected = NO;
+        _selecteButton.selected = NO;
         
     }else{
         sender.selected = YES;
     }
     senderButton = sender;
+    _selecteButton = sender;
 }
 
 //增加收货地址
@@ -998,24 +1046,32 @@ UIButton *btn = nil;
     }else{
         UIView   *bgView  = [self.view viewWithTag:166];
         UIView   *thView5 = [self.view viewWithTag:1002];
+        UIView   *thView4 = [self.view viewWithTag:1414];
         UILabel  *lable   = [self.view viewWithTag:1001];
         UIButton *address = [self.view viewWithTag:1000];
         UIButton *button1 = [_contentView viewWithTag:157];
         UIButton *button2 = [self.view viewWithTag:159];
         //判断当前的按钮的选中状态
         if (button1.selected == YES) {
+            address.hidden = YES;
+            thView5.hidden = YES;
+            bgView.hidden = YES;
+            [button2 setTitle:@"上门取货" forState:0];
+            [lable mas_remakeConstraints:^(MASConstraintMaker *make) {
+                make.top.mas_equalTo(thView4.mas_bottom).mas_equalTo(hua_scale(15));
+                make.left.mas_equalTo(hua_scale(15));
+            }];
+            [self.scrollView layoutSubviews];
+        }else{
             address.hidden = NO;
             thView5.hidden = NO;
             bgView.hidden = NO;
+            [button2 setTitle:@"送货上门" forState:0];
             [lable mas_remakeConstraints:^(MASConstraintMaker *make) {
                 make.top.mas_equalTo(thView5.mas_bottom).mas_equalTo(hua_scale(15));
                 make.left.mas_equalTo(hua_scale(15));
             }];
             [self.scrollView layoutSubviews];
-            [button2 setTitle:@"上门取货" forState:0];
-        }else{
-            address.hidden = NO;
-            [button2 setTitle:@"送货上门" forState:0];
         }
         
         [UIView animateWithDuration:0.3 animations:^{
@@ -1030,7 +1086,23 @@ UIButton *btn = nil;
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+//手势事件
+- (void)clickButton:(UITapGestureRecognizer *)tap{
+  
+    UIButton *button1 = [self.view viewWithTag:tap.view.tag-1231+191];
+    
+    if (_selecteButton != button1) {
+        button1.selected = YES;
+        _selecteButton.selected = NO;
+    }else{
+        button1.selected = YES;
+    }
+    
+    
+    _selecteButton = button1;
+    NSLog(@"%ld",_selecteButton.tag);
 
+}
 /*
  #pragma mark - Navigation
  
