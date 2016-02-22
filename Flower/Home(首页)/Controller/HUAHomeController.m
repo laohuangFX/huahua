@@ -138,11 +138,6 @@ static NSString *identifier = @"cell";
 
 - (void)getData {
     
-    if (kNetworkNotReachability == YES) {
-        HUALog(@"meiyou");
-    }else {
-        HUALog(@"you");
-    }
     
     NSString *url = [HUA_URL stringByAppendingPathComponent:App_index];
     NSMutableDictionary *parameter = [NSMutableDictionary dictionary];

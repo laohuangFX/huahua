@@ -43,9 +43,26 @@
 @property (nonatomic, strong) NSNumber *totalPage;
 /**总数量*/
 @property (nonatomic, assign) NSString *totalCount;
+/**页数缓存路径*/
+@property (nonatomic, strong) NSString *pagePath;
+/**排序参数*/
+@property (nonatomic, strong) NSMutableDictionary *parameters;
 @end
 
 @implementation HUAMasterListController
+- (NSMutableDictionary *)parameters {
+    if (!_parameters) {
+        _parameters = [NSMutableDictionary dictionary];
+    }
+    return _parameters;
+}
+
+- (NSString *)pagePath {
+    if (!_pagePath) {
+        _pagePath = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)firstObject] stringByAppendingPathComponent:@"masterPage.plist"];
+    }
+    return _pagePath;
+}
 
 - (NSMutableArray *)masterListArray {
     if (!_masterListArray) {
@@ -80,7 +97,7 @@
     [self setNavigationItem];
     self.searchplaceholder = @"搜索";
     //搜索
-    [self getdataWithSubParameters:nil];
+    //[self getdataWithSubParameters:nil];
     
     // 集成下拉刷新控件
     [self setupDownRefresh];
@@ -109,21 +126,27 @@
     self.tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(loadNewData)];
     
     // 马上进入刷新状态
-    //[self.tableView.mj_header beginRefreshing];
+    [self.tableView.mj_header beginRefreshing];
     
 }
 
 
 - (void)loadNewData {
     self.page = 1;
+    if ((![_leftText isEqualToString:@"全部"] && _leftText != nil) || (![_leftSubText isEqualToString:@"不限"] && _leftSubText != nil)) {
+        [HUAMBProgress MBProgressOnlywithLabelText:@"没有更多数据了"];
+        [self.tableView.mj_header endRefreshing];
+        return;
+    }
     NSString *url = self.url;
-    NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
-    parameters[@"shop_id"] = self.shop_id;
-    parameters[@"per_page"] = @(self.page);
-    [HUAHttpTool GET:url params:parameters success:^(id responseObject) {
+    self.parameters[@"shop_id"] = self.shop_id;
+    self.parameters[@"per_page"] = @(self.page);
+    [HUAHttpTool GET:url params:self.parameters success:^(id responseObject) {
+        
         [self.masterListArray removeAllObjects];
         NSString *newCount = responseObject[@"info"][@"total"];
-        if (newCount == self.totalCount) {
+        [NSKeyedArchiver archiveRootObject:newCount toFile:self.pagePath];
+        if (newCount == [NSKeyedUnarchiver unarchiveObjectWithFile:self.pagePath]) {
             [HUAMBProgress MBProgressOnlywithLabelText:@"没有更多新的技师了"];
         }
         NSArray *array = [HUADataTool getMasterList:responseObject];
@@ -161,12 +184,12 @@
         [self.tableView.mj_footer endRefreshingWithNoMoreData];
         return;
     }
+   
     NSString *url = self.url;
-    NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
-    parameters[@"shop_id"] = self.shop_id;
-    parameters[@"per_page"] = @(self.page);
-    [HUAHttpTool GET:url params:parameters success:^(id responseObject) {
-        NSArray *array = [HUADataTool getMasterList:responseObject];
+    self.parameters[@"shop_id"] = self.shop_id;
+    self.parameters[@"per_page"] = @(self.page);
+    [HUAHttpTool GET:url params:self.parameters success:^(id responseObject) {
+    NSArray *array = [HUADataTool getMasterList:responseObject];
         [self.masterListArray addObjectsFromArray:array];
         [self.tableView reloadData];
     } failure:^(NSError *error) {
@@ -180,20 +203,19 @@
     
     
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager new];
-    NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
-    parameters[@"shop_id"] = self.shop_id;
-    parameters[@"per_page"] = @(self.page);
+    self.parameters[@"shop_id"] = self.shop_id;
+    self.parameters[@"per_page"] = @(self.page);
     if (SubParameters != nil) {
-        [parameters setValuesForKeysWithDictionary:SubParameters];
+        [self.parameters setValuesForKeysWithDictionary:SubParameters];
     }
-    [manager GET:self.url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-        HUALog(@"%@",responseObject);
+    [manager GET:self.url parameters:self.parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+        HUALog(@"diaobaole%@",self.parameters);
         if ([[responseObject objectForKey:@"info"] isKindOfClass:[NSString class]]) {
             [HUAMBProgress MBProgressOnlywithLabelText:[responseObject objectForKey:@"info"]];
             return ;
         }
         self.totalPage = responseObject[@"info"][@"pages"];
-        self.totalCount = responseObject[@"info"][@"total"];
+        [self.masterListArray removeAllObjects];
         NSArray *array = [HUADataTool getMasterList:responseObject];
         [self.masterListArray addObjectsFromArray:array];
         [self.tableView reloadData];
@@ -232,8 +254,8 @@
     menu.delegate = self;
     [menu setGetDataBlock:^(NSString *leftText, NSString *leftSubText, NSString *midstText, NSString *lastText) {
         
-        NSLog(@"%@",leftText);
-        NSLog(@"%@",leftSubText);
+        NSLog(@"leftText%@",_dataDic[_leftText]);
+        NSLog(@"leftSubText%@",leftSubText);
         NSLog(@"%@",midstText);
         NSLog(@"%@",lastText);
         
@@ -245,33 +267,20 @@
             _rightText = lastText;
         }
         
-        
-        AFHTTPRequestOperationManager *manager = [[AFHTTPRequestOperationManager alloc] init];
-        NSString *url =[HUA_URL stringByAppendingPathComponent:@"master/master_list"];
-        NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
-        if (![_leftText isEqualToString:@"不限"] && _leftText != nil) {
-            parameters[@"type_id"] =_dataDic[_leftText];
+        if (![_leftText isEqualToString:@"全部"] && _leftText != nil) {
+            self.parameters[@"type_id"] = _dataDic[_leftText];
+        }
+        if ([_leftText isEqualToString:@"全部"] || _leftText == nil) {
+            self.parameters[@"type_id"] = nil;
         }
         if (![_leftSubText isEqualToString:@"不限"] && _leftSubText != nil) {
-            parameters[@"order"] =[_leftSubText isEqualToString:@"点赞降序"]? @"praise_desc":@"praise_asc";
+            self.parameters[@"order"] = [_leftSubText isEqualToString:@"点赞降序"]? @"praise_desc":@"praise_asc";
         }
-        parameters[@"shop_id"] = self.shop_id;
-        NSLog(@"%@",parameters);
-        [manager GET:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-            HUALog(@"%@",responseObject);
-            if ([[responseObject objectForKey:@"info"] isKindOfClass:[NSString class]]) {
-                [HUAMBProgress MBProgressOnlywithLabelText:[responseObject objectForKey:@"info"]];
-                return ;
-            }
-            self.masterListArray =nil;
-            self.masterListArray = [HUADataTool getMasterList:responseObject];
-            [self.tableView reloadData];
-        } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
-            HUALog(@"%@",error);
-        }];
-        
-        
-        
+        if ([_leftSubText isEqualToString:@"不限"] || _leftSubText == nil) {
+            self.parameters[@"order"] = nil;
+        }
+        self.page = 1;
+        [self getdataWithSubParameters:nil];
     }];
     
     [self.view addSubview:menu];
