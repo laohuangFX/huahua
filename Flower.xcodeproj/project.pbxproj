@@ -302,6 +302,8 @@
 		598284851C5F0B0200972357 /* HUAFunctionController.m in Sources */ = {isa = PBXBuildFile; fileRef = 598284841C5F0B0200972357 /* HUAFunctionController.m */; };
 		598284881C5F3C2B00972357 /* HUACategoryList.m in Sources */ = {isa = PBXBuildFile; fileRef = 598284871C5F3C2B00972357 /* HUACategoryList.m */; };
 		5982848B1C5F553B00972357 /* HUAUserDefaults.m in Sources */ = {isa = PBXBuildFile; fileRef = 5982848A1C5F553B00972357 /* HUAUserDefaults.m */; };
+		599DB67E1C7AB59B004EA1A0 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 599DB67D1C7AB59B004EA1A0 /* SystemConfiguration.framework */; };
+		599DB6811C7AB81B004EA1A0 /* HUAHttpStatus.m in Sources */ = {isa = PBXBuildFile; fileRef = 599DB6801C7AB81B004EA1A0 /* HUAHttpStatus.m */; };
 		59AC00F81C3A4AFE00F453F5 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 59AC00F71C3A4AFE00F453F5 /* main.m */; };
 		59AC00FB1C3A4AFE00F453F5 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 59AC00FA1C3A4AFE00F453F5 /* AppDelegate.m */; };
 		59AC01061C3A4AFE00F453F5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 59AC01041C3A4AFE00F453F5 /* LaunchScreen.storyboard */; };
@@ -880,6 +882,9 @@
 		598284871C5F3C2B00972357 /* HUACategoryList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HUACategoryList.m; sourceTree = "<group>"; };
 		598284891C5F553B00972357 /* HUAUserDefaults.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HUAUserDefaults.h; sourceTree = "<group>"; };
 		5982848A1C5F553B00972357 /* HUAUserDefaults.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HUAUserDefaults.m; sourceTree = "<group>"; };
+		599DB67D1C7AB59B004EA1A0 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		599DB67F1C7AB81B004EA1A0 /* HUAHttpStatus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HUAHttpStatus.h; sourceTree = "<group>"; };
+		599DB6801C7AB81B004EA1A0 /* HUAHttpStatus.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HUAHttpStatus.m; sourceTree = "<group>"; };
 		59AC00F31C3A4AFE00F453F5 /* Flower.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Flower.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		59AC00F71C3A4AFE00F453F5 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		59AC00F91C3A4AFE00F453F5 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = ../../AppDelegate.h; sourceTree = "<group>"; };
@@ -924,6 +929,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				599DB67E1C7AB59B004EA1A0 /* SystemConfiguration.framework in Frameworks */,
 				17B7E2DB1C71BD9C0032C6D5 /* MOBFoundation.framework in Frameworks */,
 				592CB9231C4E2A6B002FD56C /* libstdc++.tbd in Frameworks */,
 				592CB9211C4E2A61002FD56C /* JavaScriptCore.framework in Frameworks */,
@@ -1517,6 +1523,8 @@
 				5982848A1C5F553B00972357 /* HUAUserDefaults.m */,
 				590321C41C6EE87800741D14 /* HUAHttpTool.h */,
 				590321C51C6EE87800741D14 /* HUAHttpTool.m */,
+				599DB67F1C7AB81B004EA1A0 /* HUAHttpStatus.h */,
+				599DB6801C7AB81B004EA1A0 /* HUAHttpStatus.m */,
 			);
 			path = Tool;
 			sourceTree = "<group>";
@@ -1934,6 +1942,7 @@
 		59AC00EA1C3A4AFE00F453F5 = {
 			isa = PBXGroup;
 			children = (
+				599DB67D1C7AB59B004EA1A0 /* SystemConfiguration.framework */,
 				590749381C772AE90050654B /* AliyunOSSiOS.framework */,
 				592CB9221C4E2A6B002FD56C /* libstdc++.tbd */,
 				592CB9201C4E2A61002FD56C /* JavaScriptCore.framework */,
@@ -2256,6 +2265,7 @@
 				59FBFD661C48ED0600EB00B1 /* HUAServiceMasterCell.m in Sources */,
 				189317E51C4887C3005D230F /* HUACreateButton.m in Sources */,
 				189319791C488990005D230F /* HUAMyInformationViewController.m in Sources */,
+				599DB6811C7AB81B004EA1A0 /* HUAHttpStatus.m in Sources */,
 				17B7E2CA1C71BD9C0032C6D5 /* SDWebImageManager.m in Sources */,
 				189318C11C488896005D230F /* HUAImageViewButton.m in Sources */,
 				17B7E28F1C71BD9C0032C6D5 /* MASCompositeConstraint.m in Sources */,

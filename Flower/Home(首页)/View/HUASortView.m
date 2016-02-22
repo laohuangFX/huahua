@@ -102,7 +102,9 @@
 }
 
 - (void)click:(UIButton *)sender {
-    
+//    if (sender == self.lastButton) {
+//         [self removeFromSuperview];
+//    }
     if (self.lastButton) {
         self.lastButton.selected = NO;
         [self.lastButton setTitleColor:HUAColor(0x666666) forState:UIControlStateNormal];

@@ -54,6 +54,10 @@ static NSString *identifier = @"cell";
 @property (nonatomic, assign) NSNumber *totalPage;
 /**总数量*/
 @property (nonatomic, assign) NSString *totalCount;
+/**页数缓存路径*/
+@property (nonatomic, strong) NSString *pagePath;
+/**缓存路径*/
+@property (nonatomic, strong) NSString *homePath;
 
 @property (nonatomic, strong) CLLocationManager * mgr;
 @property (nonatomic, assign) CLLocationCoordinate2D currentCoord;
@@ -62,6 +66,20 @@ static NSString *identifier = @"cell";
 @end
 
 @implementation HUAHomeController
+- (NSString *)pagePath {
+    if (!_pagePath) {
+        _pagePath = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)firstObject] stringByAppendingPathComponent:@"page.plist"];
+    }
+    return _pagePath;
+}
+
+- (NSString *)homePath {
+    if (!_homePath) {
+        _homePath = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)firstObject] stringByAppendingPathComponent:@"home.plist"];
+    }
+    return _homePath;
+}
+
 - (HUASortView *)sortView {
     if (!_sortView) {
         _sortView = [[HUASortView alloc] initWithFrame:CGRectMake(0, screenHeight, screenWidth, screenHeight-sortViewHeight) ];
@@ -94,7 +112,7 @@ static NSString *identifier = @"cell";
     self.tabBarController.delegate = self;
     self.page = 1;
     
-    [self getData];
+    //[self getData];
     //设置导航栏
     [self setNavigationBar];
     
@@ -119,6 +137,12 @@ static NSString *identifier = @"cell";
 
 
 - (void)getData {
+    
+    if (kNetworkNotReachability == YES) {
+        HUALog(@"meiyou");
+    }else {
+        HUALog(@"you");
+    }
     
     NSString *url = [HUA_URL stringByAppendingPathComponent:App_index];
     NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
@@ -145,18 +169,22 @@ static NSString *identifier = @"cell";
     self.tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(loadNewData)];
     
     // 马上进入刷新状态
-    //[self.tableView.mj_header beginRefreshing];
+    [self.tableView.mj_header beginRefreshing];
     
 }
 
 - (void)loadNewData {
+    if (kNetworkNotReachability == YES) {
+       [HUAMBProgress MBProgressFromWindowWithLabelText:@"请检查网络设置"];
+        [self.tableView.mj_header endRefreshing];
+        return;
+    }
     if (self.order) {
         [HUAMBProgress MBProgressOnlywithLabelText:@"没有更多数据了"];
         [self.tableView.mj_header endRefreshing];
         return;
     }
     self.page=1;
-    [self.shopsArray removeAllObjects];
     NSString *url = [HUA_URL stringByAppendingPathComponent:App_index];
     NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
     parameter[@"order"] = self.order;
@@ -165,15 +193,22 @@ static NSString *identifier = @"cell";
         HUALog(@"123%@",responseObject);
         //加载数据插入到可变数组最前面
         NSString *newCount = responseObject[@"info"][@"total"];
-        if (newCount == self.totalCount) {
+        [NSKeyedArchiver archiveRootObject:newCount toFile:self.pagePath];
+        if ([newCount isEqualToString:[NSKeyedUnarchiver unarchiveObjectWithFile:self.pagePath]]) {
             [HUAMBProgress MBProgressOnlywithLabelText:@"没有更多新的商户了"];
         }
-        NSArray *array = [HUADataTool homeShop:responseObject];
-        [self.shopsArray addObjectsFromArray:array];
+        [self.shopsArray removeAllObjects];
+        NSArray *shopArray = [HUADataTool homeShop:responseObject];
+        [self.shopsArray addObjectsFromArray:shopArray];
+        self.categoryArray = [HUADataTool getCategoryList:responseObject];
+        NSArray *array = [HUADataTool homeBanner:responseObject];
+        HUAShopInfo *banner = array.firstObject;
+        self.bannerArray = banner.bannerArr;
+        [self createHeaderView:self.bannerArray];
         [self.tableView reloadData];
         [self.tableView.mj_header endRefreshing];
     } failure:^(NSError *error) {
-        [HUAMBProgress MBProgressFromWindowWithLabelText:@"请检查网络设置"];
+        
         [self.tableView.mj_header endRefreshing];
         self.page--;
     }];
@@ -200,6 +235,8 @@ static NSString *identifier = @"cell";
         if (indexPath.row == self.shopsArray.count-1) {
             // 自动上啦刷新
             [self loadMoreData];
+//            self.tableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(loadMoreData)];
+//            [self.tableView.mj_footer beginRefreshing];
         }
     }
 }
