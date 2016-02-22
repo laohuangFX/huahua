@@ -160,12 +160,27 @@ static NSString *identifier = @"cell";
         [self createHeaderView:self.bannerArray];
         [self.tableView reloadData];
     } failure:^(NSError *error) {
-        [HUAMBProgress MBProgressFromWindowWithLabelText:@"请检查网络设置"];
+        [HUAMBProgress MBProgressFromWindowWithLabelText:@"还没有联网哦，去设置网络吧"];
     }];
     
 }
 // 集成下拉刷新控件
 - (void)setupDownRefresh {
+    if (kNetworkNotReachability == YES) {
+        NSDictionary *responseObject = [NSDictionary dictionaryWithContentsOfFile:self.homePath];
+        self.totalPage = responseObject[@"info"][@"pages"];
+        
+        [self.shopsArray removeAllObjects];
+        NSArray *shopArray = [HUADataTool homeShop:responseObject];
+        [self.shopsArray addObjectsFromArray:shopArray];
+        self.categoryArray = [HUADataTool getCategoryList:responseObject];
+        NSArray *array = [HUADataTool homeBanner:responseObject];
+        HUAShopInfo *banner = array.firstObject;
+        self.bannerArray = banner.bannerArr;
+        [self createHeaderView:self.bannerArray];
+        [self.tableView reloadData];
+        
+    }
     self.tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(loadNewData)];
     
     // 马上进入刷新状态
@@ -174,11 +189,6 @@ static NSString *identifier = @"cell";
 }
 
 - (void)loadNewData {
-    if (kNetworkNotReachability == YES) {
-       [HUAMBProgress MBProgressFromWindowWithLabelText:@"请检查网络设置"];
-        [self.tableView.mj_header endRefreshing];
-        return;
-    }
     if (self.order) {
         [HUAMBProgress MBProgressOnlywithLabelText:@"没有更多数据了"];
         [self.tableView.mj_header endRefreshing];
@@ -191,7 +201,9 @@ static NSString *identifier = @"cell";
     parameter[@"per_page"] = @(self.page);
     [HUAHttpTool POST:url params:parameter success:^(id responseObject) {
         HUALog(@"123%@",responseObject);
+        [responseObject writeToFile:self.homePath atomically:YES];
         //加载数据插入到可变数组最前面
+        self.totalPage = responseObject[@"info"][@"pages"];
         NSString *newCount = responseObject[@"info"][@"total"];
         [NSKeyedArchiver archiveRootObject:newCount toFile:self.pagePath];
         if ([newCount isEqualToString:[NSKeyedUnarchiver unarchiveObjectWithFile:self.pagePath]]) {
@@ -208,35 +220,33 @@ static NSString *identifier = @"cell";
         [self.tableView reloadData];
         [self.tableView.mj_header endRefreshing];
     } failure:^(NSError *error) {
-        
+        [HUAMBProgress MBProgressFromWindowWithLabelText:@"还没有联网哦，去设置网络吧"];
         [self.tableView.mj_header endRefreshing];
         self.page--;
     }];
 }
 
 
-// 集成上拉刷新控件
-//- (void)setupUpRefresh {
-//    self.tableView.mj_footer = [MJRefreshBackNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(loadMoreData)];
-//
-//    [self.tableView.mj_footer beginRefreshing];
-//}
 
 //*cell即将到最后一个的时候自动加载数据
 -(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    if (kNetworkNotReachability == YES) {
+        self.tableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(loadMoreData)];
+        return;
+    }
     //到达最后一页数据
     if (self.page == [self.totalPage integerValue]) {
-//        if (indexPath.row == self.shopsArray.count-1) {
-            // 集成上拉刷新控件
-           self.tableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(loadMoreData)];
-       // }
+        //        if (indexPath.row == self.shopsArray.count-1) {
+        // 集成上拉刷新控件
+        self.tableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(loadMoreData)];
+        // }
     }else {
         if (indexPath.row == self.shopsArray.count-1) {
             // 自动上啦刷新
             [self loadMoreData];
-//            self.tableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(loadMoreData)];
-//            [self.tableView.mj_footer beginRefreshing];
+            //            self.tableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(loadMoreData)];
+            //            [self.tableView.mj_footer beginRefreshing];
         }
     }
 }
@@ -245,9 +255,9 @@ static NSString *identifier = @"cell";
 - (void)loadMoreData {
     self.page++;
     if (self.page > [self.totalPage integerValue]) {
-
+        
         [self.tableView.mj_footer endRefreshingWithNoMoreData];
-
+        
         return;
     }
     NSString *url = [HUA_URL stringByAppendingPathComponent:App_index];
@@ -261,7 +271,6 @@ static NSString *identifier = @"cell";
     } failure:^(NSError *error) {
         self.page--;
         [self.tableView.mj_footer endRefreshingWithNoNoHTTP];
-        [HUAMBProgress MBProgressFromWindowWithLabelText:@"请检查网络设置"];
     }];
 }
 
@@ -624,7 +633,14 @@ static NSString *identifier = @"cell";
 
 
 - (void)sortMenuDidDismiss:(HUASortViewButtonType)buttonType {
-
+    UIButton * button =  [self.header viewWithTag:1000];
+    button.selected = NO;
+    self.sortView.y = screenHeight;
+    [self.sortView removeFromSuperview];
+    if (kNetworkNotReachability == YES) {
+        [HUAMBProgress MBProgressOnlywithLabelText: @"还没有联网哦，去设置网络吧"];
+        return;
+    }
     switch (buttonType) {
         case HUASortViewButtonTypePopularity:
             self.order = @"bill_count_desc";
@@ -642,10 +658,7 @@ static NSString *identifier = @"cell";
     [self.shopsArray removeAllObjects];
     self.page = 1;
     [self getData];
-    UIButton * button =  [self.header viewWithTag:1000];
-    button.selected = NO;
-    self.sortView.y = screenHeight;
-    [self.sortView removeFromSuperview];
+
     
 }
 
