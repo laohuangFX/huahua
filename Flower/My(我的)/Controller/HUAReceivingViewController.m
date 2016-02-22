@@ -51,10 +51,17 @@
     NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
 
     [manager GET:url parameters:parameter success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-       // NSLog(@"%@",responseObject);
+        NSLog(@"%@",responseObject);
+        if ([responseObject[@"code"] integerValue] == 6 ) {
+            //为空就返回
+            self.ReceivingArrar = nil;
+            [self.tablewView reloadData];
+            return ;
+        }
+        
         self.ReceivingArrar = [[HUADataTool addressJson:responseObject] mutableCopy];
         
-         [self setTableView];
+        [self setTableView];
         
         [self.tablewView reloadData];
         

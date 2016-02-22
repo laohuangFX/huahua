@@ -13,6 +13,8 @@
 @interface HUAChooseAddressViewController ()<UITableViewDataSource,UITableViewDelegate>
 @property(nonatomic,strong)NSArray *ReceivingArrar;
 @property (nonatomic, strong)UITableView *tableView;
+@property (nonatomic, strong)UIButton *selecteButton;
+
 @end
 
 @implementation HUAChooseAddressViewController
@@ -44,7 +46,14 @@
     NSString *url = [HUA_URL stringByAppendingPathComponent:strURL];
     NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
     [manager GET:url parameters:parameter success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-        // NSLog(@"%@",responseObject);
+        NSLog(@"%@",responseObject);
+        if ([responseObject[@"code"] integerValue] == 6 ) {
+            //为空就返回
+            self.ReceivingArrar = nil;
+            [self.tableView reloadData];
+            return ;
+        }
+      
         self.ReceivingArrar = [[HUADataTool addressJson:responseObject] mutableCopy];
         
         [self setTableView];
@@ -113,20 +122,34 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     return hua_scale(60);
 }
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+
+    UIButton *button = [self.view viewWithTag:indexPath.row+1000];
+    
+    if (_selecteButton!= button) {
+        button.selected  =YES;
+        _selecteButton.selected = NO;
+    }else{
+        button.selected = YES;
+    }
+     self.modelBlock(self.ReceivingArrar[button.tag-1000]);
+    
+    _selecteButton =  button;
+    
+}
 
 //选择地址
-UIButton *button = nil;
 - (void)selectAddress:(UIButton *)sender{
     
-    if (button!=sender) {
+    if (_selecteButton!=sender) {
         sender.selected = YES;
-        button.selected = NO;
+        _selecteButton.selected = NO;
     }else{
         sender.selected = YES;
     }
     self.modelBlock(self.ReceivingArrar[sender.tag-1000]);
     
-    button = sender;
+    _selecteButton = sender;
 }
 
 //新增地址

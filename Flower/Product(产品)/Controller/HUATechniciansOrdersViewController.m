@@ -17,6 +17,9 @@
     
     UIView *_tanBgView;//弹窗
     NSArray *_cardArray;//产品卡的数组
+    
+    //记录用户选择过的产品卡
+    UIButton *_cardButton;
 }
 
 ///////////////////技师和服务的订单页/////////////////////////////////////////////////////
@@ -25,6 +28,8 @@
 
 @property(nonatomic,strong)UILabel *numberTypelabel ;
 @property (nonatomic, strong)UILabel *memberLabel;
+//弹出的产品卡框
+@property (nonatomic, strong)UITableView *tanBgTableView;
 @property (nonatomic, strong)HATransparentView *transparentView;
 @end
 
@@ -33,7 +38,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.title = @"技师订单确认";
+    self.title = @"订单确认";
     self.view.backgroundColor = [UIColor whiteColor];
     
     [self initScrollView];
@@ -171,78 +176,7 @@
         memberType.hidden = YES;
         thView2.hidden = YES;
     }
-    //
-    //    //购买数量
-    //    UILabel *quantityLabel = [UILabel new];
-    //    quantityLabel.text = @"购买数量";
-    //    quantityLabel.font = [UIFont systemFontOfSize:13];
-    //    [scrollView addSubview:quantityLabel];
-    //    [quantityLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-    //        make.height.mas_equalTo(13);
-    //        make.top.mas_equalTo(thView2.mas_bottom).mas_equalTo(hua_scale(50.0/2)-hua_scale(13.0/2.0));
-    //        make.left.mas_equalTo(hua_scale(15));
-    //    }];
-    //    [quantityLabel setSingleLineAutoResizeWithMaxWidth:200];
-    //    quantityLabel.sd_layout
-    //    .autoHeightRatio(0);
-    //
-    //    //背景图
-    //    UIImageView *backImageView = [[UIImageView alloc] init];
-    //    backImageView.userInteractionEnabled = YES;
-    //    backImageView.image = [UIImage imageNamed:@"numer"];
-    //    [scrollView addSubview:backImageView];
-    //    [backImageView mas_makeConstraints:^(MASConstraintMaker *make) {
-    //        make.right.mas_equalTo(self.view.right-hua_scale(15));
-    //        make.centerY.mas_equalTo(quantityLabel);
-    //        make.size.mas_equalTo(CGSizeMake(hua_scale(91), hua_scale(29)));
-    //    }];
-    //
-    //    //减少
-    //    UIButton *subtractButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    //    subtractButton.tag = 189;
-    //    [subtractButton setBackgroundImage:[UIImage imageNamed:@"btn_minus"] forState:0];
-    //    [subtractButton setBackgroundImage:[UIImage imageNamed:@"btn_minus_select"] forState:UIControlStateSelected];
-    //    [backImageView addSubview:subtractButton];
-    //    [subtractButton addTarget:self action:@selector(pageAdd:) forControlEvents:UIControlEventTouchUpInside];
-    //    [subtractButton mas_makeConstraints:^(MASConstraintMaker *make) {
-    //        make.left.mas_equalTo(0);
-    //        make.top.mas_equalTo(0);
-    //        make.width.mas_equalTo(hua_scale(28));
-    //        make.bottom.mas_equalTo(0);
-    //    }];
-    //    //增加
-    //    UIButton *addButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    //    addButton.tag = 190;
-    //    [addButton setBackgroundImage:[UIImage imageNamed:@"btn_add_select"] forState:0];
-    //    [addButton setBackgroundImage:[UIImage imageNamed:@"btn_add"] forState:UIControlStateSelected];
-    //    [addButton addTarget:self action:@selector(pageAdd:) forControlEvents:UIControlEventTouchUpInside];
-    //    [backImageView addSubview:addButton];
-    //    [addButton mas_makeConstraints:^(MASConstraintMaker *make) {
-    //        make.right.mas_equalTo(0);
-    //        make.top.mas_equalTo(0);
-    //        make.bottom.mas_equalTo(0);
-    //        make.width.mas_equalTo(hua_scale(28));
-    //    }];
-    //
-    //    _numberTypelabel = [UILabel new];
-    //    _numberTypelabel.font = [UIFont systemFontOfSize:13];
-    //    _numberTypelabel.text = @"1";
-    //    _numberTypelabel.textAlignment = NSTextAlignmentCenter;
-    //    [backImageView addSubview:_numberTypelabel];
-    //    [_numberTypelabel mas_makeConstraints:^(MASConstraintMaker *make) {
-    //        make.bottom.top.mas_equalTo(0);
-    //        make.left.mas_equalTo(subtractButton.mas_right);
-    //        make.right.mas_equalTo(addButton.mas_left);
-    //    }];
-    
-    //    //3线
-    //    UIView *thView3 = [UIView new];
-    //    thView3.backgroundColor = HUAColor(0xe1e1e1);
-    //    [scrollView addSubview:thView3];
-    //    thView3.sd_layout
-    //    .topSpaceToView(thView2,hua_scale(50))
-    //    .heightIs(1)
-    //    .widthIs(scrollView.width);
+
     
     
     
@@ -316,6 +250,19 @@
     .heightIs(1)
     .widthIs(scrollView.width);
     
+    //手势背景
+    [thView4 updateLayout];
+    UIView *bgView1 = [UIView new];
+    bgView1.backgroundColor = [UIColor clearColor];
+    bgView1.tag = 1231;
+    [bgView1 addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clickButton:)]];
+    [scrollView addSubview:bgView1];
+    [bgView1 mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(iocnImage.mas_top).mas_equalTo(hua_scale(-5));
+        make.bottom.mas_equalTo(thView4.mas_top);
+        make.right.left.mas_equalTo(self.view);
+    }];
+
     
     //5线
     UIView *thView5 = [UIView new];
@@ -325,6 +272,20 @@
     .topSpaceToView(thView4,hua_scale(44))
     .heightIs(1)
     .widthIs(scrollView.width);
+    
+    //手势背景
+    [thView5 updateLayout];
+    UIView *bgView2 = [UIView new];
+    bgView2.backgroundColor = [UIColor clearColor];
+    bgView2.tag = 1232;
+    [bgView2 addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clickButton:)]];
+    [scrollView addSubview:bgView2];
+    [bgView2 mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(thView4.mas_bottom);
+        make.bottom.mas_equalTo(thView5.mas_top);
+        make.right.left.mas_equalTo(self.view);
+    }];
+    
     
     UIImageView *iocnImageView = [[UIImageView alloc] init];
     iocnImageView.image = [UIImage imageNamed:@"zhifubao"];
@@ -381,6 +342,21 @@
     .topSpaceToView(thView5,hua_scale(44))
     .heightIs(1)
     .widthIs(scrollView.width);
+    
+    //手势背景
+    [thView6 updateLayout];
+    UIView *bgView3 = [UIView new];
+    bgView3.backgroundColor = [UIColor clearColor];
+    bgView3.tag = 1233;
+    [bgView3 addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clickButton:)]];
+    [scrollView addSubview:bgView3];
+    [bgView3 mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(thView5.mas_bottom);
+        make.bottom.mas_equalTo(thView6.mas_top);
+        make.right.left.mas_equalTo(self.view);
+    }];
+
+    
     
     UIImageView *winImageView = [[UIImageView alloc] init];
     winImageView.image = [UIImage imageNamed:@"weixin"];
@@ -485,6 +461,20 @@
     .heightIs(1)
     .leftEqualToView(thView6)
     .rightEqualToView(thView6);
+    
+    //手势背景
+    [addThView updateLayout];
+    UIView *bgView4 = [UIView new];
+    bgView4.backgroundColor = [UIColor clearColor];
+    bgView4.tag = 1234;
+    [bgView4 addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clickButton:)]];
+    [scrollView addSubview:bgView4];
+    [bgView4 mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(thView6.mas_bottom);
+        make.bottom.mas_equalTo(addThView.mas_top);
+        make.right.left.mas_equalTo(self.view);
+    }];
+    
     
     
     //7线
@@ -650,7 +640,7 @@
     
     //xx按钮
     UIButton *bakeButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    bakeButton.backgroundColor = [UIColor yellowColor];
+    bakeButton.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"close"]];
     [bakeButton addTarget:self action:@selector(removeBgView) forControlEvents:UIControlEventTouchUpInside];
     [_tanBgView addSubview:bakeButton];
     [bakeButton mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -665,6 +655,7 @@
     tanBgTableView.delegate =self;
     tanBgTableView.dataSource =self;
     [_tanBgView addSubview:tanBgTableView];
+    self.tanBgTableView = tanBgTableView;
     
 
     //取消按钮
@@ -706,13 +697,13 @@
     }];
 
 }
-//按钮点击事件
+//按钮点击事件,选择支付方式
 UIButton *bttn = nil;
 - (void)pageAdd:(UIButton *)button{
     
     if (bttn != button) {
         button.selected = YES;
-        bttn.selected = NO;
+        _selecteButton.selected = NO;
     }else{
         button.selected = YES;
     }
@@ -779,7 +770,15 @@ UIButton *bttn = nil;
 //弹窗按钮时间
 - (void)removeBgView{
 //xx按钮
-
+   
+        [UIView animateWithDuration:0.3 animations:^{
+            
+            _tanBgView.top = self.view.bottom;
+            
+        } completion:^(BOOL finished) {
+            
+            [_transparentView close];
+        }];
 }
 //确认
 - (void)tanBgButton:(UIButton *)sender{
@@ -811,7 +810,16 @@ UIButton *bttn = nil;
     if (cell == nil) {
         cell = [[HUAcardTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellStr];
     }
-    
+    [cell setSelecteBlock:^(UIButton *sender){
+        if (_cardButton != sender) {
+            sender.selected = YES;
+            _cardButton.selected = NO;
+        }else{
+            sender.selected = YES;
+        }
+            _cardButton = sender;
+        
+    }];
     cell.dataDic = _cardArray[indexPath.row];
     
     return cell;
@@ -820,9 +828,41 @@ UIButton *bttn = nil;
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     return hua_scale(80);
 }
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    if (tableView == self.tanBgTableView) {
+        _transparentView.userInteractionEnabled = YES;
+        HUAcardTableViewCell *cell = [self.tanBgTableView cellForRowAtIndexPath:indexPath];
+        
+        if (_cardButton == cell.selecteBuuton) {
+            cell.selecteBuuton.selected = YES;
+        }else{
+            cell.selecteBuuton.selected = YES;
+            _cardButton.selected = NO;
+        }
+        
+        _cardButton = cell.selecteBuuton;
 
+    }
+ 
+}
 - (void)HATransparentViewDidClosed
 {
     NSLog(@"Did close");
+}
+
+-(void)clickButton:(UITapGestureRecognizer *)tap{
+
+    UIButton *button1 = [self.view viewWithTag:tap.view.tag-1231+190];
+
+    if (_selecteButton != button1) {
+            button1.selected = YES;
+            _selecteButton.selected = NO;
+        }else{
+            button1.selected = YES;
+        }
+  
+    
+       _selecteButton = button1;
+    NSLog(@"%ld",_selecteButton.tag);
 }
 @end

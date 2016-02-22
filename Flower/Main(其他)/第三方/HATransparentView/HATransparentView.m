@@ -135,8 +135,8 @@
 #pragma mark - UITapGestureRecognizer
 
 - (void)addTapGestureRecognizer {
-    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(close:)];
-    [self addGestureRecognizer:tapGesture];
+   // UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(close:)];
+    //[self addGestureRecognizer:tapGesture];
 }
 
 - (void)close:(UITapGestureRecognizer *)sender {

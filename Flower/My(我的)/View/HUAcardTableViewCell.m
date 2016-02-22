@@ -18,7 +18,7 @@
     
     UILabel *_serveLabel;
     
-    UIButton *_selecteBuuton;
+  
 }
 
 @end
@@ -28,6 +28,7 @@
     if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
         
         [self setCell];
+        self.selectionStyle = UITableViewCellSelectionStyleNone;
     }
     return self;
 }
@@ -107,16 +108,11 @@
     [HUAConstRowHeight adjustTheLabel:_serveLabel adjustColor:HUAColor(0x4da800) adjustRang:NSMakeRange(7, [[dataDic[@"service_scope"] firstObject][@"name"] length])];
 }
 
-UIButton *buttonn = nil;
+
 - (void)click:(UIButton *)sender{
-    if (buttonn!=sender) {
-        sender.selected = YES;
-        buttonn.selected = NO;
-    }else{
-        sender.selected = YES;
-    }
+
     
-    buttonn = sender;
+    self.selecteBlock(sender);
 }
 
 - (void)awakeFromNib {

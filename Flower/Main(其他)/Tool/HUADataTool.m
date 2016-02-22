@@ -457,6 +457,7 @@ static NSArray *_array = nil;
 }
 //收货地址
 - (NSArray *)getAddressJson:(NSDictionary *)dic{
+
     NSArray *array = dic[@"info"];
     NSMutableArray *mutableArray = [NSMutableArray array];
     for (NSDictionary *addDic in array) {

@@ -184,6 +184,7 @@ HUATechnicianTableViewCell *laCell = nil;
             button.selected = YES;
         }else{
             laCell.seletebutton.selected = NO;
+            _seleteBuuton.selected = NO;
         }
         
         _seleteBuuton = button;
@@ -201,6 +202,18 @@ HUATechnicianTableViewCell *laCell = nil;
     return hua_scale(80);
 }
 
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    HUATechnicianTableViewCell *Cell = [self.tableView cellForRowAtIndexPath:indexPath];
+    
+    if (_seleteBuuton!=Cell.seletebutton) {
+        Cell.seletebutton.selected = YES;
+        _seleteBuuton.selected = NO;
+    }else{
+        Cell.seletebutton.selected = YES;
+    }
+    
+    _seleteBuuton = Cell.seletebutton;
+}
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
