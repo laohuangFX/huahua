@@ -81,6 +81,8 @@
     self.searchplaceholder = @"搜索";
     //搜索
     [self getdataWithSubParameters:nil];
+    //菜单
+    [self category:nil];
     
     // 集成下拉刷新控件
     [self setupDownRefresh];
@@ -95,7 +97,23 @@
     NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
     parameters[@"shop_id"] = self.shop_id;
     [manager GET:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation,NSDictionary* responseObject) {
-        [self category:responseObject];
+       
+        _dataDic = [NSMutableDictionary dictionary];
+        _data1 = [NSMutableArray array];
+        
+        NSArray *array = responseObject[@"info"];
+        
+        for (NSDictionary *dic in array) {
+            
+            [_dataDic setValue:dic[@"type_id"] forKey:dic[@"name"]];
+            
+            [_data1 addObject:@{@"title":dic[@"name"]}];
+        }
+        
+        [_data1 insertObject:@{@"title":@"全部"} atIndex:0];
+        
+        _data2 = [NSMutableArray arrayWithObjects:@"不限", @"点赞降序", @"点赞升序",nil];
+        
     } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
         HUALog(@"%@",error);
     }];
@@ -166,6 +184,7 @@
     parameters[@"shop_id"] = self.shop_id;
     parameters[@"per_page"] = @(self.page);
     [HUAHttpTool GET:url params:parameters success:^(id responseObject) {
+        
         NSArray *array = [HUADataTool getMasterList:responseObject];
         [self.masterListArray addObjectsFromArray:array];
         [self.tableView reloadData];
@@ -204,23 +223,7 @@
 }
 
 - (void)category:(NSDictionary *)downDic{
-    _dataDic = [NSMutableDictionary dictionary];
-    _data1 = [NSMutableArray array];
-    
-    NSArray *array = downDic[@"info"];
-    
-    for (NSDictionary *dic in array) {
-        
-        [_dataDic setValue:dic[@"type_id"] forKey:dic[@"name"]];
-        
-        [_data1 addObject:@{@"title":dic[@"name"]}];
-    }
-    
-    [_data1 insertObject:@{@"title":@"全部"} atIndex:0];
-    
-    _data2 = [NSMutableArray arrayWithObjects:@"不限", @"点赞降序", @"点赞升序",nil];
-    //_data3 = [NSMutableArray arrayWithObjects:@"不限",@"最少",@"最多",nil];
-    
+
     JSDropDownMenu *menu = [[JSDropDownMenu alloc] initWithOrigin:CGPointMake(0, 0) andHeight:hua_scale(30)];
     
     menu.separatorColor = [UIColor colorWithRed:210.0f/255.0f green:210.0f/255.0f blue:210.0f/255.0f alpha:1.0];
@@ -263,15 +266,13 @@
                 [HUAMBProgress MBProgressOnlywithLabelText:[responseObject objectForKey:@"info"]];
                 return ;
             }
-            self.masterListArray =nil;
-            self.masterListArray = [HUADataTool getMasterList:responseObject];
+            self.masterListArray =  nil;
+            self.masterListArray = [[HUADataTool getMasterList:responseObject] mutableCopy];
             [self.tableView reloadData];
         } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
             HUALog(@"%@",error);
         }];
-        
-        
-        
+
     }];
     
     [self.view addSubview:menu];

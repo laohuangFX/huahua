@@ -27,14 +27,6 @@
 
 @implementation HUStatusAViewController
 
-//+ (HUStatusAViewController *)standardVC{
-//    static HUStatusAViewController *vc = nil;
-//    static dispatch_once_t onceToken;
-//    dispatch_once(&onceToken, ^{
-//        vc = [HUStatusAViewController new];
-//    });
-//    return vc;
-//}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -319,6 +311,7 @@
         [self footRefreshData];
         
     }
+    NSLog(@"%ld",self.page);
 }
 - (NSMutableArray *)array{
 
