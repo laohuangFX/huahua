@@ -99,23 +99,23 @@
     parameters[@"shop_id"] = self.shop_id;
     [manager GET:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation,NSDictionary* responseObject) {
         //HUALog(@"%@",responseObject);
-//        _data1 = [NSMutableArray array];
-//        
-//        NSArray *array = responseObject[@"info"];
-//        
-//        for (NSDictionary *dic in array) {
-//            
-//            [_dataDic setValue:dic[@"category_id"] forKey:dic[@"name"]];
-//            
-//            [_data1 addObject:@{@"title":dic[@"name"]}];
-//        }
-//        
-//        NSArray *noLimit = @[@"不限"];
-//        
-//        [_data1 insertObject:@{@"title":@"不限"} atIndex:0];
-//        
-//        _data2 = [NSMutableArray arrayWithObjects:@"不限", @"价格降序", @"价格升序",nil];
-//        _data3 = [NSMutableArray arrayWithObjects:@"不限",@"点赞降序",@"点赞升序",nil];
+        _data1 = [NSMutableArray array];
+        
+        NSArray *array = responseObject[@"info"];
+        
+        for (NSDictionary *dic in array) {
+            
+            [_dataDic setValue:dic[@"category_id"] forKey:dic[@"name"]];
+            
+            [_data1 addObject:@{@"title":dic[@"name"]}];
+        }
+        
+        NSArray *noLimit = @[@"不限"];
+        
+        [_data1 insertObject:@{@"title":@"不限"} atIndex:0];
+        
+        _data2 = [NSMutableArray arrayWithObjects:@"不限", @"价格降序", @"价格升序",nil];
+        _data3 = [NSMutableArray arrayWithObjects:@"不限",@"点赞降序",@"点赞升序",nil];
 
         
     } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
@@ -274,6 +274,7 @@
         }
         parameters[@"shop_id"] = self.shop_id;
         parameters[@"per_page"] = @(self.page);
+        NSLog(@"%@",parameters);
         [manager GET:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
            // HUALog(@"%@",responseObject);
             if ([[responseObject objectForKey:@"info"] isKindOfClass:[NSString class]]) {

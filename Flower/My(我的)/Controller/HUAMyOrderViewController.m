@@ -124,14 +124,18 @@
             if ([_leftText isEqualToString:@"服务"]) {
                 if ([_leftSubText isEqualToString:@"未使用"]) {
                      parameters[@"Product_filter"] = @"6";
+                }else if ([_leftSubText isEqualToString:@"不限服务"]){
+                    parameters[@"Product_filter"] = @"5";
                 }else{
                      parameters[@"Product_filter"] = @"7";
                 }
             }else if ([_leftText isEqualToString:@"产品"]){
                 if ([_leftSubText isEqualToString:@"等待发货"]) {
                     parameters[@"Product_filter"] = @"2";
-                }else if([_leftSubText isEqualToString:@"待确认收货货"]){
+                }else if([_leftSubText isEqualToString:@"待确认收货"]){
                     parameters[@"Product_filter"] = @"3";
+                }else if([_leftSubText isEqualToString:@"不限产品"]){
+                    parameters[@"Product_filter"] = @"1";
                 }else{
                   parameters[@"Product_filter"] = @"4";
                 }
@@ -140,6 +144,8 @@
                     parameters[@"Product_filter"] = @"9";
                 }else if([_leftSubText isEqualToString:@"已使用"]){
                     parameters[@"Product_filter"] = @"10";
+                }else if([_leftSubText isEqualToString:@"不限活动"]){
+                    parameters[@"Product_filter"] = @"8";
                 }else{
                     parameters[@"Product_filter"] = @"11";
                 }
@@ -157,7 +163,8 @@
                 parameters[@"Time_filter"] = @(3600*24*90);
             }
         }
-
+    
+        NSLog(@"%@",parameters);
         [manager GET:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
           //  HUALog(@"%@",responseObject);
         
@@ -166,7 +173,7 @@
                 return ;
             }
             self.array = nil;
-            self.array = [HUADataTool MyOrder:responseObject];
+            self.array = [[HUADataTool MyOrder:responseObject] mutableCopy];
             
             [self.tablewView reloadData];
         } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
@@ -205,7 +212,7 @@
             [self.tablewView.mj_footer endRefreshing];
         }else{
         
-            [self.array removeAllObjects];
+            self.array = nil;
             self.array = [[HUADataTool MyOrder:dic] mutableCopy];
             [self.tablewView reloadData];
             [self.tablewView.mj_header endRefreshing];
@@ -294,7 +301,7 @@
         NSDictionary *parameters = @{@"bill_id":model.bill_num};
         
         NSString *url = [HUA_URL stringByAppendingPathComponent:@"user/confirm_receipt"];
-        
+        NSLog(@"%@",parameters);
         [manager POST:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
             NSLog(@"%@",responseObject);
             NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:responseObject options:0 error:nil];
@@ -502,6 +509,7 @@
         [self footRefreshData];
         
     }
+    NSLog(@"%ld",self.page);
 }
 - (NSMutableArray *)array{
     if (_array==nil) {
