@@ -16,13 +16,28 @@
     city.cityid = dic[@"id"];
     city.lat = dic[@"lat"];
     city.lng = dic[@"lng"];
-    city.mergerName = dic[@"mergername"];
+    city.mergerName = [dic[@"mergername"] componentsSeparatedByString:@","][1];
     city.parentid = dic[@"parentid"];
     return city;
 }
 
-- (NSArray *)citysFromArray:(NSArray *)array{
++ (NSArray *)citysFromArray:(NSArray *)array{
     NSMutableArray *mun = [NSMutableArray array];
+    for (NSDictionary *dic in array) {
+        HUACityInfo *info = [HUACityInfo modelWithDictionary:dic];
+        [mun addObject:info];
+    }
     return mun;
 }
+
+
++ (NSString *)parentidForcityName:(NSString *)cityName array:(NSArray *)array{
+    for (HUACityInfo*info in array) {
+        if ([info.cityName isEqualToString:cityName]) {
+            return info.cityid;
+        }
+    }
+    return @"";
+}
+
 @end

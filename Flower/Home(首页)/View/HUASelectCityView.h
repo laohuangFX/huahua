@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "HUACityInfo.h"
 
-typedef void(^CityBlock)(NSString * city);
+typedef void(^CityBlock)(HUACityInfo * city);
 @interface HUASelectCityView : UIView
 
 @property (nonatomic,strong)NSMutableArray *cityArray;

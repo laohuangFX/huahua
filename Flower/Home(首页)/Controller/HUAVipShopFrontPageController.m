@@ -246,7 +246,7 @@
         CGRect addressFrame = CGRectMake(hua_scale(50), hua_scale(339),screenWidth - hua_scale(60), 0);
         UILabel *addressLabel = [UILabel labelWithFrame:addressFrame text:self.shopIntroduce.address color:HUAColor(0x4da800) font:hua_scale(12)];
         addressLabel.numberOfLines = 2;
-        NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:addressLabel.text];
+        NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:self.shopIntroduce.address];
         NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
         [paragraphStyle setLineSpacing:4];//调整行间距
         [paragraphStyle setFirstLineHeadIndent:distanceLabel.width];

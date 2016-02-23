@@ -16,5 +16,6 @@
 @property (nonatomic,strong)NSString *mergerName;
 @property (nonatomic,strong)NSString *parentid;
 
-
++ (NSArray *)citysFromArray:(NSArray *)array;
++ (NSString *)parentidForcityName:(NSString *)cityName array:(NSArray *)array;
 @end
