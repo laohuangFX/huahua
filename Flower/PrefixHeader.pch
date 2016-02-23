@@ -88,9 +88,9 @@
 
 //接口
 //#define HUA_URL @"http://120.24.182.25/huahua_api/index.php"
-//#define HUA_URL @"http://192.168.8.55/huahua_api/index.php/"
+#define HUA_URL @"http://192.168.8.55/huahua_api/index.php/"
 //#define HUA_URL @"http://192.168.8.142/huahua_api/index.php"
-#define HUA_URL @"http://112.74.22.87/huahua_api/index.php"
+//#define HUA_URL @"http://112.74.22.87/huahua_api/index.php"
 #define Product_list @"general/product_list"
 #define Service_list @"service/service_list"
 #define Master_list @"master/master_list"

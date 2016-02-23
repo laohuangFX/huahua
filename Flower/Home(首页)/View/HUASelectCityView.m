@@ -116,6 +116,7 @@ typedef NS_ENUM(NSInteger, UITableViewLeftOrRight) {
         BackgroundView.backgroundColor = HUAColor(0x4da800);
         leftCell.selectedBackgroundView = BackgroundView;
         leftCell.textLabel.highlightedTextColor = [UIColor whiteColor];
+        
         return leftCell;
     }
     else
@@ -170,6 +171,8 @@ typedef NS_ENUM(NSInteger, UITableViewLeftOrRight) {
         _leftTableV.showsHorizontalScrollIndicator = NO;
         _leftTableV.separatorInset = UIEdgeInsetsMake(0,0, 0,0);
         _leftTableV.separatorColor = HUAColor(0xd2d2d2);
+        NSIndexPath *path = [NSIndexPath indexPathForRow:0 inSection:0];
+        [_leftTableV selectRowAtIndexPath:path animated:NO scrollPosition:UITableViewScrollPositionNone];
     }
     return _leftTableV;
 }

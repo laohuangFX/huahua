@@ -91,6 +91,10 @@ static NSString * const reuseIdentifier = @"cell";
     [self setupDownRefresh];
     
 }
+- (void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:animated];
+    [self dismissBlackView];
+}
 //获取下拉菜单数据
 - (void)getDownData{
     
