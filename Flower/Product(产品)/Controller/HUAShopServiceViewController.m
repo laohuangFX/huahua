@@ -49,6 +49,8 @@
 @property (nonatomic, strong) NSMutableDictionary *parameters;
 /**页数缓存路径*/
 @property (nonatomic, strong) NSString *pagePath;
+/**判断是不是第一次进入控制器*/
+@property (nonatomic, assign) BOOL isFirstTime;
 @end
 
 @implementation HUAShopServiceViewController
@@ -86,7 +88,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
-     self.page = 1;
+    self.page = 1;
+    self.isFirstTime = YES;
     //获取下拉菜单数据
     [self getDownData];
     _dataDic = [NSMutableDictionary dictionary];
@@ -163,17 +166,26 @@
     self.parameters[@"shop_id"] = self.shop_id;
     self.parameters[@"per_page"] = @(self.page);
     [HUAHttpTool GET:url params:self.parameters success:^(id responseObject) {
+        HUALog(@"%@",responseObject);
+        //获取数据总个数
         NSString *newCount = responseObject[@"info"][@"total"];
-        [NSKeyedArchiver archiveRootObject:newCount toFile:self.pagePath];
-        if ([newCount isEqualToString:[NSKeyedUnarchiver unarchiveObjectWithFile:self.pagePath]]) {
-            [HUAMBProgress MBProgressOnlywithLabelText:@"没有更多新的服务了"];
+        if (self.isFirstTime == YES) {
+            
+        }else {
+            if ([newCount isEqualToString:[NSKeyedUnarchiver unarchiveObjectWithFile:self.pagePath]]) {
+                [HUAMBProgress MBProgressOnlywithLabelText:@"没有更多新的服务了"];
+            }
         }
         self.totalPage = responseObject[@"info"][@"pages"];
+        //保存这一次总个数
+        [NSKeyedArchiver archiveRootObject:newCount toFile:self.pagePath];
+        [self.productsArray removeAllObjects];
          [self.productsArray removeAllObjects];
         NSArray *array = [HUADataTool shopProduct:responseObject];
         [self.productsArray addObjectsFromArray:array];
         [self.tableView reloadData];
         [self.tableView.mj_header endRefreshing];
+        self.isFirstTime = NO;
     } failure:^(NSError *error) {
         [HUAMBProgress MBProgressFromWindowWithLabelText:@"请检查网络设置"];
         [self.tableView.mj_header endRefreshing];
@@ -323,7 +335,10 @@
 
 - (void)setNavigationItem {
     
-    self.navigationItem.hidesBackButton = NO;
+    UIBarButtonItem *backButton = [UIBarButtonItem itemWithTarget:self action:@selector(backAction:) image:@"back_green" highImage:@"back_green" text:@"返回"];
+    UIBarButtonItem *space = [UIBarButtonItem leftSpace:hua_scale(-10)];
+    backButton.tintColor = HUAColor(0x47A300);
+    self.navigationItem.leftBarButtonItems = @[space, backButton];
     
     self.navigationItem.titleView = nil;
     UIBarButtonItem *leftSpace = [UIBarButtonItem leftSpace:-30];
@@ -331,7 +346,9 @@
     self.navigationItem.rightBarButtonItems = @[leftSpace, searchBar];
     
 }
-
+- (void)backAction:(UIButton *)sender {
+    [self.navigationController popViewControllerAnimated:YES];
+}
 #pragma mark -- searchTextFiled
 
 - (void)search {

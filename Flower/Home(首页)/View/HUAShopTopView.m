@@ -48,6 +48,11 @@
         self.phoneLabel = [UILabel labelWithFrame:phoneLabelFrame text:@"020-88886958" color:HUAColor(0x4da800) font:hua_scale(12)];
         [self addSubview:self.phoneLabel];
         
+        UIButton *phoneButton = [UIButton buttonWithType:0];
+        phoneButton.frame = CGRectMake(0, hua_scale(278), screenWidth, hua_scale(40));
+        [phoneButton addTarget:self action:@selector(telephoneService) forControlEvents:UIControlEventTouchUpInside];
+        [self addSubview:phoneButton];
+        
         self.addressImageView = [[UIImageView alloc] initWithFrame:CGRectMake(hua_scale(9), hua_scale(323), hua_scale(31), hua_scale(30))];
         self.addressImageView.image = [UIImage imageNamed:@"address"];
         [self addSubview:self.addressImageView];
@@ -57,6 +62,13 @@
         [self addSubview:self.aLabel];
     }
     return self;
+}
+
+- (void)telephoneService {
+    
+    if (self.delegate && [self.delegate respondsToSelector:@selector(makePhoneCall)]) {
+        [self.delegate makePhoneCall];
+    }
 }
 
 - (void)setShopIntroduce:(HUAShopIntroduce *)shopIntroduce {

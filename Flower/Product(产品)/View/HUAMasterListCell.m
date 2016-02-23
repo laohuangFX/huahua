@@ -23,9 +23,9 @@
     [self.headImageView sd_setImageWithURL:[NSURL URLWithString:masterList.url] placeholderImage:[UIImage imageNamed:@"placeholder"]];
     self.nameLabel.text = masterList.name;
     [self.nameLabel sizeToFit];
-    self.praiseLabel.text = masterList.praise_count;
+    self.praiseLabel.text = [NSString stringWithFormat:@"%@赞过",masterList.praise_count];
     self.typeLabel.text = masterList.level_name;
-    self.typeLabel.frame = CGRectMake(hua_scale(101)+self.nameLabel.width, hua_scale(26), hua_scale(50), 0);
+    self.typeLabel.frame = CGRectMake(CGRectGetMaxX(self.nameLabel.frame)+hua_scale(8), hua_scale(26), hua_scale(50), 0);
     [self.typeLabel sizeToFit];
 }
 
@@ -54,12 +54,12 @@
     [self.typeLabel sizeToFit];
     
     self.praiseImageView = [[UIImageView alloc] initWithFrame:CGRectMake(hua_scale(95), hua_scale(48), hua_scale(9), hua_scale(9))];
-    self.praiseImageView.image = [UIImage imageNamed:@"praise_select"];
+    self.praiseImageView.image = [UIImage imageNamed:@"productprise"];
     [self addSubview:self.praiseImageView];
     
     
     CGRect praiseFrame = CGRectMake(hua_scale(108), hua_scale(48), hua_scale(100), hua_scale(9));
-    self.praiseLabel = [UILabel labelWithFrame:praiseFrame text:@"156777" color:HUAColor(0x4da800) font:hua_scale(9)];
+    self.praiseLabel = [UILabel labelWithFrame:praiseFrame text:@"156777" color:HUAColor(0xc3c3c3) font:hua_scale(9)];
     [self addSubview:self.praiseLabel];
 }
 
