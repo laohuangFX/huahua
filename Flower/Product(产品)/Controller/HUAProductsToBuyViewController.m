@@ -27,6 +27,9 @@
 @property (nonatomic, strong)NSDictionary *moneyDic;
 
 @property (nonatomic, strong)UIScrollView *scrollView;
+//记录选定的支付方式
+@property (nonatomic, strong)UIButton *selecteButton;
+
 @end
 
 @implementation HUAProductsToBuyViewController
@@ -41,10 +44,11 @@
     [self getData];
 }
 - (void)getData{
-    
+     NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager new];
+    [manager.requestSerializer setValue:token forHTTPHeaderField:@"token"];
     NSString *url = [HUA_URL stringByAppendingPathComponent:[NSString stringWithFormat:@"product/product_prepay?product_id=%@",self.product_id]];
-    
+    NSLog(@"%@",url);
     [manager GET:url parameters:nil success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
         HUALog(@"%@",responseObject);
         
@@ -442,6 +446,21 @@
     .heightIs(1)
     .widthIs(scrollView.width);
     
+    [thView6 updateLayout];
+    [iocnImage updateLayout];
+    //手势背景
+    UIView *tapView1 = [UIView new];
+    tapView1.backgroundColor = [UIColor clearColor];
+    tapView1.tag = 1231;
+    [tapView1 addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clickButton:)]];
+    [scrollView addSubview:tapView1];
+    tapView1.sd_layout
+    .topEqualToView(iocnImage)
+    .leftEqualToView(self.view)
+    .rightEqualToView(self.view)
+    .bottomEqualToView(thView6);
+    
+    
     UIButton *selectBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     selectBtn.tag = 191;
     [selectBtn setBackgroundImage:[UIImage imageNamed:@"do_not_select"] forState:0];
@@ -499,6 +518,20 @@
     .heightIs(1)
     .leftSpaceToView(scrollView,hua_scale(15))
     .widthIs(scrollView.width);
+    
+    //手势背景
+    UIView *tapView2 = [UIView new];
+    tapView2.backgroundColor = [UIColor clearColor];
+    tapView2.tag = 1232;
+    [tapView2 addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clickButton:)]];
+    [scrollView addSubview:tapView2];
+    [tapView2 mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(thView6.mas_bottom);
+        make.bottom.mas_equalTo(thView7.mas_top);
+        make.right.left.mas_equalTo(self.view);
+    }];
+
+    
     
     UIButton *selectsBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     selectsBtn.tag = 192;
@@ -571,6 +604,19 @@
         make.width.mas_equalTo(scrollView.width);
         
     }];
+    
+    //手势背景
+    UIView *tapView3 = [UIView new];
+    tapView3.backgroundColor = [UIColor clearColor];
+    tapView3.tag = 1233;
+    [tapView3 addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clickButton:)]];
+    [scrollView addSubview:tapView3];
+    [tapView3 mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(thView7.mas_bottom);
+        make.bottom.mas_equalTo(thView8.mas_top);
+        make.right.left.mas_equalTo(self.view);
+    }];
+
     
     
     
@@ -927,12 +973,13 @@ UIButton *senderButton = nil;
 - (void)seleteAdd:(UIButton *)sender{
     if (senderButton!=sender) {
         sender.selected = YES;
-        senderButton.selected = NO;
+        _selecteButton.selected = NO;
         
     }else{
         sender.selected = YES;
     }
     senderButton = sender;
+    _selecteButton = sender;
 }
 
 //增加收货地址
@@ -1040,7 +1087,23 @@ UIButton *btn = nil;
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+//手势事件
+- (void)clickButton:(UITapGestureRecognizer *)tap{
+  
+    UIButton *button1 = [self.view viewWithTag:tap.view.tag-1231+191];
+    
+    if (_selecteButton != button1) {
+        button1.selected = YES;
+        _selecteButton.selected = NO;
+    }else{
+        button1.selected = YES;
+    }
+    
+    
+    _selecteButton = button1;
+    NSLog(@"%ld",_selecteButton.tag);
 
+}
 /*
  #pragma mark - Navigation
  

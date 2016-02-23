@@ -28,6 +28,6 @@ typedef enum {
 @property (nonatomic,assign)BOOL isShow;
 
 
-- (void)showView;
-- (void)dismissView;
+//- (void)showView;
+//- (void)dismissView;
 @end

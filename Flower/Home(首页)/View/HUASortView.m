@@ -102,7 +102,27 @@
 }
 
 - (void)click:(UIButton *)sender {
+    if (kNetworkNotReachability == YES) {
+       
+        if (self.lastButton) {
+            self.lastButton.selected = NO;
+            [self.lastButton setTitleColor:HUAColor(0x666666) forState:UIControlStateNormal];
+            self.lastButton.backgroundColor = HUAColor(0xffffff);
+            //之前的按钮开启交互
     
+        }
+        sender.selected = YES;
+        [sender setTitleColor:HUAColor(0x666666) forState:UIControlStateNormal];
+        sender.backgroundColor = HUAColor(0xffffff);
+        self.lastButton = sender;
+        //选中按钮取消交互功能
+        
+        if ([self.delegate respondsToSelector:@selector(sortMenuDidDismiss:)]) {
+            [self.delegate sortMenuDidDismiss:sender.tag];
+        }
+        return;
+
+    }
     if (self.lastButton) {
         self.lastButton.selected = NO;
         [self.lastButton setTitleColor:HUAColor(0x666666) forState:UIControlStateNormal];

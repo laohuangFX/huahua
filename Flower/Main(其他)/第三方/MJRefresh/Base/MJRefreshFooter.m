@@ -57,6 +57,10 @@
 }
 
 #pragma mark - 公共方法
+- (void)endRefreshingWithNoNoHTTP
+{
+    self.state = MJRefreshStateNoHTTP;
+}
 - (void)endRefreshingWithNoMoreData
 {
     self.state = MJRefreshStateNoMoreData;

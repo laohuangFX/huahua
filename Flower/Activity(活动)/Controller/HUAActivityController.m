@@ -18,13 +18,22 @@
 //总页数
 @property (nonatomic, strong) NSNumber *totalPage;
 /**总数量*/
-@property (nonatomic, assign) NSString *totalCount;
-
+@property (nonatomic, strong) NSString *totalCount;
+/**缓存路径*/
+@property (nonatomic, strong) NSString *activityPath;
 @end
 
 @implementation HUAActivityController
 
 static NSString * const reuseIdentifier = @"goods";
+
+- (NSString *)activityPath {
+    if (!_activityPath) {
+        _activityPath = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)firstObject] stringByAppendingPathComponent:@"activety.plist"];
+    }
+    return _activityPath;
+}
+
 
 - (NSMutableArray *)goodsArray {
     if (!_goodsArray) {
@@ -45,32 +54,46 @@ static NSString * const reuseIdentifier = @"goods";
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.page = 1;
+//    NSArray * unarchiveArray = [NSKeyedUnarchiver unarchiveObjectWithFile:self.activityPath];
+//    if (unarchiveArray != 0) {
+//        
+//        self.goodsArray = [unarchiveArray mutableCopy];
+//        
+//    }
+    
+    HUALog(@"self.goods  %lu",(unsigned long)self.goodsArray.count);
     //设置导航栏
     [self setNavigationBar];
     //请求数据
     [self getData];
     //下拉刷新数据
     [self setupDownRefresh];
+    
+   
 }
+
 #pragma mark -- 下拉刷新数据
 - (void)setupDownRefresh {
     self.collectionView.mj_header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(loadNewData)];
+    [self.collectionView.mj_header beginRefreshing];
 }
 
 - (void)loadNewData {
     self.page = 1;
-    [self.goodsArray removeAllObjects];
     NSString *url = [HUA_URL stringByAppendingPathComponent:Active_list];
     NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
     parameter[@"per_page"] = @(self.page);
     [HUAHttpTool GET:url params:parameter success:^(id responseObject) {
+        HUALog(@"response %@",responseObject);
         NSString *newCount = responseObject[@"info"][@"total"];
-        if (newCount == self.totalCount) {
+        [NSKeyedArchiver archiveRootObject:newCount toFile:self.activityPath];
+        if ([newCount isEqualToString: [NSKeyedUnarchiver unarchiveObjectWithFile:self.activityPath]]) {
             [HUAMBProgress MBProgressOnlywithLabelText:@"没有更多新的活动了"];
         }
+        [self.goodsArray removeAllObjects];
         NSArray *array = [HUADataTool activity:responseObject];
         [self.goodsArray addObjectsFromArray:array];
-        HUALog(@"123%@",self.goodsArray);
+        //[NSKeyedArchiver archiveRootObject:[self.goodsArray copy] toFile:self.activityPath];
         [self.collectionView reloadData];
         [self.collectionView.mj_header endRefreshing];
     } failure:^(NSError *error) {
@@ -86,7 +109,7 @@ static NSString * const reuseIdentifier = @"goods";
 
 - (void)collectionView:(UICollectionView *)collectionView willDisplayCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
     //到达最后一页数据
-    if (indexPath.row == self.goodsArray.count-1) {
+    if (self.page == [self.totalPage integerValue] ) {
         // 自动上啦刷新
         self.collectionView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(loadMoreData)];
     }else {
@@ -111,9 +134,12 @@ static NSString * const reuseIdentifier = @"goods";
     [HUAHttpTool GET:url params:parameter success:^(id responseObject) {
         NSArray *array = [HUADataTool activity:responseObject];
         [self.goodsArray addObjectsFromArray:array];
+        //[[self.goodsArray copy] writeToFile:self.activityPath atomically:YES];
+        //[NSKeyedArchiver archiveRootObject:[self.goodsArray copy] toFile:self.activityPath];
         [self.collectionView reloadData];
     } failure:^(NSError *error) {
         self.page--;
+        [self.collectionView.mj_footer endRefreshingWithNoNoHTTP];
         [HUAMBProgress MBProgressFromWindowWithLabelText:@"请检查网络设置"];
         HUALog(@"%@",error);
     }];
@@ -129,14 +155,16 @@ static NSString * const reuseIdentifier = @"goods";
     NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
     parameter[@"per_page"] = @(self.page);
     [HUAHttpTool GET:url params:parameter success:^(id responseObject) {
-        HUALog(@"%@",responseObject);
+        //HUALog(@"%@",responseObject);
         self.totalPage = responseObject[@"info"][@"pages"];
         self.totalCount = responseObject[@"info"][@"total"];
-         NSArray *array = [HUADataTool activity:responseObject];
-        [self.goodsArray addObjectsFromArray:array];
+//         NSArray *array = [HUADataTool activity:responseObject];
+//        [self.goodsArray addObjectsFromArray:array];
+       // [[self.goodsArray copy] writeToFile:self.activityPath atomically:YES];
+        
         [self.collectionView reloadData];
     } failure:^(NSError *error) {
-        [HUAMBProgress MBProgressFromWindowWithLabelText:@"请检查网络设置"];
+        //[HUAMBProgress MBProgressFromWindowWithLabelText:@"请检查网络设置"];
         HUALog(@"%@",error);
     }];
 }

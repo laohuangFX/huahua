@@ -13,15 +13,16 @@
 @interface HUAMemberCardViewController ()<UITableViewDataSource,UITableViewDelegate>
 @property (nonatomic,strong)UITableView *tablewView;
 @property (nonatomic, strong) NSArray *array;
-@property (nonatomic, strong) NSArray *memberCardArray;
+@property (nonatomic, strong) NSMutableArray *memberCardArray;
 @property (nonatomic, strong) NSString *user_id;
+@property (nonatomic, assign) NSInteger page;
 @end
 
 @implementation HUAMemberCardViewController
 
-- (NSArray *)memberCardArray {
+- (NSMutableArray *)memberCardArray {
     if (!_memberCardArray) {
-        _memberCardArray = [NSArray array];
+        _memberCardArray = [NSMutableArray array];
     }
     return _memberCardArray;
 }
@@ -43,25 +44,85 @@
     self.title = @"我的会员卡";
     self.view.backgroundColor = [UIColor whiteColor];
     [self.view addSubview:self.tablewView];
+    
+    [self refreshData];
   
+}
+
+//下拉刷新
+- (void)refreshData{
+    
+    self.tablewView.mj_header = [MJRefreshStateHeader headerWithRefreshingBlock:^{
+        
+        //刷新数据的把页数还原
+        self.page= 1;
+        
+        [self getData:nil];
+    }];
+    // 马上进入刷新状态
+    [self.tablewView.mj_header beginRefreshing];
+}
+//上拉刷新
+- (void)footRefreshData{
+    
+    self.page++;
+    
+    [self getData:@"尾部"];
+    //上拉刷新
+    
+}
+//上拉刷新
+- (void)footEnd{
+    
+    
+    self.tablewView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
+        
+        [self.tablewView.mj_footer endRefreshingWithNoMoreData];
+        
+    }];
+    
+    [self.tablewView.mj_footer beginRefreshing];
+}
+
+- (void)getData:(NSString *)indicate{
+    
     NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
     
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     [manager.requestSerializer setValue:token forHTTPHeaderField:@"token"];
     NSString *url = [HUA_URL stringByAppendingPathComponent:User_vip];
     NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
-    //parameter[@"per_page"] = @"1";
+    parameter[@"per_page"] = @(self.page);
+
     [manager GET:url parameters:parameter success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
         HUALog(@"%@",responseObject);
-        self.memberCardArray = [HUADataTool myMemberCardArray:responseObject];
-        self.user_id = responseObject[@"request"][@"user_id"];
-        [self.tablewView reloadData];
+        NSString *maxPage = responseObject[@"info"][@"pages"];
+
+        if ([indicate isEqualToString:@"尾部"]) {
+            
+            NSArray *array = [[HUADataTool myMemberCardArray:responseObject] mutableCopy];
+            if (self.page > maxPage.integerValue) {
+                
+                [self footEnd];
+                return ;
+            }
+
+            [self.memberCardArray addObjectsFromArray:array];
+            [self.tablewView reloadData];
+        }else{
+            self.memberCardArray = nil;
+            self.memberCardArray = [[HUADataTool myMemberCardArray:responseObject] mutableCopy];
+            self.user_id = responseObject[@"request"][@"user_id"];
+            [self.tablewView reloadData];
+            [self.tablewView.mj_header endRefreshing];
+        }
+
     } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
         HUALog(@"%@",error);
     }];
+
+
 }
-
-
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     
     [self.tablewView startAutoCellHeightWithCellClass:[HUAMemberCardTableViewCell class] contentViewWidth:[UIScreen mainScreen].bounds.size.width];
@@ -95,6 +156,16 @@
     return 300;
     
 }
+-(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (indexPath.row == self.memberCardArray.count-2) {
+        
+        [self footRefreshData];
+        
+    }
+    NSLog(@"%ld",self.page);
+}
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

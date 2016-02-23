@@ -45,10 +45,25 @@
 @property (nonatomic, strong) NSNumber *totalPage;
 /**总数量*/
 @property (nonatomic, assign) NSString *totalCount;
+/**排序字典*/
+@property (nonatomic, strong) NSMutableDictionary *parameters;
+/**页数缓存路径*/
+@property (nonatomic, strong) NSString *pagePath;
 @end
 
 @implementation HUAShopServiceViewController
-
+- (NSString *)pagePath {
+    if (!_pagePath) {
+        _pagePath = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)firstObject] stringByAppendingPathComponent:@"shopServicePage.plist"];
+    }
+    return _pagePath;
+}
+- (NSMutableDictionary *)parameters {
+    if (!_parameters) {
+        _parameters = [NSMutableDictionary dictionary];
+    }
+    return _parameters;
+}
 - (NSMutableArray *)productsArray {
     if (!_productsArray) {
         _productsArray = [NSMutableArray array];
@@ -82,7 +97,13 @@
  
     self.searchplaceholder = @"搜索";
     //搜索
-    [self geDataWithSubParameters:nil];
+
+    //[self geDataWithSubParameters:nil];
+
+    
+    //菜单
+    [self category:nil];
+
     // 集成下拉刷新控件
     [self setupDownRefresh];
     
@@ -96,8 +117,25 @@
     parameters[@"shop_id"] = self.shop_id;
     [manager GET:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation,NSDictionary* responseObject) {
         //HUALog(@"%@",responseObject);
+        _data1 = [NSMutableArray array];
         
-        [self category:responseObject];
+        NSArray *array = responseObject[@"info"];
+        
+        for (NSDictionary *dic in array) {
+            
+            [_dataDic setValue:dic[@"category_id"] forKey:dic[@"name"]];
+            
+            [_data1 addObject:@{@"title":dic[@"name"]}];
+        }
+        
+        NSArray *noLimit = @[@"不限"];
+        
+        [_data1 insertObject:@{@"title":@"不限"} atIndex:0];
+        
+        _data2 = [NSMutableArray arrayWithObjects:@"不限", @"价格降序", @"价格升序",nil];
+        _data3 = [NSMutableArray arrayWithObjects:@"不限",@"点赞降序",@"点赞升序",nil];
+
+        
     } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
         HUALog(@"%@",error);
     }];
@@ -110,27 +148,28 @@
     self.tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(loadNewData)];
     
     // 马上进入刷新状态
-    //[self.tableView.mj_header beginRefreshing];
+    [self.tableView.mj_header beginRefreshing];
     
 }
 
 - (void)loadNewData {
-    if (_leftText || _leftSubText || _midstText || _rightText) {
+    if (self.parameters[@"parent_id"] || self.parameters[@"category_id"] || self.parameters[@"order"]) {
         [HUAMBProgress MBProgressOnlywithLabelText:@"没有更多数据了"];
         [self.tableView.mj_header endRefreshing];
         return;
     }
     self.page = 1;
     NSString *url = self.url;
-    NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
-    parameters[@"shop_id"] = self.shop_id;
-    parameters[@"per_page"] = @(self.page);
-    [HUAHttpTool GET:url params:parameters success:^(id responseObject) {
-        [self.productsArray removeAllObjects];
+    self.parameters[@"shop_id"] = self.shop_id;
+    self.parameters[@"per_page"] = @(self.page);
+    [HUAHttpTool GET:url params:self.parameters success:^(id responseObject) {
         NSString *newCount = responseObject[@"info"][@"total"];
-        if (newCount == self.totalCount) {
+        [NSKeyedArchiver archiveRootObject:newCount toFile:self.pagePath];
+        if ([newCount isEqualToString:[NSKeyedUnarchiver unarchiveObjectWithFile:self.pagePath]]) {
             [HUAMBProgress MBProgressOnlywithLabelText:@"没有更多新的服务了"];
         }
+        self.totalPage = responseObject[@"info"][@"pages"];
+         [self.productsArray removeAllObjects];
         NSArray *array = [HUADataTool shopProduct:responseObject];
         [self.productsArray addObjectsFromArray:array];
         [self.tableView reloadData];
@@ -166,10 +205,9 @@
         return;
     }
     NSString *url = self.url;
-    NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
-    parameters[@"shop_id"] = self.shop_id;
-    parameters[@"per_page"] = @(self.page);
-    [HUAHttpTool GET:url params:parameters success:^(id responseObject) {
+    self.parameters[@"shop_id"] = self.shop_id;
+    self.parameters[@"per_page"] = @(self.page);
+    [HUAHttpTool GET:url params:self.parameters success:^(id responseObject) {
         NSArray *array = [HUADataTool shopProduct:responseObject];
         [self.productsArray addObjectsFromArray:array];
         [self.tableView reloadData];
@@ -183,19 +221,18 @@
     
     AFHTTPRequestOperationManager *manager = [[AFHTTPRequestOperationManager alloc] init];
     NSString *url = self.url;
-    NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
-    parameters[@"per_page"] = @(self.page);
-    parameters[@"shop_id"] = self.shop_id;
+    self.parameters[@"per_page"] = @(self.page);
+    self.parameters[@"shop_id"] = self.shop_id;
     if (SubParameters != nil) {
-        [parameters setValuesForKeysWithDictionary:SubParameters];
+        [self.parameters setValuesForKeysWithDictionary:SubParameters];
     }
-    [manager GET:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+    [manager GET:url parameters:self.parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
         if ([[responseObject objectForKey:@"info"] isKindOfClass:[NSString class]]) {
             [HUAMBProgress MBProgressOnlywithLabelText:[responseObject objectForKey:@"info"]];
             return ;
         }
         self.totalPage = responseObject[@"info"][@"pages"];
-        self.totalCount = responseObject[@"info"][@"total"];
+        [self.productsArray removeAllObjects];
         NSArray *array = [HUADataTool shopProduct:responseObject];
         [self.productsArray addObjectsFromArray:array];
         [self.tableView reloadData];
@@ -207,24 +244,6 @@
 #pragma --设置三个选择按钮
 //设置三个选择按钮
 - (void)category:(NSDictionary *)downDic {
-    
-    _data1 = [NSMutableArray array];
-    
-    NSArray *array = downDic[@"info"];
-    
-    for (NSDictionary *dic in array) {
-        
-        [_dataDic setValue:dic[@"category_id"] forKey:dic[@"name"]];
-        
-        [_data1 addObject:@{@"title":dic[@"name"]}];
-    }
-    
-    NSArray *noLimit = @[@"不限"];
-
-    [_data1 insertObject:@{@"title":@"不限"} atIndex:0];
-    
-    _data2 = [NSMutableArray arrayWithObjects:@"不限", @"价格降序", @"价格升序",nil];
-    _data3 = [NSMutableArray arrayWithObjects:@"不限",@"点赞降序",@"点赞升序",nil];
     
     JSDropDownMenu *menu = [[JSDropDownMenu alloc] initWithOrigin:CGPointMake(0, 0) andHeight:hua_scale(30)];
     
@@ -250,41 +269,52 @@
             _midstText = lastText;
         }
 
-        self.page = 1;
-        [self.productsArray removeAllObjects];
-        AFHTTPRequestOperationManager *manager = [[AFHTTPRequestOperationManager alloc] init];
-        NSString *url =[HUA_URL stringByAppendingPathComponent:@"service/service_list"];
-        NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
+        
+//        [self.productsArray removeAllObjects];
+//        AFHTTPRequestOperationManager *manager = [[AFHTTPRequestOperationManager alloc] init];
+//        NSString *url =[HUA_URL stringByAppendingPathComponent:@"service/service_list"];
+//        NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
+        //        self.parameters[@"shop_id"] = self.shop_id;
+        //        self.parameters[@"per_page"] = @(self.page);
+
         if (![_leftText isEqualToString:@"不限"] && _leftText != nil) {
-            parameters[@"parent_id"] =_dataDic[_leftText];
+            self.parameters[@"parent_id"] =_dataDic[_leftText];
+        }
+        if ([_leftText isEqualToString:@"不限"] || _leftText == nil) {
+            self.parameters[@"parent_id"] = nil;
         }
         if (![_midstText isEqualToString:@"不限"] && _midstText != nil) {
             if ([_midstText isEqualToString:@"价格降序"]) {
-                parameters[@"order"] =@"price_desc";
+                self.parameters[@"order"] =@"price_desc";
             }else if ([_midstText isEqualToString:@"价格升序"]){
                 
-                parameters[@"order"] =@"price_asc";
+                self.parameters[@"order"] =@"price_asc";
             }else if ([_midstText isEqualToString:@"点赞降序"]){
-                parameters[@"order"] =@"praise_desc";
+                self.parameters[@"order"] =@"praise_desc";
             }else{
-                parameters[@"order"] =@"praise_asc";
+                self.parameters[@"order"] =@"praise_asc";
             }
         }
-        parameters[@"shop_id"] = self.shop_id;
-        parameters[@"per_page"] = @(self.page);
-        [manager GET:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-           // HUALog(@"%@",responseObject);
-            if ([[responseObject objectForKey:@"info"] isKindOfClass:[NSString class]]) {
-                [HUAMBProgress MBProgressOnlywithLabelText:[responseObject objectForKey:@"info"]];
-                return ;
-            }
-            NSArray *array = [HUADataTool shopProduct:responseObject];
-            [self.productsArray addObjectsFromArray:array];
-            [self.tableView reloadData];
-        } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
-            HUALog(@"%@",error);
-            [HUAMBProgress MBProgressOnlywithLabelText:@"请检查网络设置"];
-        }];
+
+        if ([_midstText isEqualToString:@"不限"] && _midstText == nil) {
+            self.parameters[@"order"] = nil;
+        }
+        self.page = 1;
+        [self geDataWithSubParameters:nil];
+//        [manager GET:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+//           // HUALog(@"%@",responseObject);
+//            if ([[responseObject objectForKey:@"info"] isKindOfClass:[NSString class]]) {
+//                [HUAMBProgress MBProgressOnlywithLabelText:[responseObject objectForKey:@"info"]];
+//                return ;
+//            }
+//            NSArray *array = [HUADataTool shopProduct:responseObject];
+//            [self.productsArray addObjectsFromArray:array];
+//            [self.tableView reloadData];
+//        } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
+//            HUALog(@"%@",error);
+//            [HUAMBProgress MBProgressOnlywithLabelText:@"请检查网络设置"];
+//        }];
+
     }];
 
     [self.view addSubview:menu];
