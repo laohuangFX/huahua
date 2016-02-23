@@ -163,12 +163,16 @@
     self.parameters[@"shop_id"] = self.shop_id;
     self.parameters[@"per_page"] = @(self.page);
     [HUAHttpTool GET:url params:self.parameters success:^(id responseObject) {
+        HUALog(@"%@",responseObject);
+        //获取数据总个数
         NSString *newCount = responseObject[@"info"][@"total"];
-        [NSKeyedArchiver archiveRootObject:newCount toFile:self.pagePath];
         if ([newCount isEqualToString:[NSKeyedUnarchiver unarchiveObjectWithFile:self.pagePath]]) {
             [HUAMBProgress MBProgressOnlywithLabelText:@"没有更多新的服务了"];
         }
         self.totalPage = responseObject[@"info"][@"pages"];
+        //保存这一次总个数
+        [NSKeyedArchiver archiveRootObject:newCount toFile:self.pagePath];
+        [self.productsArray removeAllObjects];
          [self.productsArray removeAllObjects];
         NSArray *array = [HUADataTool shopProduct:responseObject];
         [self.productsArray addObjectsFromArray:array];

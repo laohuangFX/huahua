@@ -68,7 +68,7 @@ static NSString *identifier = @"cell";
 @implementation HUAHomeController
 - (NSString *)pagePath {
     if (!_pagePath) {
-        _pagePath = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)firstObject] stringByAppendingPathComponent:@"page.plist"];
+        _pagePath = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)firstObject] stringByAppendingPathComponent:@"homePage.plist"];
     }
     return _pagePath;
 }
@@ -197,13 +197,14 @@ static NSString *identifier = @"cell";
     [HUAHttpTool POST:url params:parameter success:^(id responseObject) {
         HUALog(@"123%@",responseObject);
         [responseObject writeToFile:self.homePath atomically:YES];
-        //加载数据插入到可变数组最前面
-        self.totalPage = responseObject[@"info"][@"pages"];
+        //获取数据总个数
         NSString *newCount = responseObject[@"info"][@"total"];
-        [NSKeyedArchiver archiveRootObject:newCount toFile:self.pagePath];
         if ([newCount isEqualToString:[NSKeyedUnarchiver unarchiveObjectWithFile:self.pagePath]]) {
             [HUAMBProgress MBProgressOnlywithLabelText:@"没有更多新的商户了"];
         }
+        self.totalPage = responseObject[@"info"][@"pages"];
+        //保存这一次总个数
+        [NSKeyedArchiver archiveRootObject:newCount toFile:self.pagePath];
         [self.shopsArray removeAllObjects];
         NSArray *shopArray = [HUADataTool homeShop:responseObject];
         [self.shopsArray addObjectsFromArray:shopArray];
