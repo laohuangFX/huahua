@@ -58,6 +58,8 @@
 @property (nonatomic, strong) NSMutableDictionary *parameters;
 /**页数缓存路径*/
 @property (nonatomic, strong) NSString *pagePath;
+/**判断是不是第一次进入控制器*/
+@property (nonatomic, assign) BOOL isFirstTime;
 @end
 
 @implementation HUAProductController
@@ -99,6 +101,7 @@ static bool isFirstTime ;
     self.collectionView.y = chooseViewHeight;
     self.collectionView.height = screenHeight-chooseViewHeight;
     self.page = 1;
+    self.isFirstTime = YES;
     //设置导航栏
     [self setNavigationItem];
     //获取数据
@@ -184,8 +187,12 @@ static bool isFirstTime ;
         
         //获取数据总个数
         NSString *newCount = responseObject[@"info"][@"total"];
-        if ([newCount isEqualToString:[NSKeyedUnarchiver unarchiveObjectWithFile:self.pagePath]]) {
-            [HUAMBProgress MBProgressOnlywithLabelText:@"没有更多新的产品了"];
+        if (self.isFirstTime == YES) {
+            
+        }else {
+            if ([newCount isEqualToString:[NSKeyedUnarchiver unarchiveObjectWithFile:self.pagePath]]) {
+                [HUAMBProgress MBProgressOnlywithLabelText:@"没有更多新的产品了"];
+            }
         }
         self.totalPage = responseObject[@"info"][@"pages"];
         //保存这一次总个数
@@ -195,6 +202,7 @@ static bool isFirstTime ;
         [self.productArray addObjectsFromArray:array];
         [self.collectionView reloadData];
         [self.collectionView.mj_header endRefreshing];
+        self.isFirstTime = NO;
     } failure:^(NSError *error) {
         [HUAMBProgress MBProgressFromWindowWithLabelText:@"请检查网络设置"];
         [self.collectionView.mj_header endRefreshing];

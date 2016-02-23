@@ -58,7 +58,8 @@ static NSString *identifier = @"cell";
 @property (nonatomic, strong) NSString *pagePath;
 /**缓存路径*/
 @property (nonatomic, strong) NSString *homePath;
-
+/**判断是不是第一次进入控制器*/
+@property (nonatomic, assign) BOOL isFirstTime;
 @property (nonatomic, strong) CLLocationManager * mgr;
 @property (nonatomic, assign) CLLocationCoordinate2D currentCoord;
 @property (nonatomic, strong) NSString *currentCity;
@@ -111,7 +112,7 @@ static NSString *identifier = @"cell";
   
     self.tabBarController.delegate = self;
     self.page = 1;
-    
+    self.isFirstTime = YES;
     //[self getData];
     //设置导航栏
     [self setNavigationBar];
@@ -121,10 +122,10 @@ static NSString *identifier = @"cell";
 
     //定位
     [self getAddress];
+    
+    
 }
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-}
+
 - (void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
     //取消地区选择
@@ -199,8 +200,12 @@ static NSString *identifier = @"cell";
         [responseObject writeToFile:self.homePath atomically:YES];
         //获取数据总个数
         NSString *newCount = responseObject[@"info"][@"total"];
-        if ([newCount isEqualToString:[NSKeyedUnarchiver unarchiveObjectWithFile:self.pagePath]]) {
-            [HUAMBProgress MBProgressOnlywithLabelText:@"没有更多新的商户了"];
+        if (self.isFirstTime == YES) {
+            
+        }else {
+            if ([newCount isEqualToString:[NSKeyedUnarchiver unarchiveObjectWithFile:self.pagePath]]) {
+                [HUAMBProgress MBProgressOnlywithLabelText:@"没有更多新的商户了"];
+            }
         }
         self.totalPage = responseObject[@"info"][@"pages"];
         //保存这一次总个数
@@ -215,6 +220,7 @@ static NSString *identifier = @"cell";
         [self createHeaderView:self.bannerArray];
         [self.tableView reloadData];
         [self.tableView.mj_header endRefreshing];
+        self.isFirstTime = NO;
     } failure:^(NSError *error) {
         [HUAMBProgress MBProgressFromWindowWithLabelText:@"还没有联网哦，去设置网络吧"];
         [self.tableView.mj_header endRefreshing];

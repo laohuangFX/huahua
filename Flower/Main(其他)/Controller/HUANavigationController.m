@@ -47,7 +47,7 @@
      //获取特定类的所有导航条
 
     UINavigationBar *navigationBar = [UINavigationBar appearanceWhenContainedIn:self, nil];
-    navigationBar.tintColor = HUAColor(0x4da800);
+    navigationBar.tintColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"back_green"]];
 //    navigationBar.backIndicatorImage = [[UIImage imageNamed:@"back_green"]imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
 //    navigationBar.backIndicatorTransitionMaskImage = [[UIImage imageNamed:@"back_green"]imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     //[[UIBarButtonItem appearance] setBackButtonTitlePositionAdjustment:UIOffsetMake(0, hua_scale(2.5)) forBarMetrics:UIBarMetricsDefault];
@@ -59,6 +59,7 @@
 
 - (void)pushViewController:(UIViewController *)viewController animated:(BOOL)animated
 {
+
     if (self.viewControllers.count > 0) { // 这时push进来的控制器viewController，不是第一个子控制器（不是根控制器）
         /* 自动显示和隐藏tabbar */
         viewController.hidesBottomBarWhenPushed = YES;
@@ -68,7 +69,7 @@
          viewController.navigationItem.leftBarButtonItems = @[leftSpace, backButton];
     }
     
-    [super pushViewController:viewController animated:animated];
+        [super pushViewController:viewController animated:animated];
 }
 
 - (void)backAction:(UIButton *)sender

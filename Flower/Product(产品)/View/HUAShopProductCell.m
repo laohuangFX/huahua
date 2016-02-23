@@ -62,7 +62,6 @@
     self.goodsNameLabel.text = product.name;
     self.goodsNameLabel.frame = CGRectMake(hua_scale(114), hua_scale(22), hua_scale(204), 0);
     [self.goodsNameLabel sizeToFit];
-    HUALog(@"self.goodsNameLabel.height%f",self.goodsNameLabel.height);
     if (self.goodsNameLabel.height > 20) {
         self.praiseImageView.frame = CGRectMake(hua_scale(114), CGRectGetMaxY(self.goodsNameLabel.frame)+ hua_scale(6), hua_scale(hua_scale(9)), hua_scale(8));
         self.praiseLabel.text = [NSString stringWithFormat:@"%@赞过",product.praise_count];

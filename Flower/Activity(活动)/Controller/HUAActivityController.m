@@ -21,6 +21,8 @@
 @property (nonatomic, strong) NSString *totalCount;
 /**缓存路径*/
 @property (nonatomic, strong) NSString *activityPath;
+/**判断是不是第一次进入控制器*/
+@property (nonatomic, assign) BOOL isFirstTime;
 @end
 
 @implementation HUAActivityController
@@ -54,20 +56,15 @@ static NSString * const reuseIdentifier = @"goods";
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.page = 1;
-//    NSArray * unarchiveArray = [NSKeyedUnarchiver unarchiveObjectWithFile:self.activityPath];
-//    if (unarchiveArray != 0) {
-//        
-//        self.goodsArray = [unarchiveArray mutableCopy];
-//        
-//    }
-    
-    HUALog(@"self.goods  %lu",(unsigned long)self.goodsArray.count);
+
     //设置导航栏
     [self setNavigationBar];
     //请求数据
     [self getData];
+    self.isFirstTime = YES;
     //下拉刷新数据
     [self setupDownRefresh];
+    
     
    
 }
@@ -87,8 +84,12 @@ static NSString * const reuseIdentifier = @"goods";
         HUALog(@"response %@",responseObject);
         NSString *newCount = responseObject[@"info"][@"total"];
         [NSKeyedArchiver archiveRootObject:newCount toFile:self.activityPath];
-        if ([newCount isEqualToString: [NSKeyedUnarchiver unarchiveObjectWithFile:self.activityPath]]) {
-            [HUAMBProgress MBProgressOnlywithLabelText:@"没有更多新的活动了"];
+        if (self.isFirstTime == YES) {
+            
+        }else {
+            if ([newCount isEqualToString: [NSKeyedUnarchiver unarchiveObjectWithFile:self.activityPath]]) {
+                [HUAMBProgress MBProgressOnlywithLabelText:@"没有更多新的活动了"];
+            }
         }
         [self.goodsArray removeAllObjects];
         NSArray *array = [HUADataTool activity:responseObject];
@@ -96,6 +97,7 @@ static NSString * const reuseIdentifier = @"goods";
         //[NSKeyedArchiver archiveRootObject:[self.goodsArray copy] toFile:self.activityPath];
         [self.collectionView reloadData];
         [self.collectionView.mj_header endRefreshing];
+        self.isFirstTime = NO;
     } failure:^(NSError *error) {
         self.page--;
         [HUAMBProgress MBProgressFromWindowWithLabelText:@"请检查网络设置"];
