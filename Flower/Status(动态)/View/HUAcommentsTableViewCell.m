@@ -42,6 +42,7 @@ const CGFloat maxContentLabelHeight = 54;
     
     //昵称
     self.nameLbale = [UILabel new];
+    //self.nameLbale.backgroundColor = [UIColor redColor];
     self.nameLbale.text = @"小绵羊";
     self.nameLbale.font = [UIFont systemFontOfSize:hua_scale(12)];
     self.nameLbale.textColor = HUAColor(0x576b96);
@@ -132,7 +133,7 @@ const CGFloat maxContentLabelHeight = 54;
     .topSpaceToView(_replyView, 0)
     .rightEqualToView(_replyView);
     
-    [self setupAutoHeightWithBottomViewsArray:@[self.moreButton] bottomMargin:20];
+    [self setupAutoHeightWithBottomViewsArray:@[self.moreButton] bottomMargin:hua_scale(16)];
     
 }
 
@@ -149,13 +150,13 @@ const CGFloat maxContentLabelHeight = 54;
         
         self.contentLbale.text = modell.content;
         
-        [self.timeButton setTitle:[HUATranslateTime translateTimeIntoCurrurents:[modell.time integerValue]] forState:0];
+        //[self.timeButton setTitle:[HUATranslateTime translateTimeIntoCurrurents:[modell.time integerValue]] forState:0];
         
         [self.headImage sd_setImageWithURL:[NSURL URLWithString:modell.icon] placeholderImage:[UIImage imageNamed:@"placeholder"]];
         
         if (modell.commentArray.count>=4) {
             _moreButton.hidden = NO;
-            _moreButton.sd_layout.heightIs(18);
+            _moreButton.sd_layout.heightIs(hua_scale(30));
             
         }else{
             _moreButton.sd_layout.heightIs(0);
@@ -188,7 +189,7 @@ const CGFloat maxContentLabelHeight = 54;
                 NSMutableAttributedString *att = [[NSMutableAttributedString alloc] initWithString:self.commentLabel.text];
                 //设置行间距
                 NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
-                [paragraphStyle setLineSpacing:hua_scale(5)];
+                [paragraphStyle setLineSpacing:hua_scale(4)];
                 [att addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange(0, [self.commentLabel.text length])];
                 
                 
@@ -291,7 +292,7 @@ const CGFloat maxContentLabelHeight = 54;
                 .rightEqualToView(self.replyView);
                 
                 
-                [self setupAutoHeightWithBottomView:self.moreButton bottomMargin:hua_scale(20)];
+                [self setupAutoHeightWithBottomView:self.moreButton bottomMargin:hua_scale(16)];
                 
                 
                 //记录上一个label
@@ -302,7 +303,7 @@ const CGFloat maxContentLabelHeight = 54;
             self.replyView.height = 0;
             self.moreButton.height = 0;
             
-            [self setupAutoHeightWithBottomView:self.contentLbale bottomMargin:hua_scale(20)];
+            [self setupAutoHeightWithBottomView:self.contentLbale bottomMargin:hua_scale(16)];
         }
         
     }

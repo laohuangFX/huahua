@@ -65,7 +65,7 @@
     }];
     
     //项目内容
-    _projectlabel = [UILabel labelText:@"洗头" color:HUAColor(0x4da800) font:hua_scale(13)];
+    _projectlabel = [UILabel labelText:@"洗头" color:HUAColor(0x4da800) font:hua_scale(11)];
     [goodsLabel sizeToFit];
     [scrollView addSubview:_projectlabel];
     [_projectlabel mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -86,7 +86,7 @@
     }];
     
     //技师名字
-    _nameLabel = [UILabel labelText:@"张三" color:HUAColor(0x4da800) font:hua_scale(13)];
+    _nameLabel = [UILabel labelText:@"张三" color:HUAColor(0x4da800) font:hua_scale(11)];
     [goodsLabel sizeToFit];
     [scrollView addSubview:_nameLabel];
     [_nameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -97,11 +97,11 @@
     
     //1线
     UIView *thView1 = [UIView new];
-    thView1.backgroundColor = HUAColor(0xe1e1e1);
+    thView1.backgroundColor = HUAColor(0xf3f3f3);
     [scrollView addSubview:thView1];
     thView1.sd_layout
     .topSpaceToView(_nameLabel,hua_scale(12))
-    .heightIs(1)
+    .heightIs(hua_scale(0.5))
     .leftSpaceToView(scrollView,hua_scale(15))
     .widthIs(scrollView.width);
     
@@ -111,7 +111,7 @@
     [scrollView addSubview:thView2];
     thView2.sd_layout
     .topSpaceToView(thView1,hua_scale(50))
-    .heightIs(1)
+    .heightIs(hua_scale(0.5))
     .widthIs(scrollView.width);
     
     //名字
@@ -201,7 +201,7 @@
     [iocnImage mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(hua_scale(15));
         make.top.mas_equalTo(modeLabel.mas_bottom).mas_equalTo(hua_scale(14));
-        make.height.mas_equalTo(hua_scale(27));
+        make.height.mas_equalTo(hua_scale(25));
         make.width.mas_equalTo(hua_scale(25));
     }];
     
@@ -243,13 +243,15 @@
     //4线
     [iocnImage updateLayout];
     UIView *thView4 = [UIView new];
-    thView4.backgroundColor = HUAColor(0xe1e1e1);
+    thView4.backgroundColor = HUAColor(0xf3f3f3);
     [scrollView addSubview:thView4];
     thView4.sd_layout
     .topSpaceToView(iocnImage,hua_scale(10))
-    .heightIs(1)
+    .heightIs(hua_scale(0.5))
+    .leftSpaceToView(scrollView,hua_scale(15))
     .widthIs(scrollView.width);
     
+
     //手势背景
     [thView4 updateLayout];
     UIView *bgView1 = [UIView new];
@@ -266,11 +268,12 @@
     
     //5线
     UIView *thView5 = [UIView new];
-    thView5.backgroundColor = HUAColor(0xe1e1e1);
+    thView5.backgroundColor = HUAColor(0xf3f3f3);
     [scrollView addSubview:thView5];
     thView5.sd_layout
     .topSpaceToView(thView4,hua_scale(44))
-    .heightIs(1)
+    .leftSpaceToView(scrollView,hua_scale(15))
+    .heightIs(hua_scale(0.5))
     .widthIs(scrollView.width);
     
     //手势背景
@@ -293,7 +296,7 @@
     [iocnImageView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(hua_scale(15));
         make.top.mas_equalTo(thView4.mas_bottom).mas_equalTo(hua_scale(10));
-        make.size.mas_equalTo(CGSizeMake(hua_scale(25), hua_scale(27)));
+        make.size.mas_equalTo(CGSizeMake(hua_scale(25), hua_scale(25)));
     }];
     
     UILabel *yuanLbale  = [[UILabel alloc] init];
@@ -336,11 +339,12 @@
     
     //6线
     UIView *thView6 = [UIView new];
-    thView6.backgroundColor = HUAColor(0xe1e1e1);
+    thView6.backgroundColor = HUAColor(0xf3f3f3);
     [scrollView addSubview:thView6];
     thView6.sd_layout
     .topSpaceToView(thView5,hua_scale(44))
-    .heightIs(1)
+    .leftSpaceToView(scrollView,hua_scale(15))
+    .heightIs(hua_scale(0.5))
     .widthIs(scrollView.width);
     
     //手势背景
@@ -364,7 +368,7 @@
     [winImageView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(hua_scale(15));
         make.top.mas_equalTo(thView5.mas_bottom).mas_equalTo(hua_scale(10));
-        make.size.mas_equalTo(CGSizeMake(hua_scale(25), hua_scale(27)));
+        make.size.mas_equalTo(CGSizeMake(hua_scale(25), hua_scale(25)));
     }];
     
     UILabel *winLbale  = [[UILabel alloc] init];
@@ -412,7 +416,7 @@
     [chanImageView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(hua_scale(15));
         make.top.mas_equalTo(thView6.mas_bottom).mas_equalTo(hua_scale(10));
-        make.size.mas_equalTo(CGSizeMake(hua_scale(25), hua_scale(27)));
+        make.size.mas_equalTo(CGSizeMake(hua_scale(25), hua_scale(25)));
     }];
     
     UILabel *chanLbale  = [[UILabel alloc] init];
@@ -458,8 +462,8 @@
     [scrollView addSubview:addThView];
     addThView.sd_layout
     .topSpaceToView(thView6,hua_scale(45))
-    .heightIs(1)
-    .leftEqualToView(thView6)
+    .heightIs(hua_scale(0.5))
+    .leftEqualToView(scrollView)
     .rightEqualToView(thView6);
     
     //手势背景
@@ -483,7 +487,7 @@
     [scrollView addSubview:thView7];
     thView7.sd_layout
     .topSpaceToView(addThView,hua_scale(45))
-    .heightIs(1)
+    .heightIs(hua_scale(0.5))
     .leftSpaceToView(scrollView,scrollView.width/2)
     .widthIs(scrollView.width/2);
     
@@ -492,10 +496,11 @@
     UILabel *memberTitle  = [[UILabel alloc] init];
     memberTitle.font = [UIFont systemFontOfSize:hua_scale(13)];
     memberTitle.text = @"产品金额:";
+    //memberTitle.backgroundColor = [UIColor redColor];
     [scrollView addSubview:memberTitle];
     [memberTitle mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(thView7);
-        make.height.mas_equalTo(13);
+        //make.height.mas_equalTo(13);
         make.top.mas_equalTo(addThView.mas_bottom).mas_equalTo(hua_scale(45.0/2.0-13.0/2.0));
     }];
     [memberTitle setSingleLineAutoResizeWithMaxWidth:200];
@@ -503,6 +508,7 @@
     _memberLabel = [[UILabel alloc] init];
     _memberLabel.font = [UIFont systemFontOfSize:hua_scale(13)];
     _memberLabel.text = @"¥ 45";
+     //_memberLabel.backgroundColor = [UIColor redColor];
     [scrollView addSubview:_memberLabel];
     [_memberLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.right.mas_equalTo(self.view.width-hua_scale(15));
@@ -535,11 +541,11 @@
     
     //8线
     UIView *thView8 = [UIView new];
-    thView8.backgroundColor = HUAColor(0xe1e1e1);
+    thView8.backgroundColor = HUAColor(0xf3f3f3);
     [scrollView addSubview:thView8];
     thView8.sd_layout
     .topSpaceToView(thView7,hua_scale(116))
-    .heightIs(1)
+    .heightIs(hua_scale(0.5))
     .widthIs(scrollView.width);
     
     UILabel *commonLabel = [UILabel new];
@@ -589,7 +595,7 @@
     [scrollView addSubview:thView9];
     thView9.sd_layout
     .topSpaceToView(thView8,hua_scale(50))
-    .heightIs(1)
+    .heightIs(hua_scale(0.5))
     .widthIs(scrollView.width);
     
     scrollView.sd_layout.spaceToSuperView(UIEdgeInsetsZero);

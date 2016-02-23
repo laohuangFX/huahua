@@ -32,8 +32,12 @@
         make.edges.mas_equalTo(0);
     }];
     [self footerView];
+    
+    //[self.view endEditing:NO];
+    //[self.textField endEditing:NO];
 }
 - (void)saveNickname {
+    [self.view endEditing:YES];
     
     if (self.textField.text.length<2 || self.textField.text.length>10) {
 
@@ -60,9 +64,11 @@
                     detailInfo.nickname = self.textField.text;
                     HUALog(@"123%@",detailInfo.nickname);
                     [[NSUserDefaults standardUserDefaults] setObject:[NSKeyedArchiver archivedDataWithRootObject:detailInfo] forKey:@"data"];
+                    [self.navigationController popViewControllerAnimated:YES];
                 });
             });
         }
+    
 }
 
 
@@ -115,7 +121,7 @@
         make.height.mas_equalTo(40);
     }];
 
-    
+    [self.textField becomeFirstResponder];
     
     return cell;
     
@@ -139,6 +145,22 @@
    
    
     [self.view endEditing:YES];
+    
+    return YES;
+    
+}
+
+#pragma mark----------------textFieldDelegate--------
+-(BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string{
+    
+        if (string.length == 0) return YES;
+        
+        NSInteger existedLength = textField.text.length;
+        NSInteger selectedLength = range.length;
+        NSInteger replaceLength = string.length;
+        if (existedLength - selectedLength + replaceLength > 12) {
+            return NO;
+        }
     
     return YES;
     

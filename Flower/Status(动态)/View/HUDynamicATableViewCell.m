@@ -26,13 +26,15 @@
     self.nameLbale = [UILabel new];
     self.nameLbale.text = @"快乐鸟";
     //self.nameLbale.backgroundColor = [UIColor blueColor];
-    self.nameLbale.font = [UIFont systemFontOfSize:hua_scale(14)];
+    self.nameLbale.font = [UIFont systemFontOfSize:hua_scale(12)];
     self.nameLbale.textColor = HUAColor(0x576b95);
     
     self.contentLbale = [UILabel new];
     self.contentLbale.numberOfLines = 0;
-    self.contentLbale.font = [UIFont systemFontOfSize:hua_scale(14)];
+    //self.contentLbale.backgroundColor = [UIColor redColor];
+    self.contentLbale.font = [UIFont systemFontOfSize:hua_scale(12)];
     self.contentLbale.textColor = HUAColor(0x333333);
+    [self.contentLbale sizeToFit];
     
     
     
@@ -60,6 +62,7 @@
     [self.loveButton setImage:[UIImage imageNamed:@"praise_green"] forState:UIControlStateSelected];
     self.loveButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight;
     [self.loveButton addTarget:self action:@selector(click:) forControlEvents:UIControlEventTouchUpInside];
+    //self.loveButton.backgroundColor = [UIColor redColor];
     [self.loveButton setImageEdgeInsets:UIEdgeInsetsMake(0, hua_scale(0), hua_scale(0), hua_scale(5))];
     //[self.loveButton setTitleEdgeInsets:UIEdgeInsetsMake(0, hua_scale(-26), 0, 0)];
     
@@ -72,7 +75,7 @@
     
     [self.messageButton setImage:[UIImage imageNamed:@"comment"] forState:UIControlStateNormal];
     self.messageButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight;
-    
+    //self.messageButton.backgroundColor = [UIColor yellowColor];
     [self.messageButton addTarget:self action:@selector(click:) forControlEvents:UIControlEventTouchUpInside];
     [self.messageButton setImageEdgeInsets:UIEdgeInsetsMake(0, hua_scale(0), 0, hua_scale(5))];
     
@@ -91,15 +94,16 @@
     CGFloat margin = hua_scale(10);
     
     self.headView.sd_layout
-    .leftSpaceToView(contentView, hua_scale(margin))
-    .topSpaceToView(contentView,hua_scale(25))
+    .leftSpaceToView(contentView, hua_scale(9))
+    .topSpaceToView(contentView,hua_scale(9))
     .widthIs(hua_scale(32))
     .heightIs(hua_scale(30));
-    
+  
+    [self.headView updateLayout];
     self.nameLbale.sd_layout
     .leftSpaceToView(self.headView, hua_scale(margin))
     .topEqualToView(self.headView)
-    .heightIs(hua_scale(9));
+    .autoHeightRatio(0);
     [self.nameLbale setSingleLineAutoResizeWithMaxWidth:200];
     
     //    self.contentLbale.sd_layout
@@ -108,11 +112,13 @@
     //    //.rightSpaceToView(contentView, hua_scale(10))
     //    .autoHeightRatio(0);
     //    [self.contentLbale setSingleLineAutoResizeWithMaxWidth:200];
+    [self.nameLbale updateLayout];
     [self.contentLbale mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(self.nameLbale.mas_bottom).mas_equalTo(hua_scale(9));
+        make.top.mas_equalTo(self.nameLbale.mas_bottom).mas_equalTo(hua_scale(10));
         make.left.mas_equalTo(self.nameLbale);
         make.right.mas_equalTo(hua_scale(-10));
     }];
+    
     
     [self.contentLbale updateLayout];
     self.picContainerView.sd_layout
@@ -128,7 +134,7 @@
     self.messageButton.sd_layout.
     rightSpaceToView(contentView,hua_scale(margin))
     .topSpaceToView(self.timeButton,0)
-    .widthIs(hua_scale(70))
+    .widthIs(hua_scale(30))
     .heightIs(hua_scale(30));
     
     self.loveButton.sd_layout.
@@ -137,7 +143,7 @@
     .widthIs(hua_scale(70))
     .heightIs(hua_scale(30));
     
-    [self setupAutoHeightWithBottomView:self.loveButton bottomMargin:hua_scale(margin)];
+    [self setupAutoHeightWithBottomView:self.loveButton bottomMargin:hua_scale(8)];
 }
 
 //- (void)setArray:(NSArray *)array{
@@ -154,6 +160,12 @@
     [self.headView sd_setImageWithURL:[NSURL URLWithString:model.icon] placeholderImage:[UIImage imageNamed:@"placeholder"]];
     self.nameLbale.text = model.name;
     self.contentLbale.text = model.content;
+    //设置行间距
+    NSMutableAttributedString *att = [[NSMutableAttributedString alloc] initWithString:self.contentLbale.text];
+    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+    [paragraphStyle setLineSpacing:hua_scale(60)];
+    [att addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange(0, [self.contentLbale.text length])];
+    self.contentLbale.attributedText = att;
     
     if ([[model.is_praise stringValue] isEqualToString:@"1"]) {
         self.loveButton.selected = YES;
@@ -174,6 +186,7 @@
     [attributedStrings addAttribute:NSParagraphStyleAttributeName value:paragraphStyles range:NSMakeRange(0, [self.contentLbale.text length])];
     self.contentLbale.attributedText = attributedStrings;
     [self.contentLbale sizeToFit];
+   
     
 }
 

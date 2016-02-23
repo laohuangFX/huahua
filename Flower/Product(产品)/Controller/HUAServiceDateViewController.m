@@ -124,7 +124,7 @@
     [projectLabel setSingleLineAutoResizeWithMaxWidth:200];
     
     //项目
-    _project = [UILabel labelText:self.category color:HUAColor(0x333333) font:hua_scale(13)];
+    _project = [UILabel labelText:self.category color:HUAColor(0x333333) font:hua_scale(11)];
     [_scrollView addSubview:_project];
     [_project mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(projectLabel.mas_right).mas_equalTo(hua_scale(5));
@@ -146,7 +146,7 @@
     
     
     //姓名
-    _name = [UILabel labelText:self.model.name color:HUAColor(0x4da800) font:hua_scale(13)];
+    _name = [UILabel labelText:self.model.name color:HUAColor(0x4da800) font:hua_scale(11)];
     [_scrollView addSubview:_name];
     [_name mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(technicianLabel.mas_right).mas_equalTo(hua_scale(5));
@@ -201,11 +201,12 @@
     //底部视图
     UIView *redView = [UIView new];
     redView.backgroundColor = HUAColor(0xfff6f6);
+    //redView.backgroundColor = [UIColor redColor];
     [_bgView addSubview:redView];
     [redView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.right.mas_equalTo(0);
-        make.top.mas_equalTo(hua_scale(27));
-        make.height.mas_equalTo(hua_scale(66));
+        make.top.mas_equalTo(hua_scale(26));
+        make.height.mas_equalTo(hua_scale(65));
     }];
     
     UIView *lastView1 = nil;
@@ -218,7 +219,7 @@
         view1.backgroundColor = HUAColor(0xe1e1e1);
         [_bgView addSubview:view1];
         [view1 mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.height.mas_equalTo(hua_scale(1));
+            make.height.mas_equalTo(hua_scale(0.5));
             make.left.mas_equalTo(thView1);
             make.right.mas_equalTo(self.view.mas_right).mas_equalTo(hua_scale(-10));
             if (i==0) {
@@ -256,7 +257,7 @@
         view1.backgroundColor = HUAColor(0xe1e1e1);
         [_bgView addSubview:view1];
         [view1 mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.width.mas_equalTo(hua_scale(1));
+            make.width.mas_equalTo(hua_scale(0.5));
             make.top.mas_equalTo(0);
             make.bottom.mas_equalTo(0);
             
@@ -294,10 +295,10 @@
     
     
     _loadingButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    _loadingButton.backgroundColor = HUAColor(0xf8f8f8);
+    _loadingButton.backgroundColor = HUAColor(0xeeeeee);
     _loadingButton.tag = 190;
     [_loadingButton setTitle:@"加载更多日期..." forState:0];
-    _loadingButton.titleLabel.font = [UIFont systemFontOfSize:11];
+    _loadingButton.titleLabel.font = [UIFont systemFontOfSize:hua_scale(11)];
     [_loadingButton setTitleColor:HUAColor(0x494949) forState:0];
     [_loadingButton addTarget:self action:@selector(click:) forControlEvents:UIControlEventTouchUpInside];
     [self.scrollView addSubview:_loadingButton];
@@ -341,7 +342,7 @@
         view1.backgroundColor = HUAColor(0xe1e1e1);
         [bgView addSubview:view1];
         [view1 mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.height.mas_equalTo(hua_scale(1));
+            make.height.mas_equalTo(hua_scale(0.5));
             make.left.mas_equalTo(0);
             make.right.mas_equalTo(self.view.mas_right).mas_equalTo(hua_scale(-10));
             if (i==0) {
@@ -375,7 +376,7 @@
         view1.backgroundColor = HUAColor(0xe1e1e1);
         [bgView addSubview:view1];
         [view1 mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.width.mas_equalTo(hua_scale(1));
+            make.width.mas_equalTo(hua_scale(0.5));
             make.top.mas_equalTo(0);
             make.bottom.mas_equalTo(0);
             
@@ -464,7 +465,31 @@
     }else{
         UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
         
+        if (indexPath.row == _appointmentTime.count) {
+            UIView *thView = [UIView new];
+            thView.backgroundColor = HUAColor(0xe1e1e1);
+            [cell.contentView addSubview:thView];
+            [thView mas_makeConstraints:^(MASConstraintMaker *make) {
+                make.bottom.mas_equalTo(0);
+                make.height.mas_equalTo(hua_scale(0.5));
+                make.left.mas_equalTo(hua_scale(0));
+                make.right.mas_equalTo(hua_scale(0));
+            }];
+        }else{
+            UIView *thView = [UIView new];
+            thView.backgroundColor = HUAColor(0xe1e1e1);
+            [cell.contentView addSubview:thView];
+            [thView mas_makeConstraints:^(MASConstraintMaker *make) {
+                make.bottom.mas_equalTo(0);
+                make.height.mas_equalTo(hua_scale(0.5));
+                make.left.mas_equalTo(hua_scale(15));
+                make.right.mas_equalTo(hua_scale(-15));
+            }];
+
+        }
+        
         UIButton *timeButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        timeButton.backgroundColor = [UIColor clearColor];
         [timeButton setTitle:_appointmentTime[indexPath.row] forState:0];
         [timeButton setTitleColor:HUAColor(0x333333) forState:0];
         [timeButton setTitleColor:HUAColor(0x4da800) forState:UIControlStateSelected];
@@ -485,7 +510,7 @@
         [timeButton addSubview:gouimage];
         [gouimage mas_makeConstraints:^(MASConstraintMaker *make) {
             make.centerX.mas_equalTo(hua_scale(60));
-            make.size.mas_equalTo(CGSizeMake(hua_scale(14), 10));
+            make.size.mas_equalTo(CGSizeMake(hua_scale(14), hua_scale(14)));
             make.centerY.mas_equalTo(0);
         }];
         
@@ -528,7 +553,7 @@
     if (tableView == self.tableView || tableView == _lastTbaleView) {
         return hua_scale(33);
     }else{
-        return hua_scale(30);
+        return hua_scale(35);
     }
 }
 //弹框
@@ -550,7 +575,7 @@
     
     
     UIView *headView = [UIView new];
-    headView.backgroundColor = HUAColor(0xd2d2d2);
+    headView.backgroundColor = HUAColor(0xf8f8f8);
     headView.userInteractionEnabled = YES;
     [bgImageView addSubview:headView];
     [headView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -621,6 +646,7 @@
     timeTableView.scrollEnabled = NO;
     timeTableView.delegate = self;
     timeTableView.dataSource = self;
+    timeTableView.separatorStyle = NO;
     [bgImageView addSubview:timeTableView];
     [timeTableView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(headView.mas_bottom).mas_equalTo(0);

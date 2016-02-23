@@ -25,6 +25,20 @@
 
 }
 - (void)setCell{
+    
+    
+    UIView *thView = [UIView new];
+    thView.backgroundColor = HUAColor(0xe1e1e1);
+    [self.contentView addSubview:thView];
+    
+    [thView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.bottom.mas_equalTo(0);
+        make.height.mas_equalTo(hua_scale(0.5));
+        make.left.mas_equalTo(hua_scale(10));
+        make.right.mas_equalTo(hua_scale(-10));
+    }];
+
+    
 
     //头像
     _headImageView = [UIImageView new];
@@ -83,8 +97,8 @@
     
         make.right.mas_equalTo(hua_scale(-10));
         make.centerY.mas_equalTo(0);
-        make.height.mas_equalTo(hua_scale(20));
-        make.width.mas_equalTo(hua_scale(20));
+        make.height.mas_equalTo(hua_scale(15));
+        make.width.mas_equalTo(hua_scale(15));
     }];
 
 }
@@ -94,7 +108,7 @@
     _nameLbale.text = model.name;
     _moneyLable.text = [NSString stringWithFormat:@"¥ %@",model.price];
     _typelable.text = model.level_name;
-    [_headImageView sd_setImageWithURL:[NSURL URLWithString:model.icon] placeholderImage:[UIImage imageNamed:@"placeholder"]];
+    [_headImageView sd_setImageWithURL:[NSURL URLWithString:model.icon] placeholderImage:[UIImage imageNamed:@"selecttechnician"]];
 }
 
 //选择技师

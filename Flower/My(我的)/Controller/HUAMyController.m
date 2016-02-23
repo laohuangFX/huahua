@@ -104,13 +104,14 @@ static NSString * const identifier = @"head";
         HUALog(@"token返回%@",responseObject);
 
         NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:responseObject options:0 error:nil];
+        
         self.userDic = dic;
         self.birthString = dic[@"info"][@"birth"];
         [self.tableView reloadData];
         NSString *string = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
         HUALog(@"%@",string);
         
-        
+        NSLog(@"%@",dic);
     } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
         HUALog(@"%@",error);
     }];

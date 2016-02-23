@@ -33,6 +33,9 @@
     NSString *_midstText;
     //右边
     NSString *_rightText;
+    
+    //记录筛选的值
+    NSDictionary *_parametersDic;
 
 
 }
@@ -63,7 +66,7 @@
     self.view.backgroundColor = [UIColor whiteColor];
     self.page = 1;
     [self headDownMenu];
-    [self getData:nil];
+    [self getData:nil parametersDic:_parametersDic];
     [self refreshData];
     
   }
@@ -165,6 +168,7 @@
         }
     
         NSLog(@"%@",parameters);
+        _parametersDic = parameters;
         [manager GET:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
           //  HUALog(@"%@",responseObject);
         
@@ -176,6 +180,7 @@
             self.array = [[HUADataTool MyOrder:responseObject] mutableCopy];
             
             [self.tablewView reloadData];
+            self.page = 1;
         } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
             HUALog(@"%@",error);
         }];
@@ -185,7 +190,7 @@
     [self.view addSubview:menu];
 }
 
-- (void)getData:(NSString *)Type{
+- (void)getData:(NSString *)Type parametersDic:(NSDictionary *)parametersDic{
 
     NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
     
@@ -196,6 +201,9 @@
     NSString *url = [HUA_URL stringByAppendingPathComponent:Bill_list];
     NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
     parameter[@"per_page"] = @(self.page);
+    parameter[@"Product_filter"] = _parametersDic[@"Product_filter"];
+    parameter[@"Time_filter"] = _parametersDic[@"Time_filter"];
+    NSLog(@"%@",parameter);
     [manager GET:url parameters:parameter success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
         NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:responseObject options:0 error:nil];
         if ([Type isEqualToString:@"尾部"]) {
@@ -232,7 +240,7 @@
         //刷新数据的把页数还原
         self.page= 1;
         
-        [self getData:nil];
+        [self getData:nil parametersDic:_parametersDic];
     }];
     // 马上进入刷新状态
     [self.tablewView.mj_header beginRefreshing];
@@ -242,7 +250,7 @@
     
     self.page++;
     
-    [self getData:@"尾部"];
+    [self getData:@"尾部" parametersDic:_parametersDic];
     //上拉刷新
     
 }

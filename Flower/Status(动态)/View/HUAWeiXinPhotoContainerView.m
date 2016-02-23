@@ -29,8 +29,8 @@
     if (_picPathStringsArray.count == 1) {
         UIImageView *image = [UIImageView new];
         [image sd_setImageWithURL:[NSURL URLWithString:_picPathStringsArray.firstObject] placeholderImage:nil];
-
-        image.frame = CGRectMake(0, 0, 10, 10);
+        
+        image.frame = CGRectMake(0, 0, hua_scale(171), hua_scale(137));
         if (image.size.width) {
             itemH = image.size.height / image.size.width * itemW;
         }

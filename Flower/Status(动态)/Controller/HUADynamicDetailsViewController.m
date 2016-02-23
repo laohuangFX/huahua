@@ -481,6 +481,7 @@ int cellRow = 000;
         
         NSString *url=[HUA_URL stringByAppendingPathComponent:@"essay/essay_comment_create"];
         //发送请求
+        NSLog(@"%@",parameters);
         [manager POST:url parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
             
                NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:responseObject options:0 error:nil];
