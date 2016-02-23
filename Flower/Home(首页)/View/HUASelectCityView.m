@@ -7,6 +7,7 @@
 //
 
 #import "HUASelectCityView.h"
+#import "HUACityInfo.h"
 
 typedef NS_ENUM(NSInteger, UITableViewLeftOrRight) {
     UITableViewLeft = 10,
@@ -75,7 +76,7 @@ typedef NS_ENUM(NSInteger, UITableViewLeftOrRight) {
     
 }
 - (void)tapDismissView{
-    self.cityBlock(@"");
+    self.cityBlock(nil);
     [self dismissView];
 }
 - (void)dismissView{
@@ -97,10 +98,15 @@ typedef NS_ENUM(NSInteger, UITableViewLeftOrRight) {
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     if (tableView.tag == UITableViewLeft) {
         
-        return self.cityArray.count;
+//        return self.cityArray.count;
+        if (self.cityArray.count != 0) {
+            return 1;
+        }
+        return 0;
     }else{
-        NSDictionary *dic = self.cityArray[self.leftSelectIndex];
-        return [[dic objectForKey:[dic allKeys][0]] count];
+        return self.cityArray.count;
+//        NSDictionary *dic = self.cityArray[self.leftSelectIndex];
+//        return [[dic objectForKey:[dic allKeys][0]] count];
     }
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -110,12 +116,14 @@ typedef NS_ENUM(NSInteger, UITableViewLeftOrRight) {
             leftCell = [[UITableViewCell alloc]initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:LEFT_CELL];
         }
         leftCell.textLabel.font = [UIFont systemFontOfSize:hua_scale(12)];
-        leftCell.textLabel.text = [self.cityArray[indexPath.row] allKeys][0];
+        
         leftCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         UIView *BackgroundView = [[UIView alloc]initWithFrame:leftCell.bounds];
         BackgroundView.backgroundColor = HUAColor(0x4da800);
         leftCell.selectedBackgroundView = BackgroundView;
         leftCell.textLabel.highlightedTextColor = [UIColor whiteColor];
+//        leftCell.textLabel.text = [self.cityArray[indexPath.row] allKeys][0];
+        leftCell.textLabel.text = [self.cityArray[0] mergerName];
         return leftCell;
     }
     else
@@ -125,8 +133,9 @@ typedef NS_ENUM(NSInteger, UITableViewLeftOrRight) {
         if (!rightCell) {
             rightCell = [[UITableViewCell alloc]initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:RIGHT_CELL];
         }
-        NSDictionary *dic = self.cityArray[self.leftSelectIndex];
-        rightCell.textLabel.text = [[dic objectForKey:[dic allKeys][0]][indexPath.row] allKeys][0];
+//        NSDictionary *dic = self.cityArray[self.leftSelectIndex];
+//        rightCell.textLabel.text = [[dic objectForKey:[dic allKeys][0]][indexPath.row] allKeys][0];
+        rightCell.textLabel.text = [self.cityArray[indexPath.row] cityName];
         rightCell.textLabel.font = [UIFont systemFontOfSize:hua_scale(12)];
         rightCell.backgroundColor = HUAColor(0xf2f2f2);
         UIView *BackgroundView = [[UIView alloc]initWithFrame:rightCell.bounds];
@@ -147,9 +156,11 @@ typedef NS_ENUM(NSInteger, UITableViewLeftOrRight) {
     }
     else
     {
-        self.rightSelectIndex = indexPath.row;
-        NSDictionary *dic = self.cityArray[self.leftSelectIndex];
-        self.cityBlock([[dic objectForKey:[dic allKeys][0]][indexPath.row] allKeys][0]);
+        self.cityBlock(self.cityArray[indexPath.row]);
+        
+//        self.rightSelectIndex = indexPath.row;
+//        NSDictionary *dic = self.cityArray[self.leftSelectIndex];
+//        self.cityBlock([[dic objectForKey:[dic allKeys][0]][indexPath.row] allKeys][0]);
         [self dismissView];
     }
 }
@@ -170,6 +181,8 @@ typedef NS_ENUM(NSInteger, UITableViewLeftOrRight) {
         _leftTableV.showsHorizontalScrollIndicator = NO;
         _leftTableV.separatorInset = UIEdgeInsetsMake(0,0, 0,0);
         _leftTableV.separatorColor = HUAColor(0xd2d2d2);
+        NSIndexPath *path = [NSIndexPath indexPathForRow:0 inSection:0];
+        [_leftTableV selectRowAtIndexPath:path animated:NO scrollPosition:UITableViewScrollPositionNone];
     }
     return _leftTableV;
 }

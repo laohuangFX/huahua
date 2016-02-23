@@ -15,14 +15,16 @@
 @interface HUAMyProductViewController ()<UITableViewDataSource,UITableViewDelegate>
 @property (nonatomic, strong)UITableView *tablewView;
 @property (nonatomic, strong)NSArray *array;
-@property (nonatomic, strong) NSArray *productCardArray;
+@property (nonatomic, strong) NSMutableArray *productCardArray;
 @property (nonatomic, strong) NSString *user_id;
+@property (nonatomic, assign) NSInteger page;
+
 @end
 
 @implementation HUAMyProductViewController
-- (NSArray *)productCardArray {
+- (NSMutableArray *)productCardArray {
     if (!_productCardArray) {
-        _productCardArray = [NSArray array];
+        _productCardArray = [NSMutableArray array];
     }
     return _productCardArray;
 }
@@ -44,23 +46,79 @@
     self.view.backgroundColor = [UIColor whiteColor];
     [self.view addSubview:self.tablewView];
 
+    [self refreshData];
+}
+
+//下拉刷新
+- (void)refreshData{
+    
+    self.tablewView.mj_header = [MJRefreshStateHeader headerWithRefreshingBlock:^{
+        
+        //刷新数据的把页数还原
+        self.page= 1;
+        
+        [self getData:nil];
+    }];
+    // 马上进入刷新状态
+    [self.tablewView.mj_header beginRefreshing];
+}
+//上拉刷新
+- (void)footRefreshData{
+    
+    self.page++;
+    
+    [self getData:@"尾部"];
+    //上拉刷新
+    
+}
+//上拉刷新
+- (void)footEnd{
+
+    self.tablewView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
+        
+        [self.tablewView.mj_footer endRefreshingWithNoMoreData];
+        
+    }];
+    
+    [self.tablewView.mj_footer beginRefreshing];
+}
+
+
+- (void)getData:(NSString *)indicate{
+   
     NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     [manager.requestSerializer setValue:token forHTTPHeaderField:@"token"];
     NSString *url = [HUA_URL stringByAppendingPathComponent:Product_card];
     NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
-    //parameter[@"per_page"] = @"1";
+    parameter[@"per_page"] = @(self.page);
+    NSLog(@"%@",url);
     [manager GET:url parameters:parameter success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
         HUALog(@"%@",responseObject);
-        self.productCardArray = [HUADataTool getProductCard:responseObject];
-        self.user_id = responseObject[@"info"][@"request"][@"bpc.user_id"];
-        HUALog(@"user_id%@",self.user_id);
-        [self.tablewView reloadData];
+        NSString *maxPage = responseObject[@"info"][@"pages"];
+        if ([indicate isEqualToString:@"尾部"]) {
+            
+            NSArray *array = [[HUADataTool myMemberCardArray:responseObject] mutableCopy];
+            if (self.page > maxPage.integerValue) {
+                
+                [self footEnd];
+                return ;
+            }
+
+            [self.productCardArray addObjectsFromArray:array];
+            [self.tablewView reloadData];
+            
+        }else{
+            self.productCardArray = nil;
+            self.productCardArray = [[HUADataTool getProductCard:responseObject] mutableCopy];
+            self.user_id = responseObject[@"info"][@"request"][@"bpc.user_id"];
+            HUALog(@"user_id%@",self.user_id);
+            [self.tablewView reloadData];
+            [self.tablewView.mj_header endRefreshing];
+        }
     } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
         HUALog(@"%@",error);
     }];
-
-    
 }
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     
@@ -99,6 +157,15 @@
     
 }
 
+-(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (indexPath.row == self.productCardArray.count-1) {
+        
+        [self footRefreshData];
+        
+    }
+    NSLog(@"%ld",self.page);
+}
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.

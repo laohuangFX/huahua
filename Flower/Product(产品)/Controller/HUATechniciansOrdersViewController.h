@@ -25,4 +25,6 @@
 @property (nonatomic, strong)NSString *moneyNumber;
 
 @property (nonatomic, strong)HUATechnicianModel *model;
+
+
 @end

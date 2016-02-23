@@ -41,6 +41,8 @@
 
 //会员信息
 @property (nonatomic, strong)NSDictionary *membersInformation;
+//服务的价格
+@property (nonatomic, strong)NSString *moneyStr;
 
 @end
 
@@ -152,10 +154,11 @@
     //点赞按钮
     UIButton *addButton = [UIButton buttonWithType:UIButtonTypeCustom];
     //addButton.backgroundColor = [UIColor redColor];
+    addButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
     [addButton setTitleColor:HUAColor(0x4da800) forState:0];
     addButton.titleLabel.font = [UIFont systemFontOfSize:14];
     [addButton setTitle:self.model.praise_count forState:0];
-    [addButton setImageEdgeInsets:UIEdgeInsetsMake(0, -10, 0, 0)];
+    [addButton setTitleEdgeInsets:UIEdgeInsetsMake(0, hua_scale(4), 0, 0)];
     [addButton setImage:[UIImage imageNamed:@"praise_select"] forState:0];
     [self.scrollView addSubview:addButton];
     [addButton mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -222,6 +225,7 @@
     //金额
     UILabel *money = [UILabel new];
     money.text = @"¥0.00";
+    money.tag = 111;
     money.font = [UIFont systemFontOfSize:13];
     money.textColor = HUAColor(0x4da800);
     [self.scrollView addSubview:money];
@@ -601,7 +605,7 @@
         UITableViewCell *serviceCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
         
         UIButton *serviceButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        [serviceButton setTitle:self.model.serviceArray[indexPath.row] forState:0];
+        [serviceButton setTitle:self.model.serviceArray[indexPath.row][@"name"] forState:0];
         [serviceButton setTitleColor:HUAColor(0x333333) forState:0];
         [serviceButton setTitleColor:HUAColor(0x4da800) forState:UIControlStateSelected];
         serviceButton.contentHorizontalAlignment = 1;
@@ -836,7 +840,7 @@
                     //名字
                     vc.technicianName = self.model.masterName;
                     //金额
-                    vc.moneyNumber = @"45";
+                    vc.moneyNumber = self.moneyStr;
                     // vc.model = self.model;
                     NSLog(@"时间%@",_selecteTimeButton.titleLabel.text);
                     if ([[self.membersInformation[@"info"]class] isSubclassOfClass:[NSString class]]) {
@@ -946,6 +950,7 @@ UIImageView *ServiceImagee = nil;
 - (void)slecteService:(UIButton *)sender{
     UIImageView *imageView = [sender viewWithTag:sender.tag+100];
     UIButton *button = [self.view viewWithTag:155];
+    UILabel *label = [self.view viewWithTag:111];
     if (selectServiceButtonn!=sender) {
         sender.selected = YES;
         selectServiceButtonn.selected = NO;
@@ -961,6 +966,9 @@ UIImageView *ServiceImagee = nil;
     ServiceImagee = imageView;
     selectServiceButtonn = sender;
     [button setTitle:sender.titleLabel.text forState:0];
+    label.text =[NSString stringWithFormat:@"¥%@",self.model.serviceArray[sender.tag-1100][@"price"]] ;
+    //记录价格
+    self.moneyStr = self.model.serviceArray[sender.tag-1100][@"price"];
     
     //回到原位
     button.selected = NO;

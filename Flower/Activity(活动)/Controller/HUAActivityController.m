@@ -56,12 +56,12 @@ static NSString * const reuseIdentifier = @"goods";
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.page = 1;
-
+    self.isFirstTime = YES;
     //设置导航栏
     [self setNavigationBar];
     //请求数据
     [self getData];
-    self.isFirstTime = YES;
+    
     //下拉刷新数据
     [self setupDownRefresh];
     

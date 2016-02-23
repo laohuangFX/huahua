@@ -307,6 +307,7 @@
                 self.parameters[@"order"] =@"praise_asc";
             }
         }
+
         if ([_midstText isEqualToString:@"不限"] && _midstText == nil) {
             self.parameters[@"order"] = nil;
         }
@@ -325,6 +326,7 @@
 //            HUALog(@"%@",error);
 //            [HUAMBProgress MBProgressOnlywithLabelText:@"请检查网络设置"];
 //        }];
+
     }];
 
     [self.view addSubview:menu];

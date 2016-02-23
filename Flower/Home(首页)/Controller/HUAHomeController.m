@@ -25,10 +25,12 @@
 #import "HUAGetCity.h"
 #import "EmojiBool.h"
 #import <CoreLocation/CoreLocation.h>
+#import "HUACityBtn.h"
+#import "HUACityInfo.h"
 
 static NSString *identifier = @"cell";
 
-@interface HUAHomeController ()<ClickDelegate, UIScrollViewDelegate,UITabBarControllerDelegate,HUASortMenuDelegate,HomeHeaderViewDelegate,UITextFieldDelegate,CLLocationManagerDelegate>
+@interface HUAHomeController ()<ClickDelegate, UIScrollViewDelegate,UITabBarControllerDelegate,HUASortMenuDelegate,HomeHeaderViewDelegate,UITextFieldDelegate,CLLocationManagerDelegate,UITableViewDelegate,UITableViewDataSource,UIAlertViewDelegate>
 
 /**商铺的可变数组*/
 @property (nonatomic, strong) NSMutableArray *shopsArray;
@@ -45,7 +47,7 @@ static NSString *identifier = @"cell";
 /**自定义的搜索bar*/
 @property (nonatomic, strong) UITextField *searchBar;
 /**城市选择*/
-@property (nonatomic, strong) UIButton *chooseCity;
+@property (nonatomic, strong) HUACityBtn *chooseCity;
 /**自定义城市选择view*/
 @property (nonatomic, strong) HUASelectCityView *selectView;
 /**当前的页数*/
@@ -60,13 +62,30 @@ static NSString *identifier = @"cell";
 @property (nonatomic, strong) NSString *homePath;
 /**判断是不是第一次进入控制器*/
 @property (nonatomic, assign) BOOL isFirstTime;
+/**请求参数字典*/
+@property (nonatomic, strong) NSMutableDictionary *parameter;
+
+@property (nonatomic, strong) UITableView *tableView;
+
+
 @property (nonatomic, strong) CLLocationManager * mgr;
-@property (nonatomic, assign) CLLocationCoordinate2D currentCoord;
+
+@property (nonatomic, strong) NSMutableArray *cityArray;
 @property (nonatomic, strong) NSString *currentCity;
+
+@property (nonatomic, strong) NSString *userCity;
+@property (nonatomic, assign) CLLocationCoordinate2D userCoord;
 
 @end
 
 @implementation HUAHomeController
+- (NSMutableDictionary *)parameter {
+    if (!_parameter) {
+        _parameter = [NSMutableDictionary dictionary];
+    }
+    return  _parameter;
+}
+
 - (NSString *)pagePath {
     if (!_pagePath) {
         _pagePath = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)firstObject] stringByAppendingPathComponent:@"homePage.plist"];
@@ -105,8 +124,28 @@ static NSString *identifier = @"cell";
     return _shopsArray;
 }
 
+- (UITableView *)tableView{
+    if (!_tableView) {
+        _tableView = [[UITableView alloc]initWithFrame:self.view.bounds];
+        _tableView.height = self.view.height-navigationBarHeight;
+        _tableView.delegate = self;
+        _tableView.dataSource = self;
+//        [self.view addSubview:_tableView];
+        
+        
+    }
+    return _tableView;
+}
+- (NSMutableArray *)cityArray{
+    if (!_cityArray) {
+        _cityArray = [NSMutableArray array];
+        
+    }
+    return _cityArray;
+}
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [self.view addSubview:self.tableView];
     //设置tableView没有分割线
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
   
@@ -120,6 +159,7 @@ static NSString *identifier = @"cell";
     // 集成下拉刷新控件
     [self setupDownRefresh];
 
+    self.currentCity =[[NSUserDefaults standardUserDefaults] objectForKey: @"currentCity"];
     //定位
     [self getAddress];
     
@@ -141,10 +181,9 @@ static NSString *identifier = @"cell";
     
     
     NSString *url = [HUA_URL stringByAppendingPathComponent:App_index];
-    NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
-    parameter[@"order"] = self.order;
-    parameter[@"per_page"] = @(self.page);
-    [HUAHttpTool POST:url params:parameter success:^(id responseObject) {
+    self.parameter[@"order"] = self.order;
+    self.parameter[@"per_page"] = @(self.page);
+    [HUAHttpTool POST:url params:self.parameter success:^(id responseObject) {
         self.totalCount = responseObject[@"info"][@"total"];
         self.totalPage = responseObject[@"info"][@"pages"];
         NSArray *shopArray = [HUADataTool homeShop:responseObject];
@@ -153,6 +192,7 @@ static NSString *identifier = @"cell";
         NSArray *array = [HUADataTool homeBanner:responseObject];
         HUAShopInfo *banner = array.firstObject;
         self.bannerArray = banner.bannerArr;
+        self.cityArray = [[HUACityInfo citysFromArray:[[responseObject objectForKey:@"info"] objectForKey:@"city_list"]] mutableCopy];
         [self createHeaderView:self.bannerArray];
         [self.tableView reloadData];
     } failure:^(NSError *error) {
@@ -192,16 +232,34 @@ static NSString *identifier = @"cell";
     }
     self.page=1;
     NSString *url = [HUA_URL stringByAppendingPathComponent:App_index];
-    NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
-    parameter[@"order"] = self.order;
-    parameter[@"per_page"] = @(self.page);
-    [HUAHttpTool POST:url params:parameter success:^(id responseObject) {
+    self.parameter[@"order"] = self.order;
+    self.parameter[@"per_page"] = @(self.page);
+    
+    if (self.currentCity.length != 0 && self.currentCity != nil ) {
+        if ([self.currentCity isEqualToString:self.userCity]) {
+            self.parameter[@"x"] = @(self.userCoord.latitude);
+            self.parameter[@"y"] = @(self.userCoord.longitude);
+        }else{
+            NSString *regoinid = [HUACityInfo parentidForcityName:self.currentCity array:self.cityArray];
+            if (regoinid.length != 0) {
+                self.parameter[@"regoin_pid"] = regoinid;
+                self.parameter[@"region_id"] = @99;
+            }
+           
+        }
+    }
+    
+    [HUAHttpTool POST:url params:self.parameter success:^(id responseObject) {
         HUALog(@"123%@",responseObject);
+        if ([responseObject[@"info"] isKindOfClass:[NSString class]]) {
+            [self.tableView.mj_header endRefreshing];
+            return  ;
+        }
         [responseObject writeToFile:self.homePath atomically:YES];
         //获取数据总个数
         NSString *newCount = responseObject[@"info"][@"total"];
         if (self.isFirstTime == YES) {
-            
+            HUALog(@"123");
         }else {
             if ([newCount isEqualToString:[NSKeyedUnarchiver unarchiveObjectWithFile:self.pagePath]]) {
                 [HUAMBProgress MBProgressOnlywithLabelText:@"没有更多新的商户了"];
@@ -214,6 +272,7 @@ static NSString *identifier = @"cell";
         NSArray *shopArray = [HUADataTool homeShop:responseObject];
         [self.shopsArray addObjectsFromArray:shopArray];
         self.categoryArray = [HUADataTool getCategoryList:responseObject];
+        self.cityArray = [[HUACityInfo citysFromArray:responseObject[@"info"][@"city_list"]] mutableCopy];
         NSArray *array = [HUADataTool homeBanner:responseObject];
         HUAShopInfo *banner = array.firstObject;
         self.bannerArray = banner.bannerArr;
@@ -263,10 +322,24 @@ static NSString *identifier = @"cell";
         return;
     }
     NSString *url = [HUA_URL stringByAppendingPathComponent:App_index];
-    NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
-    parameter[@"order"] = self.order;
-    parameter[@"per_page"] = @(self.page);
-    [HUAHttpTool POST:url params:parameter success:^(id responseObject) {
+    self.parameter[@"order"] = self.order;
+    self.parameter[@"per_page"] = @(self.page);
+    
+//    if (self.currentCity.length != 0 && self.currentCity != nil ) {
+//        if ([self.currentCity isEqualToString:self.userCity]) {
+//            parameter[@"x"] = @(self.userCoord.latitude);
+//            parameter[@"y"] = @(self.userCoord.longitude);
+//        }else{
+//            
+//            parameter[@"regoin_pid"] = [HUACityInfo parentidForcityName:self.currentCity array:self.cityArray];
+//        }
+//    }
+    
+    [HUAHttpTool POST:url params:self.parameter success:^(id responseObject) {
+        if ([responseObject[@"info"] isKindOfClass:[NSString class]]) {
+            [self.tableView.mj_footer endRefreshingWithNoMoreData];
+            return  ;
+        }
         NSArray *shopArray = [HUADataTool homeShop:responseObject];
         [self.shopsArray addObjectsFromArray:shopArray];
         [self.tableView reloadData];
@@ -324,6 +397,17 @@ static NSString *identifier = @"cell";
     }
     return _searchBar;
 }
+
+- (HUACityBtn *)chooseCity{
+    if (!_chooseCity) {
+        _chooseCity = [HUACityBtn buttonWithType:UIButtonTypeCustom];
+        [_chooseCity setFrame:CGRectMake(0, 0, hua_scale(60), 44)];
+        [_chooseCity addTarget:self action:@selector(chooseCity:) forControlEvents:UIControlEventTouchUpInside];
+//        _chooseCity.title = @"选择城市";
+    }
+    return _chooseCity;
+}
+/*
 - (UIButton *)chooseCity{
     if (!_chooseCity) {
         _chooseCity = [UIButton buttonWithType:0];
@@ -347,6 +431,7 @@ static NSString *identifier = @"cell";
     }
     return _chooseCity;
 }
+ */
 - (void)setNavigationBar {
     
     self.searchBar.width = hua_scale(185);
@@ -359,8 +444,8 @@ static NSString *identifier = @"cell";
     logoIcon.width = hua_scale(45);
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:logoIcon];
     //设置右边选择城市按钮
-    self.navigationItem.rightBarButtonItems = @[[[UIBarButtonItem alloc] initWithCustomView:self.chooseCity]];
-
+    self.navigationItem.rightBarButtonItems = @[[[UIBarButtonItem alloc] init],[[UIBarButtonItem alloc] initWithCustomView:self.chooseCity]];
+     self.currentCity =[[NSUserDefaults standardUserDefaults] objectForKey: @"currentCity"];
 }
 
 - (void)setSearchNav{
@@ -371,29 +456,31 @@ static NSString *identifier = @"cell";
     self.searchBar.height = hua_scale(22.5);
     self.navigationItem.titleView = self.searchBar;
     
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithTitle:@"取消" style:UIBarButtonItemStyleDone target:self action:@selector(dismissBlackView)];
+    self.navigationItem.rightBarButtonItems = @[[[UIBarButtonItem alloc]initWithTitle:@"取消" style:UIBarButtonItemStyleDone target:self action:@selector(dismissBlackView)]];
 }
 
 //选择城市按钮
 #pragma --选择城市按钮的点击事件
-- (void)chooseCity:(UIButton *)chooseCity{
+- (void)chooseCity:(HUACityBtn *)chooseCity{
 
     UIButton * button =  [self.header viewWithTag:1000];
     button.selected = NO;
     self.sortView.y = screenHeight;
-     [self.sortView removeFromSuperview];
+    [self.sortView removeFromSuperview];
     
     chooseCity.selected = !chooseCity.selected;
     if (chooseCity.selected == YES) {
         self.selectView = [[HUASelectCityView alloc]initWithFrame:self.view.bounds];
-        self.selectView.cityArray = [HUAGetCity getCityArray];
+//        self.selectView.cityArray = [HUAGetCity getCityArray];
+        self.selectView.cityArray = self.cityArray;
         __block HUAHomeController * wself = self;
-        self.selectView.cityBlock = ^(NSString *cityName){
+        self.selectView.cityBlock = ^(HUACityInfo *city){
             chooseCity.selected = NO;
             wself.tableView.scrollEnabled = YES;
-            if (cityName.length != 0) {
-                wself.currentCity = cityName;
-                [chooseCity setTitle:cityName forState:UIControlStateNormal];
+            if (city != nil) {
+                wself.currentCity = city.cityName;
+//                chooseCity.title = city.cityName;
+               
             }
             
         };
@@ -477,10 +564,20 @@ static NSString *identifier = @"cell";
 
 #pragma mark 定位
 - (void)setCurrentCity:(NSString *)currentCity{
-    _currentCity = currentCity;
-    NSUserDefaults *userD  = [NSUserDefaults standardUserDefaults];
-    [userD setObject:currentCity forKey:@"currentCity"];
-    self.currentCoord = [self getCoord:currentCity];
+    
+    if (![_currentCity isEqualToString: currentCity ]) {
+        
+        _currentCity = currentCity;
+        [self.chooseCity setTitle: _currentCity];
+        if (currentCity == nil || currentCity.length == 0) {
+            self.chooseCity.title = @"选择城市";
+        }
+        NSUserDefaults *userD  = [NSUserDefaults standardUserDefaults];
+        [userD setObject:currentCity forKey:@"currentCity"];
+        self.page = 1;
+        [self loadNewData];
+    }
+   
     
 }
 - (CLLocationCoordinate2D)getCoord:(NSString *)city{
@@ -542,26 +639,35 @@ static NSString *identifier = @"cell";
     CLLocation *location = [locations lastObject];
     
     //当前经纬度
-    self.currentCoord  = location.coordinate;
-    NSLog(@" **************** coord.x = %f,coord.y = %f ",self.currentCoord.latitude,self.currentCoord.longitude);
+    self.userCoord  = location.coordinate;
+    
     //地理反编码
     //创建反编码对象
     CLGeocoder *geocoder = [[CLGeocoder alloc]init];
     //调用方法，使用位置反编码对象获取位置信息
     [geocoder reverseGeocodeLocation:location completionHandler:^(NSArray<CLPlacemark *> * _Nullable placemarks, NSError * _Nullable error) {
-        for (CLPlacemark *place in placemarks) {
-            NSLog(@" **************** name = %@,thorough = %@ ,locality = %@",place.name,place.thoroughfare,place.locality);
-            [_chooseCity setTitle:place.locality forState:UIControlStateNormal];
-            _chooseCity.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
-            [_chooseCity setTitleEdgeInsets:UIEdgeInsetsMake(0, -(_chooseCity.imageView.frame.size.width), 0, 0)];
-            [_chooseCity setImageEdgeInsets:UIEdgeInsetsMake(0, (_chooseCity.titleLabel.frame.size.width+20), 0, 0)];
+        CLPlacemark *place = placemarks[0];
+//        for (CLPlacemark *place in placemarks) {
+        if (place == nil) {
+            return ;
         }
+            self.userCity = place.locality;
+            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:nil message:[NSString stringWithFormat:@"为你定位到%@，是否从%@切换到当前城市",self.userCity,self.currentCity] delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
+            [alert show];
+//        }
     }];
     
     //停止定位
      [self.mgr stopUpdatingLocation];
 }
-
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
+    if (buttonIndex == 1) {
+//        self.chooseCity.title = self.userCity;
+        self.currentCity = self.userCity;
+//        self.page = 1;
+//        [self loadNewData];
+    }
+}
 /*
 #pragma mark - Table view data source
 
@@ -649,7 +755,8 @@ static NSString *identifier = @"cell";
             [HUAMBProgress MBProgressOnlywithLabelText: @"人气排序"];
             break;
         case HUASortViewButtonTypeDistance:
-            
+            self.order = nil;
+            [HUAMBProgress MBProgressOnlywithLabelText: @"距离排序"];
             break;
         case HUASortViewButtonTypeShopName:
             self.order = @"shopname_desc";
