@@ -368,7 +368,7 @@
     self.navigationItem.leftBarButtonItems = @[space, backButton];
     
     self.navigationItem.titleView = nil;
-    UIBarButtonItem *leftSpace = [UIBarButtonItem leftSpace:-30];
+    UIBarButtonItem *leftSpace = [UIBarButtonItem leftSpace:-25];
     UIBarButtonItem *searchBar = [UIBarButtonItem itemWithTarget:self action:@selector(search) image:@"search" highImage:@"search" text:nil];
     self.navigationItem.rightBarButtonItems = @[leftSpace,searchBar];
     

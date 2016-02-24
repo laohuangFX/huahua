@@ -244,6 +244,8 @@
 		5900D9171C7D526800FD1C04 /* HUAPraiseButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 5900D9161C7D526800FD1C04 /* HUAPraiseButton.m */; };
 		5900D91B1C7DCD2800FD1C04 /* NSString+Emojize.m in Sources */ = {isa = PBXBuildFile; fileRef = 5900D91A1C7DCD2800FD1C04 /* NSString+Emojize.m */; };
 		5900D91E1C7DCFFB00FD1C04 /* HUAMembersPayViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5900D91D1C7DCFFB00FD1C04 /* HUAMembersPayViewController.m */; };
+		5900D9231C7DD0B800FD1C04 /* jpush-ios-2.1.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5900D9201C7DD0B800FD1C04 /* jpush-ios-2.1.0.a */; };
+		5900D9241C7DD0B800FD1C04 /* PushConfig.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5900D9221C7DD0B800FD1C04 /* PushConfig.plist */; };
 		59015DC71C4C785000524B6F /* HUAMasterListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 59015DC61C4C785000524B6F /* HUAMasterListCell.m */; };
 		59015DCA1C4C81C800524B6F /* HUAMasterList.m in Sources */ = {isa = PBXBuildFile; fileRef = 59015DC91C4C81C800524B6F /* HUAMasterList.m */; };
 		59015DCD1C4C83E200524B6F /* HUAMasterListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 59015DCC1C4C83E200524B6F /* HUAMasterListController.m */; };
@@ -778,6 +780,9 @@
 		5900D91A1C7DCD2800FD1C04 /* NSString+Emojize.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+Emojize.m"; path = "Flower/Main(其他)/第三方/NSStringEmojize/NSString+Emojize.m"; sourceTree = SOURCE_ROOT; };
 		5900D91C1C7DCFFB00FD1C04 /* HUAMembersPayViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HUAMembersPayViewController.h; sourceTree = "<group>"; };
 		5900D91D1C7DCFFB00FD1C04 /* HUAMembersPayViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HUAMembersPayViewController.m; sourceTree = "<group>"; };
+		5900D9201C7DD0B800FD1C04 /* jpush-ios-2.1.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "jpush-ios-2.1.0.a"; sourceTree = "<group>"; };
+		5900D9211C7DD0B800FD1C04 /* JPUSHService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JPUSHService.h; sourceTree = "<group>"; };
+		5900D9221C7DD0B800FD1C04 /* PushConfig.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = PushConfig.plist; sourceTree = "<group>"; };
 		59015DC51C4C785000524B6F /* HUAMasterListCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HUAMasterListCell.h; sourceTree = "<group>"; };
 		59015DC61C4C785000524B6F /* HUAMasterListCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HUAMasterListCell.m; sourceTree = "<group>"; };
 		59015DC81C4C81C800524B6F /* HUAMasterList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HUAMasterList.h; sourceTree = "<group>"; };
@@ -944,6 +949,7 @@
 				592CB91F1C4E2A55002FD56C /* MessageUI.framework in Frameworks */,
 				590749391C772AE90050654B /* AliyunOSSiOS.framework in Frameworks */,
 				592CB91D1C4E2A4B002FD56C /* libicucore.tbd in Frameworks */,
+				5900D9231C7DD0B800FD1C04 /* jpush-ios-2.1.0.a in Frameworks */,
 				592CB91B1C4E2A3B002FD56C /* libz.tbd in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1866,9 +1872,20 @@
 			path = View;
 			sourceTree = "<group>";
 		};
+		5900D91F1C7DD0B800FD1C04 /* JPush */ = {
+			isa = PBXGroup;
+			children = (
+				5900D9201C7DD0B800FD1C04 /* jpush-ios-2.1.0.a */,
+				5900D9211C7DD0B800FD1C04 /* JPUSHService.h */,
+				5900D9221C7DD0B800FD1C04 /* PushConfig.plist */,
+			);
+			path = JPush;
+			sourceTree = "<group>";
+		};
 		5907461C1C5A078D005AEC7C /* 第三方 */ = {
 			isa = PBXGroup;
 			children = (
+				5900D91F1C7DD0B800FD1C04 /* JPush */,
 				17B7E1031C71BD9B0032C6D5 /* AFNetworking */,
 				17B7E11C1C71BD9B0032C6D5 /* BCKeyBoard */,
 				17B7E15F1C71BD9B0032C6D5 /* EMMallSectionView */,
@@ -2192,6 +2209,7 @@
 				17B7E2781C71BD9C0032C6D5 /* chatBar_colorMore_video@2x.png in Resources */,
 				17B7E2711C71BD9C0032C6D5 /* chatBar_colorMore_audioCallSelected@2x.png in Resources */,
 				17B7E25F1C71BD9C0032C6D5 /* chatBar_faceSelected@2x.png in Resources */,
+				5900D9241C7DD0B800FD1C04 /* PushConfig.plist in Resources */,
 				17B7E26C1C71BD9C0032C6D5 /* chatBar_recordSelected.png in Resources */,
 				17B7E26F1C71BD9C0032C6D5 /* chatBar_recordSelectedBg@2x.png in Resources */,
 				17B7E27A1C71BD9C0032C6D5 /* chatBar_more_camera.png in Resources */,
@@ -2651,6 +2669,10 @@
 				INFOPLIST_FILE = Flower/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Flower/Main(其他)/第三方/JPush",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = readchen.Flower;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
@@ -2674,6 +2696,10 @@
 				INFOPLIST_FILE = Flower/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Flower/Main(其他)/第三方/JPush",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = readchen.Flower;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
