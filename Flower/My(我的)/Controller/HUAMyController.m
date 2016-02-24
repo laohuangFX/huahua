@@ -163,12 +163,16 @@ static NSString * const identifier = @"head";
         //cell.nameLabel.text = [detailInfo.nickname isEqualToString:@""]?detailInfo.phone:detailInfo.nickname;
         cell.nameLabel.text = self.userDic[@"info"][@"nickname"];
         cell.sexLabel.text = [detailInfo.sex isEqualToString:@"1"]?@"男":@"女";
-
-        [cell.headImageView sd_setImageWithURL:[NSURL URLWithString:detailInfo.headicon] placeholderImage:[UIImage imageNamed:@"placeholder"]];
-
-        if (detailInfo.headicon != nil) {
+        if (detailInfo.headicon != nil && ![detailInfo.headicon isKindOfClass:[NSNull class]]) {
             [cell.headImageView sd_setImageWithURL:[NSURL URLWithString:detailInfo.headicon] placeholderImage:[UIImage imageNamed:@"placeholder"]];
+        }else{
+            [cell.headImageView setImage:[UIImage imageNamed:@"placeholder"]];
         }
+        
+
+//        if (detailInfo.headicon != nil) {
+//            [cell.headImageView sd_setImageWithURL:[NSURL URLWithString:detailInfo.headicon] placeholderImage:[UIImage imageNamed:@"placeholder"]];
+//        }
 
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         return cell;

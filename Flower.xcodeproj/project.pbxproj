@@ -322,6 +322,15 @@
 		59FBFD601C48D77700EB00B1 /* HUAServiceInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 59FBFD5F1C48D77700EB00B1 /* HUAServiceInfo.m */; };
 		59FBFD631C48D84000EB00B1 /* HUAServiceMasterInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 59FBFD621C48D84000EB00B1 /* HUAServiceMasterInfo.m */; };
 		59FBFD661C48ED0600EB00B1 /* HUAServiceMasterCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 59FBFD651C48ED0600EB00B1 /* HUAServiceMasterCell.m */; };
+		5FB8FB351C7D3FC10017B1E3 /* jpush-ios-2.1.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5FB8FB331C7D3FC10017B1E3 /* jpush-ios-2.1.0.a */; };
+		5FB8FB371C7D3FEF0017B1E3 /* PushConfig.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5FB8FB361C7D3FEF0017B1E3 /* PushConfig.plist */; };
+		5FB8FB391C7D40B20017B1E3 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5FB8FB381C7D40B20017B1E3 /* CFNetwork.framework */; };
+		5FB8FB3B1C7D40BF0017B1E3 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5FB8FB3A1C7D40BF0017B1E3 /* CoreFoundation.framework */; };
+		5FB8FB3D1C7D40CC0017B1E3 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5FB8FB3C1C7D40CC0017B1E3 /* CoreTelephony.framework */; };
+		5FB8FB3F1C7D40E70017B1E3 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5FB8FB3E1C7D40E70017B1E3 /* CoreGraphics.framework */; };
+		5FB8FB411C7D40EF0017B1E3 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5FB8FB401C7D40EF0017B1E3 /* Foundation.framework */; };
+		5FB8FB431C7D40F80017B1E3 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5FB8FB421C7D40F80017B1E3 /* UIKit.framework */; };
+		5FB8FB451C7D41010017B1E3 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5FB8FB441C7D41000017B1E3 /* Security.framework */; };
 		5FFE9C441C7ABA7E007169B1 /* HUACityBtn.m in Sources */ = {isa = PBXBuildFile; fileRef = 5FFE9C431C7ABA7E007169B1 /* HUACityBtn.m */; };
 		5FFE9C471C7B1752007169B1 /* HUACityInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 5FFE9C461C7B1752007169B1 /* HUACityInfo.m */; };
 /* End PBXBuildFile section */
@@ -924,6 +933,16 @@
 		59FBFD621C48D84000EB00B1 /* HUAServiceMasterInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HUAServiceMasterInfo.m; sourceTree = "<group>"; };
 		59FBFD641C48ED0600EB00B1 /* HUAServiceMasterCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HUAServiceMasterCell.h; sourceTree = "<group>"; };
 		59FBFD651C48ED0600EB00B1 /* HUAServiceMasterCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HUAServiceMasterCell.m; sourceTree = "<group>"; };
+		5FB8FB331C7D3FC10017B1E3 /* jpush-ios-2.1.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "jpush-ios-2.1.0.a"; sourceTree = "<group>"; };
+		5FB8FB341C7D3FC10017B1E3 /* JPUSHService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JPUSHService.h; sourceTree = "<group>"; };
+		5FB8FB361C7D3FEF0017B1E3 /* PushConfig.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = PushConfig.plist; sourceTree = "<group>"; };
+		5FB8FB381C7D40B20017B1E3 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
+		5FB8FB3A1C7D40BF0017B1E3 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
+		5FB8FB3C1C7D40CC0017B1E3 /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
+		5FB8FB3E1C7D40E70017B1E3 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		5FB8FB401C7D40EF0017B1E3 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		5FB8FB421C7D40F80017B1E3 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		5FB8FB441C7D41000017B1E3 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		5FFE9C421C7ABA7E007169B1 /* HUACityBtn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HUACityBtn.h; sourceTree = "<group>"; };
 		5FFE9C431C7ABA7E007169B1 /* HUACityBtn.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HUACityBtn.m; sourceTree = "<group>"; };
 		5FFE9C451C7B1752007169B1 /* HUACityInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HUACityInfo.h; sourceTree = "<group>"; };
@@ -935,15 +954,23 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				592CB91B1C4E2A3B002FD56C /* libz.tbd in Frameworks */,
+				5FB8FB451C7D41010017B1E3 /* Security.framework in Frameworks */,
+				5FB8FB431C7D40F80017B1E3 /* UIKit.framework in Frameworks */,
+				5FB8FB411C7D40EF0017B1E3 /* Foundation.framework in Frameworks */,
+				5FB8FB3F1C7D40E70017B1E3 /* CoreGraphics.framework in Frameworks */,
 				599DB67E1C7AB59B004EA1A0 /* SystemConfiguration.framework in Frameworks */,
+				5FB8FB3D1C7D40CC0017B1E3 /* CoreTelephony.framework in Frameworks */,
+				5FB8FB3B1C7D40BF0017B1E3 /* CoreFoundation.framework in Frameworks */,
+				5FB8FB391C7D40B20017B1E3 /* CFNetwork.framework in Frameworks */,
 				17B7E2DB1C71BD9C0032C6D5 /* MOBFoundation.framework in Frameworks */,
 				592CB9231C4E2A6B002FD56C /* libstdc++.tbd in Frameworks */,
 				592CB9211C4E2A61002FD56C /* JavaScriptCore.framework in Frameworks */,
 				592CB91F1C4E2A55002FD56C /* MessageUI.framework in Frameworks */,
 				590749391C772AE90050654B /* AliyunOSSiOS.framework in Frameworks */,
+				5FB8FB351C7D3FC10017B1E3 /* jpush-ios-2.1.0.a in Frameworks */,
 				17B7E2DC1C71BD9C0032C6D5 /* SMS_SDK.framework in Frameworks */,
 				592CB91D1C4E2A4B002FD56C /* libicucore.tbd in Frameworks */,
-				592CB91B1C4E2A3B002FD56C /* libz.tbd in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1871,6 +1898,7 @@
 		5907461C1C5A078D005AEC7C /* 第三方 */ = {
 			isa = PBXGroup;
 			children = (
+				5FB8FB321C7D3FC10017B1E3 /* JPush */,
 				17B7E1031C71BD9B0032C6D5 /* AFNetworking */,
 				17B7E11C1C71BD9B0032C6D5 /* BCKeyBoard */,
 				17B7E15F1C71BD9B0032C6D5 /* EMMallSectionView */,
@@ -1952,6 +1980,13 @@
 		59AC00EA1C3A4AFE00F453F5 = {
 			isa = PBXGroup;
 			children = (
+				5FB8FB441C7D41000017B1E3 /* Security.framework */,
+				5FB8FB421C7D40F80017B1E3 /* UIKit.framework */,
+				5FB8FB401C7D40EF0017B1E3 /* Foundation.framework */,
+				5FB8FB3E1C7D40E70017B1E3 /* CoreGraphics.framework */,
+				5FB8FB3C1C7D40CC0017B1E3 /* CoreTelephony.framework */,
+				5FB8FB3A1C7D40BF0017B1E3 /* CoreFoundation.framework */,
+				5FB8FB381C7D40B20017B1E3 /* CFNetwork.framework */,
 				599DB67D1C7AB59B004EA1A0 /* SystemConfiguration.framework */,
 				590749381C772AE90050654B /* AliyunOSSiOS.framework */,
 				592CB9221C4E2A6B002FD56C /* libstdc++.tbd */,
@@ -2073,6 +2108,16 @@
 			path = "Product(产品)";
 			sourceTree = "<group>";
 		};
+		5FB8FB321C7D3FC10017B1E3 /* JPush */ = {
+			isa = PBXGroup;
+			children = (
+				5FB8FB361C7D3FEF0017B1E3 /* PushConfig.plist */,
+				5FB8FB331C7D3FC10017B1E3 /* jpush-ios-2.1.0.a */,
+				5FB8FB341C7D3FC10017B1E3 /* JPUSHService.h */,
+			);
+			path = JPush;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -2142,6 +2187,11 @@
 					59AC00F21C3A4AFE00F453F5 = {
 						CreatedOnToolsVersion = 7.2;
 						DevelopmentTeam = 6HK56439SB;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+						};
 					};
 					59AC010B1C3A4AFE00F453F5 = {
 						CreatedOnToolsVersion = 7.2;
@@ -2183,6 +2233,7 @@
 				17B7E2691C71BD9C0032C6D5 /* chatBar_record@2x.png in Resources */,
 				17B7E27C1C71BD9C0032C6D5 /* chatBar_more_cameraSelected.png in Resources */,
 				17B7E2621C71BD9C0032C6D5 /* chatBar_keyboardSelected.png in Resources */,
+				5FB8FB371C7D3FEF0017B1E3 /* PushConfig.plist in Resources */,
 				59003CF91C730AF30016C72D /* area.plist in Resources */,
 				17B7E2641C71BD9C0032C6D5 /* chatBar_more.png in Resources */,
 				17B7E27B1C71BD9C0032C6D5 /* chatBar_more_camera@2x.png in Resources */,
@@ -2661,6 +2712,10 @@
 				INFOPLIST_FILE = Flower/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Flower/Main(其他)/第三方/JPush",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = readn.Flower;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
@@ -2684,6 +2739,10 @@
 				INFOPLIST_FILE = Flower/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Flower/Main(其他)/第三方/JPush",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = readn.Flower;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";

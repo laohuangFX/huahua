@@ -362,7 +362,7 @@ static NSString * const reuseIdentifier = @"cell";
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:logoIcon];
     //设置导航栏右边的BarButtonItem
     UIBarButtonItem *searchBar = [UIBarButtonItem itemWithTarget:self action:@selector(search) image:@"search" highImage:@"search" text:nil];
-    UIBarButtonItem *leftSpace = [UIBarButtonItem leftSpace:hua_scale(-30)];
+    UIBarButtonItem *leftSpace = [UIBarButtonItem leftSpace:-25];
 //    UIBarButtonItem *rightSpace = [UIBarButtonItem rightSpace:hua_scale(10)];
     self.navigationItem.rightBarButtonItems = @[leftSpace,searchBar];
     self.navigationItem.titleView = nil;
@@ -378,7 +378,16 @@ static NSString * const reuseIdentifier = @"cell";
     self.searchBar.height = hua_scale(22.5);
     self.navigationItem.titleView = self.searchBar;
     [self.searchBar becomeFirstResponder];
-    self.navigationItem.rightBarButtonItems = @[[[UIBarButtonItem alloc]initWithTitle:@"取消" style:UIBarButtonItemStyleDone target:self action:@selector(dismissBlackView)]];
+    
+    UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+    btn.frame = CGRectMake(0, 0, hua_scale(25), 44);
+    [btn setTitle:@"取消" forState:UIControlStateNormal];
+    [btn setTitleColor:HUAColor(0x4da800) forState:UIControlStateNormal];
+    btn.titleLabel.font = [UIFont systemFontOfSize:hua_scale(12)];
+    [btn addTarget:self action:@selector(dismissBlackView) forControlEvents:UIControlEventTouchUpInside];
+    self.navigationItem.rightBarButtonItems = @[ [[UIBarButtonItem  alloc]init],[[UIBarButtonItem  alloc]initWithCustomView:btn]];
+
+//    self.navigationItem.rightBarButtonItems = @[[[UIBarButtonItem alloc]initWithTitle:@"取消" style:UIBarButtonItemStyleDone target:self action:@selector(dismissBlackView)]];
 }
 - (void)dismissBlackView{
     
@@ -441,7 +450,7 @@ static NSString * const reuseIdentifier = @"cell";
 }
 - (UITextField *)searchBar{
     if (!_searchBar) {
-        _searchBar = [UITextField textFieldWithFrame:CGRectZero image:@"search" placeholder:@"搜索"];
+        _searchBar = [UITextField textFieldWithFrame:CGRectZero image:@"searchs" placeholder:@"搜索"];
         _searchBar.layer.masksToBounds = YES;
         _searchBar.layer.cornerRadius = hua_scale(5);
         _searchBar.backgroundColor = HUAColor(0xeeeeee);

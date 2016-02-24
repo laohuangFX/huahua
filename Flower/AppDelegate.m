@@ -9,7 +9,7 @@
 #import "AppDelegate.h"
 #import "HUATabBarController.h"
 #import "HUALoginController.h"
-
+#import "JPUSHService.h"
 
 
 @interface AppDelegate ()
@@ -33,6 +33,26 @@
     
     //开始监听网络状态
     [[AFNetworkReachabilityManager sharedManager] startMonitoring];
+    
+    //极光推送 注册
+    // Required
+    if ([[UIDevice currentDevice].systemVersion floatValue] >= 8.0) {
+        //可以添加自定义categories
+        [JPUSHService registerForRemoteNotificationTypes:(UIUserNotificationTypeBadge |
+                                                          UIUserNotificationTypeSound |
+                                                          UIUserNotificationTypeAlert)
+                                              categories:nil];
+    } else {
+        //categories 必须为nil
+        [JPUSHService registerForRemoteNotificationTypes:(UIRemoteNotificationTypeBadge |
+                                                          UIRemoteNotificationTypeSound |
+                                                          UIRemoteNotificationTypeAlert)
+                                              categories:nil];
+    }
+    
+    // Required
+    //如需兼容旧版本的方式，请依旧使用[JPUSHService setupWithOption:launchOptions]方式初始化和同时使用pushConfig.plist文件声明appKey等配置内容。
+    [JPUSHService setupWithOption:launchOptions appKey:@"1cc314990d60134b5318edb0" channel:@"APP Store" apsForProduction:NO];
     return YES;
     
 
