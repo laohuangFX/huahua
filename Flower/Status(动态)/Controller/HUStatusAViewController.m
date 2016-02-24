@@ -248,10 +248,16 @@
         //发送请求
         
         [manager POST:url parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
-            NSLog(@"JSON: %@", responseObject);
-            
+           // NSLog(@"JSON: %@", responseObject);
+            NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:responseObject options:0 error:nil];
+            NSLog(@"%@",dic);
+          
             HUAStatusModel *model = self.array[indexPath.row];
-            model.praise = [model.praise isEqualToString:@"0"]? @"1":@"0";
+            if ([dic[@"info"][0] isKindOfClass:[NSDictionary class]]) {
+                model.praise = [NSString stringWithFormat:@"%ld",model.praise.integerValue+1];
+            }else{
+             model.praise = [NSString stringWithFormat:@"%ld",model.praise.integerValue+-1];
+            }
             model.is_praise = [model.is_praise.stringValue isEqualToString:@"1"]? @0:@1;
             
             [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:0];
@@ -280,6 +286,13 @@
     detailsViewC.hidesBottomBarWhenPushed = YES;
     detailsViewC.essay_id = model.essay_id;
     detailsViewC.statusModel = model;
+    [detailsViewC setPraise_countBlock:^(NSString *praise,NSString *zan) {
+       
+        model.praise = praise;
+        model.is_praise = [zan isEqualToString:@"1"]? @1:@0;
+        [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:0];
+    }];
+    
     
     [self.navigationController pushViewController:detailsViewC animated:YES];
     

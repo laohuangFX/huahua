@@ -44,6 +44,7 @@
     
     //时间
     self.timeButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    //self.timeButton.backgroundColor = [UIColor redColor];
     [self.timeButton setTitleColor:HUAColor(0xcecece) forState:0];
     self.timeButton.titleLabel.font = [UIFont systemFontOfSize:hua_scale(9)];
     [self.timeButton setTitle:@"刚刚" forState:0];
@@ -55,29 +56,43 @@
     
     //爱好
     self.loveButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.loveButton.titleLabel.font = [UIFont systemFontOfSize:hua_scale(11)];
+    //self.loveButton.backgroundColor = [UIColor redColor];
+    //self.loveButton.titleLabel.font = [UIFont systemFontOfSize:hua_scale(11)];
     self.loveButton.tag = 501;
     [self.loveButton setTitleColor:[UIColor grayColor] forState:0];
     [self.loveButton setImage:[UIImage imageNamed:@"praise_empty"] forState:UIControlStateNormal];
     [self.loveButton setImage:[UIImage imageNamed:@"praise_green"] forState:UIControlStateSelected];
-    self.loveButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight;
+    self.loveButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
     [self.loveButton addTarget:self action:@selector(click:) forControlEvents:UIControlEventTouchUpInside];
-    //self.loveButton.backgroundColor = [UIColor redColor];
     [self.loveButton setImageEdgeInsets:UIEdgeInsetsMake(0, hua_scale(0), hua_scale(0), hua_scale(5))];
-    //[self.loveButton setTitleEdgeInsets:UIEdgeInsetsMake(0, hua_scale(-26), 0, 0)];
+
+    UILabel *loveLabel = [UILabel new];
+    loveLabel.font = [UIFont systemFontOfSize:hua_scale(10)];
+    //loveLabel.backgroundColor = [UIColor yellowColor];
+    loveLabel.textColor = [UIColor grayColor];
+    loveLabel.text = @"1";
+    [self.loveButton addSubview:loveLabel];
+    [loveLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.mas_equalTo(hua_scale(15));
+        make.centerY.mas_equalTo(0);
+        make.right.mas_equalTo(0);
+    }];
+    self.loveLabel = loveLabel;
+    
+    
     
     //评论
     self.messageButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    
+    //self.messageButton.backgroundColor = [UIColor yellowColor];
     self.messageButton.tag = 500;
     self.messageButton.titleLabel.font = [UIFont systemFontOfSize:hua_scale(11)];
     [self.messageButton setTitleColor:[UIColor grayColor] forState:0];
     
     [self.messageButton setImage:[UIImage imageNamed:@"comment"] forState:UIControlStateNormal];
-    self.messageButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight;
+    self.messageButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
     //self.messageButton.backgroundColor = [UIColor yellowColor];
     [self.messageButton addTarget:self action:@selector(click:) forControlEvents:UIControlEventTouchUpInside];
-    [self.messageButton setImageEdgeInsets:UIEdgeInsetsMake(0, hua_scale(0), 0, hua_scale(5))];
+    [self.messageButton setImageEdgeInsets:UIEdgeInsetsMake(0, hua_scale(-4), 0, 0) ];
     
     
     
@@ -129,20 +144,23 @@
     leftEqualToView(self.picContainerView)
     .topSpaceToView(self.picContainerView,hua_scale(0))
     .widthIs(hua_scale(200))
-    .heightIs(hua_scale(30));
+    .heightIs(hua_scale(25));
     
-    self.messageButton.sd_layout.
-    rightSpaceToView(contentView,hua_scale(margin))
-    .topSpaceToView(self.timeButton,0)
-    .widthIs(hua_scale(30))
-    .heightIs(hua_scale(30));
-    
-    self.loveButton.sd_layout.
-    rightSpaceToView(self.messageButton,hua_scale(16))
+    self.messageButton.sd_layout
     .topSpaceToView(self.timeButton,0)
     .widthIs(hua_scale(70))
     .heightIs(hua_scale(30));
+    [self.messageButton mas_updateConstraints:^(MASConstraintMaker *make) {
+        make.right.mas_equalTo(contentView.mas_right).mas_equalTo(hua_scale(-15));
+    }];
     
+    [self.messageButton updateLayout];
+    self.loveButton.sd_layout.
+    rightSpaceToView(self.messageButton,hua_scale(5))
+    .centerYEqualToView(self.messageButton)
+    .widthIs(hua_scale(45))
+    .heightIs(self.messageButton.height);
+  
     [self setupAutoHeightWithBottomView:self.loveButton bottomMargin:hua_scale(8)];
 }
 
@@ -172,7 +190,8 @@
     }else{
         self.loveButton.selected = NO;
     }
-    [self.loveButton setTitle:model.praise forState:0];
+    self.loveLabel.text = model.praise;
+    //[self.loveButton setTitle:model.praise forState:0];
     [self.messageButton setTitle:model.comment forState:0];
     
     

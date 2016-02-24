@@ -130,7 +130,7 @@
     [self.keyBoard setChangeBlock:^{
         
         [UIView animateWithDuration:0.5 animations:^{
-            mySelf.keyBoard.y = self.view.bottom-64-46;
+            mySelf.keyBoard.y = self.view.bottom-64-hua_scale(46);
             
         }];
     }];
@@ -213,10 +213,8 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     
-    //return 3;
-    
     return self.pinlunArray.count+2;
-    //return self.modell.commentArray.count+2;
+
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -272,8 +270,19 @@
             NSString *url= [HUA_URL stringByAppendingPathComponent:@"user/praise"];
             //发送请求
             [manager POST:url parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:responseObject options:0 error:nil];
                 NSLog(@"JSON: %@", responseObject);
                 [self getData:NO];
+                NSString *praise = nil;
+                NSString *zan =nil;
+                if ([dic[@"info"][0] isKindOfClass:[NSDictionary class]]) {
+                    praise = [NSString stringWithFormat:@"%ld",self.statusModel.praise.integerValue+1];
+                    zan = @"1";
+                }else{
+                    praise = [NSString stringWithFormat:@"%ld",self.statusModel.praise.integerValue-1];
+                    zan = @"0";
+                }
+                self.praise_countBlock(praise,zan);
                 
             } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
                 NSLog(@"Error: %@", error);

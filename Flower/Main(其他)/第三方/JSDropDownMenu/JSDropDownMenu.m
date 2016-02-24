@@ -296,13 +296,15 @@
         _hadSelected = NO;
         //tableView init
         _leftTableView = [[UITableView alloc] initWithFrame:CGRectMake(origin.x, self.frame.origin.y + self.frame.size.height, 0, 0) style:UITableViewStyleGrouped];
-        _leftTableView.rowHeight = hua_scale(39);
+        _leftTableView.rowHeight = 38;
+        _leftTableView.separatorStyle = NO;
         _leftTableView.separatorColor = [UIColor colorWithRed:220.f/255.0f green:220.f/255.0f blue:220.f/255.0f alpha:1.0];
         _leftTableView.dataSource = self;
         _leftTableView.delegate = self;
         
         _rightTableView = [[UITableView alloc] initWithFrame:CGRectMake(self.frame.size.width, self.frame.origin.y + self.frame.size.height, 0, 0) style:UITableViewStyleGrouped];
-        _rightTableView.rowHeight = hua_scale(39);
+        _rightTableView.rowHeight = 38;
+        _rightTableView.separatorStyle = NO;
         _rightTableView.separatorColor = [UIColor colorWithRed:220.f/255.0f green:220.f/255.0f blue:220.f/255.0f alpha:1.0];
         _rightTableView.dataSource = self;
         _rightTableView.delegate = self;
@@ -795,7 +797,16 @@
     cell.selectedBackgroundView = [[UIView alloc] initWithFrame:cell.frame];
     cell.selectedBackgroundView.backgroundColor = HUAColor(0x4da800);
     cell.textLabel.font = [UIFont systemFontOfSize:12];
- 
+    
+    UIView *thView = [UIView new];
+    thView.tag = 1200+indexPath.row;
+    thView.backgroundColor = HUAColor(0xe1e1e1);
+    [cell.contentView addSubview:thView];
+    [thView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.right.bottom.mas_equalTo(0);
+        make.height.mas_equalTo(hua_scale(0.5));
+    }];
+    
     NSInteger leftOrRight = 0;
     
     if (_rightTableView==tableView) {
@@ -822,6 +833,9 @@
             
             //右边tableview记录上次的标志
             cell.backgroundColor = HUAColor(0x4da800);
+            cell.textLabel.textColor = [UIColor whiteColor];
+            thView.backgroundColor = HUAColor(0x4da800);
+            
         } else{
     
         }
@@ -831,6 +845,8 @@
         if (!_hadSelected && _leftSelectedRow == indexPath.row) {
             //左边tableview记录上次的标志
             cell.backgroundColor = HUAColor(0x4da800);
+            cell.textLabel.textColor = [UIColor whiteColor];
+            thView.backgroundColor = HUAColor(0x4da800);
             BOOL haveRightTableView = [_dataSource haveRightTableViewInColumn:_currentSelectedMenudIndex];
             if(!haveRightTableView){
             }
@@ -848,7 +864,8 @@ UITableViewCell *lastCell = nil;
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     //让上一次的cell的颜色还原
     lastCell.textLabel.textColor = HUAColor(0x333333);
-    
+//    UIView *view = [_leftTableView viewWithTag:1200+indexPath.row];
+//    view.backgroundColor = [UIColor redColor];
     
     NSInteger leftOrRight = 0;
     if (_rightTableView==tableView) {

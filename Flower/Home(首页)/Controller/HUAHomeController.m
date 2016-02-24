@@ -262,7 +262,7 @@ static NSString *identifier = @"cell";
             HUALog(@"123");
         }else {
             if ([newCount isEqualToString:[NSKeyedUnarchiver unarchiveObjectWithFile:self.pagePath]]) {
-                [HUAMBProgress MBProgressOnlywithLabelText:@"没有更多新的商户了"];
+                //[HUAMBProgress MBProgressOnlywithLabelText:@"没有更多新的商户了"];
             }
         }
         self.totalPage = responseObject[@"info"][@"pages"];

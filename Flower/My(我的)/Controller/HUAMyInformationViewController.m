@@ -96,7 +96,7 @@
 //    successButton.layer.cornerRadius =3.f;
     [successButton setTitle:@"退出登录" forState:0];
     [successButton setTitleColor:HUAColor(0xffffff) forState:0];
-    [successButton addTarget:self action:@selector(complete) forControlEvents:UIControlEventTouchUpInside];
+    [successButton addTarget:self action:@selector(endEditButton) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:successButton];
     [successButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(self.tablewView.mas_bottom).mas_equalTo(hua_scale(50));
@@ -432,7 +432,7 @@
         
         HUANameViewController *vc = [[HUANameViewController alloc] init];
         vc.hidesBottomBarWhenPushed = YES;
-        vc.name = detailInfo.nickname;
+        vc.name = _nameLabel.text;
         [self.navigationController pushViewController:vc animated:YES];
         
         //调用block
@@ -979,6 +979,24 @@
 - (void)HATransparentViewDidClosed
 {
     NSLog(@"Did close");
+}
+//退出登录
+- (void)endEditButton{
+    UIAlertController *alertC = [UIAlertController alertControllerWithTitle:@"您确定退出用户吗?" message:nil preferredStyle:UIAlertControllerStyleAlert];
+    //添加取消按钮
+    UIAlertAction *cancleAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
+        NSLog(@"点击");
+    }];
+    //添加电话按钮
+    UIAlertAction *phoneAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"token"];
+        [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"data"];
+        HUALoginController *loginVC = [HUALoginController new];
+        [self.navigationController pushViewController:loginVC animated:YES];
+    }];
+    [alertC addAction:cancleAction];
+    [alertC addAction:phoneAction];
+    [self presentViewController:alertC animated:YES completion:nil];
 }
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

@@ -28,6 +28,8 @@
 @property (nonatomic, strong)UIButton *loveButton;
 //留言
 @property (nonatomic, strong)UIButton *messageButton;
+@property (nonatomic, strong)UILabel *loveLabel;
+
 //点击评论类型
 @property (nonatomic, assign)BOOL boolType;
 

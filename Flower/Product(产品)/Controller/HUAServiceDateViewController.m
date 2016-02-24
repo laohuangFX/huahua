@@ -181,7 +181,7 @@
     thView3.backgroundColor = HUAColor(0xe1e1e1);
     [self.scrollView addSubview:thView3];
     [thView3 mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.height.mas_equalTo(hua_scale(1));
+        make.height.mas_equalTo(hua_scale(hua_scale(0.5)));
         make.left.mas_equalTo(self.scrollView.mas_left).mas_equalTo(hua_scale(10));
         make.right.mas_equalTo(self.view.mas_right).mas_equalTo(hua_scale(-10));
         make.top.mas_equalTo(dateLabel.mas_bottom).mas_equalTo(hua_scale(10));
@@ -189,7 +189,6 @@
     
     
     _bgView =[UIView new];
-    //_bgView.backgroundColor = [UIColor redColor];
     [self.scrollView addSubview:_bgView];
     [_bgView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(self.view.mas_left).mas_equalTo(hua_scale(10));
@@ -205,8 +204,8 @@
     [_bgView addSubview:redView];
     [redView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.right.mas_equalTo(0);
-        make.top.mas_equalTo(hua_scale(26));
-        make.height.mas_equalTo(hua_scale(65));
+        make.top.mas_equalTo(hua_scale(25));
+        make.height.mas_equalTo(hua_scale(66));
     }];
     
     UIView *lastView1 = nil;
@@ -225,12 +224,12 @@
             if (i==0) {
                 make.top.mas_equalTo(0);
             }else if (i==1){
-                make.top.mas_equalTo(lastView1.mas_bottom).mas_equalTo(hua_scale(25));
+                make.top.mas_equalTo(lastView1.mas_bottom).mas_equalTo(hua_scale(24));
             }else if (i==8){
                 make.bottom.mas_equalTo(0);
                 
             }else{
-                make.top.mas_equalTo(lastView1.mas_bottom).mas_equalTo(hua_scale(33-1));
+                make.top.mas_equalTo(lastView1.mas_bottom).mas_equalTo(hua_scale(33-0.5));
             }
         }];
         lastView1 = view1;
@@ -340,6 +339,11 @@
     for (int i=0; i<9; i++) {
         UIView *view1 = [UIView new];
         view1.backgroundColor = HUAColor(0xe1e1e1);
+        if (i==0) {
+            view1.hidden = YES;
+        }else{
+            view1.hidden = NO;
+        }
         [bgView addSubview:view1];
         [view1 mas_makeConstraints:^(MASConstraintMaker *make) {
             make.height.mas_equalTo(hua_scale(0.5));
@@ -348,12 +352,12 @@
             if (i==0) {
                 make.top.mas_equalTo(0);
             }else if (i==1){
-                make.top.mas_equalTo(lastView1.mas_bottom).mas_equalTo(hua_scale(25));
+                make.top.mas_equalTo(lastView1.mas_bottom).mas_equalTo(hua_scale(24));
             }else if (i==8){
                 make.bottom.mas_equalTo(0);
                 
             }else{
-                make.top.mas_equalTo(lastView1.mas_bottom).mas_equalTo(hua_scale(33-1));
+                make.top.mas_equalTo(lastView1.mas_bottom).mas_equalTo(hua_scale(33-0.5));
             }
         }];
         if (i>=0&&i<=2) {

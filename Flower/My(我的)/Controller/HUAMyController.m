@@ -70,18 +70,11 @@ static NSString * const identifier = @"head";
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self.view addSubview:self.tableView];
-    [self navigationBar];
     [self getData];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(poptoRoot) name:@"popCenter" object:nil];
 }
 - (void)poptoRoot{
     [self.navigationController popToRootViewControllerAnimated:NO];
-}
-- (void)navigationBar {
-    UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] initWithTitle:@"退出" style:UIBarButtonItemStyleDone target:self action:@selector(exitAction)];
-    rightItem.tintColor = HUAColor(0x4da800);
-    self.navigationItem.rightBarButtonItems = @[rightItem];
-    [rightItem setTitleTextAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:hua_scale(15)]} forState:UIControlStateNormal];
 }
 
 - (void)getData {
@@ -118,24 +111,7 @@ static NSString * const identifier = @"head";
     
 }
 
-- (void)exitAction {
-    UIAlertController *alertC = [UIAlertController alertControllerWithTitle:@"您确定退出用户吗?" message:nil preferredStyle:UIAlertControllerStyleAlert];
-    //添加取消按钮
-    UIAlertAction *cancleAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
-        NSLog(@"点击");
-    }];
-    //添加电话按钮
-    UIAlertAction *phoneAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-        [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"token"];
-        [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"data"];
-        HUALoginController *loginVC = [HUALoginController new];
-        [self.navigationController pushViewController:loginVC animated:YES];
-    }];
-    [alertC addAction:cancleAction];
-    [alertC addAction:phoneAction];
-    [self presentViewController:alertC animated:YES completion:nil];
 
-}
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {

@@ -71,7 +71,63 @@
     UIScrollView *scrollView = [[UIScrollView alloc] initWithFrame:self.view.frame];
     [self.view addSubview:scrollView];
     
-    //UIView *mianView = self.view;
+    UIView *footView = [UIView new];
+    footView.backgroundColor = [UIColor whiteColor];
+    [self.view addSubview:footView];
+    [footView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.bottom.left.right.mas_equalTo(0);
+        make.height.mas_equalTo(hua_scale(50));
+    }];
+    
+    //线
+    UIView *thView11 = [UIView new];
+    thView11.backgroundColor = HUAColor(0xe1e1e1);
+    [footView addSubview:thView11];
+    thView11.sd_layout
+    .topEqualToView(footView)
+    .heightIs(hua_scale(0.5))
+    .widthIs(self.view.width);
+    
+    UILabel *commonLabel = [UILabel new];
+    commonLabel.textColor = HUAColor(0x888888);
+    commonLabel.text = @"共 :";
+    commonLabel.font = [UIFont systemFontOfSize:hua_scale(13)];
+    [footView addSubview:commonLabel];
+    [commonLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerY.mas_equalTo(0);
+        make.left.mas_equalTo(self.view.mas_left).mas_equalTo(hua_scale(15));
+    }];
+    [commonLabel setSingleLineAutoResizeWithMaxWidth:200];
+    
+    UILabel *commonValue = [UILabel new];
+    commonValue.textColor = HUAColor(0x4da800);
+    commonValue.tag = 200;
+    commonValue.text = @"¥45";
+    commonValue.font = [UIFont systemFontOfSize:hua_scale(16)];
+    [footView addSubview:commonValue];
+    [commonValue mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerY.mas_equalTo(commonLabel);
+        make.left.mas_equalTo(commonLabel.mas_right).mas_equalTo(hua_scale(3));
+    }];
+    [commonValue setSingleLineAutoResizeWithMaxWidth:200];
+    
+    UIButton *successButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    successButton.backgroundColor = HUAColor(0x4da800);
+    successButton.tag = 194;
+    successButton.clipsToBounds = YES;
+    successButton.layer.borderWidth =1;
+    successButton.layer.borderColor = HUAColor(0x4da800).CGColor;//设置边框颜色
+    successButton.layer.cornerRadius =3.f;
+    [successButton setTitle:@"提交并支付" forState:0];
+    [successButton setTitleColor:HUAColor(0xffffff) forState:0];
+    [successButton addTarget:self action:@selector(submitPayment:) forControlEvents:UIControlEventTouchUpInside];
+    [footView addSubview:successButton];
+    [successButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerY.mas_equalTo(commonLabel);
+        make.size.mas_equalTo(CGSizeMake(hua_scale(166), hua_scale(34)));
+        make.right.mas_equalTo(self.view.mas_right).mas_equalTo(hua_scale(-10));
+    }];
+
     
     //商品
     UILabel *goodsLabel = [UILabel new];
@@ -105,7 +161,7 @@
     thView1.sd_layout
     .leftSpaceToView(scrollView,hua_scale(15))
     .topSpaceToView(scrollView,hua_scale(45))
-    .heightIs(1)
+    .heightIs(hua_scale(0.5))
     .widthIs(scrollView.width);
     
     //2线
@@ -114,7 +170,7 @@
     [scrollView addSubview:thView2];
     thView2.sd_layout
     .topSpaceToView(thView1,hua_scale(50))
-    .heightIs(1)
+    .heightIs(hua_scale(0.5))
     .leftSpaceToView(scrollView,hua_scale(15))
     .widthIs(scrollView.width);
     
@@ -142,29 +198,36 @@
         make.left.mas_equalTo(name.mas_right).mas_equalTo(hua_scale(5));
     }];
     
-    UIImageView *basketImageView = [[UIImageView alloc] init];
+    //余额
+    UILabel *pageLabel = [[UILabel alloc] init];
+    pageLabel.textAlignment = NSTextAlignmentCenter;
+    pageLabel.text = [NSString stringWithFormat:@"余额 : ¥%ld",self.membersMoney.integerValue];
+    pageLabel.textColor = HUAColor(0x4da800);
+    pageLabel.font = [UIFont systemFontOfSize:hua_scale(13)];
+    NSMutableAttributedString *att = [[NSMutableAttributedString alloc] initWithString:pageLabel.text];
+    
+    [att addAttributes:@{NSForegroundColorAttributeName:HUAColor(0x888888)}  range:NSMakeRange(0, 4)];
+    [att addAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:hua_scale(11)]} range:NSMakeRange(0, 4)];
+    pageLabel.attributedText = att;
+    [scrollView addSubview:pageLabel];
+    [pageLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerY.mas_equalTo(name);
+        make.right.mas_equalTo(self.view.mas_right).mas_equalTo(hua_scale(-30));
+    }];
+    [pageLabel setSingleLineAutoResizeWithMaxWidth:200];
+    
+    UIView *basketImageView = [[UIView alloc] init];
     //basketImageView.backgroundColor = [UIColor redColor];
-    basketImageView.image = [UIImage imageNamed:@"numer"];
+    basketImageView.layer.masksToBounds = YES;
+    [basketImageView.layer setBorderWidth:hua_scale(0.5)];
+    [basketImageView.layer setBorderColor: HUAColor(0x4da800).CGColor];
     [scrollView addSubview:basketImageView];
     [basketImageView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.mas_equalTo(memberType);
         make.right.mas_equalTo(self.view.right-hua_scale(15));
-        make.size.mas_equalTo(CGSizeMake(hua_scale(91), hua_scale(29)));
+        make.height.mas_equalTo(hua_scale(29));
+        make.left.mas_equalTo(pageLabel.mas_left).mas_equalTo(hua_scale(-15));
     }];
-    
-    //余额
-    UILabel *pageLabel = [[UILabel alloc] init];
-    pageLabel.text =[NSString stringWithFormat:@"余额 : ¥%ld",[self.membersMoney integerValue]] ;
-    pageLabel.textColor = HUAColor(0x4da800);
-    pageLabel.font = [UIFont systemFontOfSize:hua_scale(13)];
-    [HUAConstRowHeight adjustTheLabel:pageLabel adjustColor:HUAColor(0x888888) adjustColorRang:NSMakeRange(0, 3) adjustFont:11 adjustFontRang:NSMakeRange(0, 3) ];
-    [basketImageView addSubview:pageLabel];
-    [pageLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.center.mas_equalTo(0);
-        
-    }];
-    [pageLabel setSingleLineAutoResizeWithMaxWidth:200];
-    
     
     //购买数量
     UILabel *quantityLabel = [UILabel new];
@@ -253,7 +316,7 @@
     [thView3 mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(addButton.mas_bottom).mas_equalTo(10);
         make.width.mas_equalTo(scrollView.width);
-        make.height.mas_equalTo(1);
+        make.height.mas_equalTo(hua_scale(0.5));
     }];
     
     
@@ -264,7 +327,7 @@
     [scrollView addSubview:thView4];
     thView4.sd_layout
     .topSpaceToView(thView3,hua_scale(45))
-    .heightIs(1)
+    .heightIs(hua_scale(0.5))
     .widthIs(scrollView.width);
     
     UILabel *claimType = [[UILabel alloc] init];
@@ -314,7 +377,7 @@
     [scrollView addSubview:thView5];
     thView5.sd_layout
     .topSpaceToView(thView4,hua_scale(59))
-    .heightIs(1)
+    .heightIs(hua_scale(0.5))
     .widthIs(scrollView.width);
     
     UIView *newView = [UIView new];
@@ -409,7 +472,7 @@
     [iocnImage mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(hua_scale(15));
         make.top.mas_equalTo(modeLabel.mas_bottom).mas_equalTo(hua_scale(10));
-        make.height.mas_equalTo(hua_scale(27));
+        make.height.mas_equalTo(hua_scale(25));
         make.width.mas_equalTo(hua_scale(25));
     }];
     
@@ -438,12 +501,12 @@
     
     //6线
     UIView *thView6 = [UIView new];
-    thView6.backgroundColor = HUAColor(0xe1e1e1);
+    thView6.backgroundColor = HUAColor(0xf3f3f3);
     [scrollView addSubview:thView6];
     thView6.sd_layout
     .leftSpaceToView(scrollView,hua_scale(15))
     .topSpaceToView(title,hua_scale(10))
-    .heightIs(1)
+    .heightIs(hua_scale(0.5))
     .widthIs(scrollView.width);
     
     [thView6 updateLayout];
@@ -484,7 +547,7 @@
     [iocnImageView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(hua_scale(15));
         make.top.mas_equalTo(thView6.mas_bottom).mas_equalTo(hua_scale(10));
-        make.size.mas_equalTo(CGSizeMake(hua_scale(25), hua_scale(27)));
+        make.size.mas_equalTo(CGSizeMake(hua_scale(25), hua_scale(25)));
     }];
     
     UILabel *yuanLbale  = [[UILabel alloc] init];
@@ -511,11 +574,11 @@
     
     //7线
     UIView *thView7 = [UIView new];
-    thView7.backgroundColor = HUAColor(0xe1e1e1);
+    thView7.backgroundColor = HUAColor(0xf3f3f3);
     [scrollView addSubview:thView7];
     thView7.sd_layout
     .topSpaceToView(thView6,hua_scale(45))
-    .heightIs(1)
+    .heightIs(hua_scale(0.5))
     .leftSpaceToView(scrollView,hua_scale(15))
     .widthIs(scrollView.width);
     
@@ -554,7 +617,7 @@
     [winImageView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(hua_scale(15));
         make.top.mas_equalTo(thView7.mas_bottom).mas_equalTo(hua_scale(10));
-        make.size.mas_equalTo(CGSizeMake(hua_scale(25), hua_scale(27)));
+        make.size.mas_equalTo(CGSizeMake(hua_scale(25), hua_scale(25)));
     }];
     
     UILabel *winLbale  = [[UILabel alloc] init];
@@ -600,7 +663,7 @@
     [scrollView addSubview:thView8];
     [thView8 mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(wintitleL.mas_bottom).mas_equalTo(hua_scale(10));
-        make.height.mas_equalTo(1);
+        make.height.mas_equalTo(hua_scale(0.5));
         make.width.mas_equalTo(scrollView.width);
         
     }];
@@ -617,8 +680,6 @@
         make.right.left.mas_equalTo(self.view);
     }];
 
-    
-    
     
     _memberLabel = [[UILabel alloc] init];
     _memberLabel.font = [UIFont systemFontOfSize:hua_scale(11)];
@@ -669,13 +730,13 @@
     
     //9线
     UIView *thView9 = [UIView new];
-    thView9.backgroundColor = HUAColor(0xe1e1e1);
+    thView9.backgroundColor = HUAColor(0xf3f3f3);
     
     [scrollView addSubview:thView9];
     [thView9 mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(self.view.width/2.0);
         make.top.mas_equalTo(freight.mas_bottom).mas_equalTo(hua_scale(15));
-        make.height.mas_equalTo(1);
+        make.height.mas_equalTo(hua_scale(0.5));
         make.right.mas_equalTo(self.view);
     }];
     
@@ -708,10 +769,11 @@
     //10线
     UIView *thView10 = [UIView new];
     thView10.backgroundColor = HUAColor(0xe1e1e1);
+    thView10.hidden = YES;
     [scrollView addSubview:thView10];
     [thView10 mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(ResultLable.mas_bottom).mas_equalTo(hua_scale(22.5));
-        make.height.mas_equalTo(1);
+        make.height.mas_equalTo(hua_scale(0.5));
         make.width.mas_equalTo(self.view);
         
     }];
@@ -719,57 +781,18 @@
     
     
     [thView10 updateLayout];
-    UILabel *commonLabel = [UILabel new];
-    commonLabel.textColor = HUAColor(0x888888);
-    commonLabel.text = @"共 :";
-    commonLabel.font = [UIFont systemFontOfSize:13];
-    [scrollView addSubview:commonLabel];
-    [commonLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.height.mas_equalTo(hua_scale(13));
-        make.top.mas_equalTo(thView10.mas_bottom).mas_equalTo(hua_scale(20));
-        make.left.mas_equalTo(self.view.mas_left).mas_equalTo(hua_scale(15));
-    }];
-    [commonLabel setSingleLineAutoResizeWithMaxWidth:200];
+
     
-    UILabel *commonValue = [UILabel new];
-    commonValue.textColor = HUAColor(0x4da800);
-    commonValue.text = @"¥45";
-    commonValue.font = [UIFont systemFontOfSize:16];
-    [scrollView addSubview:commonValue];
-    [commonValue mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerY.mas_equalTo(commonLabel);
-        make.left.mas_equalTo(commonLabel.mas_right).mas_equalTo(hua_scale(3));
-    }];
-    [commonValue setSingleLineAutoResizeWithMaxWidth:200];
-    self.commonValue = commonValue;
-    
-    
-    UIButton *successButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    successButton.backgroundColor = HUAColor(0x4da800);
-    successButton.tag = 194;
-    successButton.clipsToBounds = YES;
-    successButton.layer.borderWidth =1;
-    successButton.layer.borderColor = HUAColor(0x4da800).CGColor;//设置边框颜色
-    successButton.layer.cornerRadius =3.f;
-    [successButton setTitle:@"提交并支付" forState:0];
-    [successButton setTitleColor:HUAColor(0xffffff) forState:0];
-    [successButton addTarget:self action:@selector(pageAdd:) forControlEvents:UIControlEventTouchUpInside];
-    [scrollView addSubview:successButton];
-    [successButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerY.mas_equalTo(commonLabel);
-        make.size.mas_equalTo(CGSizeMake(hua_scale(166), hua_scale(34)));
-        make.right.mas_equalTo(self.view.mas_right).mas_equalTo(hua_scale(-10));
-    }];
     
     //11线
-    UIView *thView11 = [UIView new];
-    thView11.backgroundColor = HUAColor(0xe1e1e1);
-    [scrollView addSubview:thView11];
-    thView11.sd_layout
-    .topSpaceToView(successButton,hua_scale(10))
-    .heightIs(1)
-    .widthIs(scrollView.width);
-    [thView11 updateLayout];
+//    UIView *thView11 = [UIView new];
+//    thView11.backgroundColor = HUAColor(0xe1e1e1);
+//    [scrollView addSubview:thView11];
+//    thView11.sd_layout
+//    .topSpaceToView(successButton,hua_scale(10))
+//    .heightIs(hua_scale(0.5))
+//    .widthIs(scrollView.width);
+//    [thView11 updateLayout];
     
     
     //运费
@@ -788,7 +811,7 @@
     
     scrollView.sd_layout.spaceToSuperView(UIEdgeInsetsZero);
     
-    [scrollView setupAutoContentSizeWithBottomView:thView11 bottomMargin:hua_scale(0)];
+    [scrollView setupAutoContentSizeWithBottomView:thView10 bottomMargin:hua_scale(50)];
     self.scrollView = scrollView;
     
 }
@@ -818,7 +841,7 @@
         make.top.mas_equalTo(hua_scale(35));
         make.left.mas_equalTo(hua_scale(15));
         make.right.mas_equalTo(hua_scale(-15));
-        make.height.mas_equalTo(1);
+        make.height.mas_equalTo(hua_scale(0.5));
     }];
     
     UIView *thView2 = [UIView new];
@@ -828,7 +851,7 @@
         make.top.mas_equalTo(thView1.mas_bottom).mas_equalTo(hua_scale(45));
         make.left.mas_equalTo(hua_scale(15));
         make.right.mas_equalTo(hua_scale(-15));
-        make.height.mas_equalTo(1);
+        make.height.mas_equalTo(hua_scale(0.5));
     }];
     UIView *thView3 = [UIView new];
     thView3.backgroundColor = HUAColor(0xe1e1e1);
@@ -837,7 +860,7 @@
         make.top.mas_equalTo(thView2.mas_bottom).mas_equalTo(hua_scale(45));
         make.left.mas_equalTo(hua_scale(15));
         make.right.mas_equalTo(hua_scale(-15));
-        make.height.mas_equalTo(1);
+        make.height.mas_equalTo(hua_scale(0.5));
     }];
     
     UIView *thView4 = [UIView new];
@@ -848,7 +871,7 @@
         make.top.mas_equalTo(thView3);
         make.bottom.mas_equalTo(0);
         make.centerX.mas_equalTo(0);
-        make.width.mas_equalTo(1);
+        make.width.mas_equalTo(hua_scale(0.5));
     }];
     
     
@@ -928,7 +951,6 @@
             }
         }];
     }
-    
 }
 //按钮点击事件
 UIButton *senderBtn = nil;
