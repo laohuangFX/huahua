@@ -60,8 +60,13 @@ static NSString *identifier = @"cell";
 @property (nonatomic, strong) NSString *pagePath;
 /**缓存路径*/
 @property (nonatomic, strong) NSString *homePath;
+/**判断是不是第一次进入控制器*/
+@property (nonatomic, assign) BOOL isFirstTime;
+/**请求参数字典*/
+@property (nonatomic, strong) NSMutableDictionary *parameter;
 
 @property (nonatomic, strong) UITableView *tableView;
+
 
 @property (nonatomic, strong) CLLocationManager * mgr;
 
@@ -77,9 +82,16 @@ static NSString *identifier = @"cell";
 @end
 
 @implementation HUAHomeController
+- (NSMutableDictionary *)parameter {
+    if (!_parameter) {
+        _parameter = [NSMutableDictionary dictionary];
+    }
+    return  _parameter;
+}
+
 - (NSString *)pagePath {
     if (!_pagePath) {
-        _pagePath = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)firstObject] stringByAppendingPathComponent:@"page.plist"];
+        _pagePath = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)firstObject] stringByAppendingPathComponent:@"homePage.plist"];
     }
     return _pagePath;
 }
@@ -123,7 +135,9 @@ static NSString *identifier = @"cell";
 
 - (UITableView *)tableView{
     if (!_tableView) {
-        _tableView = [[UITableView alloc]initWithFrame:CGRectMake(0, 0, screenWidth, self.view.frame.size.height - 64)];
+        _tableView = [[UITableView alloc]initWithFrame:self.view.bounds];
+        _tableView.height = self.view.height-navigationBarHeight;
+
         _tableView.delegate = self;
         _tableView.dataSource = self;
 //        [self.view addSubview:_tableView];
@@ -147,21 +161,21 @@ static NSString *identifier = @"cell";
   
     self.tabBarController.delegate = self;
     self.page = 1;
-    
+    self.isFirstTime = YES;
     //[self getData];
     //设置导航栏
     [self setNavigationBar];
     
     // 集成下拉刷新控件
-    [self performSelector:@selector(setupDownRefresh) withObject:nil afterDelay:0.5];
+    [self setupDownRefresh];
 
     self.currentCity =[[NSUserDefaults standardUserDefaults] objectForKey: @"currentCity"];
     //定位
     [self getAddress];
+    
+    
 }
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-}
+
 - (void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
     //取消地区选择
@@ -226,10 +240,9 @@ static NSString *identifier = @"cell";
     
     
     NSString *url = [HUA_URL stringByAppendingPathComponent:App_index];
-    NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
-    parameter[@"order"] = self.order;
-    parameter[@"per_page"] = @(self.page);
-    [HUAHttpTool POST:url params:parameter success:^(id responseObject) {
+    self.parameter[@"order"] = self.order;
+    self.parameter[@"per_page"] = @(self.page);
+    [HUAHttpTool POST:url params:self.parameter success:^(id responseObject) {
         self.totalCount = responseObject[@"info"][@"total"];
         self.totalPage = responseObject[@"info"][@"pages"];
         NSArray *shopArray = [HUADataTool homeShop:responseObject];
@@ -278,41 +291,45 @@ static NSString *identifier = @"cell";
     }
     self.page=1;
     NSString *url = [HUA_URL stringByAppendingPathComponent:App_index];
-    NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
-    parameter[@"order"] = self.order;
-    parameter[@"per_page"] = @(self.page);
+    self.parameter[@"order"] = self.order;
+    self.parameter[@"per_page"] = @(self.page);
     
     if (self.currentCity.length != 0 && self.currentCity != nil ) {
         if ([self.currentCity isEqualToString:self.userCity]) {
-            parameter[@"x"] = @(self.userCoord.latitude);
-            parameter[@"y"] = @(self.userCoord.longitude);
+            self.parameter[@"x"] = @(self.userCoord.latitude);
+            self.parameter[@"y"] = @(self.userCoord.longitude);
         }else{
             NSString *regoinid = [HUACityInfo parentidForcityName:self.currentCity array:self.cityArray];
             if (regoinid.length != 0) {
-                parameter[@"regoin_pid"] = regoinid;
-                parameter[@"region_id"] = @99;
+                self.parameter[@"regoin_pid"] = regoinid;
+                self.parameter[@"region_id"] = @99;
             }
            
         }
     }
     
-    [HUAHttpTool POST:url params:parameter success:^(id responseObject) {
+    [HUAHttpTool POST:url params:self.parameter success:^(id responseObject) {
         HUALog(@"123%@",responseObject);
         if ([responseObject[@"info"] isKindOfClass:[NSString class]]) {
              [HUAMBProgress MBProgressOnlywithLabelText:responseObject[@"info"]];
+
             [self.tableView.mj_header endRefreshing];
             return  ;
         }
         [responseObject writeToFile:self.homePath atomically:YES];
-        //加载数据插入到可变数组最前面
-        self.totalPage = responseObject[@"info"][@"pages"];
-        
+
+        //获取数据总个数
         NSString *newCount = responseObject[@"info"][@"total"];
-        [NSKeyedArchiver archiveRootObject:newCount toFile:self.pagePath];
-        if ([newCount isEqualToString:[NSKeyedUnarchiver unarchiveObjectWithFile:self.pagePath]]) {
-//            [HUAMBProgress MBProgressOnlywithLabelText:@"没有更多新的商户了"];
+        if (self.isFirstTime == YES) {
+            HUALog(@"123");
+        }else {
+            if ([newCount isEqualToString:[NSKeyedUnarchiver unarchiveObjectWithFile:self.pagePath]]) {
+                //[HUAMBProgress MBProgressOnlywithLabelText:@"没有更多新的商户了"];
+            }
         }
-        
+        self.totalPage = responseObject[@"info"][@"pages"];
+        //保存这一次总个数
+        [NSKeyedArchiver archiveRootObject:newCount toFile:self.pagePath];
         [self.shopsArray removeAllObjects];
         
         NSArray *shopArray = [HUADataTool homeShop:responseObject];
@@ -331,6 +348,7 @@ static NSString *identifier = @"cell";
         
         [self.tableView reloadData];
         [self.tableView.mj_header endRefreshing];
+        self.isFirstTime = NO;
     } failure:^(NSError *error) {
         [HUAMBProgress MBProgressFromWindowWithLabelText:@"还没有联网哦，去设置网络吧"];
         [self.tableView.mj_header endRefreshing];
@@ -373,24 +391,24 @@ static NSString *identifier = @"cell";
         return;
     }
     NSString *url = [HUA_URL stringByAppendingPathComponent:App_index];
-    NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
-    parameter[@"order"] = self.order;
-    parameter[@"per_page"] = @(self.page);
+    self.parameter[@"order"] = self.order;
+    self.parameter[@"per_page"] = @(self.page);
     
-    if (self.currentCity.length != 0 && self.currentCity != nil ) {
-        if ([self.currentCity isEqualToString:self.userCity]) {
-            parameter[@"x"] = @(self.userCoord.latitude);
-            parameter[@"y"] = @(self.userCoord.longitude);
-        }else{
-            
-            parameter[@"regoin_pid"] = [HUACityInfo parentidForcityName:self.currentCity array:self.cityArray];
-        }
-    }
+//    if (self.currentCity.length != 0 && self.currentCity != nil ) {
+//        if ([self.currentCity isEqualToString:self.userCity]) {
+//            parameter[@"x"] = @(self.userCoord.latitude);
+//            parameter[@"y"] = @(self.userCoord.longitude);
+//        }else{
+//            
+//            parameter[@"regoin_pid"] = [HUACityInfo parentidForcityName:self.currentCity array:self.cityArray];
+//        }
+//    }
     
-    [HUAHttpTool POST:url params:parameter success:^(id responseObject) {
+    [HUAHttpTool POST:url params:self.parameter success:^(id responseObject) {
         if ([responseObject[@"info"] isKindOfClass:[NSString class]]) {
-            [HUAMBProgress MBProgressOnlywithLabelText:responseObject[@"info"]];
-            [self.tableView.mj_footer endRefreshingWithNoNoHTTP];
+            
+            [self.tableView.mj_footer endRefreshingWithNoMoreData];
+
             return  ;
         }
         NSArray *shopArray = [HUADataTool homeShop:responseObject];
@@ -816,7 +834,8 @@ static NSString *identifier = @"cell";
             [HUAMBProgress MBProgressOnlywithLabelText: @"人气排序"];
             break;
         case HUASortViewButtonTypeDistance:
-            
+            self.order = nil;
+            [HUAMBProgress MBProgressOnlywithLabelText: @"距离排序"];
             break;
         case HUASortViewButtonTypeShopName:
             self.order = @"shopname_desc";

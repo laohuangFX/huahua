@@ -41,9 +41,10 @@
 - (void)setProductCard:(HUAProductCard *)productCard {
     _productCard = productCard;
     [self.iconImageView sd_setImageWithURL:[NSURL URLWithString:productCard.cover] placeholderImage:[UIImage imageNamed:@"placeholder"]];
-    self.typeName.text = productCard.card_name;
+    self.typeName.text = productCard.card_name
+    ;
     self.price.text = [NSString stringWithFormat:@"¥%@",productCard.active_price];
-    self.shopName.text = productCard.shopname;
+    self.shopName.text = [NSString stringWithFormat:@"商店 : %@",productCard.shopname];
     self.phoneLabel.text = productCard.phone;
     self.addressLabel.text = productCard.address;
     self.page.text = productCard.remain_times;
@@ -122,7 +123,7 @@
     
     
     _threadView = [UIView new];
-    _threadView.backgroundColor = HUAColor(0xcdcdcd);
+    _threadView.backgroundColor = HUAColor(0xeeeeee);
    
     _shopName = [UILabel new];
     //_shopName.backgroundColor = [UIColor redColor];
@@ -179,7 +180,7 @@
     .heightIs(hua_scale(60));
     
     _typeName.sd_layout
-    .topSpaceToView(contentView,hua_scale(17))
+    .topSpaceToView(contentView,hua_scale(21))
     .leftSpaceToView(_iconImageView,hua_scale(10))
     .widthIs(hua_scale(100))
     .heightIs(hua_scale(13));

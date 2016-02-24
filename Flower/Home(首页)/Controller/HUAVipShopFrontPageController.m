@@ -23,7 +23,7 @@
 #import "HUARechargeViewController.h"
 #import "HUAUserInfomation.h"
 
-@interface HUAVipShopFrontPageController ()<UITableViewDataSource, UITableViewDelegate>
+@interface HUAVipShopFrontPageController ()<UITableViewDataSource, UITableViewDelegate, VipPhoneCallDelegate, PhoneCallDelegate>
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) NSArray *shopArray;
 @property (nonatomic, strong) HUAShopIntroduce *shopIntroduce;
@@ -72,9 +72,9 @@
     }
     return _tableView;
 }
+
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-
     if (!self.detailInfo.user_id) {
         [self getData];
     }else {
@@ -221,6 +221,7 @@
     //判断是不是会员
     if (![self.is_Vip isKindOfClass:[NSDictionary class]]) {
         HUAShopTopView *headerView = [[HUAShopTopView alloc] initWithFrame:CGRectMake(0, 0, screenWidth, hua_scale(390))];
+        headerView.delegate = self;
         headerView.shopIntroduce = shopIntroduce;
         self.tableView.tableHeaderView = headerView;
         
@@ -263,6 +264,7 @@
 
     }else {
         HUAVIPShopTopView *headerView = [[HUAVIPShopTopView alloc] initWithFrame:CGRectMake(0, 0, screenWidth, hua_scale(455))];
+        headerView.delegate = self;
         headerView.shopIntroduce = shopIntroduce;
         self.tableView.tableHeaderView = headerView;
         
@@ -343,6 +345,24 @@
     
 }
 
+- (void)makePhoneCall {
+    [self vipMakePhoneCall];
+}
+
+- (void)vipMakePhoneCall {
+    UIAlertController *alertC = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+    //添加取消按钮
+    UIAlertAction *cancleAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
+        NSLog(@"点击");
+    }];
+    //添加电话按钮
+    UIAlertAction *phoneAction = [UIAlertAction actionWithTitle:self.shopIntroduce.phone style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[NSString stringWithFormat:@"tel://%@",self.shopIntroduce.phone]]];
+    }];
+    [alertC addAction:cancleAction];
+    [alertC addAction:phoneAction];
+    [self presentViewController:alertC animated:YES completion:nil];
+}
 //非会员和非注册用户（成为会员）
 - (void)becomeVIP:(UIButton *)sender {
     //没有注册的用户点击购买跳转到登录页面

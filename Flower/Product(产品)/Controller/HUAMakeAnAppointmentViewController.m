@@ -131,7 +131,7 @@
     //姓名
     UILabel *nameLabel = [UILabel new];
     nameLabel.text = self.model.masterName;
-    nameLabel.font = [UIFont systemFontOfSize:14];
+    nameLabel.font = [UIFont systemFontOfSize:hua_scale(11)];
     [self.scrollView addSubview:nameLabel];
     [nameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(headImageView.mas_top).mas_equalTo(hua_scale(10));
@@ -143,7 +143,7 @@
     UILabel *technicianLabel = [UILabel new];
     technicianLabel.text = self.model.masterType;
     technicianLabel.textColor = HUAColor(0x999999);
-    technicianLabel.font = [UIFont systemFontOfSize:11];
+    technicianLabel.font = [UIFont systemFontOfSize:hua_scale(11)];
     [self.scrollView addSubview:technicianLabel];
     [technicianLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.mas_equalTo(nameLabel);
@@ -156,7 +156,7 @@
     //addButton.backgroundColor = [UIColor redColor];
     addButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
     [addButton setTitleColor:HUAColor(0x4da800) forState:0];
-    addButton.titleLabel.font = [UIFont systemFontOfSize:14];
+    addButton.titleLabel.font = [UIFont systemFontOfSize:hua_scale(11)];
     [addButton setTitle:self.model.praise_count forState:0];
     [addButton setTitleEdgeInsets:UIEdgeInsetsMake(0, hua_scale(4), 0, 0)];
     [addButton setImage:[UIImage imageNamed:@"praise_select"] forState:0];
@@ -173,7 +173,7 @@
     [self.scrollView addSubview:thView1];
     [thView1 mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(headImageView.mas_bottom).mas_equalTo(hua_scale(10));
-        make.height.mas_equalTo(1);
+        make.height.mas_equalTo(hua_scale(0.5));
         make.left.mas_equalTo(headImageView);
         make.right.mas_equalTo(self.view.mas_right).mas_equalTo(hua_scale(-10));
     }];
@@ -181,7 +181,7 @@
     //选择服务title
     UILabel *serviceLabel = [UILabel new];
     serviceLabel.text = @"选择服务项目";
-    serviceLabel.font = [UIFont systemFontOfSize:14];
+    serviceLabel.font = [UIFont systemFontOfSize:hua_scale(11)];
     [self.scrollView addSubview:serviceLabel];
     [serviceLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(thView1.mas_bottom).mas_equalTo(hua_scale(15));
@@ -194,7 +194,7 @@
     UIButton *serviceButton = [UIButton buttonWithType:UIButtonTypeCustom];
     
     serviceButton.backgroundColor = HUAColor(0xf8f8f8);
-    serviceButton.titleLabel.font = [UIFont systemFontOfSize:11];
+    serviceButton.titleLabel.font = [UIFont systemFontOfSize:hua_scale(11)];
     [serviceButton setTitleColor:HUAColor(0x494949) forState:0];
     serviceButton.tag = 155;
     [serviceButton setTitle:@"-- 请选择 --" forState:0];
@@ -214,7 +214,7 @@
     //价格title
     UILabel *moneyLabel = [UILabel new];
     moneyLabel.text = @"价格:";
-    moneyLabel.font = [UIFont systemFontOfSize:11];
+    moneyLabel.font = [UIFont systemFontOfSize:hua_scale(11)];
     [self.scrollView addSubview:moneyLabel];
     [moneyLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(serviceButton.mas_bottom).mas_equalTo(hua_scale(11));
@@ -226,7 +226,7 @@
     UILabel *money = [UILabel new];
     money.text = @"¥0.00";
     money.tag = 111;
-    money.font = [UIFont systemFontOfSize:13];
+    money.font = [UIFont systemFontOfSize:hua_scale(11)];
     money.textColor = HUAColor(0x4da800);
     [self.scrollView addSubview:money];
     [money mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -240,18 +240,18 @@
     thView2.backgroundColor = HUAColor(0xcdcdcd);
     [self.scrollView addSubview:thView2];
     [thView2 mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(money.mas_bottom).mas_equalTo(hua_scale(20));
-        make.height.mas_equalTo(1);
+        make.top.mas_equalTo(money.mas_bottom).mas_equalTo(hua_scale(10));
+        make.height.mas_equalTo(hua_scale(0.5));
         make.left.mas_equalTo(headImageView);
         make.right.mas_equalTo(self.view.mas_right).mas_equalTo(hua_scale(-10));
     }];
     
     UILabel *dateLabel = [UILabel new];
     dateLabel.text =@"选择日期";
-    dateLabel.font = [UIFont systemFontOfSize:14];
+    dateLabel.font = [UIFont systemFontOfSize:hua_scale(11)];
     [self.scrollView addSubview:dateLabel];
     [dateLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(thView2.mas_bottom).mas_equalTo(hua_scale(20));
+        make.top.mas_equalTo(thView2.mas_bottom).mas_equalTo(hua_scale(15));
         make.left.mas_equalTo(headImageView);
     }];
     [dateLabel setSingleLineAutoResizeWithMaxWidth:200];
@@ -261,7 +261,7 @@
     thView3.backgroundColor = HUAColor(0xe1e1e1);
     [self.scrollView addSubview:thView3];
     [thView3 mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.height.mas_equalTo(hua_scale(1));
+        make.height.mas_equalTo(hua_scale(0.5));
         make.left.mas_equalTo(self.scrollView.mas_left).mas_equalTo(hua_scale(10));
         make.right.mas_equalTo(self.view.mas_right).mas_equalTo(hua_scale(-10));
         make.top.mas_equalTo(dateLabel.mas_bottom).mas_equalTo(hua_scale(10));
@@ -284,7 +284,7 @@
     [_bgView addSubview:redView];
     [redView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.right.mas_equalTo(0);
-        make.top.mas_equalTo(hua_scale(26));
+        make.top.mas_equalTo(hua_scale(25));
         make.height.mas_equalTo(hua_scale(66));
     }];
     UIView *lastView1 = nil;
@@ -295,10 +295,15 @@
         
         UIView *view1 = [UIView new];
         view1.backgroundColor = HUAColor(0xe1e1e1);
+        if (i==0) {
+            view1.hidden = YES;
+        }else{
+        view1.hidden = NO;
+        }
         [_bgView addSubview:view1];
         [view1 mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.height.mas_equalTo(hua_scale(1));
-            make.left.mas_equalTo(thView1);
+            make.height.mas_equalTo(hua_scale(0.5));
+            make.left.mas_equalTo(0);
             make.right.mas_equalTo(self.view.mas_right).mas_equalTo(hua_scale(-10));
             if (i==0) {
                 make.top.mas_equalTo(0);
@@ -308,7 +313,7 @@
                 make.bottom.mas_equalTo(0);
                 
             }else{
-                make.top.mas_equalTo(lastView1.mas_bottom).mas_equalTo(hua_scale(33-1));
+                make.top.mas_equalTo(lastView1.mas_bottom).mas_equalTo(hua_scale(33-0.5));
             }
         }];
         lastView1 = view1;
@@ -337,7 +342,7 @@
         view1.backgroundColor = HUAColor(0xe1e1e1);
         [_bgView addSubview:view1];
         [view1 mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.width.mas_equalTo(hua_scale(1));
+            make.width.mas_equalTo(hua_scale(0.5));
             make.top.mas_equalTo(0);
             make.bottom.mas_equalTo(0);
             
@@ -375,10 +380,10 @@
     
     
     _loadingButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    _loadingButton.backgroundColor = HUAColor(0xf8f8f8);
+    _loadingButton.backgroundColor = HUAColor(0xeeeeee);
     _loadingButton.tag = 190;
     [_loadingButton setTitle:@"加载更多日期..." forState:0];
-    _loadingButton.titleLabel.font = [UIFont systemFontOfSize:11];
+    _loadingButton.titleLabel.font = [UIFont systemFontOfSize:hua_scale(11)];
     [_loadingButton setTitleColor:HUAColor(0x494949) forState:0];
     [_loadingButton addTarget:self action:@selector(click:) forControlEvents:UIControlEventTouchUpInside];
     [self.scrollView addSubview:_loadingButton];
@@ -406,7 +411,7 @@
     NSLog(@"%ld",self.model.serviceArray.count);
     [_tanBgview mas_makeConstraints:^(MASConstraintMaker *make) {
         make.right.left.mas_equalTo(self.view);
-        make.height.mas_equalTo(hua_scale(self.model.serviceArray.count*39+34));
+        make.height.mas_equalTo(_transparentView.height/2-46);
         make.top.mas_equalTo(self.view.bottom);
     }];
     
@@ -439,9 +444,10 @@
     self.serviceTableView.dataSource = self;
     [_tanBgview addSubview:self.serviceTableView];
     [self.serviceTableView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.height.mas_equalTo(hua_scale(self.model.serviceArray.count*39));
+        //make.height.mas_equalTo(hua_scale(self.model.serviceArray.count*39));
         make.top.mas_equalTo(hua_scale(34));
         make.left.right.mas_equalTo(0);
+        make.bottom.mas_equalTo(_tanBgview.mas_bottom);
     }];
     
 }
@@ -472,20 +478,21 @@
         UIView *view1 = [UIView new];
         view1.backgroundColor = HUAColor(0xe1e1e1);
         view1.userInteractionEnabled = YES;
+
         [bgView addSubview:view1];
         [view1 mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.height.mas_equalTo(hua_scale(1));
+            make.height.mas_equalTo(hua_scale(hua_scale(0.5)));
             make.left.mas_equalTo(0);
             make.right.mas_equalTo(self.view.mas_right).mas_equalTo(hua_scale(-10));
             if (i==0) {
                 make.top.mas_equalTo(0);
             }else if (i==1){
-                make.top.mas_equalTo(lastView1.mas_bottom).mas_equalTo(hua_scale(25));
+                make.top.mas_equalTo(lastView1.mas_bottom).mas_equalTo(hua_scale(24));
             }else if (i==8){
                 make.bottom.mas_equalTo(0);
                 
             }else{
-                make.top.mas_equalTo(lastView1.mas_bottom).mas_equalTo(hua_scale(33-1));
+                make.top.mas_equalTo(lastView1.mas_bottom).mas_equalTo(hua_scale(33-0.5));
             }
         }];
         if (i>=0&&i<=2) {
@@ -511,7 +518,7 @@
         view1.backgroundColor = HUAColor(0xe1e1e1);
         [bgView addSubview:view1];
         [view1 mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.width.mas_equalTo(hua_scale(1));
+            make.width.mas_equalTo(hua_scale(hua_scale(0.5)));
             make.top.mas_equalTo(0);
             make.bottom.mas_equalTo(0);
             

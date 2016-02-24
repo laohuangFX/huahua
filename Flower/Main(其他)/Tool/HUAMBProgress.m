@@ -42,7 +42,7 @@
     
     MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:view animated:YES];
     hud.mode = MBProgressHUDModeCustomView;
-    hud.customView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"delete"]];
+    hud.customView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"as_03"]];
     dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
         hud.labelText = labelText;
         sleep(1);

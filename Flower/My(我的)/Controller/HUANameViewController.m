@@ -32,14 +32,18 @@
         make.edges.mas_equalTo(0);
     }];
     [self footerView];
+    
+    //[self.view endEditing:NO];
+    //[self.textField endEditing:NO];
 }
 - (void)saveNickname {
+    [self.view endEditing:YES];
     
-    if (self.textField.text.length<2 || self.textField.text.length>10) {
+    if (self.textField.text.length<2 || self.textField.text.length>15) {
 
         MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
-            hud.labelText = @"请输入2-10个字符";
+            hud.labelText = @"请输入2-15个字符";
             sleep(1);
             
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -48,27 +52,44 @@
         });
 
     }else {
-            MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
-                hud.labelText = @"昵称修改成功";
-                sleep(1);
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
-                    _nameBlock(self.textField.text);
-                    NSData *data = [[NSUserDefaults standardUserDefaults] objectForKey:@"data"];
-                    HUAUserDetailInfo *detailInfo = [NSKeyedUnarchiver unarchiveObjectWithData:data];
-                    detailInfo.nickname = self.textField.text;
-                    HUALog(@"123%@",detailInfo.nickname);
-                    [[NSUserDefaults standardUserDefaults] setObject:[NSKeyedArchiver archivedDataWithRootObject:detailInfo] forKey:@"data"];
-                });
-            });
+       
+        //修改昵称
+        NSString *token = [HUAUserDefaults getToken];
+        
+        AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+        [manager.requestSerializer setValue:token forHTTPHeaderField:@"token"];
+        //申明返回的结果是json类型
+        manager.responseSerializer = [AFHTTPResponseSerializer serializer];
+        
+        //传入的参数
+        NSDictionary *parameters = @{@"nickname":self.textField.text};
+        NSString *url = [HUA_URL stringByAppendingPathComponent:@"user/update_info"];
+        [manager POST:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+            NSLog(@"%@",responseObject);
+            _nameBlock(self.textField.text);
+            [HUAMBProgress MBProgressFromWindowWithLabelText:@"修改成功!"];
+            [self.navigationController popViewControllerAnimated:YES];
+        } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
+            
+            NSLog(@"%@",error);
+        }];
+
+        
+//        NSData *data = [[NSUserDefaults standardUserDefaults] objectForKey:@"data"];
+//        HUAUserDetailInfo *detailInfo = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+//        detailInfo.nickname = self.textField.text;
+//        HUALog(@"123%@",detailInfo.nickname);
+//        [[NSUserDefaults standardUserDefaults] setObject:[NSKeyedArchiver archivedDataWithRootObject:detailInfo] forKey:@"data"];
+        
         }
+    
 }
 
 
 
 
 - (void)footerView {
+
     UIView *footerView = [[UIView alloc] initWithFrame:CGRectMake(0, hua_scale(44), screenWidth, screenHeight-hua_scale(44)-navigationBarHeight)];
     UIView *separateLine = [[UIView alloc] initWithFrame:CGRectMake(0, 0, screenWidth, 0.5)];
     separateLine.backgroundColor = HUAColor(0xcdcdcd);
@@ -115,7 +136,7 @@
         make.height.mas_equalTo(40);
     }];
 
-    
+    [self.textField becomeFirstResponder];
     
     return cell;
     
@@ -139,6 +160,22 @@
    
    
     [self.view endEditing:YES];
+    
+    return YES;
+    
+}
+
+#pragma mark----------------textFieldDelegate--------
+-(BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string{
+    
+        if (string.length == 0) return YES;
+        
+        NSInteger existedLength = textField.text.length;
+        NSInteger selectedLength = range.length;
+        NSInteger replaceLength = string.length;
+        if (existedLength - selectedLength + replaceLength > 12) {
+            return NO;
+        }
     
     return YES;
     

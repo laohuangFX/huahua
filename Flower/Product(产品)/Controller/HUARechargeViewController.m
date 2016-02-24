@@ -56,7 +56,9 @@
             UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
             [button setTitle:array[(i*3)+x] forState:0];
             button.titleLabel.font = [UIFont systemFontOfSize:hua_scale(12)];
-            [button setBackgroundImage:[UIImage imageNamed:@"numer"] forState:0];
+            button.layer.masksToBounds = YES;
+            [button.layer setBorderWidth:hua_scale(0.5)];
+            [button.layer setBorderColor: HUAColor(0xe1e1e1).CGColor];
             [button setBackgroundImage:[UIImage imageNamed:@"rechargerenminbu"] forState:UIControlStateSelected];
             [button setTitleColor:HUAColor(0x494949) forState:0];
             [button setTitleColor:HUAColor(0x4da800) forState:UIControlStateSelected];
@@ -66,7 +68,7 @@
             [button mas_makeConstraints:^(MASConstraintMaker *make) {
                 
                 if (i==0) {
-                    make.top.mas_equalTo(titleContent.mas_bottom).mas_equalTo(hua_scale(10));
+                    make.top.mas_equalTo(titleContent.mas_bottom).mas_equalTo(hua_scale(15));
                     if (x==0) {
                         make.left.mas_equalTo(hua_scale(15));
                     }
@@ -137,7 +139,7 @@
     [iocnImage mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(hua_scale(15));
         make.top.mas_equalTo(modeLabel.mas_bottom).mas_equalTo(hua_scale(14));
-        make.height.mas_equalTo(hua_scale(27));
+        make.height.mas_equalTo(hua_scale(25));
         make.width.mas_equalTo(hua_scale(25));
     }];
     
@@ -174,8 +176,8 @@
     [selectBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.right.mas_equalTo(hua_scale(-15));
         make.top.mas_equalTo(iocnImage);
-        make.height.mas_equalTo(hua_scale(18));
-        make.width.mas_equalTo(hua_scale(18));
+        make.height.mas_equalTo(hua_scale(15));
+        make.width.mas_equalTo(hua_scale(15));
     }];
     //1线
     UIView *thView1 = [UIView new];
@@ -185,7 +187,19 @@
         make.top.mas_equalTo(title.mas_bottom).mas_equalTo(hua_scale(10));
         make.left.mas_equalTo(iocnImage);
         make.right.mas_equalTo(0);
-        make.height.mas_equalTo(hua_scale(1));
+        make.height.mas_equalTo(hua_scale(0.5));
+    }];
+    
+    //手势背景
+    UIView *bgView1 = [UIView new];
+    bgView1.backgroundColor = [UIColor clearColor];
+    bgView1.tag = 1231;
+    [bgView1 addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clickButton:)]];
+    [self.view addSubview:bgView1];
+    [bgView1 mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(iocnImage.mas_top).mas_equalTo(hua_scale(-5));
+        make.bottom.mas_equalTo(thView1.mas_top);
+        make.right.left.mas_equalTo(self.view);
     }];
     
 //微信支付
@@ -195,7 +209,7 @@
     [iocnImageView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(hua_scale(15));
         make.top.mas_equalTo(thView1.mas_bottom).mas_equalTo(hua_scale(10));
-        make.size.mas_equalTo(CGSizeMake(hua_scale(25), hua_scale(27)));
+        make.size.mas_equalTo(CGSizeMake(hua_scale(25), hua_scale(25)));
     }];
     
     UILabel *yuanLbale  = [[UILabel alloc] init];
@@ -230,8 +244,8 @@
     [selectsBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.right.mas_equalTo(hua_scale(-15));
         make.top.mas_equalTo(iocnImageView);
-        make.height.mas_equalTo(hua_scale(18));
-        make.width.mas_equalTo(hua_scale(18));
+        make.height.mas_equalTo(hua_scale(15));
+        make.width.mas_equalTo(hua_scale(15));
     }];
     
     //2线
@@ -242,6 +256,20 @@
         make.left.right.height.mas_equalTo(thView1);
         make.top.mas_equalTo(iocnImageView.mas_bottom).mas_equalTo(hua_scale(10));
     }];
+   
+    //手势背景
+    UIView *bgView2 = [UIView new];
+    bgView2.backgroundColor = [UIColor clearColor];
+    bgView2.tag = 1232;
+    [bgView2 addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clickButton:)]];
+    [self.view addSubview:bgView2];
+    [bgView2 mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(iocnImageView.mas_top).mas_equalTo(hua_scale(-5));
+        make.bottom.mas_equalTo(thView2.mas_top);
+        make.right.left.mas_equalTo(self.view);
+    }];
+
+    
 
     //立即充值
     UIButton *topUpButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -266,7 +294,7 @@
     [self.view addSubview:thView3];
     [thView3 mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.right.mas_equalTo(0);
-        make.height.mas_equalTo(1);
+        make.height.mas_equalTo(0.5);
         make.top.mas_equalTo(topUpButton.mas_top).mas_equalTo(hua_scale(-10));
     }];
     
@@ -379,7 +407,18 @@ UIButton *selecte = nil;
 }
 
 
+//手势选中
+- (void)clickButton:(UITapGestureRecognizer *)tap{
+    UIButton *button = [self.view viewWithTag:tap.view.tag-1231+191];
+    if (selecte!=button) {
+        button.selected = YES;
+        selecte.selected = NO;
+    }else{
+        selecte.selected = YES;
+    }
 
+    selecte = button;
+}
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.

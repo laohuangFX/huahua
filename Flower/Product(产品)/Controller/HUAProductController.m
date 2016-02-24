@@ -58,11 +58,14 @@
 @property (nonatomic, strong) NSMutableDictionary *parameters;
 /**页数缓存路径*/
 @property (nonatomic, strong) NSString *pagePath;
+/**判断是不是第一次进入控制器*/
+@property (nonatomic, assign) BOOL isFirstTime;
 @end
 
 @implementation HUAProductController
 
 static NSString * const reuseIdentifier = @"cell";
+
 - (NSString *)pagePath {
     if (!_pagePath) {
         _pagePath = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)firstObject] stringByAppendingPathComponent:@"productPage.plist"];
@@ -98,10 +101,11 @@ static NSString * const reuseIdentifier = @"cell";
     self.collectionView.y = chooseViewHeight;
     self.collectionView.height = screenHeight-chooseViewHeight;
     self.page = 1;
+    self.isFirstTime = YES;
     //设置导航栏
     [self setNavigationItem];
     //获取数据
-    [self getDataWithparameters:nil];
+    //[self getDataWithparameters:nil];
     //菜单
     [self category:nil];
     // 集成下拉刷新控件
@@ -184,17 +188,25 @@ static NSString * const reuseIdentifier = @"cell";
     //NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
     self.parameters[@"per_page"] = @(self.page);
     [HUAHttpTool GET:url params:self.parameters success:^(id responseObject) {
-        [self.productArray removeAllObjects];
+        
+        //获取数据总个数
         NSString *newCount = responseObject[@"info"][@"total"];
-        [NSKeyedArchiver archiveRootObject:newCount toFile:self.pagePath];
-        if ([newCount isEqualToString:[NSKeyedUnarchiver unarchiveObjectWithFile:self.pagePath]]) {
-            [HUAMBProgress MBProgressOnlywithLabelText:@"没有更多新的产品了"];
+        if (self.isFirstTime == YES) {
+            
+        }else {
+            if ([newCount isEqualToString:[NSKeyedUnarchiver unarchiveObjectWithFile:self.pagePath]]) {
+                [HUAMBProgress MBProgressOnlywithLabelText:@"没有更多新的产品了"];
+            }
         }
         self.totalPage = responseObject[@"info"][@"pages"];
+        //保存这一次总个数
+        [NSKeyedArchiver archiveRootObject:newCount toFile:self.pagePath];
+        [self.productArray removeAllObjects];
         NSArray *array = [HUADataTool shopProduct:responseObject];
         [self.productArray addObjectsFromArray:array];
         [self.collectionView reloadData];
         [self.collectionView.mj_header endRefreshing];
+        self.isFirstTime = NO;
     } failure:^(NSError *error) {
         [HUAMBProgress MBProgressFromWindowWithLabelText:@"请检查网络设置"];
         [self.collectionView.mj_header endRefreshing];
@@ -257,7 +269,6 @@ static NSString * const reuseIdentifier = @"cell";
         [self.productArray removeAllObjects];
         NSArray *array = [HUADataTool getProductArray:responseObject];
         [self.productArray addObjectsFromArray:array];
-        self.totalCount = responseObject[@"info"][@"total"];
         self.totalPage = responseObject[@"info"][@"pages"];
         [self.collectionView reloadData];
     } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {

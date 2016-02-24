@@ -8,7 +8,15 @@
 
 #import <UIKit/UIKit.h>
 #import "HUAShopIntroduce.h"
+
+@protocol PhoneCallDelegate <NSObject>
+
+- (void)makePhoneCall;
+
+@end
+
 @interface HUAShopTopView : UIView
 @property (nonatomic, strong) UILabel *phoneLabel;
 @property (nonatomic, strong) HUAShopIntroduce *shopIntroduce;
+@property (nonatomic, assign) id<PhoneCallDelegate>delegate;
 @end

@@ -79,11 +79,33 @@
     self.tablewView.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.tablewView.delegate = self;
     self.tablewView.dataSource = self;
+    self.tablewView.separatorStyle = NO;
+    //self.tablewView.backgroundColor = [UIColor redColor];
     [self.view addSubview:self.tablewView];
     [self.tablewView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.top.right.mas_equalTo(0);
-        make.bottom.mas_equalTo(-200);
+        make.height.mas_equalTo(hua_scale(60+44*4));
     }];
+    
+    
+    UIButton *successButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    successButton.backgroundColor = HUAColor(0x4da800);
+//    successButton.clipsToBounds = NO;
+//    successButton.layer.borderWidth =1;
+//    successButton.layer.borderColor = HUAColor(0x4da800).CGColor;//设置边框颜色
+//    successButton.layer.cornerRadius =3.f;
+    [successButton setTitle:@"退出登录" forState:0];
+    [successButton setTitleColor:HUAColor(0xffffff) forState:0];
+    [successButton addTarget:self action:@selector(endEditButton) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:successButton];
+    [successButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(self.tablewView.mas_bottom).mas_equalTo(hua_scale(50));
+        make.size.mas_equalTo(CGSizeMake(hua_scale(290), hua_scale(44)));
+        make.right.mas_equalTo(self.view.mas_right).mas_equalTo(hua_scale(-15));
+        
+    }];
+
+    
     
     [self setSexPickerView];
     
@@ -370,6 +392,8 @@
     cell.textLabel.text = self.myInformationArray[indexPath.row];
     cell.textLabel.textColor = HUAColor(0x333333);
     cell.textLabel.font = [UIFont systemFontOfSize:hua_scale(13)];
+   
+
     
     return cell;
 }
@@ -408,7 +432,7 @@
         
         HUANameViewController *vc = [[HUANameViewController alloc] init];
         vc.hidesBottomBarWhenPushed = YES;
-        vc.name = detailInfo.nickname;
+        vc.name = _nameLabel.text;
         [self.navigationController pushViewController:vc animated:YES];
         
         //调用block
@@ -955,6 +979,24 @@
 - (void)HATransparentViewDidClosed
 {
     NSLog(@"Did close");
+}
+//退出登录
+- (void)endEditButton{
+    UIAlertController *alertC = [UIAlertController alertControllerWithTitle:@"您确定退出用户吗?" message:nil preferredStyle:UIAlertControllerStyleAlert];
+    //添加取消按钮
+    UIAlertAction *cancleAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
+        NSLog(@"点击");
+    }];
+    //添加电话按钮
+    UIAlertAction *phoneAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"token"];
+        [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"data"];
+        HUALoginController *loginVC = [HUALoginController new];
+        [self.navigationController pushViewController:loginVC animated:YES];
+    }];
+    [alertC addAction:cancleAction];
+    [alertC addAction:phoneAction];
+    [self presentViewController:alertC animated:YES completion:nil];
 }
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

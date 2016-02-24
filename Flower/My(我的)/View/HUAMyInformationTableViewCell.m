@@ -21,7 +21,7 @@
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier{
     if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
         self.selectionStyle = UITableViewCellSelectionStyleNone;
-        self.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        //self.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         [self setCell];
     }
     return self;
@@ -29,7 +29,7 @@
 - (void)setCell{
 
     _thView = [UIView new];
-    _thView.backgroundColor = HUAColor(0xf8f8f8);
+    _thView.backgroundColor = HUAColor(0xe1e1e1);
     [self.contentView addSubview:_thView];
     
     [_thView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -46,10 +46,9 @@
     _headImage.backgroundColor = [UIColor redColor];
     [self.contentView addSubview:_headImage];
     [_headImage mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.bottom.mas_equalTo(hua_scale(-7.5));
-        make.top.mas_equalTo(hua_scale(7.5));
         make.right.mas_equalTo(hua_scale(-15));
-        make.width.mas_equalTo(hua_scale(45));
+        make.centerY.mas_equalTo(0);
+        make.size.mas_equalTo(CGSizeMake(hua_scale(45), hua_scale(45)));
     }];
     
     _InformationLabel = [UILabel new];
