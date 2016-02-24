@@ -59,7 +59,7 @@
     _shopName = [UILabel new];
     //_shopName.backgroundColor = [UIColor blueColor];
     _shopName.text = @"华乐国际美丽造型华乐";
-    _shopName.font = [UIFont systemFontOfSize:13];
+    _shopName.font = [UIFont systemFontOfSize:hua_scale(13)];
     
     _locationImageView = [UIImageView new];
     _locationImageView.image = [UIImage imageNamed:@"location"];
@@ -85,7 +85,8 @@
     
     _pageLable = [UILabel labelWithFrame:CGRectZero text:@"余额" color:HUAColor(0x969696) font:hua_scale(10)];
  
-    _balanceLable = [UILabel labelWithFrame:CGRectZero text:@"¥131400" color:HUAColor(0x4da800) font:hua_scale(15)];
+    _balanceLable = [UILabel labelWithFrame:CGRectZero text:@"¥50000.00" color:HUAColor(0x4da800) font:hua_scale(15)];
+    
 
     UIView *separateLine = [UIView new];
     separateLine.backgroundColor = HUAColor(0xcdcdcd);
@@ -103,16 +104,16 @@
     .topSpaceToView(contentView,hua_scale(15))
     .leftSpaceToView(contentView,hua_scale(10))
     .heightIs(hua_scale(47))
-    .widthIs(60);
+    .widthIs(hua_scale(60));
     
     _threadView.sd_layout
-    .rightSpaceToView(contentView,hua_scale(76))
+    .rightSpaceToView(contentView,hua_scale(90))
     .widthIs(hua_scale(1))
     .topEqualToView(_iconImageView)
     .bottomEqualToView(_iconImageView);
     
     _shopName.sd_layout
-    .topSpaceToView(contentView,hua_scale(17))
+    .topSpaceToView(contentView,hua_scale(21))
     .leftSpaceToView(_iconImageView,hua_scale(10))
     .rightSpaceToView(_threadView,hua_scale(5))
     .heightIs(hua_scale(13));
@@ -126,7 +127,7 @@
     _addressLabel.sd_layout
     .topSpaceToView(_shopName,hua_scale(10))
     .leftSpaceToView(_locationImageView,hua_scale(4))
-    .rightSpaceToView(_threadView,hua_scale(13))
+    .rightSpaceToView(_threadView,hua_scale(5))
     .heightIs(hua_scale(10));
     
 //    _addressButton.sd_layout

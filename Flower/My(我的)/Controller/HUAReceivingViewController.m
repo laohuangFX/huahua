@@ -26,7 +26,7 @@
     
     
     UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
-    button.titleLabel.font = [UIFont systemFontOfSize:14];
+    button.titleLabel.font = [UIFont systemFontOfSize:hua_scale(14)];
     [button setTitleColor:HUAColor(0x4da800) forState:0];
     [button setTitle:@"新增" forState:0];
     //button.backgroundColor = [UIColor redColor];

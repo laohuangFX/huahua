@@ -58,18 +58,18 @@
     _thView1.backgroundColor = HUAColor(0xe1e1e1);
     [self.contentView addSubview:_thView1];
     [_thView1 mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.width.mas_equalTo(hua_scale(1));
+        make.width.mas_equalTo(hua_scale(0.5));
         make.left.top.mas_equalTo(0);
         make.height.mas_equalTo(hua_scale(contentView.height));
     }];
     
     //日期
     _dateLabel = [[UILabel alloc] init];
-    _dateLabel.font = [UIFont systemFontOfSize:hua_scale(14)];
+    _dateLabel.font = [UIFont systemFontOfSize:hua_scale(11)];
     [self.contentView addSubview:_dateLabel];
     [_dateLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.mas_equalTo(0);
-        make.left.mas_equalTo(hua_scale(5));
+        make.left.mas_equalTo(hua_scale(8));
     }];
     [_dateLabel setSingleLineAutoResizeWithMaxWidth:200];
     
@@ -89,11 +89,11 @@
     //周几
     _weekLabel = [[UILabel alloc] init];
     _weekLabel.textColor = HUAColor(0x4da800);
-    _weekLabel.font = [UIFont systemFontOfSize:hua_scale(14)];
+    _weekLabel.font = [UIFont systemFontOfSize:hua_scale(11)];
     [self.contentView addSubview:_weekLabel];
     [_weekLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.mas_equalTo(0);
-        make.right.mas_equalTo(_thView2.mas_right).mas_equalTo(hua_scale(hua_scale(-5)));
+        make.right.mas_equalTo(_thView2.mas_right).mas_equalTo(hua_scale(hua_scale(-8)));
     }];
     [_weekLabel setSingleLineAutoResizeWithMaxWidth:200];
     

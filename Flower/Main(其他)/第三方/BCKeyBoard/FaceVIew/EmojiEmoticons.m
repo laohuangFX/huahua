@@ -11,8 +11,11 @@
 @implementation EmojiEmoticons
 
 + (NSArray *)allEmoticons {
+    NSString *str = @":100:";
+    
     NSMutableArray *array = [NSMutableArray new];
     NSMutableArray * localAry = [[NSMutableArray alloc] initWithObjects:
+                                 [str emojizedString],
                                  [Emoji emojiWithCode:0x1F60a],
                                  [Emoji emojiWithCode:0x1F603],
                                  [Emoji emojiWithCode:0x1F609],

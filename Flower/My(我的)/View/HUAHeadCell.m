@@ -40,7 +40,7 @@
     [self.nameLabel sizeToFit];
     
     
-    self.editImageView = [[UIImageView alloc] initWithFrame:CGRectMake(hua_scale(272), hua_scale(31), hua_scale(18), hua_scale(14))];
+    self.editImageView = [[UIImageView alloc] initWithFrame:CGRectMake(hua_scale(290), hua_scale(31), hua_scale(18), hua_scale(14))];
     self.editImageView.image = [UIImage imageNamed:@"editor"];
     self.editImageView.contentMode = UIViewContentModeCenter;
     [self addSubview:self.editImageView];

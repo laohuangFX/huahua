@@ -16,6 +16,7 @@
 #import "HUABuyViewController.h"
 
 
+
 @interface HUADetailController ()<UITableViewDelegate, UITableViewDataSource, PhoneDelegate>
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) NSArray *detailArray;
@@ -204,6 +205,7 @@
                         [self.navigationController pushViewController:loginVC animated:YES];
                     }];
                 }else {
+                
                    HUABuyViewController *vc = [HUABuyViewController new];
                     if ([[self.membersInformation[@"info"]class] isSubclassOfClass:[NSString class]]) {
                         //不是会员

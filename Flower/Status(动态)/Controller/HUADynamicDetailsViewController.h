@@ -16,4 +16,6 @@
 
 //动态id
 @property (nonatomic, strong)NSString *essay_id;
+
+@property (nonatomic, copy)void (^praise_countBlock)(NSString *praise,NSString *zan);
 @end

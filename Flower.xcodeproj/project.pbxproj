@@ -155,9 +155,6 @@
 		17B7E2D71C71BD9C0032C6D5 /* SMProgressHUDLoadingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 17B7E2151C71BD9C0032C6D5 /* SMProgressHUDLoadingView.m */; };
 		17B7E2D81C71BD9C0032C6D5 /* SMProgressHUDTipView.m in Sources */ = {isa = PBXBuildFile; fileRef = 17B7E2171C71BD9C0032C6D5 /* SMProgressHUDTipView.m */; };
 		17B7E2D91C71BD9C0032C6D5 /* UIView+SMAutolayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 17B7E2191C71BD9C0032C6D5 /* UIView+SMAutolayout.m */; };
-		17B7E2DA1C71BD9C0032C6D5 /* SMS_SDKLocalizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 17B7E21B1C71BD9C0032C6D5 /* SMS_SDKLocalizable.strings */; };
-		17B7E2DB1C71BD9C0032C6D5 /* MOBFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 17B7E21D1C71BD9C0032C6D5 /* MOBFoundation.framework */; };
-		17B7E2DC1C71BD9C0032C6D5 /* SMS_SDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 17B7E21E1C71BD9C0032C6D5 /* SMS_SDK.framework */; };
 		17B7E2DD1C71BD9C0032C6D5 /* AFNetworkActivityIndicatorManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 17B7E2221C71BD9C0032C6D5 /* AFNetworkActivityIndicatorManager.m */; };
 		17B7E2DE1C71BD9C0032C6D5 /* NSObject+ST.m in Sources */ = {isa = PBXBuildFile; fileRef = 17B7E2251C71BD9C0032C6D5 /* NSObject+ST.m */; };
 		17B7E2DF1C71BD9C0032C6D5 /* STColor.m in Sources */ = {isa = PBXBuildFile; fileRef = 17B7E2271C71BD9C0032C6D5 /* STColor.m */; };
@@ -245,6 +242,8 @@
 		59003CFE1C730B010016C72D /* HUASearchSuperViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 59003CFD1C730B010016C72D /* HUASearchSuperViewController.m */; };
 		59003D011C731BE00016C72D /* HUAShopServiceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 59003D001C731BE00016C72D /* HUAShopServiceViewController.m */; };
 		5900D9171C7D526800FD1C04 /* HUAPraiseButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 5900D9161C7D526800FD1C04 /* HUAPraiseButton.m */; };
+		5900D91B1C7DCD2800FD1C04 /* NSString+Emojize.m in Sources */ = {isa = PBXBuildFile; fileRef = 5900D91A1C7DCD2800FD1C04 /* NSString+Emojize.m */; };
+		5900D91E1C7DCFFB00FD1C04 /* HUAMembersPayViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5900D91D1C7DCFFB00FD1C04 /* HUAMembersPayViewController.m */; };
 		59015DC71C4C785000524B6F /* HUAMasterListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 59015DC61C4C785000524B6F /* HUAMasterListCell.m */; };
 		59015DCA1C4C81C800524B6F /* HUAMasterList.m in Sources */ = {isa = PBXBuildFile; fileRef = 59015DC91C4C81C800524B6F /* HUAMasterList.m */; };
 		59015DCD1C4C83E200524B6F /* HUAMasterListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 59015DCC1C4C83E200524B6F /* HUAMasterListController.m */; };
@@ -599,10 +598,6 @@
 		17B7E2171C71BD9C0032C6D5 /* SMProgressHUDTipView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMProgressHUDTipView.m; sourceTree = "<group>"; };
 		17B7E2181C71BD9C0032C6D5 /* UIView+SMAutolayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+SMAutolayout.h"; sourceTree = "<group>"; };
 		17B7E2191C71BD9C0032C6D5 /* UIView+SMAutolayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+SMAutolayout.m"; sourceTree = "<group>"; };
-		17B7E21C1C71BD9C0032C6D5 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/SMS_SDKLocalizable.strings; sourceTree = "<group>"; };
-		17B7E21D1C71BD9C0032C6D5 /* MOBFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = MOBFoundation.framework; sourceTree = "<group>"; };
-		17B7E21E1C71BD9C0032C6D5 /* SMS_SDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SMS_SDK.framework; sourceTree = "<group>"; };
-		17B7E21F1C71BD9C0032C6D5 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/SMS_SDKLocalizable.strings"; sourceTree = "<group>"; };
 		17B7E2211C71BD9C0032C6D5 /* AFNetworkActivityIndicatorManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFNetworkActivityIndicatorManager.h; sourceTree = "<group>"; };
 		17B7E2221C71BD9C0032C6D5 /* AFNetworkActivityIndicatorManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFNetworkActivityIndicatorManager.m; sourceTree = "<group>"; };
 		17B7E2241C71BD9C0032C6D5 /* NSObject+ST.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+ST.h"; sourceTree = "<group>"; };
@@ -778,6 +773,11 @@
 		59003D001C731BE00016C72D /* HUAShopServiceViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HUAShopServiceViewController.m; sourceTree = "<group>"; };
 		5900D9151C7D526800FD1C04 /* HUAPraiseButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HUAPraiseButton.h; sourceTree = "<group>"; };
 		5900D9161C7D526800FD1C04 /* HUAPraiseButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HUAPraiseButton.m; sourceTree = "<group>"; };
+		5900D9181C7DCD2800FD1C04 /* emojis.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = emojis.h; path = "Flower/Main(其他)/第三方/NSStringEmojize/emojis.h"; sourceTree = SOURCE_ROOT; };
+		5900D9191C7DCD2800FD1C04 /* NSString+Emojize.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+Emojize.h"; path = "Flower/Main(其他)/第三方/NSStringEmojize/NSString+Emojize.h"; sourceTree = SOURCE_ROOT; };
+		5900D91A1C7DCD2800FD1C04 /* NSString+Emojize.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+Emojize.m"; path = "Flower/Main(其他)/第三方/NSStringEmojize/NSString+Emojize.m"; sourceTree = SOURCE_ROOT; };
+		5900D91C1C7DCFFB00FD1C04 /* HUAMembersPayViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HUAMembersPayViewController.h; sourceTree = "<group>"; };
+		5900D91D1C7DCFFB00FD1C04 /* HUAMembersPayViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HUAMembersPayViewController.m; sourceTree = "<group>"; };
 		59015DC51C4C785000524B6F /* HUAMasterListCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HUAMasterListCell.h; sourceTree = "<group>"; };
 		59015DC61C4C785000524B6F /* HUAMasterListCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HUAMasterListCell.m; sourceTree = "<group>"; };
 		59015DC81C4C81C800524B6F /* HUAMasterList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HUAMasterList.h; sourceTree = "<group>"; };
@@ -939,12 +939,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				599DB67E1C7AB59B004EA1A0 /* SystemConfiguration.framework in Frameworks */,
-				17B7E2DB1C71BD9C0032C6D5 /* MOBFoundation.framework in Frameworks */,
 				592CB9231C4E2A6B002FD56C /* libstdc++.tbd in Frameworks */,
 				592CB9211C4E2A61002FD56C /* JavaScriptCore.framework in Frameworks */,
 				592CB91F1C4E2A55002FD56C /* MessageUI.framework in Frameworks */,
 				590749391C772AE90050654B /* AliyunOSSiOS.framework in Frameworks */,
-				17B7E2DC1C71BD9C0032C6D5 /* SMS_SDK.framework in Frameworks */,
 				592CB91D1C4E2A4B002FD56C /* libicucore.tbd in Frameworks */,
 				592CB91B1C4E2A3B002FD56C /* libz.tbd in Frameworks */,
 			);
@@ -1008,6 +1006,9 @@
 		17B7E11C1C71BD9B0032C6D5 /* BCKeyBoard */ = {
 			isa = PBXGroup;
 			children = (
+				5900D9181C7DCD2800FD1C04 /* emojis.h */,
+				5900D9191C7DCD2800FD1C04 /* NSString+Emojize.h */,
+				5900D91A1C7DCD2800FD1C04 /* NSString+Emojize.m */,
 				17B7E11D1C71BD9B0032C6D5 /* BCKeyBoard.h */,
 				17B7E11E1C71BD9B0032C6D5 /* BCKeyBoard.m */,
 				17B7E11F1C71BD9B0032C6D5 /* BCMoreView.h */,
@@ -1435,16 +1436,6 @@
 			path = SMProgressHUD;
 			sourceTree = "<group>";
 		};
-		17B7E21A1C71BD9C0032C6D5 /* SMS_SDK */ = {
-			isa = PBXGroup;
-			children = (
-				17B7E21B1C71BD9C0032C6D5 /* SMS_SDKLocalizable.strings */,
-				17B7E21D1C71BD9C0032C6D5 /* MOBFoundation.framework */,
-				17B7E21E1C71BD9C0032C6D5 /* SMS_SDK.framework */,
-			);
-			path = SMS_SDK;
-			sourceTree = "<group>";
-		};
 		17B7E2201C71BD9C0032C6D5 /* UIKit+AFNetworking */ = {
 			isa = PBXGroup;
 			children = (
@@ -1695,6 +1686,8 @@
 		189319251C48896B005D230F /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				5900D91C1C7DCFFB00FD1C04 /* HUAMembersPayViewController.h */,
+				5900D91D1C7DCFFB00FD1C04 /* HUAMembersPayViewController.m */,
 				59003CFC1C730B010016C72D /* HUASearchSuperViewController.h */,
 				59003CFD1C730B010016C72D /* HUASearchSuperViewController.m */,
 				177469CB1C72B97D005B457C /* HUAChooseAddressViewController.h */,
@@ -1890,7 +1883,6 @@
 				17B7E1E11C71BD9B0032C6D5 /* SDPhotoBrowser */,
 				17B7E1E91C71BD9B0032C6D5 /* SDWebImage */,
 				17B7E20B1C71BD9B0032C6D5 /* SMProgressHUD */,
-				17B7E21A1C71BD9C0032C6D5 /* SMS_SDK */,
 				17B7E2201C71BD9C0032C6D5 /* UIKit+AFNetworking */,
 			);
 			path = "第三方";
@@ -2215,7 +2207,6 @@
 				17B7E2741C71BD9C0032C6D5 /* chatBar_colorMore_location@2x.png in Resources */,
 				17B7E28B1C71BD9C0032C6D5 /* btn-close.png in Resources */,
 				17B7E2651C71BD9C0032C6D5 /* chatBar_more@2x.png in Resources */,
-				17B7E2DA1C71BD9C0032C6D5 /* SMS_SDKLocalizable.strings in Resources */,
 				17B7E2B41C71BD9C0032C6D5 /* MJRefresh.bundle in Resources */,
 				17B7E2631C71BD9C0032C6D5 /* chatBar_keyboardSelected@2x.png in Resources */,
 				17B7E25B1C71BD9C0032C6D5 /* faceDelete@2x.png in Resources */,
@@ -2268,6 +2259,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				17B7E2A61C71BD9C0032C6D5 /* MJRefreshAutoFooter.m in Sources */,
+				5900D91B1C7DCD2800FD1C04 /* NSString+Emojize.m in Sources */,
 				17B7E2CC1C71BD9C0032C6D5 /* UIButton+WebCache.m in Sources */,
 				17B7E2931C71BD9C0032C6D5 /* MASViewAttribute.m in Sources */,
 				17B7E24F1C71BD9C0032C6D5 /* AFURLResponseSerialization.m in Sources */,
@@ -2380,6 +2372,7 @@
 				189319221C488950005D230F /* HUAShopTableViewCell.m in Sources */,
 				17B7E2C21C71BD9C0032C6D5 /* SDWaitingView.m in Sources */,
 				590AAD3E1C531757007E1ECB /* HUAForgetPasswordController.m in Sources */,
+				5900D91E1C7DCFFB00FD1C04 /* HUAMembersPayViewController.m in Sources */,
 				59015DCD1C4C83E200524B6F /* HUAMasterListController.m in Sources */,
 				17B7E2921C71BD9C0032C6D5 /* MASLayoutConstraint.m in Sources */,
 				17B7E2B31C71BD9C0032C6D5 /* MJRefreshStateHeader.m in Sources */,
@@ -2550,15 +2543,6 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		17B7E21B1C71BD9C0032C6D5 /* SMS_SDKLocalizable.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				17B7E21C1C71BD9C0032C6D5 /* en */,
-				17B7E21F1C71BD9C0032C6D5 /* zh-Hans */,
-			);
-			name = SMS_SDKLocalizable.strings;
-			sourceTree = "<group>";
-		};
 		59AC01041C3A4AFE00F453F5 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
