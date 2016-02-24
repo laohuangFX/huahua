@@ -244,6 +244,7 @@
 		59003CFB1C730AF30016C72D /* HUAGetCity.m in Sources */ = {isa = PBXBuildFile; fileRef = 59003CF81C730AF30016C72D /* HUAGetCity.m */; };
 		59003CFE1C730B010016C72D /* HUASearchSuperViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 59003CFD1C730B010016C72D /* HUASearchSuperViewController.m */; };
 		59003D011C731BE00016C72D /* HUAShopServiceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 59003D001C731BE00016C72D /* HUAShopServiceViewController.m */; };
+		5900D9171C7D526800FD1C04 /* HUAPraiseButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 5900D9161C7D526800FD1C04 /* HUAPraiseButton.m */; };
 		59015DC71C4C785000524B6F /* HUAMasterListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 59015DC61C4C785000524B6F /* HUAMasterListCell.m */; };
 		59015DCA1C4C81C800524B6F /* HUAMasterList.m in Sources */ = {isa = PBXBuildFile; fileRef = 59015DC91C4C81C800524B6F /* HUAMasterList.m */; };
 		59015DCD1C4C83E200524B6F /* HUAMasterListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 59015DCC1C4C83E200524B6F /* HUAMasterListController.m */; };
@@ -775,6 +776,8 @@
 		59003CFD1C730B010016C72D /* HUASearchSuperViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HUASearchSuperViewController.m; sourceTree = "<group>"; };
 		59003CFF1C731BE00016C72D /* HUAShopServiceViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HUAShopServiceViewController.h; sourceTree = "<group>"; };
 		59003D001C731BE00016C72D /* HUAShopServiceViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HUAShopServiceViewController.m; sourceTree = "<group>"; };
+		5900D9151C7D526800FD1C04 /* HUAPraiseButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HUAPraiseButton.h; sourceTree = "<group>"; };
+		5900D9161C7D526800FD1C04 /* HUAPraiseButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HUAPraiseButton.m; sourceTree = "<group>"; };
 		59015DC51C4C785000524B6F /* HUAMasterListCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HUAMasterListCell.h; sourceTree = "<group>"; };
 		59015DC61C4C785000524B6F /* HUAMasterListCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HUAMasterListCell.m; sourceTree = "<group>"; };
 		59015DC81C4C81C800524B6F /* HUAMasterList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HUAMasterList.h; sourceTree = "<group>"; };
@@ -1531,6 +1534,8 @@
 				590321C51C6EE87800741D14 /* HUAHttpTool.m */,
 				5925D2F41C7BEF4E005868B6 /* HUAShopDiscount.h */,
 				5925D2F51C7BEF4E005868B6 /* HUAShopDiscount.m */,
+				5900D9151C7D526800FD1C04 /* HUAPraiseButton.h */,
+				5900D9161C7D526800FD1C04 /* HUAPraiseButton.m */,
 			);
 			path = Tool;
 			sourceTree = "<group>";
@@ -2141,7 +2146,7 @@
 				TargetAttributes = {
 					59AC00F21C3A4AFE00F453F5 = {
 						CreatedOnToolsVersion = 7.2;
-						DevelopmentTeam = 6HK56439SB;
+						DevelopmentTeam = AQYD5LV6KX;
 					};
 					59AC010B1C3A4AFE00F453F5 = {
 						CreatedOnToolsVersion = 7.2;
@@ -2432,6 +2437,7 @@
 				17B7E2C71C71BD9C0032C6D5 /* SDWebImageDecoder.m in Sources */,
 				17B7E2961C71BD9C0032C6D5 /* NSLayoutConstraint+MASDebugAdditions.m in Sources */,
 				59FBFD511C48994C00EB00B1 /* HUATopInfoView.m in Sources */,
+				5900D9171C7D526800FD1C04 /* HUAPraiseButton.m in Sources */,
 				59015DD61C4C94A100524B6F /* HUAMienCell.m in Sources */,
 				17B7E2E01C71BD9C0032C6D5 /* STConst.m in Sources */,
 				189319201C488950005D230F /* HUASectionHeaderView.m in Sources */,
@@ -2661,7 +2667,7 @@
 				INFOPLIST_FILE = Flower/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = readn.Flower;
+				PRODUCT_BUNDLE_IDENTIFIER = readchen.Flower;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 			};
@@ -2684,7 +2690,7 @@
 				INFOPLIST_FILE = Flower/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = readn.Flower;
+				PRODUCT_BUNDLE_IDENTIFIER = readchen.Flower;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 			};

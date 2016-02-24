@@ -16,7 +16,7 @@
     [button setTitle:title forState:UIControlStateNormal];
     [button setTitleColor:titleColor forState:UIControlStateNormal];
     [button setImage:[UIImage imageNamed:image] forState:UIControlStateNormal];
-    button.titleEdgeInsets = UIEdgeInsetsMake(0, 5, 0, 0);
+    button.titleEdgeInsets = UIEdgeInsetsMake(0, 10, 0, 0);
     button.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 5);
     button.titleLabel.font = [UIFont systemFontOfSize:font];
     

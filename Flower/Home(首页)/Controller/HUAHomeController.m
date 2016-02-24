@@ -127,7 +127,7 @@ static NSString *identifier = @"cell";
 - (UITableView *)tableView{
     if (!_tableView) {
         _tableView = [[UITableView alloc]initWithFrame:self.view.bounds];
-        _tableView.height = self.view.height-navigationBarHeight;
+        _tableView.height = self.view.height-navigationBarHeight-49;
         _tableView.delegate = self;
         _tableView.dataSource = self;
 //        [self.view addSubview:_tableView];
@@ -196,7 +196,7 @@ static NSString *identifier = @"cell";
         [self createHeaderView:self.bannerArray];
         [self.tableView reloadData];
     } failure:^(NSError *error) {
-        [HUAMBProgress MBProgressFromWindowWithLabelText:@"还没有联网哦，去设置网络吧"];
+        //[HUAMBProgress MBProgressFromWindowWithLabelText:@"还没有联网哦，去设置网络吧"];
     }];
     
 }
@@ -252,6 +252,7 @@ static NSString *identifier = @"cell";
     [HUAHttpTool POST:url params:self.parameter success:^(id responseObject) {
         HUALog(@"123%@",responseObject);
         if ([responseObject[@"info"] isKindOfClass:[NSString class]]) {
+            [HUAMBProgress MBProgressOnlywithLabelText:@"没有更多数据了"];
             [self.tableView.mj_header endRefreshing];
             return  ;
         }
@@ -262,7 +263,7 @@ static NSString *identifier = @"cell";
             HUALog(@"123");
         }else {
             if ([newCount isEqualToString:[NSKeyedUnarchiver unarchiveObjectWithFile:self.pagePath]]) {
-                [HUAMBProgress MBProgressOnlywithLabelText:@"没有更多新的商户了"];
+                //[HUAMBProgress MBProgressOnlywithLabelText:@"没有更多新的商户了"];
             }
         }
         self.totalPage = responseObject[@"info"][@"pages"];
@@ -281,7 +282,7 @@ static NSString *identifier = @"cell";
         [self.tableView.mj_header endRefreshing];
         self.isFirstTime = NO;
     } failure:^(NSError *error) {
-        [HUAMBProgress MBProgressFromWindowWithLabelText:@"还没有联网哦，去设置网络吧"];
+        //[HUAMBProgress MBProgressFromWindowWithLabelText:@"还没有联网哦，去设置网络吧"];
         [self.tableView.mj_header endRefreshing];
         self.page--;
     }];
@@ -336,6 +337,7 @@ static NSString *identifier = @"cell";
 //    }
     
     [HUAHttpTool POST:url params:self.parameter success:^(id responseObject) {
+        HUALog(@"self.parameter%@",self.parameter);
         if ([responseObject[@"info"] isKindOfClass:[NSString class]]) {
             [self.tableView.mj_footer endRefreshingWithNoMoreData];
             return  ;
@@ -442,7 +444,8 @@ static NSString *identifier = @"cell";
     UIImageView *logoIcon = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"logo"]];
     logoIcon.x = hua_scale(10);
     logoIcon.width = hua_scale(45);
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:logoIcon];
+    UIBarButtonItem *rightSpace = [UIBarButtonItem rightSpace:20];
+    self.navigationItem.leftBarButtonItems = @[[[UIBarButtonItem alloc] initWithCustomView:logoIcon],rightSpace];
     //设置右边选择城市按钮
     self.navigationItem.rightBarButtonItems = @[[[UIBarButtonItem alloc] init],[[UIBarButtonItem alloc] initWithCustomView:self.chooseCity]];
      self.currentCity =[[NSUserDefaults standardUserDefaults] objectForKey: @"currentCity"];
@@ -652,8 +655,10 @@ static NSString *identifier = @"cell";
             return ;
         }
             self.userCity = place.locality;
-            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:nil message:[NSString stringWithFormat:@"为你定位到%@，是否从%@切换到当前城市",self.userCity,self.currentCity] delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
-            [alert show];
+        self.currentCity = self.userCity;
+
+//            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:nil message:[NSString stringWithFormat:@"为你定位到%@，是否从%@切换到当前城市",self.userCity,self.currentCity] delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
+//            [alert show];
 //        }
     }];
     

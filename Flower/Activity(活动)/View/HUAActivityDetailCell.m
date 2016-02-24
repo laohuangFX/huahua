@@ -33,7 +33,6 @@
 
     }
         self.cellHeight = self.detailImageView.height + self.detailLabel.height+margin;
-    HUALog(@"detaillabel %f",_detailLabel.height);
 
 }
 

@@ -47,13 +47,14 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = HUAColor(0xFFFFFF);
-//    UIImageView *logoIcon = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"logo"]];
-//    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:logoIcon];
+    UIImageView *logoIcon = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"logo"]];
+    self.navigationItem.leftBarButtonItems = @[[[UIBarButtonItem alloc] initWithCustomView:logoIcon]];
    self.tabBarController.tabBar.hidden = YES;
-    UIBarButtonItem *backButton = [UIBarButtonItem itemWithTarget:self action:@selector(backAction) image:@"back_green" highImage:@"back_green" text:@"返回"];
-    UIBarButtonItem *leftSpace = [UIBarButtonItem leftSpace:hua_scale(-10)];
-    backButton.tintColor = HUAColor(0x47A300);
-    self.navigationItem.leftBarButtonItems = @[leftSpace, backButton];
+//    UIBarButtonItem *backButton = [UIBarButtonItem itemWithTarget:self action:@selector(backAction) image:@"back_green" highImage:@"back_green" text:@"返回"];
+//    UIBarButtonItem *leftSpace = [UIBarButtonItem leftSpace:hua_scale(-10)];
+//    backButton.tintColor = HUAColor(0x47A300);
+//    self.navigationItem.leftBarButtonItems = @[leftSpace, backButton];
+    
     [self setLoginPage];
 }
 
@@ -69,9 +70,6 @@
         self.tabBarController.selectedIndex = 2;
         self.tabBarController.tabBar.hidden = NO;
     }
-    
-
-    
 }
 #pragma mark -- 登录页面搭建
 - (void)setLoginPage {
@@ -79,9 +77,14 @@
     self.topImageView.image = [UIImage imageNamed:@"background"];
     [self.view addSubview:self.topImageView];
     
-    self.headPortraitImageView = [[UIImageView alloc] initWithFrame:CGRectMake(hua_scale(130), hua_scale(84), hua_scale(60), hua_scale(60))];
+    self.headPortraitImageView = [[UIImageView alloc] initWithFrame:CGRectMake(hua_scale(130), hua_scale(84), hua_scale(60), hua_scale(61))];
     self.headPortraitImageView.image = [UIImage imageNamed:@"headPortrait"];
     [self.view addSubview:self.headPortraitImageView];
+    
+//    UIImageView *userNameImage = [[UIImageView alloc] initWithFrame:CGRectMake(47, hua_scale(181), hua_scale(12), hua_scale(19))];
+//    userNameImage.image = [UIImage imageNamed:@"my"];
+//    userNameImage.contentMode = UIViewContentModeCenter;
+//    [self.view addSubview:userNameImage];
     
     CGRect userNameFrame = CGRectMake(hua_scale(35), hua_scale(172), hua_scale(250), hua_scale(37));
     self.userNameTF = [UITextField textFieldWithFrame:userNameFrame image:@"my" placeholder: @"请输入用户名"];
@@ -210,10 +213,17 @@
 }
 //游客登录
 - (void)clickToVisitorModeLogin:(UIButton *)sender {
-     UIWindow *window = [UIApplication sharedApplication].keyWindow;
-    HUATabBarController *tabBarVC = [[HUATabBarController alloc] init];
-    tabBarVC.selectedIndex = 2;
-    window.rootViewController= tabBarVC;
+    NSArray *vcsArray = [self.navigationController viewControllers];
+    NSInteger vcCount = vcsArray.count;
+    UIViewController *lastVC = vcsArray[vcCount-2];
+    if (![lastVC isKindOfClass:[HUAMyController class]]) {
+        [self.navigationController popViewControllerAnimated:YES];
+    }else {
+        
+        self.tabBarController.selectedIndex = 2;
+        self.tabBarController.tabBar.hidden = NO;
+    }
+
     HUALog(@"游客登录");
 }
 

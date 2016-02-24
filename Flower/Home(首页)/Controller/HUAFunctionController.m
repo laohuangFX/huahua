@@ -44,6 +44,7 @@
 }
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.page = 1;
     self.title = self.name;
     [self.view addSubview:self.tableView];
     [self getData];
@@ -100,6 +101,7 @@
         if (indexPath.row == self.shopsArray.count-1) {
             // 集成上拉刷新控件
             self.tableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(loadMoreData)];
+            [self.tableView.mj_footer beginRefreshing];
         }
     }else {
         if (indexPath.row == self.shopsArray.count-1) {

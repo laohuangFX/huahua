@@ -18,7 +18,7 @@
 @property (nonatomic, strong) UIImageView *activityImageView;
 
 @property (nonatomic, strong) HUADetailInfo *top;
-
+@property (nonatomic, assign) CGFloat HUADetailTopCellH;
 //block回调跳转活动订单确认页面
 @property (nonatomic, copy)void (^pusViewBlock) (void);
 @end

@@ -94,13 +94,12 @@ static NSString * const reuseIdentifier = @"goods";
         [self.goodsArray removeAllObjects];
         NSArray *array = [HUADataTool activity:responseObject];
         [self.goodsArray addObjectsFromArray:array];
-        //[NSKeyedArchiver archiveRootObject:[self.goodsArray copy] toFile:self.activityPath];
         [self.collectionView reloadData];
         [self.collectionView.mj_header endRefreshing];
         self.isFirstTime = NO;
     } failure:^(NSError *error) {
         self.page--;
-        [HUAMBProgress MBProgressFromWindowWithLabelText:@"请检查网络设置"];
+        [HUAMBProgress MBProgressFromWindowWithLabelText:@"还没有联网哦，去设置网络吧"];
         HUALog(@"%@",error);
         [self.collectionView.mj_header endRefreshing];
     }];
@@ -222,7 +221,7 @@ static NSString * const reuseIdentifier = @"goods";
     return 0;
 }
 - (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section{
-    return UIEdgeInsetsMake(0, hua_scale(5), 0, hua_scale(5));
+    return UIEdgeInsetsMake(hua_scale(5), hua_scale(5), 0, hua_scale(5));
 }
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath{

@@ -29,10 +29,10 @@
 
 + (UITextField *)textFieldWithFrame:(CGRect)frame image:(NSString *)image placeholder:(NSString *)placeholder {
     UIImageView *imageView = [[UIImageView alloc] init];
-    imageView.width = hua_scale(20);
-    imageView.height = hua_scale(20);
+    imageView.width = hua_scale(30);
+    imageView.height = hua_scale(15);
     imageView.image = [UIImage imageNamed:image];
-    imageView.contentMode = UIViewContentModeCenter;
+    imageView.contentMode = UIViewContentModeScaleAspectFit;
     
     UITextField *textField = [[UITextField alloc]initWithFrame:frame];
     textField.placeholder = placeholder;
