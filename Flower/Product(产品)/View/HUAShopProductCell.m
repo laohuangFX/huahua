@@ -62,7 +62,8 @@
 
 -(void)setProduct:(HUAShopProduct *)product {
     _product = product;
-    [self.goodsImageView sd_setImageWithURL:[NSURL URLWithString:product.cover] placeholderImage:[UIImage imageNamed:@"placeholder"]];
+    [self.goodsImageView sd_setImageWithURL:[NSURL URLWithString:product.cover] placeholderImage:nil];
+    self.goodsImageView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"loading_picture_middle"]];
     self.goodsNameLabel.text = product.name;
     self.goodsNameLabel.frame = CGRectMake(hua_scale(114), hua_scale(22), hua_scale(204), 0);
     [self.goodsNameLabel sizeToFit];

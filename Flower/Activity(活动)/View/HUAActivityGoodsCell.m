@@ -12,7 +12,7 @@
 
 - (void)setGoods:(HUAActivityGoods *)goods {
     _goods = goods;
-    self.goodsImageView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"loading_picture"]];
+    self.goodsImageView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"loading_picture_middle"]];
     [self.goodsImageView sd_setImageWithURL:[NSURL URLWithString:goods.cover] placeholderImage:nil];
 }
 

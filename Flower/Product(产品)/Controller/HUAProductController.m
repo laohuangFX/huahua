@@ -501,7 +501,7 @@ static NSString * const reuseIdentifier = @"cell";
 #pragma mark - UICollectionViewDelegateFlowLayout
 
 - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section{
-    return 1;
+    return 0.5;
 }
 - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section{
     return 0;
@@ -513,7 +513,7 @@ static NSString * const reuseIdentifier = @"cell";
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath{
 
         
-    return CGSizeMake((screenWidth-1)/2, hua_scale(215));
+    return CGSizeMake((screenWidth-0.5)/2, hua_scale(215));
     
 }
 //点击collectionView触发方法

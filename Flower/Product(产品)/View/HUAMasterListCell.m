@@ -20,7 +20,7 @@
 @implementation HUAMasterListCell
 - (void)setMasterList:(HUAMasterList *)masterList {
     _masterList = masterList;
-    [self.headImageView sd_setImageWithURL:[NSURL URLWithString:masterList.url] placeholderImage:[UIImage imageNamed:@"placeholder"]];
+    [self.headImageView sd_setImageWithURL:[NSURL URLWithString:masterList.url] placeholderImage:nil];
     self.nameLabel.text = masterList.name;
     [self.nameLabel sizeToFit];
     self.praiseLabel.text = [NSString stringWithFormat:@"%@赞过",masterList.praise_count];
@@ -41,6 +41,7 @@
 
 - (void)setCell {
     self.headImageView = [[UIImageView alloc] initWithFrame:CGRectMake(hua_scale(10), hua_scale(5), hua_scale(70), hua_scale(70))];
+    self.headImageView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"loading_picture_small"]];
     [self addSubview:self.headImageView];
     
     CGRect nameFrame = CGRectMake(hua_scale(95), hua_scale(23), hua_scale(30), 0);

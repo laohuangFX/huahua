@@ -20,7 +20,7 @@
     textField.placeholder = placeholder;
     [textField setValue:HUAColor(0x5F5F62) forKeyPath:@"_placeholderLabel.textColor"];
     [textField setValue:[UIFont boldSystemFontOfSize:hua_scale(11)] forKeyPath:@"_placeholderLabel.font"];
-    textField.font = [UIFont systemFontOfSize:hua_scale(13)];
+    textField.font = [UIFont systemFontOfSize:hua_scale(14)];
     textField.leftView = imageView;
     textField.leftViewMode = UITextFieldViewModeAlways;
     [textField addTarget:target action:action forControlEvents:UIControlEventTouchUpInside];
