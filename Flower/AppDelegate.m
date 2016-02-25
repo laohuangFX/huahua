@@ -58,6 +58,67 @@
 
     
 }
+/**  极光推送   **/
+
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(nonnull NSDictionary *)userInfo{
+    application.applicationIconBadgeNumber = 0;
+    [JPUSHService handleRemoteNotification:userInfo];
+    NSString *string = [[userInfo objectForKey:@"aps"] objectForKey:@"alert"];
+    if ([[string substringToIndex:3] isEqualToString:@"发货了"]) {
+        NSLog(@"发货了");
+    }else{
+        NSLog(@"一级棒");
+    }
+    
+    NSLog(@"-------------------%@",userInfo);
+}
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_7_0
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
+{
+    application.applicationIconBadgeNumber = 0;
+    [JPUSHService handleRemoteNotification:userInfo];
+    NSLog(@"-------------------%@",userInfo);
+    // 应用正处理前台状态下 处理推送消息
+    if (application.applicationState == UIApplicationStateActive) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"收到推送消息"
+                                                        message:userInfo[@"aps"][@"alert"]
+                                                       delegate:nil
+                                              cancelButtonTitle:@"取消"
+                                              otherButtonTitles:@"确定", nil];
+        [alert show];
+    }
+    //在激活状态下，从上方弹出通知
+    if (application.applicationState == UIApplicationStateActive) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"tuisong" object:nil userInfo:userInfo];
+        
+        
+    }
+}
+#endif
+
+/**
+ *  返回devicetoken
+ *
+ *  @param application
+ *  @param deviceToken
+ */
+- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
+{
+    [JPUSHService registerDeviceToken:deviceToken];
+    //将device token转换为字符串
+    NSString *pushToken = [[[[deviceToken description]
+                             
+                             stringByReplacingOccurrencesOfString:@"<" withString:@""]
+                            
+                            stringByReplacingOccurrencesOfString:@">" withString:@""]
+                           
+                           stringByReplacingOccurrencesOfString:@" " withString:@""] ;
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    [userDefaults setObject:pushToken forKey:@"DeviceToken"];
+    NSLog(@"uuid : %@",deviceToken);
+    //    [UserManager shareManager].deviceToken = pushToken;
+}
+
 
 - (void)applicationWillResignActive:(UIApplication *)application {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.

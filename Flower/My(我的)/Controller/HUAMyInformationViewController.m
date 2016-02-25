@@ -375,7 +375,10 @@
     if (indexPath.row==0) {
         cell.InformationLabel.hidden = YES;
         cell.headImage.hidden=NO;
-        [cell.headImage sd_setImageWithURL:[NSURL URLWithString:self.model[indexPath.row]] placeholderImage:[UIImage imageNamed:@"placeholder"]];
+        if (![self.model[indexPath.row] isKindOfClass:[NSNull class]]) {
+            [cell.headImage sd_setImageWithURL:[NSURL URLWithString:self.model[indexPath.row]] placeholderImage:[UIImage imageNamed:@"placeholder"]];
+        }
+        
     
         NSLog(@"%@",self.model[indexPath.row]);
         //添加手势进入浏览大图
