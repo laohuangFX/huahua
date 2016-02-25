@@ -35,12 +35,18 @@
     self.navigationItem.leftBarButtonItems = @[];
     self.navigationItem.hidesBackButton =  YES;
     
-    self.searchBar.width = hua_scale(300.0);
+    self.searchBar.width = hua_scale(315.0);
     self.searchBar.height = hua_scale(22.5);
     self.navigationItem.titleView = self.searchBar;
     [self.searchBar becomeFirstResponder];
-    
-    self.navigationItem.rightBarButtonItems = @[[[UIBarButtonItem alloc]initWithTitle:@"取消" style:UIBarButtonItemStyleDone target:self action:@selector(dismissBlackView)]];
+//    [[UIBarButtonItem alloc]initWithTitle:@"取消" style:UIBarButtonItemStyleDone target:self action:@selector(dismissBlackView)]
+    UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+    btn.frame = CGRectMake(0, 0, hua_scale(25), 44);
+    [btn setTitle:@"取消" forState:UIControlStateNormal];
+    [btn setTitleColor:HUAColor(0x4da800) forState:UIControlStateNormal];
+    btn.titleLabel.font = [UIFont systemFontOfSize:hua_scale(12)];
+    [btn addTarget:self action:@selector(dismissBlackView) forControlEvents:UIControlEventTouchUpInside];
+    self.navigationItem.rightBarButtonItems = @[ [[UIBarButtonItem  alloc]init],[[UIBarButtonItem  alloc]initWithCustomView:btn]];
 }
 
 - (void)dismissBlackView{
@@ -85,7 +91,7 @@
 
 - (UITextField *)searchBar{
     if (!_searchBar) {
-        _searchBar = [UITextField textFieldWithFrame:CGRectZero image:@"search" placeholder:self.searchplaceholder];
+        _searchBar = [UITextField textFieldWithFrame:CGRectZero image:@"searchs" placeholder:self.searchplaceholder];
         _searchBar.layer.masksToBounds = YES;
         _searchBar.layer.cornerRadius = hua_scale(5);
         _searchBar.backgroundColor = HUAColor(0xeeeeee);

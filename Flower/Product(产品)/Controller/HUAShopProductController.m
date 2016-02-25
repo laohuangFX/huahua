@@ -203,7 +203,7 @@
         [self.tableView.mj_header endRefreshing];
         self.isFirstTime = NO;
     } failure:^(NSError *error) {
-        [HUAMBProgress MBProgressFromWindowWithLabelText:@"请检查网络设置"];
+        [HUAMBProgress MBProgressFromWindowWithLabelText:@"还没有联网哦，去设置网络吧"];
         [self.tableView.mj_header endRefreshing];
         self.page--;
     }];
@@ -368,7 +368,7 @@
     self.navigationItem.leftBarButtonItems = @[space, backButton];
     
     self.navigationItem.titleView = nil;
-    UIBarButtonItem *leftSpace = [UIBarButtonItem leftSpace:-30];
+    UIBarButtonItem *leftSpace = [UIBarButtonItem leftSpace:-25];
     UIBarButtonItem *searchBar = [UIBarButtonItem itemWithTarget:self action:@selector(search) image:@"search" highImage:@"search" text:nil];
     self.navigationItem.rightBarButtonItems = @[leftSpace,searchBar];
     

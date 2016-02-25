@@ -76,6 +76,9 @@ static NSString *identifier = @"cell";
 @property (nonatomic, strong) NSString *userCity;
 @property (nonatomic, assign) CLLocationCoordinate2D userCoord;
 
+/***  当前参数  */
+@property (nonatomic, strong) NSMutableDictionary *currentParameter;
+
 @end
 
 @implementation HUAHomeController
@@ -123,11 +126,19 @@ static NSString *identifier = @"cell";
     }
     return _shopsArray;
 }
+- (NSMutableDictionary *)currentParameter{
+    if (!_currentParameter) {
+        _currentParameter = [NSMutableDictionary dictionary];
+    }
+    return _currentParameter;
+}
 
 - (UITableView *)tableView{
     if (!_tableView) {
         _tableView = [[UITableView alloc]initWithFrame:self.view.bounds];
-        _tableView.height = self.view.height-navigationBarHeight;
+
+        _tableView.height = self.view.height-navigationBarHeight-49;
+
         _tableView.delegate = self;
         _tableView.dataSource = self;
 //        [self.view addSubview:_tableView];
@@ -174,7 +185,56 @@ static NSString *identifier = @"cell";
         [self.selectView dismissView];
     }
 }
-
+- (void)getCurrentData{
+    NSString *url = [HUA_URL stringByAppendingPathComponent:App_index];
+    if (self.page > [self.totalPage integerValue ]) {
+        [self.tableView.mj_footer endRefreshingWithNoMoreData];
+        [HUAMBProgress MBProgressOnlywithLabelText:@"没有更多数据了"];
+        return;
+    }
+    [HUAHttpTool POST:url params:self.currentParameter success:^(id responseObject) {
+        HUALog(@"123%@",responseObject);
+        [self.tableView.mj_header endRefreshing];
+        [self.tableView.mj_footer endRefreshing];
+        if ([responseObject[@"info"] isKindOfClass:[NSString class]]) {
+            [HUAMBProgress MBProgressOnlywithLabelText:responseObject[@"info"]];
+            return  ;
+        }
+        [responseObject writeToFile:self.homePath atomically:YES];
+        if (self.page == 1) {
+            //加载数据插入到可变数组最前面
+            self.totalPage = responseObject[@"info"][@"pages"];
+            
+            NSString *newCount = responseObject[@"info"][@"total"];
+            [NSKeyedArchiver archiveRootObject:newCount toFile:self.pagePath];
+            if ([newCount isEqualToString:[NSKeyedUnarchiver unarchiveObjectWithFile:self.pagePath]]) {
+                [HUAMBProgress MBProgressOnlywithLabelText:@"没有更多新的商户了"];
+            }
+            self.categoryArray = [HUADataTool getCategoryList:responseObject];
+            
+            self.cityArray = [[HUACityInfo citysFromArray:responseObject[@"info"][@"city_list"]] mutableCopy];
+            NSArray *array = [HUADataTool homeBanner:responseObject];
+            
+            HUAShopInfo *banner = array.firstObject;
+            self.bannerArray = banner.bannerArr;
+            [self createHeaderView:self.bannerArray];
+            
+            [self.shopsArray removeAllObjects];
+        }
+        
+        NSArray *shopArray = [HUADataTool homeShop:responseObject];
+        
+        [self.shopsArray addObjectsFromArray:shopArray];
+        
+        [self.tableView reloadData];
+        self.page++;
+    } failure:^(NSError *error) {
+        [HUAMBProgress MBProgressFromWindowWithLabelText:@"还没有联网哦，去设置网络吧"];
+        [self.tableView.mj_header endRefreshing];
+        [self.tableView.mj_footer endRefreshing];
+        
+    }];
+}
 
 
 - (void)getData {
@@ -252,10 +312,14 @@ static NSString *identifier = @"cell";
     [HUAHttpTool POST:url params:self.parameter success:^(id responseObject) {
         HUALog(@"123%@",responseObject);
         if ([responseObject[@"info"] isKindOfClass:[NSString class]]) {
+
+             [HUAMBProgress MBProgressOnlywithLabelText:responseObject[@"info"]];
+
             [self.tableView.mj_header endRefreshing];
             return  ;
         }
         [responseObject writeToFile:self.homePath atomically:YES];
+
         //获取数据总个数
         NSString *newCount = responseObject[@"info"][@"total"];
         if (self.isFirstTime == YES) {
@@ -269,14 +333,21 @@ static NSString *identifier = @"cell";
         //保存这一次总个数
         [NSKeyedArchiver archiveRootObject:newCount toFile:self.pagePath];
         [self.shopsArray removeAllObjects];
+        
         NSArray *shopArray = [HUADataTool homeShop:responseObject];
+        
         [self.shopsArray addObjectsFromArray:shopArray];
+        
         self.categoryArray = [HUADataTool getCategoryList:responseObject];
+        
         self.cityArray = [[HUACityInfo citysFromArray:responseObject[@"info"][@"city_list"]] mutableCopy];
+        
         NSArray *array = [HUADataTool homeBanner:responseObject];
+        
         HUAShopInfo *banner = array.firstObject;
         self.bannerArray = banner.bannerArr;
         [self createHeaderView:self.bannerArray];
+        
         [self.tableView reloadData];
         [self.tableView.mj_header endRefreshing];
         self.isFirstTime = NO;
@@ -336,8 +407,11 @@ static NSString *identifier = @"cell";
 //    }
     
     [HUAHttpTool POST:url params:self.parameter success:^(id responseObject) {
+        HUALog(@"self.parameter%@",self.parameter);
         if ([responseObject[@"info"] isKindOfClass:[NSString class]]) {
+            
             [self.tableView.mj_footer endRefreshingWithNoMoreData];
+
             return  ;
         }
         NSArray *shopArray = [HUADataTool homeShop:responseObject];
@@ -386,12 +460,11 @@ static NSString *identifier = @"cell";
 
 - (UITextField *)searchBar{
     if (!_searchBar) {
-        _searchBar = [UITextField textFieldWithFrame:CGRectZero image:@"search" placeholder:@"请输入商家名称"];
+        _searchBar = [UITextField textFieldWithFrame:CGRectZero image:@"searchs" placeholder:@"请输入商家名称"];
         _searchBar.layer.masksToBounds = YES;
         _searchBar.layer.cornerRadius = hua_scale(5);
         _searchBar.backgroundColor = HUAColor(0xeeeeee);
-        _searchBar.width = hua_scale(185);
-        _searchBar.height = hua_scale(22.5);
+        _searchBar.frame = CGRectMake(0, 0, hua_scale(20), 44);
         _searchBar.delegate = self;
         _searchBar.returnKeyType = UIReturnKeySearch;
     }
@@ -401,7 +474,7 @@ static NSString *identifier = @"cell";
 - (HUACityBtn *)chooseCity{
     if (!_chooseCity) {
         _chooseCity = [HUACityBtn buttonWithType:UIButtonTypeCustom];
-        [_chooseCity setFrame:CGRectMake(0, 0, hua_scale(60), 44)];
+        [_chooseCity setFrame:CGRectMake(0, 0, hua_scale(45), 44)];
         [_chooseCity addTarget:self action:@selector(chooseCity:) forControlEvents:UIControlEventTouchUpInside];
 //        _chooseCity.title = @"选择城市";
     }
@@ -434,18 +507,19 @@ static NSString *identifier = @"cell";
  */
 - (void)setNavigationBar {
     
-    self.searchBar.width = hua_scale(185);
-    self.searchBar.height = hua_scale(22.5);
-    self.navigationItem.titleView = self.searchBar;
-    
     //设置左边的LOGO
     UIImageView *logoIcon = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"logo"]];
     logoIcon.x = hua_scale(10);
     logoIcon.width = hua_scale(45);
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:logoIcon];
+    UIBarButtonItem *rightSpace = [UIBarButtonItem rightSpace:20];
+    self.navigationItem.leftBarButtonItems = @[[[UIBarButtonItem alloc] initWithCustomView:logoIcon],rightSpace];
     //设置右边选择城市按钮
     self.navigationItem.rightBarButtonItems = @[[[UIBarButtonItem alloc] init],[[UIBarButtonItem alloc] initWithCustomView:self.chooseCity]];
      self.currentCity =[[NSUserDefaults standardUserDefaults] objectForKey: @"currentCity"];
+    
+    self.searchBar.frame = CGRectMake(0, 0, hua_scale(215), hua_scale(22.5));
+    self.navigationItem.titleView = self.searchBar;
+    
 }
 
 - (void)setSearchNav{
@@ -455,8 +529,14 @@ static NSString *identifier = @"cell";
     self.searchBar.width = hua_scale(300.0);
     self.searchBar.height = hua_scale(22.5);
     self.navigationItem.titleView = self.searchBar;
-    
-    self.navigationItem.rightBarButtonItems = @[[[UIBarButtonItem alloc]initWithTitle:@"取消" style:UIBarButtonItemStyleDone target:self action:@selector(dismissBlackView)]];
+    UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+    btn.frame = CGRectMake(0, 0, hua_scale(25), 44);
+    [btn setTitle:@"取消" forState:UIControlStateNormal];
+    [btn setTitleColor:HUAColor(0x4da800) forState:UIControlStateNormal];
+    btn.titleLabel.font = [UIFont systemFontOfSize:hua_scale(12)];
+    [btn addTarget:self action:@selector(dismissBlackView) forControlEvents:UIControlEventTouchUpInside];
+    self.navigationItem.rightBarButtonItems = @[ [[UIBarButtonItem  alloc]init],[[UIBarButtonItem  alloc]initWithCustomView:btn]];
+//    self.navigationItem.rightBarButtonItems = @[[[UIBarButtonItem alloc]initWithTitle:@"取消" style:UIBarButtonItemStyleDone target:self action:@selector(dismissBlackView)]];
 }
 
 //选择城市按钮
@@ -651,10 +731,21 @@ static NSString *identifier = @"cell";
         if (place == nil) {
             return ;
         }
-            self.userCity = place.locality;
+//<<<<<<< HEAD
+//            self.userCity = place.locality;
+//        self.currentCity = self.userCity;
+//
+////            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:nil message:[NSString stringWithFormat:@"为你定位到%@，是否从%@切换到当前城市",self.userCity,self.currentCity] delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
+////            [alert show];
+////        }
+//=======
+        self.userCity = place.locality;
+        if ([self.currentCity isEqualToString:self.userCity]) {
+            [self loadNewData];
+        }else{
             UIAlertView *alert = [[UIAlertView alloc]initWithTitle:nil message:[NSString stringWithFormat:@"为你定位到%@，是否从%@切换到当前城市",self.userCity,self.currentCity] delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
             [alert show];
-//        }
+        }
     }];
     
     //停止定位
