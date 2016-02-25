@@ -274,24 +274,7 @@
 }
 - (void)textViewDidChange:(UITextView *)textView
 {
-    //    textview 改变字体的行间距
-    
-    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
-    
-    paragraphStyle.lineSpacing = hua_scale(10);// 字体的行间距
-    
-    
-    
-    NSDictionary *attributes = @{
-                                 
-                                 NSFontAttributeName:[UIFont systemFontOfSize:15],
-                                 
-                                 NSParagraphStyleAttributeName:paragraphStyle
-                                 
-                                 };
-    
-    textView.attributedText = [[NSAttributedString alloc] initWithString:textView.text attributes:attributes];
-    
+
     
     self.textView.label.hidden = YES;
     [self changeFrame:ceilf([textView sizeThatFits:textView.frame.size].height)];
@@ -400,6 +383,9 @@
 
 //结束编辑
 - (void)textViewDidEndEditing:(UITextView *)textView{
+    
+    
+    
     if (self.textView.text.length==0) {
         self.textView.label.hidden = NO;
         self.textView.label.text = @"我来说几句";
@@ -408,6 +394,26 @@
 
 //获取焦点前调用
 - (BOOL)textViewShouldBeginEditing:(UITextView *)textView{
+    
+    if (textView.text.length < 1) {
+        textView.text = @"间距";
+    }
+    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+    
+    paragraphStyle.lineSpacing = hua_scale(10);// 字体的行间距
+    
+    NSDictionary *attributes = @{
+                                 
+                                 NSFontAttributeName:[UIFont systemFontOfSize:hua_scale(11)],
+                                 
+                                 NSParagraphStyleAttributeName:paragraphStyle
+                                 
+                                 };
+    
+    self.textView.attributedText = [[NSAttributedString alloc] initWithString:textView.text attributes:attributes];
+    if ([textView.text isEqualToString:@"间距"]) {           //之所以加这个判断是因为再次编辑的时候还会进入这个代理方法，如果不加，会把你之前输入的内容清空。你也可以取消看看效果。
+       self.textView.attributedText = [[NSAttributedString alloc] initWithString:@"" attributes:attributes];//主要是把“间距”两个字给去了。
+    }
     
     NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
     if (token==nil) {
@@ -418,6 +424,8 @@
     }
     
 }
+
+
 
 - (void)releaseView{
     

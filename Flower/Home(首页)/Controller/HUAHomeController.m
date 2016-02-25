@@ -196,7 +196,7 @@ static NSString *identifier = @"cell";
         [self createHeaderView:self.bannerArray];
         [self.tableView reloadData];
     } failure:^(NSError *error) {
-        [HUAMBProgress MBProgressFromWindowWithLabelText:@"还没有联网哦，去设置网络吧"];
+        //[HUAMBProgress MBProgressFromWindowWithLabelText:@"还没有联网哦，去设置网络吧"];
     }];
     
 }
@@ -281,7 +281,7 @@ static NSString *identifier = @"cell";
         [self.tableView.mj_header endRefreshing];
         self.isFirstTime = NO;
     } failure:^(NSError *error) {
-        [HUAMBProgress MBProgressFromWindowWithLabelText:@"还没有联网哦，去设置网络吧"];
+        //[HUAMBProgress MBProgressFromWindowWithLabelText:@"还没有联网哦，去设置网络吧"];
         [self.tableView.mj_header endRefreshing];
         self.page--;
     }];
