@@ -59,26 +59,37 @@
 }
 
 - (void)setNavigationBar {
-    UIButton *praiseButton = [UIButton buttonWithType:0];
-    praiseButton.frame = CGRectMake(hua_scale(268), hua_scale(9), hua_scale(42), hua_scale(16));
-    [praiseButton setImage:[UIImage imageNamed:@"praise_black_empty"] forState:UIControlStateNormal];
-    [praiseButton setImage:[UIImage imageNamed:@"praise_tech"] forState:UIControlStateSelected];
-    [praiseButton setTitle:self.masterDetailInfo.praise_count forState:UIControlStateNormal];
-    [praiseButton setTitleColor:HUAColor(0x000000) forState:UIControlStateNormal];
-    praiseButton.titleEdgeInsets = UIEdgeInsetsMake(0, 5, 0, 0);
-    praiseButton.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 5);
+//    UIButton *praiseButton = [UIButton buttonWithType:0];
+//    praiseButton.frame = CGRectMake(hua_scale(268), hua_scale(9), hua_scale(42), hua_scale(16));
+//    [praiseButton setImage:[UIImage imageNamed:@"praise_black_empty"] forState:UIControlStateNormal];
+//    [praiseButton setImage:[UIImage imageNamed:@"praise_tech"] forState:UIControlStateSelected];
+//    [praiseButton setTitle:self.masterDetailInfo.praise_count forState:UIControlStateNormal];
+//    [praiseButton setTitleColor:HUAColor(0x000000) forState:UIControlStateNormal];
+//    praiseButton.titleEdgeInsets = UIEdgeInsetsMake(0, 5, 0, 0);
+//    praiseButton.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 5);
+//    if ([[[[NSNumberFormatter alloc] init] stringFromNumber:self.masterDetailInfo.have_praised] isEqualToString:@"1"] ) {
+//        praiseButton.selected = YES;
+//        
+//    }
+//    [praiseButton setTitle:[NSString stringWithFormat:@"%ld",self.masterDetailInfo.praise_count.integerValue] forState:UIControlStateNormal];
+//    [praiseButton addTarget:self action:@selector(clickToPraise:) forControlEvents:UIControlEventTouchUpInside];
+//    
+//    praiseButton.titleLabel.font = [UIFont systemFontOfSize:hua_scale(14)];
+//    self.navigationItem.rightBarButtonItems = @[[[UIBarButtonItem alloc]initWithCustomView:praiseButton]];
+    HUAPraiseButton *praiseButton = [[HUAPraiseButton alloc] initWithFrame:CGRectMake(hua_scale(268), hua_scale(9), hua_scale(42), hua_scale(15))];
+    UIBarButtonItem *leftSpace = [UIBarButtonItem leftSpace:-20];
+    self.navigationItem.rightBarButtonItems = @[leftSpace,[[UIBarButtonItem alloc]initWithCustomView:praiseButton]];
     if ([[[[NSNumberFormatter alloc] init] stringFromNumber:self.masterDetailInfo.have_praised] isEqualToString:@"1"] ) {
         praiseButton.selected = YES;
-        
+        praiseButton.praiseImageView.image = [UIImage imageNamed:@"praise_tech"];
+    }else {
+        praiseButton.praiseImageView.image = [UIImage imageNamed:@"praise_black_empty"];
     }
-    [praiseButton setTitle:[NSString stringWithFormat:@"%ld",self.masterDetailInfo.praise_count.integerValue] forState:UIControlStateNormal];
+    praiseButton.label.text = [NSString stringWithFormat:@"%ld",self.masterDetailInfo.praise_count.integerValue];
     [praiseButton addTarget:self action:@selector(clickToPraise:) forControlEvents:UIControlEventTouchUpInside];
-    
-    praiseButton.titleLabel.font = [UIFont systemFontOfSize:hua_scale(14)];
-    self.navigationItem.rightBarButtonItems = @[[[UIBarButtonItem alloc]initWithCustomView:praiseButton]];
 }
 #pragma mark -- 点击点赞
-- (void)clickToPraise:(UIButton *)sender {
+- (void)clickToPraise:(HUAPraiseButton *)sender {
     if (!self.detailInfo) {
         [HUAMBProgress MBProgressFromWindowWithLabelText:@"未登录,正在跳转登录页面..." dispatch_get_main_queue:^{
             HUALoginController *loginVC = [[HUALoginController alloc] init];
@@ -94,11 +105,15 @@
         [HUAHttpTool POSTWithTokenAndUrl:url params:parameter success:^(id responseObject) {
             HUALog(@"%@",responseObject);
             if ([responseObject[@"info"][0] isKindOfClass:[NSDictionary class]]) {
+                sender.label.text = [NSString stringWithFormat:@"%ld",sender.label.text.integerValue+1];
+                sender.praiseImageView.image = [UIImage imageNamed:@"praise_tech"];
                 [HUAMBProgress MBProgressOnlywithLabelText:@"点赞成功"];
-                [sender setTitle:[NSString stringWithFormat:@"%ld",sender.titleLabel.text.integerValue+1] forState:UIControlStateNormal];
+                //[sender setTitle:[NSString stringWithFormat:@"%ld",sender.titleLabel.text.integerValue+1] forState:UIControlStateNormal];
             }else {
+                sender.label.text = [NSString stringWithFormat:@"%ld",sender.label.text.integerValue-1];
+                sender.praiseImageView.image = [UIImage imageNamed:@"praise_black_empty"];
                 [HUAMBProgress MBProgressOnlywithLabelText:@"取消点赞"];
-                [sender setTitle:[NSString stringWithFormat:@"%ld",sender.titleLabel.text.integerValue-1] forState:UIControlStateNormal];
+                //[sender setTitle:[NSString stringWithFormat:@"%ld",sender.titleLabel.text.integerValue-1] forState:UIControlStateNormal];
             }
         } failure:^(NSError *error) {
             HUALog(@"%@",error);

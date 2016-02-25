@@ -208,7 +208,7 @@ static NSString * const reuseIdentifier = @"cell";
         [self.collectionView.mj_header endRefreshing];
         self.isFirstTime = NO;
     } failure:^(NSError *error) {
-        [HUAMBProgress MBProgressFromWindowWithLabelText:@"请检查网络设置"];
+        [HUAMBProgress MBProgressFromWindowWithLabelText:@"还没有联网哦，去设置网络吧"];
         [self.collectionView.mj_header endRefreshing];
         self.page--;
     }];

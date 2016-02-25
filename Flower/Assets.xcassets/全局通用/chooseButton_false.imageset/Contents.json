@@ -5,6 +5,20 @@
       "scale" : "1x"
     },
     {
+      "resizing" : {
+        "mode" : "9-part",
+        "center" : {
+          "mode" : "tile",
+          "width" : 1,
+          "height" : 1
+        },
+        "cap-insets" : {
+          "bottom" : 11,
+          "top" : 11,
+          "right" : 11,
+          "left" : 11
+        }
+      },
       "idiom" : "universal",
       "filename" : "new_feature_share_false@2x.png",
       "scale" : "2x"

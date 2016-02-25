@@ -23,6 +23,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [[UITabBarItem appearance]setTitlePositionAdjustment:UIOffsetMake(0, -2)];
+    
     self.tabBar.translucent = NO;
     self. delegate = self ;
     [self.tabBar setBarTintColor:HUAColor(0xF5F6F7)];
@@ -55,6 +57,7 @@
     subViewController.title = title;
     
     //设置子控制器的图片
+    
     subViewController.tabBarItem.image = [UIImage imageNamed:image];
     subViewController.tabBarItem.selectedImage = [[UIImage imageNamed:selectedImage] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     //设置文字的样式
@@ -69,7 +72,7 @@
     
     // 先给外面传进来的小控制器 包装 一个导航控制器
     HUANavigationController *navigationController = [[HUANavigationController alloc] initWithRootViewController:subViewController];
-    
+    navigationController.tabBarItem.imageInsets = UIEdgeInsetsMake(-2, 0, 2, 0);
     //添加为子控制器
     [self addChildViewController:navigationController];
 }
