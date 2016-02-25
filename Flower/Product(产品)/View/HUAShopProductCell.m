@@ -51,6 +51,10 @@
     self.priceLabel = [UILabel labelWithFrame:priceFrame text:@"¥200.45" color:HUAColor(0x4da800) font:hua_scale(13)];
     [self addSubview:self.priceLabel];
     
+    UIView *seperateLine = [[UIView alloc] initWithFrame:CGRectMake(0, hua_scale(106)-0.5, screenWidth, 0.5)];
+    seperateLine.backgroundColor = HUAColor(0xe1e1e1);
+    [self addSubview:seperateLine];
+    
     
     
 }
