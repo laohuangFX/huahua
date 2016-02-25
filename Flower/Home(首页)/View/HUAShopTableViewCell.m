@@ -12,7 +12,7 @@
 
 -(void)setShopInfo:(HUAShopInfo *)shopInfo {
     _shopInfo = shopInfo;
-    [self.shopImageView sd_setImageWithURL:[NSURL URLWithString:shopInfo.cover] placeholderImage:[UIImage imageNamed:@"placeholder"]];
+    //[self.shopImageView sd_setImageWithURL:[NSURL URLWithString:shopInfo.cover] placeholderImage:[UIImage imageNamed:@"placeholder"]];
     [self.iconImageView sd_setImageWithURL:[NSURL URLWithString:shopInfo.icon] placeholderImage:[UIImage imageNamed:@"placeholder"]];
     self.locationLabel.text = shopInfo.address;
     self.shopNameLabel.text = shopInfo.shopname;

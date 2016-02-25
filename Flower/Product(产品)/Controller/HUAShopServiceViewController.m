@@ -239,7 +239,9 @@
     if (SubParameters != nil) {
         [self.parameters setValuesForKeysWithDictionary:SubParameters];
     }
+    NSLog(@"%@",self.parameters);
     [manager GET:url parameters:self.parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+       // NSLog(@"")
         if ([[responseObject objectForKey:@"info"] isKindOfClass:[NSString class]]) {
             [HUAMBProgress MBProgressOnlywithLabelText:[responseObject objectForKey:@"info"]];
             return ;
@@ -287,14 +289,14 @@
 //        AFHTTPRequestOperationManager *manager = [[AFHTTPRequestOperationManager alloc] init];
 //        NSString *url =[HUA_URL stringByAppendingPathComponent:@"service/service_list"];
 //        NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
-        //        self.parameters[@"shop_id"] = self.shop_id;
-        //        self.parameters[@"per_page"] = @(self.page);
+//                self.parameters[@"shop_id"] = self.shop_id;
+//                self.parameters[@"per_page"] = @(self.page);
 
         if (![_leftText isEqualToString:@"不限"] && _leftText != nil) {
-            self.parameters[@"parent_id"] =_dataDic[_leftText];
+            self.parameters[@"category_id"] =_dataDic[_leftText];
         }
         if ([_leftText isEqualToString:@"不限"] || _leftText == nil) {
-            self.parameters[@"parent_id"] = nil;
+            self.parameters[@"category_id"] = nil;
         }
         if (![_midstText isEqualToString:@"不限"] && _midstText != nil) {
             if ([_midstText isEqualToString:@"价格降序"]) {
@@ -314,6 +316,7 @@
         }
         self.page = 1;
         [self geDataWithSubParameters:nil];
+//        NSLog(@"%@",parameters);
 //        [manager GET:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
 //           // HUALog(@"%@",responseObject);
 //            if ([[responseObject objectForKey:@"info"] isKindOfClass:[NSString class]]) {
@@ -327,7 +330,7 @@
 //            HUALog(@"%@",error);
 //            [HUAMBProgress MBProgressOnlywithLabelText:@"请检查网络设置"];
 //        }];
-
+//
     }];
 
     [self.view addSubview:menu];

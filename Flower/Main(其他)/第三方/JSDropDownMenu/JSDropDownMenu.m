@@ -193,6 +193,8 @@
 @property (nonatomic, assign) NSInteger leftSelectedRow;
 @property (nonatomic, assign) BOOL hadSelected;
 @property (nonatomic, strong)NSString *leftText;
+@property (nonatomic, strong)CATextLayer *lastTextLayer;
+@property (nonatomic, strong)CAShapeLayer *lastGou;
 @end
 
 
@@ -434,19 +436,31 @@
 #pragma mark - gesture handle
 //点击事件
 - (void)menuTapped:(UITapGestureRecognizer *)paramSender {
-
+    self.lastTextLayer.foregroundColor = HUAColor(0x000000).CGColor;
+    self.lastGou.strokeColor = [UIColor blackColor].CGColor;
+    
     CGPoint touchPoint = [paramSender locationInView:self];
     //calculate index
     NSInteger tapIndex = touchPoint.x / (self.frame.size.width / _numOfMenu);
     
+    CATextLayer *layer = self.titles[tapIndex];
+    layer.foregroundColor = HUAColor(0x4da800).CGColor;
+    
+ 
+   CAShapeLayer *indicator = _indicators[tapIndex];
+    indicator.strokeColor = HUAColor(0x4da800).CGColor;
+    
+    
+    self.lastTextLayer = layer;
+    self.lastGou = indicator;
     for (int i = 0; i < _numOfMenu; i++) {
         if (i != tapIndex) {
             [self animateIndicator:_indicators[i] Forward:NO complete:^{
                 [self animateTitle:_titles[i] show:NO complete:^{
-                    
+                   
                 }];
             }];
-            [(CALayer *)self.bgLayers[i] setBackgroundColor:BackColor.CGColor];
+          [(CALayer *)self.bgLayers[i] setBackgroundColor:BackColor.CGColor];
         }
     }
     
@@ -466,7 +480,7 @@
                 _currentSelectedMenudIndex = tapIndex;
                 _show = NO;
             }];
-            
+
             [(CALayer *)self.bgLayers[tapIndex] setBackgroundColor:BackColor.CGColor];
         } else {
             

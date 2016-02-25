@@ -120,7 +120,9 @@
     NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
     parameters[@"shop_id"] = self.shop_id;
     [manager GET:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation,NSDictionary* responseObject) {
-       
+
+        NSLog(@"%@",responseObject);
+        
         _dataDic = [NSMutableDictionary dictionary];
         _data1 = [NSMutableArray array];
         
@@ -151,7 +153,6 @@
     
     // 马上进入刷新状态
     [self.tableView.mj_header beginRefreshing];
-    
 }
 
 
