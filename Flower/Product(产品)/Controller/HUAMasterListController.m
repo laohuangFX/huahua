@@ -166,10 +166,13 @@
     self.parameters[@"shop_id"] = self.shop_id;
     self.parameters[@"per_page"] = @(self.page);
     [HUAHttpTool GET:url params:self.parameters success:^(id responseObject) {
+        NSLog(@"%@",responseObject);
         
         //获取数据总个数
         NSString *newCount = responseObject[@"info"][@"total"];
         if (self.isFirstTime == YES) {
+            
+      
             
         }else {
             if ([newCount isEqualToString:[NSKeyedUnarchiver unarchiveObjectWithFile:self.pagePath]]) {

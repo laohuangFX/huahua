@@ -48,7 +48,7 @@
         //imageView.backgroundColor = [UIColor redColor];
         imageView.image = [UIImage imageNamed:obj];
         for (int i = 0; i<_picPathStringsArray.count; i++) {
-            [imageView sd_setImageWithURL:[NSURL URLWithString:_picPathStringsArray[i]] placeholderImage:nil];
+            [imageView sd_setImageWithURL:[NSURL URLWithString:_picPathStringsArray[i]] placeholderImage:[UIImage imageNamed:@"placeholder"]];
         }
         imageView.frame = CGRectMake(columnIndex * (itemW + margin), rowIndex * (itemH + margin), itemW, itemH);
         [self addSubview:imageView];
