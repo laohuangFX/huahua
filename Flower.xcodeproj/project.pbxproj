@@ -2155,7 +2155,7 @@
 				TargetAttributes = {
 					59AC00F21C3A4AFE00F453F5 = {
 						CreatedOnToolsVersion = 7.2;
-						DevelopmentTeam = AQYD5LV6KX;
+						DevelopmentTeam = L7F7587GX3;
 					};
 					59AC010B1C3A4AFE00F453F5 = {
 						CreatedOnToolsVersion = 7.2;
@@ -2673,7 +2673,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flower/Main(其他)/第三方/JPush",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = readchen.Flower;
+				PRODUCT_BUNDLE_IDENTIFIER = readch.Flower;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 			};
@@ -2700,7 +2700,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flower/Main(其他)/第三方/JPush",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = readchen.Flower;
+				PRODUCT_BUNDLE_IDENTIFIER = readch.Flower;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 			};
