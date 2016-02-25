@@ -80,6 +80,7 @@
         _tableView.dataSource = self;
         _tableView.delegate = self;
         [_tableView registerClass:[HUAShopProductCell class] forCellReuseIdentifier:@"cell"];
+        _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
  
     }
     return _tableView;

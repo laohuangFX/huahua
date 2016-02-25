@@ -14,7 +14,6 @@
     _textAndImg = textAndImg;
     
     self.detailLabel.frame = CGRectMake(hua_scale(margin), 0, screenWidth - 2 * hua_scale(margin), self.detailLabel.height);
-    HUALog(@"self.detailLabel.text.length %lu",self.detailLabel.text.length);
  
     self.detailLabel.text = textAndImg.text;
     self.detailLabel.numberOfLines = 0;
@@ -23,9 +22,9 @@
     [paragraphStyle setLineSpacing:margin];//调整行间距
     [attributedString addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange(0, [self.detailLabel.text length])];
     self.detailLabel.attributedText = attributedString;
-    [self.detailImageView sd_setImageWithURL:[NSURL URLWithString:textAndImg.pic] placeholderImage:[UIImage imageNamed:@"placeholder"]];
+    [self.detailImageView sd_setImageWithURL:[NSURL URLWithString:textAndImg.pic] placeholderImage:nil];
     [self.detailLabel sizeToFit];
-    if (self.detailLabel.text.length < 28) {
+    if (self.detailLabel.text.length < 23) {
         self.detailImageView.frame = CGRectMake(hua_scale(margin), self.detailLabel.height, screenWidth - 2 * hua_scale(margin), hua_scale(115));
         
     }else {
@@ -57,6 +56,7 @@
     self.detailLabel.attributedText = attributedString;
     
     self.detailImageView = [[UIImageView alloc]init];
+    self.detailImageView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"loading_picture"]];
     [self addSubview:self.detailImageView];
 //    NSArray *views = @[self.detailLabel, self.detailImageView];
 //    [views enumerateObjectsUsingBlock:^(UIView *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
