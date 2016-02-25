@@ -303,7 +303,6 @@
 		598284881C5F3C2B00972357 /* HUACategoryList.m in Sources */ = {isa = PBXBuildFile; fileRef = 598284871C5F3C2B00972357 /* HUACategoryList.m */; };
 		5982848B1C5F553B00972357 /* HUAUserDefaults.m in Sources */ = {isa = PBXBuildFile; fileRef = 5982848A1C5F553B00972357 /* HUAUserDefaults.m */; };
 		599DB67E1C7AB59B004EA1A0 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 599DB67D1C7AB59B004EA1A0 /* SystemConfiguration.framework */; };
-		599DB6811C7AB81B004EA1A0 /* HUAHttpStatus.m in Sources */ = {isa = PBXBuildFile; fileRef = 599DB6801C7AB81B004EA1A0 /* HUAHttpStatus.m */; };
 		59AC00F81C3A4AFE00F453F5 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 59AC00F71C3A4AFE00F453F5 /* main.m */; };
 		59AC00FB1C3A4AFE00F453F5 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 59AC00FA1C3A4AFE00F453F5 /* AppDelegate.m */; };
 		59AC01061C3A4AFE00F453F5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 59AC01041C3A4AFE00F453F5 /* LaunchScreen.storyboard */; };
@@ -331,6 +330,9 @@
 		5FB8FB411C7D40EF0017B1E3 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5FB8FB401C7D40EF0017B1E3 /* Foundation.framework */; };
 		5FB8FB431C7D40F80017B1E3 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5FB8FB421C7D40F80017B1E3 /* UIKit.framework */; };
 		5FB8FB451C7D41010017B1E3 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5FB8FB441C7D41000017B1E3 /* Security.framework */; };
+		5FB8FB4A1C7DCE600017B1E3 /* NSString+Emojize.m in Sources */ = {isa = PBXBuildFile; fileRef = 5FB8FB491C7DCE600017B1E3 /* NSString+Emojize.m */; };
+		5FB8FB4F1C7DCEA20017B1E3 /* HUAShopDiscount.m in Sources */ = {isa = PBXBuildFile; fileRef = 5FB8FB4C1C7DCEA20017B1E3 /* HUAShopDiscount.m */; };
+		5FB8FB541C7DCF600017B1E3 /* HUAMembersPayViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5FB8FB531C7DCF600017B1E3 /* HUAMembersPayViewController.m */; };
 		5FFE9C441C7ABA7E007169B1 /* HUACityBtn.m in Sources */ = {isa = PBXBuildFile; fileRef = 5FFE9C431C7ABA7E007169B1 /* HUACityBtn.m */; };
 		5FFE9C471C7B1752007169B1 /* HUACityInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 5FFE9C461C7B1752007169B1 /* HUACityInfo.m */; };
 /* End PBXBuildFile section */
@@ -894,8 +896,6 @@
 		598284891C5F553B00972357 /* HUAUserDefaults.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HUAUserDefaults.h; sourceTree = "<group>"; };
 		5982848A1C5F553B00972357 /* HUAUserDefaults.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HUAUserDefaults.m; sourceTree = "<group>"; };
 		599DB67D1C7AB59B004EA1A0 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
-		599DB67F1C7AB81B004EA1A0 /* HUAHttpStatus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HUAHttpStatus.h; sourceTree = "<group>"; };
-		599DB6801C7AB81B004EA1A0 /* HUAHttpStatus.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HUAHttpStatus.m; sourceTree = "<group>"; };
 		59AC00F31C3A4AFE00F453F5 /* Flower.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Flower.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		59AC00F71C3A4AFE00F453F5 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		59AC00F91C3A4AFE00F453F5 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = ../../AppDelegate.h; sourceTree = "<group>"; };
@@ -943,6 +943,13 @@
 		5FB8FB401C7D40EF0017B1E3 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		5FB8FB421C7D40F80017B1E3 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		5FB8FB441C7D41000017B1E3 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		5FB8FB471C7DCE600017B1E3 /* emojis.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = emojis.h; sourceTree = "<group>"; };
+		5FB8FB481C7DCE600017B1E3 /* NSString+Emojize.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Emojize.h"; sourceTree = "<group>"; };
+		5FB8FB491C7DCE600017B1E3 /* NSString+Emojize.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Emojize.m"; sourceTree = "<group>"; };
+		5FB8FB4B1C7DCEA20017B1E3 /* HUAShopDiscount.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HUAShopDiscount.h; sourceTree = "<group>"; };
+		5FB8FB4C1C7DCEA20017B1E3 /* HUAShopDiscount.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HUAShopDiscount.m; sourceTree = "<group>"; };
+		5FB8FB521C7DCF600017B1E3 /* HUAMembersPayViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HUAMembersPayViewController.h; sourceTree = "<group>"; };
+		5FB8FB531C7DCF600017B1E3 /* HUAMembersPayViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HUAMembersPayViewController.m; sourceTree = "<group>"; };
 		5FFE9C421C7ABA7E007169B1 /* HUACityBtn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HUACityBtn.h; sourceTree = "<group>"; };
 		5FFE9C431C7ABA7E007169B1 /* HUACityBtn.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HUACityBtn.m; sourceTree = "<group>"; };
 		5FFE9C451C7B1752007169B1 /* HUACityInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HUACityInfo.h; sourceTree = "<group>"; };
@@ -1532,6 +1539,8 @@
 		189317DB1C4887C3005D230F /* Tool */ = {
 			isa = PBXGroup;
 			children = (
+				5FB8FB4B1C7DCEA20017B1E3 /* HUAShopDiscount.h */,
+				5FB8FB4C1C7DCEA20017B1E3 /* HUAShopDiscount.m */,
 				59003CF41C730AF30016C72D /* area.plist */,
 				59003CF51C730AF30016C72D /* EmojiBool.h */,
 				59003CF61C730AF30016C72D /* EmojiBool.m */,
@@ -1556,8 +1565,6 @@
 				5982848A1C5F553B00972357 /* HUAUserDefaults.m */,
 				590321C41C6EE87800741D14 /* HUAHttpTool.h */,
 				590321C51C6EE87800741D14 /* HUAHttpTool.m */,
-				599DB67F1C7AB81B004EA1A0 /* HUAHttpStatus.h */,
-				599DB6801C7AB81B004EA1A0 /* HUAHttpStatus.m */,
 			);
 			path = Tool;
 			sourceTree = "<group>";
@@ -1717,6 +1724,8 @@
 		189319251C48896B005D230F /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				5FB8FB521C7DCF600017B1E3 /* HUAMembersPayViewController.h */,
+				5FB8FB531C7DCF600017B1E3 /* HUAMembersPayViewController.m */,
 				59003CFC1C730B010016C72D /* HUASearchSuperViewController.h */,
 				59003CFD1C730B010016C72D /* HUASearchSuperViewController.m */,
 				177469CB1C72B97D005B457C /* HUAChooseAddressViewController.h */,
@@ -1898,6 +1907,7 @@
 		5907461C1C5A078D005AEC7C /* 第三方 */ = {
 			isa = PBXGroup;
 			children = (
+				5FB8FB461C7DCE600017B1E3 /* NSStringEmojize */,
 				5FB8FB321C7D3FC10017B1E3 /* JPush */,
 				17B7E1031C71BD9B0032C6D5 /* AFNetworking */,
 				17B7E11C1C71BD9B0032C6D5 /* BCKeyBoard */,
@@ -2118,6 +2128,16 @@
 			path = JPush;
 			sourceTree = "<group>";
 		};
+		5FB8FB461C7DCE600017B1E3 /* NSStringEmojize */ = {
+			isa = PBXGroup;
+			children = (
+				5FB8FB471C7DCE600017B1E3 /* emojis.h */,
+				5FB8FB481C7DCE600017B1E3 /* NSString+Emojize.h */,
+				5FB8FB491C7DCE600017B1E3 /* NSString+Emojize.m */,
+			);
+			path = NSStringEmojize;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -2326,7 +2346,6 @@
 				59FBFD661C48ED0600EB00B1 /* HUAServiceMasterCell.m in Sources */,
 				189317E51C4887C3005D230F /* HUACreateButton.m in Sources */,
 				189319791C488990005D230F /* HUAMyInformationViewController.m in Sources */,
-				599DB6811C7AB81B004EA1A0 /* HUAHttpStatus.m in Sources */,
 				17B7E2CA1C71BD9C0032C6D5 /* SDWebImageManager.m in Sources */,
 				189318C11C488896005D230F /* HUAImageViewButton.m in Sources */,
 				17B7E28F1C71BD9C0032C6D5 /* MASCompositeConstraint.m in Sources */,
@@ -2358,6 +2377,7 @@
 				17B7E2B51C71BD9C0032C6D5 /* MJRefreshConst.m in Sources */,
 				5982848B1C5F553B00972357 /* HUAUserDefaults.m in Sources */,
 				17B7E2A11C71BD9C0032C6D5 /* NSObject+MJClass.m in Sources */,
+				5FB8FB4F1C7DCEA20017B1E3 /* HUAShopDiscount.m in Sources */,
 				189319771C488990005D230F /* HUAMemberCardViewController.m in Sources */,
 				590321E91C6F0D6A00741D14 /* NSString+Extension.m in Sources */,
 				5903E6941C58632500FF5B3D /* HUAConsumptionCell.m in Sources */,
@@ -2468,6 +2488,7 @@
 				59279F741C5762A800136425 /* HUAcommentsTableViewCell.m in Sources */,
 				17B7E2C61C71BD9C0032C6D5 /* SDWebImageCompat.m in Sources */,
 				598284881C5F3C2B00972357 /* HUACategoryList.m in Sources */,
+				5FB8FB4A1C7DCE600017B1E3 /* NSString+Emojize.m in Sources */,
 				59FBFD5A1C48B84700EB00B1 /* HUAServiceDetailController.m in Sources */,
 				17B7E2EC1C71BD9C0032C6D5 /* UIRefreshControl+AFNetworking.m in Sources */,
 				17B7E2A91C71BD9C0032C6D5 /* MJRefreshFooter.m in Sources */,
@@ -2516,6 +2537,7 @@
 				17B7E2BB1C71BD9C0032C6D5 /* TADotView.m in Sources */,
 				598284581C5EF2D300972357 /* HUAProductOrderDetailsViewController.m in Sources */,
 				17B7E2C41C71BD9C0032C6D5 /* NSData+ImageContentType.m in Sources */,
+				5FB8FB541C7DCF600017B1E3 /* HUAMembersPayViewController.m in Sources */,
 				189318A71C48882A005D230F /* HUANavigationController.m in Sources */,
 				189319421C48896B005D230F /* HUAShopProduct.m in Sources */,
 				17B7E2B21C71BD9C0032C6D5 /* MJRefreshNormalHeader.m in Sources */,
@@ -2716,7 +2738,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flower/Main(其他)/第三方/JPush",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = readn.Flower;
+				PRODUCT_BUNDLE_IDENTIFIER = huaohuao;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 			};
@@ -2743,7 +2765,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flower/Main(其他)/第三方/JPush",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = readn.Flower;
+				PRODUCT_BUNDLE_IDENTIFIER = huaohuao;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 			};

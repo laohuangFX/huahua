@@ -421,7 +421,6 @@ static NSString *identifier = @"cell";
 }
 
 - (BOOL)tabBarController:( UITabBarController *)tabBarController shouldSelectViewController :( UIViewController *)viewController {
-    
     if ([viewController isKindOfClass:[HUAMyController class]]) {
         return NO;
     }
