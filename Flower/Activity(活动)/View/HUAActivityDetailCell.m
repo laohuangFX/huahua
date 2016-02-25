@@ -23,6 +23,7 @@
     [attributedString addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange(0, [self.detailLabel.text length])];
     self.detailLabel.attributedText = attributedString;
     [self.detailImageView sd_setImageWithURL:[NSURL URLWithString:textAndImg.pic] placeholderImage:nil];
+    self.detailImageView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"loading_picture_middle"]];
     [self.detailLabel sizeToFit];
     if (self.detailLabel.text.length < 23) {
         self.detailImageView.frame = CGRectMake(hua_scale(margin), self.detailLabel.height, screenWidth - 2 * hua_scale(margin), hua_scale(115));

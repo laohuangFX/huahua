@@ -173,7 +173,8 @@
 #pragma mark - tableView代理
 - (void)setHeaderView:(HUAServiceInfo *)serviceInfo {
     UIImageView *serviceImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, screenWidth, hua_scale(190))];
-    [serviceImageView sd_setImageWithURL:[NSURL URLWithString:serviceInfo.cover] placeholderImage:[UIImage imageNamed:@"placeholder"]];
+    serviceImageView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"loading_picture_middle"]];
+    [serviceImageView sd_setImageWithURL:[NSURL URLWithString:serviceInfo.cover] placeholderImage:nil];
     
     CGRect nameFrame = CGRectMake(hua_scale(10), hua_scale(205), screenWidth - hua_scale(20), 0);
     UILabel *serviceName = [UILabel labelWithFrame:nameFrame text:serviceInfo.name color:HUAColor(0x000000) font:hua_scale(13)];
@@ -237,7 +238,8 @@
     
     for (int i = 0; i < self.serviceArray.count; i ++) {
         UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(hua_scale(10), serviceName.height+serviceContent.height+hua_scale(448) + hua_scale(195)*i, screenWidth - hua_scale(20), hua_scale(190))];
-        [imageView sd_setImageWithURL:[NSURL URLWithString:self.serviceArray[i]] placeholderImage:[UIImage imageNamed:@"placeholder"]];
+        [imageView sd_setImageWithURL:[NSURL URLWithString:self.serviceArray[i]] placeholderImage:nil];
+        imageView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"loading_picture_small"]];
         [headerView addSubview:imageView];
     }
     

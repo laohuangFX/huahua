@@ -30,7 +30,8 @@
 
 - (void)setDetailInfo:(HUAProductDetailInfo *)detailInfo {
     _detailInfo = detailInfo;
-    [self.goodsImageView sd_setImageWithURL:[NSURL URLWithString:detailInfo.cover] placeholderImage:[UIImage imageNamed:@"placeholder"]];
+    [self.goodsImageView sd_setImageWithURL:[NSURL URLWithString:detailInfo.cover] placeholderImage:nil];
+    self.goodsImageView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"loading_picture_middle"]];
     self.goodsNameLabel.text = detailInfo.name;
     self.specificationsLabel.text = [NSString stringWithFormat:@"规格:%@",detailInfo.size];
     //非会员价格
@@ -109,13 +110,13 @@
     self.priceLabel = [UILabel labelWithFrame:priceFrame text:@"¥ 349" color:HUAColor(0x4da800) font:hua_scale(19)];
     [self addSubview:self.priceLabel];
     
-    CGRect purchaseFrame = CGRectMake(hua_scale(20), hua_scale(291), hua_scale(280), hua_scale(53));
+    CGRect purchaseFrame = CGRectMake(hua_scale(20), hua_scale(293), hua_scale(280), hua_scale(53));
     self.purchaseButton = [UIButton buttonWithFrame:purchaseFrame title:@"购买" image:@"appointment" font:hua_scale(15) titleColor:HUAColor(0xffffff)];
     self.purchaseButton.backgroundColor = HUAColor(0x4da000);
     [self.purchaseButton addTarget:self action:@selector(purchase:) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:self.purchaseButton];
     
-    CGRect goodsInfoFrame = CGRectMake(hua_scale(10), hua_scale(374), hua_scale(100), hua_scale(13));
+    CGRect goodsInfoFrame = CGRectMake(hua_scale(10), hua_scale(377), hua_scale(100), hua_scale(13));
     self.goodsInfoLabel = [UILabel labelWithFrame:goodsInfoFrame text:@"商品信息" color:HUAColor(0x000000) font:hua_scale(13)];
     [self addSubview:self.goodsInfoLabel];
     

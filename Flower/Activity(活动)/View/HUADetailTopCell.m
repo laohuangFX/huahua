@@ -24,7 +24,8 @@
 
 - (void)setTop:(HUADetailInfo *)top {
     _top = top;
-    [self.activityImageView sd_setImageWithURL:[NSURL URLWithString:top.active_cover] placeholderImage:[UIImage imageNamed:@"placeholder"]];
+    self.activityImageView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"loading_picture_middle"]];
+    [self.activityImageView sd_setImageWithURL:[NSURL URLWithString:top.active_cover] placeholderImage:nil];
     
     
     self.nameLabel.frame = CGRectMake(hua_scale(10), hua_scale(204), screenWidth-hua_scale(20), 0);

@@ -287,6 +287,11 @@
 		592CB91F1C4E2A55002FD56C /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 592CB91E1C4E2A55002FD56C /* MessageUI.framework */; };
 		592CB9211C4E2A61002FD56C /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 592CB9201C4E2A61002FD56C /* JavaScriptCore.framework */; };
 		592CB9231C4E2A6B002FD56C /* libstdc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 592CB9221C4E2A6B002FD56C /* libstdc++.tbd */; };
+		59507C691C7ED3D00058491F /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 59507C681C7ED3D00058491F /* Security.framework */; };
+		59507C6B1C7ED3DB0058491F /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 59507C6A1C7ED3DB0058491F /* UIKit.framework */; };
+		59507C6D1C7ED3E60058491F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 59507C6C1C7ED3E60058491F /* Foundation.framework */; };
+		59507C6F1C7ED3F80058491F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 59507C6E1C7ED3F80058491F /* CoreGraphics.framework */; };
+		59507C711C7ED4570058491F /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 59507C701C7ED4570058491F /* CoreTelephony.framework */; };
 		5982844F1C5EF29F00972357 /* HUAMyOrderModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 5982844E1C5EF29F00972357 /* HUAMyOrderModel.m */; };
 		598284571C5EF2D300972357 /* HUAActivityOrderDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 598284521C5EF2D300972357 /* HUAActivityOrderDetailsViewController.m */; };
 		598284581C5EF2D300972357 /* HUAProductOrderDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 598284541C5EF2D300972357 /* HUAProductOrderDetailsViewController.m */; };
@@ -858,6 +863,11 @@
 		592CB91E1C4E2A55002FD56C /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		592CB9201C4E2A61002FD56C /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		592CB9221C4E2A6B002FD56C /* libstdc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libstdc++.tbd"; path = "usr/lib/libstdc++.tbd"; sourceTree = SDKROOT; };
+		59507C681C7ED3D00058491F /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		59507C6A1C7ED3DB0058491F /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		59507C6C1C7ED3E60058491F /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		59507C6E1C7ED3F80058491F /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		59507C701C7ED4570058491F /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
 		5982844D1C5EF29F00972357 /* HUAMyOrderModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HUAMyOrderModel.h; sourceTree = "<group>"; };
 		5982844E1C5EF29F00972357 /* HUAMyOrderModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HUAMyOrderModel.m; sourceTree = "<group>"; };
 		598284511C5EF2D300972357 /* HUAActivityOrderDetailsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HUAActivityOrderDetailsViewController.h; sourceTree = "<group>"; };
@@ -943,14 +953,19 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				59507C711C7ED4570058491F /* CoreTelephony.framework in Frameworks */,
 				599DB67E1C7AB59B004EA1A0 /* SystemConfiguration.framework in Frameworks */,
+				59507C6F1C7ED3F80058491F /* CoreGraphics.framework in Frameworks */,
+				59507C6D1C7ED3E60058491F /* Foundation.framework in Frameworks */,
+				59507C6B1C7ED3DB0058491F /* UIKit.framework in Frameworks */,
+				59507C691C7ED3D00058491F /* Security.framework in Frameworks */,
+				592CB91B1C4E2A3B002FD56C /* libz.tbd in Frameworks */,
 				592CB9231C4E2A6B002FD56C /* libstdc++.tbd in Frameworks */,
 				592CB9211C4E2A61002FD56C /* JavaScriptCore.framework in Frameworks */,
 				592CB91F1C4E2A55002FD56C /* MessageUI.framework in Frameworks */,
 				590749391C772AE90050654B /* AliyunOSSiOS.framework in Frameworks */,
 				592CB91D1C4E2A4B002FD56C /* libicucore.tbd in Frameworks */,
 				5900D9231C7DD0B800FD1C04 /* jpush-ios-2.1.0.a in Frameworks */,
-				592CB91B1C4E2A3B002FD56C /* libz.tbd in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1966,6 +1981,11 @@
 		59AC00EA1C3A4AFE00F453F5 = {
 			isa = PBXGroup;
 			children = (
+				59507C701C7ED4570058491F /* CoreTelephony.framework */,
+				59507C6E1C7ED3F80058491F /* CoreGraphics.framework */,
+				59507C6C1C7ED3E60058491F /* Foundation.framework */,
+				59507C6A1C7ED3DB0058491F /* UIKit.framework */,
+				59507C681C7ED3D00058491F /* Security.framework */,
 				599DB67D1C7AB59B004EA1A0 /* SystemConfiguration.framework */,
 				590749381C772AE90050654B /* AliyunOSSiOS.framework */,
 				592CB9221C4E2A6B002FD56C /* libstdc++.tbd */,
@@ -2155,7 +2175,7 @@
 				TargetAttributes = {
 					59AC00F21C3A4AFE00F453F5 = {
 						CreatedOnToolsVersion = 7.2;
-						DevelopmentTeam = L7F7587GX3;
+						DevelopmentTeam = AQYD5LV6KX;
 					};
 					59AC010B1C3A4AFE00F453F5 = {
 						CreatedOnToolsVersion = 7.2;
@@ -2673,7 +2693,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flower/Main(其他)/第三方/JPush",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = readch.Flower;
+				PRODUCT_BUNDLE_IDENTIFIER = huahuahua;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 			};
@@ -2700,7 +2720,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flower/Main(其他)/第三方/JPush",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = readch.Flower;
+				PRODUCT_BUNDLE_IDENTIFIER = huahuahua;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 			};

@@ -141,9 +141,9 @@ static NSString * const identifier = @"head";
         cell.nameLabel.text = self.userDic[@"info"][@"nickname"];
         cell.sexLabel.text = [detailInfo.sex isEqualToString:@"1"]?@"男":@"女";
         if (detailInfo.headicon != nil && ![detailInfo.headicon isKindOfClass:[NSNull class]]) {
-            [cell.headImageView sd_setImageWithURL:[NSURL URLWithString:detailInfo.headicon] placeholderImage:[UIImage imageNamed:@"placeholder"]];
+            [cell.headImageView sd_setImageWithURL:[NSURL URLWithString:detailInfo.headicon] placeholderImage:[UIImage imageNamed:@"loading_picture_small"]];
         }else{
-            [cell.headImageView setImage:[UIImage imageNamed:@"placeholder"]];
+            [cell.headImageView setImage:[UIImage imageNamed:@"loading_picture_small"]];
         }
         
 

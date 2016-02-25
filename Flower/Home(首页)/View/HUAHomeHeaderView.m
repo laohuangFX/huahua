@@ -41,7 +41,9 @@
 -(void)setImagesURLStrings:(NSArray *)imagesURLStrings {
     _imagesURLStrings = imagesURLStrings;
     // 网络加载 --- 创建自定义图片的pageControlDot的图片轮播器
-    SDCycleScrollView *cycleScrollView = [SDCycleScrollView cycleScrollViewWithFrame:CGRectMake(0, 0, screenWidth, hua_scale(120)) delegate:nil placeholderImage:[UIImage imageNamed:@"placeholder"]];
+    
+    SDCycleScrollView *cycleScrollView = [SDCycleScrollView cycleScrollViewWithFrame:CGRectMake(0, 0, screenWidth, hua_scale(120)) delegate:nil placeholderImage:nil];
+    cycleScrollView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"loading_picture_middle"]];
     cycleScrollView.bannerImageViewContentMode = UIViewContentModeScaleToFill;
 
     cycleScrollView.imageURLStringsGroup = imagesURLStrings;

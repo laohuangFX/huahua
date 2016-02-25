@@ -26,9 +26,9 @@
 + (UIButton *)buttonWithTarget:(id)target action:(SEL)action Frame:(CGRect)frame  url:(NSString *)url {
     UIButton *button = [UIButton buttonWithType:0];
     button.frame = frame;
-    [button setImageForState:UIControlStateNormal withURL:[NSURL URLWithString:url] placeholderImage:[UIImage imageNamed:@"placeholder"]];
-   
-    button.backgroundColor = [UIColor greenColor];
+    [button setImageForState:UIControlStateNormal withURL:[NSURL URLWithString:url] placeholderImage:nil];
+   button.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"loading_picture_middle"]];
+    //button.backgroundColor = [UIColor greenColor];
     [button addTarget:target action:action forControlEvents:UIControlEventTouchUpInside];
 
     return button;

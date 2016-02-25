@@ -16,7 +16,7 @@
 
 - (void)setMasterInfo:(HUAServiceMasterInfo *)masterInfo {
     _masterInfo = masterInfo;
-    [self.headImageView sd_setImageWithURL:[NSURL URLWithString:masterInfo.cover] placeholderImage:[UIImage imageNamed:@"placeholder"]];
+    [self.headImageView sd_setImageWithURL:[NSURL URLWithString:masterInfo.cover] placeholderImage:nil];
     self.nameLabel.text = masterInfo.masterName;
     [self.nameLabel sizeToFit];
     //self.nameLabel.frame = ;
@@ -39,6 +39,7 @@
 
 - (void)setCell {
     self.headImageView = [[UIImageView alloc] initWithFrame:CGRectMake(hua_scale(10), hua_scale(5), hua_scale(40), hua_scale(40))];
+    self.headImageView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"loading_picture_small"]];
     [self addSubview:self.headImageView];
     
     CGRect nameFrame = CGRectMake(hua_scale(80), hua_scale(8.5), hua_scale(50),     hua_scale(12));

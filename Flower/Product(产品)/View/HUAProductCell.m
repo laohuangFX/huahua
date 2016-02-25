@@ -20,13 +20,12 @@
 
 -(void)setProduct:(HUAProduct *)product {
     _product = product;
-    [self.productImageView sd_setImageWithURL:[NSURL URLWithString:product.cover] placeholderImage:[UIImage imageNamed:@"placeholder"]];
+    [self.productImageView sd_setImageWithURL:[NSURL URLWithString:product.cover] placeholderImage:nil];
+    self.productImageView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"loading_picture_middle"]];
     self.productNameLabel.text = product.name;
     self.praiseCountLabel.text = [NSString stringWithFormat:@"%@赞过",product.praise_count];
-    //[HUAShopDiscount getShopDiscountWithShop_id:product.shop_id priceLabel:self.productPriceLabel price:product.price];
     self.productPriceLabel.text = [NSString stringWithFormat:@"¥%@",product.price];
 }
-
 
 
 - (id)initWithFrame:(CGRect)frame {
@@ -57,7 +56,7 @@
     [self addSubview:self.praiseCountLabel];
     
     
-    self.productPriceLabel = [[UILabel alloc] initWithFrame:CGRectMake(hua_scale(14), hua_scale(193), hua_scale(200), hua_scale(16))];
+    self.productPriceLabel = [[UILabel alloc] initWithFrame:CGRectMake(hua_scale(14), hua_scale(191), hua_scale(200), hua_scale(16))];
     self.productPriceLabel.text = @"¥ 200.45";
 //    self.productPriceLabel.font = [UIFont systemFontOfSize:hua_scale(13)];
     self.productPriceLabel.textColor = HUAColor(0x4da800);
