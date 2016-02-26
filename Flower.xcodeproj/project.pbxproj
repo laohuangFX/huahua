@@ -155,9 +155,6 @@
 		17B7E2D71C71BD9C0032C6D5 /* SMProgressHUDLoadingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 17B7E2151C71BD9C0032C6D5 /* SMProgressHUDLoadingView.m */; };
 		17B7E2D81C71BD9C0032C6D5 /* SMProgressHUDTipView.m in Sources */ = {isa = PBXBuildFile; fileRef = 17B7E2171C71BD9C0032C6D5 /* SMProgressHUDTipView.m */; };
 		17B7E2D91C71BD9C0032C6D5 /* UIView+SMAutolayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 17B7E2191C71BD9C0032C6D5 /* UIView+SMAutolayout.m */; };
-		17B7E2DA1C71BD9C0032C6D5 /* SMS_SDKLocalizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 17B7E21B1C71BD9C0032C6D5 /* SMS_SDKLocalizable.strings */; };
-		17B7E2DB1C71BD9C0032C6D5 /* MOBFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 17B7E21D1C71BD9C0032C6D5 /* MOBFoundation.framework */; };
-		17B7E2DC1C71BD9C0032C6D5 /* SMS_SDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 17B7E21E1C71BD9C0032C6D5 /* SMS_SDK.framework */; };
 		17B7E2DD1C71BD9C0032C6D5 /* AFNetworkActivityIndicatorManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 17B7E2221C71BD9C0032C6D5 /* AFNetworkActivityIndicatorManager.m */; };
 		17B7E2DE1C71BD9C0032C6D5 /* NSObject+ST.m in Sources */ = {isa = PBXBuildFile; fileRef = 17B7E2251C71BD9C0032C6D5 /* NSObject+ST.m */; };
 		17B7E2DF1C71BD9C0032C6D5 /* STColor.m in Sources */ = {isa = PBXBuildFile; fileRef = 17B7E2271C71BD9C0032C6D5 /* STColor.m */; };
@@ -321,6 +318,7 @@
 		59FBFD601C48D77700EB00B1 /* HUAServiceInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 59FBFD5F1C48D77700EB00B1 /* HUAServiceInfo.m */; };
 		59FBFD631C48D84000EB00B1 /* HUAServiceMasterInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 59FBFD621C48D84000EB00B1 /* HUAServiceMasterInfo.m */; };
 		59FBFD661C48ED0600EB00B1 /* HUAServiceMasterCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 59FBFD651C48ED0600EB00B1 /* HUAServiceMasterCell.m */; };
+		5F93774E1C7EAF9500058C6B /* HUAPraiseButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F93774D1C7EAF9500058C6B /* HUAPraiseButton.m */; };
 		5FB8FB351C7D3FC10017B1E3 /* jpush-ios-2.1.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5FB8FB331C7D3FC10017B1E3 /* jpush-ios-2.1.0.a */; };
 		5FB8FB371C7D3FEF0017B1E3 /* PushConfig.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5FB8FB361C7D3FEF0017B1E3 /* PushConfig.plist */; };
 		5FB8FB391C7D40B20017B1E3 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5FB8FB381C7D40B20017B1E3 /* CFNetwork.framework */; };
@@ -609,10 +607,6 @@
 		17B7E2171C71BD9C0032C6D5 /* SMProgressHUDTipView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMProgressHUDTipView.m; sourceTree = "<group>"; };
 		17B7E2181C71BD9C0032C6D5 /* UIView+SMAutolayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+SMAutolayout.h"; sourceTree = "<group>"; };
 		17B7E2191C71BD9C0032C6D5 /* UIView+SMAutolayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+SMAutolayout.m"; sourceTree = "<group>"; };
-		17B7E21C1C71BD9C0032C6D5 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/SMS_SDKLocalizable.strings; sourceTree = "<group>"; };
-		17B7E21D1C71BD9C0032C6D5 /* MOBFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = MOBFoundation.framework; sourceTree = "<group>"; };
-		17B7E21E1C71BD9C0032C6D5 /* SMS_SDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SMS_SDK.framework; sourceTree = "<group>"; };
-		17B7E21F1C71BD9C0032C6D5 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/SMS_SDKLocalizable.strings"; sourceTree = "<group>"; };
 		17B7E2211C71BD9C0032C6D5 /* AFNetworkActivityIndicatorManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFNetworkActivityIndicatorManager.h; sourceTree = "<group>"; };
 		17B7E2221C71BD9C0032C6D5 /* AFNetworkActivityIndicatorManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFNetworkActivityIndicatorManager.m; sourceTree = "<group>"; };
 		17B7E2241C71BD9C0032C6D5 /* NSObject+ST.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+ST.h"; sourceTree = "<group>"; };
@@ -933,6 +927,8 @@
 		59FBFD621C48D84000EB00B1 /* HUAServiceMasterInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HUAServiceMasterInfo.m; sourceTree = "<group>"; };
 		59FBFD641C48ED0600EB00B1 /* HUAServiceMasterCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HUAServiceMasterCell.h; sourceTree = "<group>"; };
 		59FBFD651C48ED0600EB00B1 /* HUAServiceMasterCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HUAServiceMasterCell.m; sourceTree = "<group>"; };
+		5F93774C1C7EAF9500058C6B /* HUAPraiseButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HUAPraiseButton.h; sourceTree = "<group>"; };
+		5F93774D1C7EAF9500058C6B /* HUAPraiseButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HUAPraiseButton.m; sourceTree = "<group>"; };
 		5FB8FB331C7D3FC10017B1E3 /* jpush-ios-2.1.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "jpush-ios-2.1.0.a"; sourceTree = "<group>"; };
 		5FB8FB341C7D3FC10017B1E3 /* JPUSHService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JPUSHService.h; sourceTree = "<group>"; };
 		5FB8FB361C7D3FEF0017B1E3 /* PushConfig.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = PushConfig.plist; sourceTree = "<group>"; };
@@ -970,13 +966,11 @@
 				5FB8FB3D1C7D40CC0017B1E3 /* CoreTelephony.framework in Frameworks */,
 				5FB8FB3B1C7D40BF0017B1E3 /* CoreFoundation.framework in Frameworks */,
 				5FB8FB391C7D40B20017B1E3 /* CFNetwork.framework in Frameworks */,
-				17B7E2DB1C71BD9C0032C6D5 /* MOBFoundation.framework in Frameworks */,
 				592CB9231C4E2A6B002FD56C /* libstdc++.tbd in Frameworks */,
 				592CB9211C4E2A61002FD56C /* JavaScriptCore.framework in Frameworks */,
 				592CB91F1C4E2A55002FD56C /* MessageUI.framework in Frameworks */,
 				590749391C772AE90050654B /* AliyunOSSiOS.framework in Frameworks */,
 				5FB8FB351C7D3FC10017B1E3 /* jpush-ios-2.1.0.a in Frameworks */,
-				17B7E2DC1C71BD9C0032C6D5 /* SMS_SDK.framework in Frameworks */,
 				592CB91D1C4E2A4B002FD56C /* libicucore.tbd in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1466,16 +1460,6 @@
 			path = SMProgressHUD;
 			sourceTree = "<group>";
 		};
-		17B7E21A1C71BD9C0032C6D5 /* SMS_SDK */ = {
-			isa = PBXGroup;
-			children = (
-				17B7E21B1C71BD9C0032C6D5 /* SMS_SDKLocalizable.strings */,
-				17B7E21D1C71BD9C0032C6D5 /* MOBFoundation.framework */,
-				17B7E21E1C71BD9C0032C6D5 /* SMS_SDK.framework */,
-			);
-			path = SMS_SDK;
-			sourceTree = "<group>";
-		};
 		17B7E2201C71BD9C0032C6D5 /* UIKit+AFNetworking */ = {
 			isa = PBXGroup;
 			children = (
@@ -1539,6 +1523,8 @@
 		189317DB1C4887C3005D230F /* Tool */ = {
 			isa = PBXGroup;
 			children = (
+				5F93774C1C7EAF9500058C6B /* HUAPraiseButton.h */,
+				5F93774D1C7EAF9500058C6B /* HUAPraiseButton.m */,
 				5FB8FB4B1C7DCEA20017B1E3 /* HUAShopDiscount.h */,
 				5FB8FB4C1C7DCEA20017B1E3 /* HUAShopDiscount.m */,
 				59003CF41C730AF30016C72D /* area.plist */,
@@ -1923,7 +1909,6 @@
 				17B7E1E11C71BD9B0032C6D5 /* SDPhotoBrowser */,
 				17B7E1E91C71BD9B0032C6D5 /* SDWebImage */,
 				17B7E20B1C71BD9B0032C6D5 /* SMProgressHUD */,
-				17B7E21A1C71BD9C0032C6D5 /* SMS_SDK */,
 				17B7E2201C71BD9C0032C6D5 /* UIKit+AFNetworking */,
 			);
 			path = "第三方";
@@ -2281,7 +2266,6 @@
 				17B7E2741C71BD9C0032C6D5 /* chatBar_colorMore_location@2x.png in Resources */,
 				17B7E28B1C71BD9C0032C6D5 /* btn-close.png in Resources */,
 				17B7E2651C71BD9C0032C6D5 /* chatBar_more@2x.png in Resources */,
-				17B7E2DA1C71BD9C0032C6D5 /* SMS_SDKLocalizable.strings in Resources */,
 				17B7E2B41C71BD9C0032C6D5 /* MJRefresh.bundle in Resources */,
 				17B7E2631C71BD9C0032C6D5 /* chatBar_keyboardSelected@2x.png in Resources */,
 				17B7E25B1C71BD9C0032C6D5 /* faceDelete@2x.png in Resources */,
@@ -2437,6 +2421,7 @@
 				17B7E2981C71BD9C0032C6D5 /* ViewController+MASAdditions.m in Sources */,
 				59FA2FE41C4B70A300A4F606 /* HUAChooseMasterController.m in Sources */,
 				17B7E28D1C71BD9C0032C6D5 /* JSDropDownMenu.m in Sources */,
+				5F93774E1C7EAF9500058C6B /* HUAPraiseButton.m in Sources */,
 				1893197C1C488990005D230F /* HUANameViewController.m in Sources */,
 				17B7E24B1C71BD9C0032C6D5 /* AFNetworkReachabilityManager.m in Sources */,
 				177469D01C72BB26005B457C /* HUATechnicianModel.m in Sources */,
@@ -2617,15 +2602,6 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		17B7E21B1C71BD9C0032C6D5 /* SMS_SDKLocalizable.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				17B7E21C1C71BD9C0032C6D5 /* en */,
-				17B7E21F1C71BD9C0032C6D5 /* zh-Hans */,
-			);
-			name = SMS_SDKLocalizable.strings;
-			sourceTree = "<group>";
-		};
 		59AC01041C3A4AFE00F453F5 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -2654,7 +2630,8 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Guilan Wu (6HK56439SB)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Guilan Wu (6HK56439SB)";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -2676,6 +2653,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				PROVISIONING_PROFILE = "5c59e6fe-8688-4d03-87d8-8b0d78320404";
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -2697,7 +2675,8 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Guilan Wu (6HK56439SB)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Guilan Wu (6HK56439SB)";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
@@ -2712,6 +2691,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				PROVISIONING_PROFILE = "5c59e6fe-8688-4d03-87d8-8b0d78320404";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -2722,8 +2702,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Guilan Wu (VK54XGW7DM)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Guilan Wu (VK54XGW7DM)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flower/Main(其他)/Tool/第三方/SMS_SDK",
@@ -2740,7 +2720,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = huaohuao;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "d45c51ab-9311-4a89-a607-9b969ea2f3be";
+				USER_HEADER_SEARCH_PATHS = "\"$(SRCROOT)/Flower/Main(其他)/第三方/JPush/jpush-ios-2.1.0.a\"";
 			};
 			name = Debug;
 		};
@@ -2749,8 +2730,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Guilan Wu (VK54XGW7DM)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Guilan Wu (VK54XGW7DM)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flower/Main(其他)/Tool/第三方/SMS_SDK",
@@ -2767,7 +2748,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = huaohuao;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "d45c51ab-9311-4a89-a607-9b969ea2f3be";
+				USER_HEADER_SEARCH_PATHS = "\"$(SRCROOT)/Flower/Main(其他)/第三方/JPush/jpush-ios-2.1.0.a\"";
 			};
 			name = Release;
 		};
