@@ -185,6 +185,9 @@
     self.parameters[@"per_page"] = @(self.page);
     [HUAHttpTool GET:url params:self.parameters success:^(id responseObject) {
         HUALog(@"%@",responseObject);
+        if ([responseObject[@"info"] isKindOfClass:[NSString class]]) {
+            return ;
+        }
         //获取数据总个数
         NSString *newCount = responseObject[@"info"][@"total"];
         if (self.isFirstTime == YES) {

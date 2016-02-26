@@ -110,6 +110,7 @@
         make.left.mas_equalTo(commonLabel.mas_right).mas_equalTo(hua_scale(3));
     }];
     [commonValue setSingleLineAutoResizeWithMaxWidth:200];
+    self.commonValue = commonValue;
     
     UIButton *successButton = [UIButton buttonWithType:UIButtonTypeCustom];
     successButton.backgroundColor = HUAColor(0x4da800);
@@ -133,7 +134,7 @@
     UILabel *goodsLabel = [UILabel new];
     goodsLabel.text = @"商品:";
     goodsLabel.textColor = HUAColor(0x666666);
-    goodsLabel.font = [UIFont systemFontOfSize:11];
+    goodsLabel.font = [UIFont systemFontOfSize:hua_scale(11)];
     [scrollView addSubview:goodsLabel];
     goodsLabel.sd_layout
     .leftSpaceToView(scrollView,hua_scale(15))
@@ -146,13 +147,14 @@
     //shopName.backgroundColor =[UIColor redColor];
     shopName.textColor = HUAColor(0x333333);
     shopName.text = @"霸王防脱洗发水";
-    shopName.font = [UIFont systemFontOfSize:13];
+    shopName.font = [UIFont systemFontOfSize:hua_scale(11)];
     [scrollView addSubview:shopName];
     shopName.sd_layout
     .leftSpaceToView(goodsLabel,hua_scale(5))
+    .centerYEqualToView(goodsLabel)
     .heightIs(hua_scale(13));
     [shopName setSingleLineAutoResizeWithMaxWidth:300];
-    shopName.y = (hua_scale(45.0/2.0)-hua_scale(shopName.height/2));
+    
     
     //1线
     UIView *thView1 = [UIView new];
@@ -178,7 +180,7 @@
     UILabel *name = [UILabel new];
     name.textColor = HUAColor(0x000000);
     name.text = self.membersName;
-    name.font = [UIFont systemFontOfSize:13];
+    name.font = [UIFont systemFontOfSize:hua_scale(13)];
     [scrollView addSubview:name];
     [name mas_makeConstraints:^(MASConstraintMaker *make) {
         make.height.mas_equalTo(13);
@@ -190,7 +192,7 @@
     UILabel *memberType = [UILabel new];
     memberType.textColor = HUAColor(0x4da800);
     memberType.text = self.membersType;
-    memberType.font = [UIFont systemFontOfSize:11];
+    memberType.font = [UIFont systemFontOfSize:hua_scale(11)];
     [scrollView addSubview:memberType];
     [memberType mas_makeConstraints:^(MASConstraintMaker *make) {
         make.height.mas_equalTo(11);
@@ -232,7 +234,7 @@
     //购买数量
     UILabel *quantityLabel = [UILabel new];
     quantityLabel.text = @"购买数量";
-    quantityLabel.font = [UIFont systemFontOfSize:13];
+    quantityLabel.font = [UIFont systemFontOfSize:hua_scale(13)];
     [scrollView addSubview:quantityLabel];
     if (self.typeBool == YES) {
         [quantityLabel mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -299,7 +301,7 @@
     }];
     
     _numberTypelabel = [UILabel new];
-    _numberTypelabel.font = [UIFont systemFontOfSize:13];
+    _numberTypelabel.font = [UIFont systemFontOfSize:hua_scale(13)];
     _numberTypelabel.text = @"1";
     _numberTypelabel.textAlignment = NSTextAlignmentCenter;
     [backImageView addSubview:_numberTypelabel];
@@ -332,7 +334,7 @@
     
     UILabel *claimType = [[UILabel alloc] init];
     claimType.text = @"取货方式";
-    claimType.font = [UIFont systemFontOfSize:13];
+    claimType.font = [UIFont systemFontOfSize:hua_scale(13)];
     [scrollView addSubview:claimType];
     [claimType mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(thView3.mas_bottom).mas_equalTo(hua_scale(45.0/2.0-13.0/2.0));
@@ -343,7 +345,7 @@
     UILabel *markLabel = [[UILabel alloc] init];
     markLabel.text = @"*";
     markLabel.textColor = [UIColor redColor];
-    markLabel.font = [UIFont systemFontOfSize:15];
+    markLabel.font = [UIFont systemFontOfSize:hua_scale(15)];
     [scrollView addSubview:markLabel];
     [markLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.mas_equalTo(claimType);
@@ -355,7 +357,7 @@
     UIButton *claimBuuton = [UIButton buttonWithType:UIButtonTypeCustom];
     [claimBuuton setTitle:@"请选择" forState:0];
     claimBuuton.tag = 159;
-    claimBuuton.titleLabel.font = [UIFont systemFontOfSize:11];
+    claimBuuton.titleLabel.font = [UIFont systemFontOfSize:hua_scale(11)];
     [claimBuuton setTitleColor:HUAColor(0x999999) forState:0];
     [claimBuuton setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, hua_scale(-100))];
     [claimBuuton setTitleEdgeInsets:UIEdgeInsetsMake(0, 0, 0, hua_scale(10))];
@@ -399,7 +401,7 @@
     //先隐藏
     newAddress.hidden = YES;
     //newAddress.backgroundColor = [UIColor yellowColor];
-    newAddress.titleLabel.font = [UIFont systemFontOfSize:13];
+    newAddress.titleLabel.font = [UIFont systemFontOfSize:hua_scale(13)];
     [newAddress setTitleColor:HUAColor(0x494949) forState:0];
     newAddress.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
     [newAddress setImageEdgeInsets:UIEdgeInsetsMake(0, hua_scale(70), 0, 0)];
@@ -478,7 +480,7 @@
     
     UILabel *huiyuanLbale  = [[UILabel alloc] init];
     huiyuanLbale.text = @"会员余额";
-    huiyuanLbale.font = [UIFont systemFontOfSize:11];
+    huiyuanLbale.font = [UIFont systemFontOfSize:hua_scale(11)];
     [scrollView addSubview:huiyuanLbale];
     [huiyuanLbale mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(iocnImage.mas_right).mas_equalTo(hua_scale(8));
@@ -489,7 +491,7 @@
     
     UILabel *title  = [[UILabel alloc] init];
     title.text = @"使用会员余额,服务价格降低";
-    title.font = [UIFont systemFontOfSize:9];
+    title.font = [UIFont systemFontOfSize:hua_scale(9)];
     title.textColor = HUAColor(0x4da800);
     [scrollView addSubview:title];
     [title mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -552,7 +554,7 @@
     
     UILabel *yuanLbale  = [[UILabel alloc] init];
     yuanLbale.text = @"支付宝";
-    yuanLbale.font = [UIFont systemFontOfSize:11];
+    yuanLbale.font = [UIFont systemFontOfSize:hua_scale(11)];
     [scrollView addSubview:yuanLbale];
     [yuanLbale mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(iocnImageView.mas_right).mas_equalTo(hua_scale(8));
@@ -563,7 +565,7 @@
     
     UILabel *titleL  = [[UILabel alloc] init];
     titleL.text = @"推荐拥有支付宝的用户使用";
-    titleL.font = [UIFont systemFontOfSize:9];
+    titleL.font = [UIFont systemFontOfSize:hua_scale(9)];
     titleL.textColor = HUAColor(0x494949);
     [scrollView addSubview:titleL];
     [titleL mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -622,7 +624,7 @@
     
     UILabel *winLbale  = [[UILabel alloc] init];
     winLbale.text = @"微信";
-    winLbale.font = [UIFont systemFontOfSize:11];
+    winLbale.font = [UIFont systemFontOfSize:hua_scale(11)];
     [scrollView addSubview:winLbale];
     [winLbale mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(winImageView.mas_right).mas_equalTo(hua_scale(8));
@@ -633,7 +635,7 @@
     
     UILabel *wintitleL  = [[UILabel alloc] init];
     wintitleL.text = @"推荐已开通微信钱包的用户使用";
-    wintitleL.font = [UIFont systemFontOfSize:9];
+    wintitleL.font = [UIFont systemFontOfSize:hua_scale(9)];
     wintitleL.textColor = HUAColor(0x494949);
     [scrollView addSubview:wintitleL];
     [wintitleL mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -743,7 +745,7 @@
     
     [thView9 updateLayout];
     UILabel *ResultLable  = [[UILabel alloc] init];
-    ResultLable.font = [UIFont systemFontOfSize:13];
+    ResultLable.font = [UIFont systemFontOfSize:hua_scale(13)];
     ResultLable.text = @"¥45";
     ResultLable.textColor = HUAColor(0x4da800);
     [scrollView addSubview:ResultLable];
@@ -755,7 +757,7 @@
     self.ResultLable = ResultLable;
     
     UILabel *ResultTitle  = [[UILabel alloc] init];
-    ResultTitle.font = [UIFont systemFontOfSize:13];
+    ResultTitle.font = [UIFont systemFontOfSize:hua_scale(13)];
     ResultTitle.text = @"合计:";
     ResultTitle.textColor = HUAColor(0x4da800);
     [scrollView addSubview:ResultTitle];
@@ -877,7 +879,7 @@
     
     UILabel *titleType = [UILabel new];
     titleType.text = @"取货方式";
-    titleType.font = [UIFont systemFontOfSize:12];
+    titleType.font = [UIFont systemFontOfSize:hua_scale(12)];
     [_contentView addSubview:titleType];
     [titleType mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(hua_scale(35.0/2.0-12.0/2.0));
@@ -887,7 +889,7 @@
     
     UILabel *title1 = [UILabel new];
     title1.text = @"上门取货";
-    title1.font = [UIFont systemFontOfSize:13];
+    title1.font = [UIFont systemFontOfSize:hua_scale(13)];
     [_contentView addSubview:title1];
     [title1 mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(thView1.mas_bottom).mas_equalTo(hua_scale(45.0/2.0-13.0/2.0));
@@ -897,7 +899,7 @@
     
     UILabel *title2 = [UILabel new];
     title2.text = @"送货上门";
-    title2.font = [UIFont systemFontOfSize:13];
+    title2.font = [UIFont systemFontOfSize:hua_scale(13)];
     [_contentView addSubview:title2];
     [title2 mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(thView2.mas_bottom).mas_equalTo(hua_scale(45.0/2.0-13.0/2.0));
@@ -935,7 +937,7 @@
         UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
         [button setTitleColor:HUAColor(0x666666) forState:0];
         button.tag = 155+i;
-        button.titleLabel.font = [UIFont systemFontOfSize:12];
+        button.titleLabel.font = [UIFont systemFontOfSize:hua_scale(12)];
         [button setTitle:array[i] forState:0];
         [_contentView addSubview:button];
         [button addTarget:self action:@selector(click:) forControlEvents:UIControlEventTouchUpInside];

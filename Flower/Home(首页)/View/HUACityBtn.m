@@ -31,7 +31,7 @@
         _titleL.textColor = HUAColor(0x575757);
         _titleL.textAlignment = NSTextAlignmentRight;
         _titleL.font = [UIFont systemFontOfSize:hua_scale(10)];
-        _titleL.lineBreakMode = NSLineBreakByTruncatingMiddle;
+        _titleL.lineBreakMode = NSLineBreakByTruncatingTail;
         [self addSubview:_titleL];
     }
     return _titleL;

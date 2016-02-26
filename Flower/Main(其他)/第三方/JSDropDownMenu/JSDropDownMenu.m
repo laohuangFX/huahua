@@ -899,7 +899,7 @@
     return cell;
 }
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    return hua_scale(35);
+    return hua_scale(38);
 }
 
 #pragma mark - tableview delegate

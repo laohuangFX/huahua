@@ -75,7 +75,7 @@ static NSString *identifier = @"cell";
 
 @property (nonatomic, strong) NSString *userCity;
 @property (nonatomic, assign) CLLocationCoordinate2D userCoord;
-
+@property (nonatomic, assign) BOOL isHaveCoord;
 /***  当前参数  */
 @property (nonatomic, strong) NSMutableDictionary *currentParameter;
 
@@ -244,6 +244,14 @@ static NSString *identifier = @"cell";
     self.parameter[@"order"] = self.order;
     self.parameter[@"per_page"] = @(self.page);
     [HUAHttpTool POST:url params:self.parameter success:^(id responseObject) {
+        
+        if ([responseObject[@"info"] isKindOfClass:[NSString class]]) {
+            
+//            [HUAMBProgress MBProgressOnlywithLabelText:responseObject[@"info"]];
+            
+            return  ;
+        }
+        [self.shopsArray removeAllObjects];
         self.totalCount = responseObject[@"info"][@"total"];
         self.totalPage = responseObject[@"info"][@"pages"];
         NSArray *shopArray = [HUADataTool homeShop:responseObject];
@@ -473,7 +481,7 @@ static NSString *identifier = @"cell";
 - (HUACityBtn *)chooseCity{
     if (!_chooseCity) {
         _chooseCity = [HUACityBtn buttonWithType:UIButtonTypeCustom];
-        [_chooseCity setFrame:CGRectMake(0, 0, hua_scale(45), 44)];
+        [_chooseCity setFrame:CGRectMake(0, 0, hua_scale(55), 44)];
         [_chooseCity addTarget:self action:@selector(chooseCity:) forControlEvents:UIControlEventTouchUpInside];
 //        _chooseCity.title = @"选择城市";
     }
@@ -707,12 +715,20 @@ static NSString *identifier = @"cell";
         // 定位的精确度
         self.mgr.desiredAccuracy = kCLLocationAccuracyBestForNavigation;
 //        //每隔一点距离定位一次 （单位：米）
-//        self.mgr.distanceFilter = 10;
+        self.mgr.distanceFilter = 100000;
+//        self.mgr.activityType = CLActivityTypeFitness;
     }
     
 }
 //获取定位的位置信息
 - (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray<CLLocation *> *)locations{
+    if (self.isHaveCoord) {
+        return;
+    }else{
+        self.isHaveCoord = YES;
+    }
+    //停止定位
+    [self.mgr stopUpdatingLocation];
     NSLog(@"%@",locations);
     //获取我当前的位置
     CLLocation *location = [locations lastObject];
@@ -725,7 +741,7 @@ static NSString *identifier = @"cell";
     CLGeocoder *geocoder = [[CLGeocoder alloc]init];
     //调用方法，使用位置反编码对象获取位置信息
     [geocoder reverseGeocodeLocation:location completionHandler:^(NSArray<CLPlacemark *> * _Nullable placemarks, NSError * _Nullable error) {
-        CLPlacemark *place = placemarks[0];
+        CLPlacemark *place = [placemarks lastObject];
 //        for (CLPlacemark *place in placemarks) {
         if (place == nil) {
             return ;
@@ -803,25 +819,35 @@ static NSString *identifier = @"cell";
 }
 
 - (void)clickSortButton:(UIButton *)sender {
+    
     UIWindow *window = [[UIApplication sharedApplication].windows lastObject];
     if (sender.selected == YES) {
+//        self.tableView.userInteractionEnabled = NO;
+//        self.header.userInteractionEnabled = NO;
         if (self.tableView.contentOffset.y < hua_scale(250)) {
+            
             [self.tableView setContentOffset:CGPointMake(0, hua_scale(250)) animated:YES];
             [window addSubview:self.sortView];
             [UIView animateWithDuration:0 delay:0.4 options:UIViewAnimationOptionLayoutSubviews animations:^{
                 self.sortView.y = sortViewHeight;
                 
-            } completion:nil];
+            } completion:^(BOOL finished) {
+                self.tableView.scrollEnabled = NO;
+            }];
             
         } else {
             [self.tableView setContentOffset:CGPointMake(0, hua_scale(250)) animated:YES];
             [window addSubview:self.sortView];
             [UIView animateWithDuration:0 delay:0 options:UIViewAnimationOptionLayoutSubviews animations:^{
                 self.sortView.y = sortViewHeight;
-            } completion:nil];
+            } completion:^(BOOL finished) {
+                self.tableView.scrollEnabled = NO;
+            }];
         
         }
     }else {
+//         self.tableView.tableHeaderView.userInteractionEnabled = NO;
+        self.tableView.scrollEnabled = YES;
         self.sortView.y = screenHeight;
         [self.sortView removeFromSuperview];
         
@@ -854,9 +880,13 @@ static NSString *identifier = @"cell";
             break;
 
     }
-    [self.shopsArray removeAllObjects];
-    self.page = 1;
-    [self getData];
+//     self.tableView.tableHeaderView.userInteractionEnabled = NO;
+    self.tableView.scrollEnabled = YES;
+    if (buttonType <=  HUASortViewButtonTypeShopName ){
+        self.page = 1;
+        [self getData];
+    }
+    
 
     
 }

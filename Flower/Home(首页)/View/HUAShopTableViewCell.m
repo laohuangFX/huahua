@@ -12,8 +12,20 @@
 
 -(void)setShopInfo:(HUAShopInfo *)shopInfo {
     _shopInfo = shopInfo;
-    //[self.shopImageView sd_setImageWithURL:[NSURL URLWithString:shopInfo.cover] placeholderImage:[UIImage imageNamed:@"placeholder"]];
-    [self.iconImageView sd_setImageWithURL:[NSURL URLWithString:shopInfo.icon] placeholderImage:[UIImage imageNamed:@"placeholder"]];
+    if (![shopInfo.cover isKindOfClass:[NSNull class]]) {
+        [self.shopImageView sd_setImageWithURL:[NSURL URLWithString:shopInfo.cover] placeholderImage:[UIImage imageNamed:@"placeholder"]];
+
+    }else
+    {
+        [self.shopImageView setImage:[UIImage imageNamed:@"placeholder"]];
+    }
+    if (![shopInfo.icon isKindOfClass:[NSNull class]]) {
+        [self.iconImageView sd_setImageWithURL:[NSURL URLWithString:shopInfo.icon] placeholderImage:[UIImage imageNamed:@"placeholder"]];
+    }else
+    {
+        [self.shopImageView setImage:[UIImage imageNamed:@"placeholder"]];
+    }
+    
     self.locationLabel.text = shopInfo.address;
     self.shopNameLabel.text = shopInfo.shopname;
     self.praiseCountLabel.text = [NSString stringWithFormat:@"%@赞过",shopInfo.praise_count];
