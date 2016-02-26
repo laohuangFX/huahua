@@ -100,10 +100,10 @@
 //#define HUA_URL @"http://192.168.8.55/huahua_api/index.php/"
 //#define HUA_URL @"http://192.168.8.152/huahua_api/index.php"
 //#define HUA_URL @"http://112.74.22.87/huahua_api/index.php"
-#define HUA_URL @"http://120.25.202.222/huahua_api/index.php"
+//#define HUA_URL @"http://120.25.202.222/huahua_api/index.php"
 //#define HUA_URL @"http://192.168.8.110/huahua_api/index.php/"
 //#define HUA_URL @"http://192.168.8.142/huahua_api/index.php"
-//#define HUA_URL @"http://120.25.202.222/huahua_api/index.php"
+#define HUA_URL @"http://120.25.202.222/huahua_api/index.php"
 
 #define Product_list @"general/product_list"
 #define Service_list @"service/service_list"

@@ -120,7 +120,7 @@
     successButton.layer.cornerRadius =3.f;
     [successButton setTitle:@"提交并支付" forState:0];
     [successButton setTitleColor:HUAColor(0xffffff) forState:0];
-    [successButton addTarget:self action:@selector(submitPayment:) forControlEvents:UIControlEventTouchUpInside];
+    //[successButton addTarget:self action:@selector(submitPayment:) forControlEvents:UIControlEventTouchUpInside];
     [footView addSubview:successButton];
     [successButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.mas_equalTo(commonLabel);

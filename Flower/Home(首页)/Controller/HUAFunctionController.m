@@ -63,7 +63,11 @@
 
 - (void)loadNewData {
     self.page = 1;
-    
+    if (self.isSearch == YES) {
+        [HUAMBProgress MBProgressOnlywithLabelText:@"没有更多新的商户了"];
+        [self.tableView.mj_header endRefreshing];
+        return;
+    }
     NSString *url = [HUA_URL stringByAppendingPathComponent:App_index];
     NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
     parameter[@"per_page"] = @(self.page);

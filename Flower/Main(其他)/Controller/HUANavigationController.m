@@ -8,7 +8,7 @@
 
 #import "HUANavigationController.h"
 
-@interface HUANavigationController ()
+@interface HUANavigationController ()<UINavigationControllerDelegate>
 
 @end
 
@@ -19,9 +19,16 @@
     self.navigationBar.translucent = NO;
     [self.navigationBar setBarTintColor:HUAColor(0xF5F6F7)];
     
+    /* UINavigationControllerDelegate */
+    self.delegate = self;
     
     
-
+    __weak typeof (self)weakSelf = self;
+    if ([self respondsToSelector:@selector(interactivePopGestureRecognizer)]) {
+        //                self.interactivePopGestureRecognizer.enabled = YES;
+        /* UIGestureRecognizerDelegate */
+        self.interactivePopGestureRecognizer.delegate = weakSelf;
+    }
 }
 
 + (void)initialize

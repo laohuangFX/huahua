@@ -19,6 +19,7 @@
     if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
         self.productImageView = [[UIImageView alloc] init];
         self.productImageView.frame = CGRectMake(hua_scale(10), 0, screenWidth-hua_scale(20), hua_scale(191));
+        self.productImageView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"loading_picture_middle"]];
         [self addSubview:self.productImageView];
     }
     return self;

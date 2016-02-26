@@ -38,7 +38,7 @@
 - (void)setMyCollection:(HUAMyCollection *)myCollection {
     _myCollection = myCollection;
     [self.bgImageView sd_setImageWithURL:[NSURL URLWithString:myCollection.cover] placeholderImage:[UIImage imageNamed:@"placeholder"]];
-    [self.iconImageView sd_setImageWithURL:[NSURL URLWithString:myCollection.icon] placeholderImage:[UIImage imageNamed:@"placeholder"]];
+    [self.iconImageView sd_setImageWithURL:[NSURL URLWithString:myCollection.icon] placeholderImage:nil];
     self.addressLabel.text = myCollection.address;
     self.praiseLabel.text = [NSString stringWithFormat:@"%@赞过" ,myCollection.praise_sum];
     self.nameLbale.text = myCollection.shopname;

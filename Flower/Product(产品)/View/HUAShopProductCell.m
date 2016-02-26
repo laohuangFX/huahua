@@ -51,6 +51,10 @@
     self.priceLabel = [UILabel labelWithFrame:priceFrame text:@"¥200.45" color:HUAColor(0x4da800) font:hua_scale(13)];
     [self addSubview:self.priceLabel];
     
+    UIView *seperateLine = [[UIView alloc] initWithFrame:CGRectMake(0, hua_scale(106)-0.5, screenWidth, 0.5)];
+    seperateLine.backgroundColor = HUAColor(0xe1e1e1);
+    [self addSubview:seperateLine];
+    
     
     
 }
@@ -58,7 +62,8 @@
 
 -(void)setProduct:(HUAShopProduct *)product {
     _product = product;
-    [self.goodsImageView sd_setImageWithURL:[NSURL URLWithString:product.cover] placeholderImage:[UIImage imageNamed:@"placeholder"]];
+    [self.goodsImageView sd_setImageWithURL:[NSURL URLWithString:product.cover] placeholderImage:nil];
+    self.goodsImageView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"loading_picture_middle"]];
     self.goodsNameLabel.text = product.name;
     self.goodsNameLabel.frame = CGRectMake(hua_scale(114), hua_scale(22), hua_scale(204), 0);
     [self.goodsNameLabel sizeToFit];

@@ -120,7 +120,9 @@
     NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
     parameters[@"shop_id"] = self.shop_id;
     [manager GET:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation,NSDictionary* responseObject) {
-       
+
+        NSLog(@"%@",responseObject);
+        
         _dataDic = [NSMutableDictionary dictionary];
         _data1 = [NSMutableArray array];
         
@@ -151,7 +153,6 @@
     
     // 马上进入刷新状态
     [self.tableView.mj_header beginRefreshing];
-    
 }
 
 
@@ -166,10 +167,13 @@
     self.parameters[@"shop_id"] = self.shop_id;
     self.parameters[@"per_page"] = @(self.page);
     [HUAHttpTool GET:url params:self.parameters success:^(id responseObject) {
+        NSLog(@"%@",responseObject);
         
         //获取数据总个数
         NSString *newCount = responseObject[@"info"][@"total"];
         if (self.isFirstTime == YES) {
+            
+      
             
         }else {
             if ([newCount isEqualToString:[NSKeyedUnarchiver unarchiveObjectWithFile:self.pagePath]]) {

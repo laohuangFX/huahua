@@ -19,6 +19,7 @@
 @property (nonatomic, strong) NSNumber *have_praised;
 @property (nonatomic, strong) NSString *category;
 @property (nonatomic, strong) NSString *shop_id;
+@property (nonatomic, strong) NSString *vip_price;
 
 
 @property (nonatomic, strong) NSArray *media_lis;

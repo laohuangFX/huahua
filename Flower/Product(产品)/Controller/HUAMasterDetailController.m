@@ -146,7 +146,8 @@
 #pragma mark -- headerView
 - (void)setHeaderView:(HUAMasterDetailInfo *)detailInfo {
     UIImageView *masterImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, screenWidth, hua_scale(200))];
-    [masterImageView sd_setImageWithURL:[NSURL URLWithString:detailInfo.cover] placeholderImage:[UIImage imageNamed:@"placeholder"]];
+    masterImageView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"loading_picture_middle"]];
+    [masterImageView sd_setImageWithURL:[NSURL URLWithString:detailInfo.cover] placeholderImage:nil];
     
     CGRect nameFrame = CGRectMake(hua_scale(10), hua_scale(215), hua_scale(50), hua_scale(14)) ;
     UILabel *nameLabel = [UILabel labelWithFrame:nameFrame text:detailInfo.masterName color:HUAColor(0x333333) font:hua_scale(14)];
@@ -183,6 +184,7 @@
         UIButton *button = [UIButton buttonWithType:0];
         button.frame = CGRectMake(hua_scale(94)*i, 0, hua_scale(90), hua_scale(90));
         [button setImageForState:UIControlStateNormal withURL:[NSURL URLWithString:self.acheivementArray[i]] placeholderImage:[UIImage imageNamed:@"placeholder"]];
+        button.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"loading_picture_small"]];
         button.tag = i;
         [button addTarget:self action:@selector(clickImageView:) forControlEvents:UIControlEventTouchUpInside];
         [self.achievementScrollView addSubview:button];
