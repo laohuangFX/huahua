@@ -52,7 +52,7 @@
     
     // Required
     //如需兼容旧版本的方式，请依旧使用[JPUSHService setupWithOption:launchOptions]方式初始化和同时使用pushConfig.plist文件声明appKey等配置内容。
-    [JPUSHService setupWithOption:launchOptions appKey:@"1cc314990d60134b5318edb0" channel:@"APP Store" apsForProduction:NO];
+    [JPUSHService setupWithOption:launchOptions appKey:@"023a23d3f750a296291c51d8" channel:@"APP Store" apsForProduction:NO];
     return YES;
     
 

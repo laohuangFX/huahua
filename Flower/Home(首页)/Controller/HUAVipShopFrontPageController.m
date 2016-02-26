@@ -94,6 +94,14 @@
     parameter[@"shop_id"] = self.shop_id;
     [HUAHttpTool GETWithTokenAndUrl:url params:parameter success:^(id responseObject) {
         HUALog(@"是不是会员%@",responseObject);
+        if ([responseObject[@"error"] isEqualToString:@"无效的TOKEN！"]) {
+            [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"token"];
+            [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"data"];
+            HUALoginController *loginVC = [[HUALoginController alloc] init];
+            [self.navigationController pushViewController:loginVC animated:YES];
+
+            return ;
+        }
         self.is_Vip = responseObject[@"info"];
         [self getData];
     } failure:^(NSError *error) {
@@ -240,6 +248,7 @@
 
 - (void)setHeaderView:(HUAShopIntroduce *)shopIntroduce {
     //判断是不是会员
+
     if (![self.is_Vip isKindOfClass:[NSDictionary class]]) {
         HUAShopTopView *headerView = [[HUAShopTopView alloc] initWithFrame:CGRectMake(0, 0, screenWidth, hua_scale(390))];
         headerView.delegate = self;

@@ -398,9 +398,10 @@ static NSArray *_array = nil;
         myOrder.is_use = myOrderDic[@"is_use"];
         myOrder.is_receipt = myOrderDic[@"is_receipt"];
         myOrder.product_id = myOrderDic[@"product"][@"product_id"];
-        myOrder.service_id = myOrderDic[@"product"][@"service_id"];
+        myOrder.service_id = myOrderDic[@"service"][@"service_id"];
         myOrder.type = myOrderDic[@"type"];
         myOrder.shop_id = myOrderDic[@"shop_id"];
+       
         NSLog(@"%@",myOrder.type);
         if ([myOrderDic[@"type"] isEqualToString:@"1"]) {
             myOrder.titleNmae = myOrderDic[@"product"][@"name"];

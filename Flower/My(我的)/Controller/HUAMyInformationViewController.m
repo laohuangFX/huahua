@@ -376,7 +376,7 @@
         cell.InformationLabel.hidden = YES;
         cell.headImage.hidden=NO;
         if (![self.model[indexPath.row] isKindOfClass:[NSNull class]]) {
-            [cell.headImage sd_setImageWithURL:[NSURL URLWithString:self.model[indexPath.row]] placeholderImage:[UIImage imageNamed:@"placeholder"]];
+            [cell.headImage sd_setImageWithURL:[NSURL URLWithString:self.model[indexPath.row]] placeholderImage:nil];
         }
         
     
@@ -404,9 +404,9 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     
     if (indexPath.row == 0) {
-        return 60;
+        return hua_scale(60);
     }
-    return 44;
+    return hua_scale(44);
     
 }
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{

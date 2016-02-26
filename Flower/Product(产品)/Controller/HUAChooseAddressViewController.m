@@ -25,7 +25,7 @@
     self.title = @"收货地址";
     self.view.backgroundColor = [UIColor whiteColor];
     UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
-    button.titleLabel.font = [UIFont systemFontOfSize:12];
+    button.titleLabel.font = [UIFont systemFontOfSize:hua_scale(12)];
     [button setTitleColor:HUAColor(0x494949) forState:0];
     [button setTitle:@"新增" forState:0];
     [button addTarget:self action:@selector(address) forControlEvents:UIControlEventTouchUpInside];
@@ -69,6 +69,7 @@
     self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, self.view.height) style:UITableViewStylePlain];
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
+    [self setExtraCellLineHidden:self.tableView];
     [self.view addSubview:self.tableView];
 
 
@@ -94,7 +95,7 @@
     [cell.textLabel setSingleLineAutoResizeWithMaxWidth:hua_scale(200)];
     
     [cell.detailTextLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(cell.textLabel.mas_bottom).mas_equalTo(hua_scale(10.5));
+        make.top.mas_equalTo(cell.textLabel.mas_bottom).mas_equalTo(hua_scale(8));
         make.left.mas_equalTo(hua_scale(15));
     }];
     [cell.detailTextLabel setSingleLineAutoResizeWithMaxWidth:hua_scale(200)];
@@ -168,7 +169,14 @@
     // Dispose of any resources that can be recreated.
 }
 
-
+-(void)setExtraCellLineHidden: (UITableView *)tableView
+{
+    UIView *view = [UIView new];
+    
+    view.backgroundColor = [UIColor clearColor];
+    
+    [tableView setTableFooterView:view];
+}
 
 
 @end

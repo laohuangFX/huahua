@@ -19,6 +19,15 @@
 }
 - (void)setup{
     
+    UIView *thView = [UIView new];
+    thView.backgroundColor= HUAColor(0xdfdfde);
+    [self.contentView addSubview:thView];
+    [thView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.right.bottom.mas_equalTo(0);
+        make.height.mas_equalTo(hua_scale(0.5));
+        
+    }];
+    
     
     self.headView = [UIImageView new];
     //self.headView .backgroundColor = [UIColor redColor];
@@ -161,7 +170,7 @@
     .widthIs(hua_scale(45))
     .heightIs(self.messageButton.height);
   
-    [self setupAutoHeightWithBottomView:self.loveButton bottomMargin:hua_scale(8)];
+    [self setupAutoHeightWithBottomView:self.loveButton bottomMargin:hua_scale(10)];
 }
 
 //- (void)setArray:(NSArray *)array{
