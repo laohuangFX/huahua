@@ -105,7 +105,7 @@ static NSString *identifier = @"cell";
 
 - (HUASortView *)sortView {
     if (!_sortView) {
-        _sortView = [[HUASortView alloc] initWithFrame:CGRectMake(0, screenHeight, screenWidth, screenHeight-sortViewHeight) ];
+        _sortView = [[HUASortView alloc] initWithFrame:CGRectMake(0, screenHeight, screenWidth, screenHeight-hua_scale(28)) ];
         _sortView.delegate = self;
     }
     return _sortView;
@@ -244,8 +244,14 @@ static NSString *identifier = @"cell";
     self.parameter[@"order"] = self.order;
     self.parameter[@"per_page"] = @(self.page);
     [HUAHttpTool POST:url params:self.parameter success:^(id responseObject) {
+        HUALog(@"getData%@,,%@,,%@",responseObject,self.parameter,url);
+        if ([responseObject[@"info"] isKindOfClass:[NSString class]]) {
+            [HUAMBProgress MBProgressFromView:self.view andLabelText:@"没有数据"];      
+            return ;
+        }
         self.totalCount = responseObject[@"info"][@"total"];
         self.totalPage = responseObject[@"info"][@"pages"];
+        [self.shopsArray removeAllObjects];
         NSArray *shopArray = [HUADataTool homeShop:responseObject];
         [self.shopsArray addObjectsFromArray:shopArray];
         self.categoryArray = [HUADataTool getCategoryList:responseObject];
@@ -313,7 +319,7 @@ static NSString *identifier = @"cell";
         HUALog(@"123%@",responseObject);
         if ([responseObject[@"info"] isKindOfClass:[NSString class]]) {
 
-             [HUAMBProgress MBProgressOnlywithLabelText:responseObject[@"info"]];
+             //[HUAMBProgress MBProgressFromView:self.view andLabelText:responseObject[@"info"]];
 
             [self.tableView.mj_header endRefreshing];
             return  ;
@@ -719,13 +725,14 @@ static NSString *identifier = @"cell";
     
     //当前经纬度
     self.userCoord  = location.coordinate;
-    
+    //停止定位
+    [self.mgr stopUpdatingLocation];
     //地理反编码
     //创建反编码对象
     CLGeocoder *geocoder = [[CLGeocoder alloc]init];
     //调用方法，使用位置反编码对象获取位置信息
     [geocoder reverseGeocodeLocation:location completionHandler:^(NSArray<CLPlacemark *> * _Nullable placemarks, NSError * _Nullable error) {
-        CLPlacemark *place = placemarks[0];
+        CLPlacemark *place = [placemarks lastObject];
 //        for (CLPlacemark *place in placemarks) {
         if (place == nil) {
             return ;
@@ -747,8 +754,7 @@ static NSString *identifier = @"cell";
         }
     }];
     
-    //停止定位
-     [self.mgr stopUpdatingLocation];
+    
 }
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
     if (buttonIndex == 1) {
@@ -803,21 +809,20 @@ static NSString *identifier = @"cell";
 }
 
 - (void)clickSortButton:(UIButton *)sender {
-    UIWindow *window = [[UIApplication sharedApplication].windows lastObject];
     if (sender.selected == YES) {
         if (self.tableView.contentOffset.y < hua_scale(250)) {
             [self.tableView setContentOffset:CGPointMake(0, hua_scale(250)) animated:YES];
-            [window addSubview:self.sortView];
+            [self.view addSubview:self.sortView];
             [UIView animateWithDuration:0 delay:0.4 options:UIViewAnimationOptionLayoutSubviews animations:^{
-                self.sortView.y = sortViewHeight;
+                self.sortView.y =  hua_scale(28);
                 
             } completion:nil];
             
         } else {
             [self.tableView setContentOffset:CGPointMake(0, hua_scale(250)) animated:YES];
-            [window addSubview:self.sortView];
+            [self.view addSubview:self.sortView];
             [UIView animateWithDuration:0 delay:0 options:UIViewAnimationOptionLayoutSubviews animations:^{
-                self.sortView.y = sortViewHeight;
+                self.sortView.y =  hua_scale(28);
             } completion:nil];
         
         }
@@ -854,7 +859,6 @@ static NSString *identifier = @"cell";
             break;
 
     }
-    [self.shopsArray removeAllObjects];
     self.page = 1;
     [self getData];
 
@@ -885,7 +889,7 @@ static NSString *identifier = @"cell";
     cell.shopInfo = self.shopsArray[indexPath.row];
     return cell;
 }
-
+ 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     HUAUserDetailInfo *detailInfo = [HUAUserDefaults getUserDetailInfo];
     HUAVipShopFrontPageController *vipFrontPageVC = [[HUAVipShopFrontPageController alloc] init];

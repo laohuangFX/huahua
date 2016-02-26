@@ -12,8 +12,8 @@
 
 -(void)setShopInfo:(HUAShopInfo *)shopInfo {
     _shopInfo = shopInfo;
-    [self.shopImageView sd_setImageWithURL:[NSURL URLWithString:shopInfo.cover] placeholderImage:[UIImage imageNamed:@"placeholder"]];
-    [self.iconImageView sd_setImageWithURL:[NSURL URLWithString:shopInfo.icon] placeholderImage:[UIImage imageNamed:@"placeholder"]];
+    [self.shopImageView sd_setImageWithURL:[NSURL URLWithString:shopInfo.cover] placeholderImage:nil];
+    [self.iconImageView sd_setImageWithURL:[NSURL URLWithString:shopInfo.icon] placeholderImage:nil];
     self.locationLabel.text = shopInfo.address;
     self.shopNameLabel.text = shopInfo.shopname;
     self.praiseCountLabel.text = [NSString stringWithFormat:@"%@赞过",shopInfo.praise_count];
@@ -31,29 +31,37 @@
 
 - (void)setCell {
     self.shopImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, screenWidth, hua_scale(125))];
-
+    self.shopImageView.contentMode = UIViewContentModeScaleAspectFill;
+    self.shopImageView.layer.masksToBounds = YES;
+    self.shopImageView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"loading_picture_middle"]];
     [self addSubview:self.shopImageView];
     UIImageView *imageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, screenWidth, hua_scale(125))];
     imageView.image = [UIImage imageNamed:@"gradual_change"];
     [self.shopImageView addSubview:imageView];
     
-    self.iconImageView = [[UIImageView alloc] initWithFrame:CGRectMake(hua_scale(10), hua_scale(65), hua_scale(60), hua_scale(47))];
+    
+    UIImageView *shadow = [[UIImageView alloc]initWithFrame:CGRectMake(hua_scale(10), hua_scale(65), hua_scale(66), hua_scale(55))];
+    shadow.contentMode = UIViewContentModeScaleAspectFill;
+    shadow.image = [UIImage imageNamed:@"shadow"];
+    //shadow.backgroundColor = [UIColor redColor];
+    [self addSubview:shadow];
+    
+    self.iconImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, hua_scale(60), hua_scale(47))];
     self.iconImageView.layer.borderWidth = 1;
     self.iconImageView.layer.borderColor = HUAColor(0xffffff).CGColor;
-    self.iconImageView.backgroundColor = [UIColor redColor];
-    [self addSubview:self.iconImageView];
+    [shadow addSubview:self.iconImageView];
     
-    self.praiseImageView = [[UIImageView alloc] initWithFrame:CGRectMake(hua_scale(82), hua_scale(102), hua_scale(10), hua_scale(10))];
+    self.praiseImageView = [[UIImageView alloc] initWithFrame:CGRectMake(hua_scale(82), hua_scale(98), hua_scale(10), hua_scale(10))];
     self.praiseImageView.image = [UIImage imageNamed:@"praise_white"];
     
     [self addSubview:self.praiseImageView];
     
-    CGRect praiseCountFrame = CGRectMake(hua_scale(95), hua_scale(102), hua_scale(200), hua_scale(10));
-    self.praiseCountLabel = [UILabel labelWithFrame:praiseCountFrame text:@"1526赞过" color:HUAColor(0xFFFFFF) font:hua_scale(11)];
+    CGRect praiseCountFrame = CGRectMake(hua_scale(95), hua_scale(98), hua_scale(200), hua_scale(10));
+    self.praiseCountLabel = [UILabel labelWithFrame:praiseCountFrame text:@"1526赞过" color:HUAColor(0xFFFFFF) font:hua_scale(10)];
     [self addSubview:self.praiseCountLabel];
     
     CGRect shopNameFrame = CGRectMake(hua_scale(82), hua_scale(75), hua_scale(200), hua_scale(15));
-    self.shopNameLabel = [UILabel labelWithFrame:shopNameFrame text:@"群芳美容体验中心" color:HUAColor(0xFFFFFF) font:hua_scale(12)];
+    self.shopNameLabel = [UILabel labelWithFrame:shopNameFrame text:@"群芳美容体验中心" color:HUAColor(0xFFFFFF) font:hua_scale(15)];
     [self addSubview:self.shopNameLabel];
     
     

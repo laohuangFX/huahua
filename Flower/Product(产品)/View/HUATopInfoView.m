@@ -35,20 +35,14 @@
     self.goodsNameLabel.text = detailInfo.name;
     self.specificationsLabel.text = [NSString stringWithFormat:@"规格:%@",detailInfo.size];
     //非会员价格
-    self.priceLabel.text = [NSString stringWithFormat:@"¥%@",detailInfo.price];
-    //如果是会员重新赋值
-    NSString *url = [HUA_URL stringByAppendingPathComponent:Is_vip];
-    NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
-    parameter[@"shop_id"] = self.detailInfo.shop_id;
-    [HUAHttpTool GETWithTokenAndUrl:url params:parameter success:^(id responseObject) {
-        self.is_Vip = responseObject[@"info"];
-        if ([self.is_Vip isKindOfClass:[NSDictionary class]]) {
-            self.priceLabel.text = [NSString stringWithFormat:@"¥%@",detailInfo.vip_discount];
-        }
-    } failure:^(NSError *error) {
-        HUALog(@"%@",error);
-    }];
-    HUALog(@"setDetailInfo%f",self.instructionLabel.y);
+    self.priceLabel.text = [NSString stringWithFormat:@"¥ %@（ 会员价¥ %@ ）",detailInfo.price,detailInfo.vip_price];
+    NSMutableAttributedString *str = [[NSMutableAttributedString alloc] initWithString:self.priceLabel.text];
+    [str addAttribute:NSForegroundColorAttributeName value:HUAColor(0x4da800) range:NSMakeRange(0 ,[detailInfo.price length]+2)];
+    [str addAttribute:NSForegroundColorAttributeName value:HUAColor(0x4da800) range:NSMakeRange([detailInfo.price length]+2,self.priceLabel.text.length - ([detailInfo.price length]+2))];
+    [str addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:hua_scale(19)] range:NSMakeRange(0, [detailInfo.price length]+2)];
+    [str addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:hua_scale(11)] range:NSMakeRange([detailInfo.price length]+2,self.priceLabel.text.length - ([detailInfo.price length]+2))];
+    
+    self.priceLabel.attributedText = str;
 }
 
 - (void)setInfomation:(NSDictionary *)infomation {

@@ -140,6 +140,7 @@
                 [HUAMBProgress MBProgressOnlywithLabelText:@"取消点赞"];
                 //[sender setTitle:[NSString stringWithFormat:@"%ld",sender.titleLabel.text.integerValue-1] forState:UIControlStateNormal];
             }
+            _block([sender.label.text integerValue]);
         } failure:^(NSError *error) {
             HUALog(@"%@",error);
         }];
@@ -230,16 +231,38 @@
     
     
     [instructionLabel sizeToFit];
+    HUALog(@"%f",instructionLabel.height);
     
-    UIView *seperateLine = [[UIView alloc]initWithFrame:CGRectMake(hua_scale(10), CGRectGetMaxY(instructionLabel.frame)+hua_scale(25), screenWidth-hua_scale(20), 0.5)];
+    UIView *seperateLine = [[UIView alloc]init];
     seperateLine.backgroundColor = HUAColor(0xeeeeee);
     
-    CGRect frame = CGRectMake(hua_scale(10),  CGRectGetMaxY(instructionLabel.frame)+hua_scale(50), hua_scale(100), hua_scale(13));
-    UILabel *goodsDetailLabel = [UILabel labelWithFrame:frame text:@"商品详情" color:HUAColor(0x000000) font:hua_scale(13)];
+    UILabel *goodsDetailLabel = [UILabel labelWithFrame:CGRectZero text:@"商品详情" color:HUAColor(0x000000) font:hua_scale(13)];
     
+    if (instructionLabel.height < 27) {
+        seperateLine.frame = CGRectMake(hua_scale(10), CGRectGetMaxY(instructionLabel.frame)+hua_scale(25)-10, screenWidth-hua_scale(20), 0.5);
+        
+        
+        goodsDetailLabel.frame = CGRectMake(hua_scale(10),  CGRectGetMaxY(instructionLabel.frame)+hua_scale(50)-10, hua_scale(100), hua_scale(13));
+        
+        
+        
+        CGFloat height = CGRectGetMaxY(goodsDetailLabel.frame)+hua_scale(15)-10;
+        header.frame = CGRectMake(0, 0, screenWidth, height);
 
-    CGFloat height = CGRectGetMaxY(goodsDetailLabel.frame)+hua_scale(15);
-    header.frame = CGRectMake(0, 0, screenWidth, height);
+    }else {
+        seperateLine.frame = CGRectMake(hua_scale(10), CGRectGetMaxY(instructionLabel.frame)+hua_scale(25), screenWidth-hua_scale(20), 0.5);
+        
+        
+        goodsDetailLabel.frame = CGRectMake(hua_scale(10),  CGRectGetMaxY(instructionLabel.frame)+hua_scale(50), hua_scale(100), hua_scale(13));
+        
+        
+        
+        CGFloat height = CGRectGetMaxY(goodsDetailLabel.frame)+hua_scale(15);
+        header.frame = CGRectMake(0, 0, screenWidth, height);
+
+    }
+    
+    
     
     [header addSubview:topSeparateLine];
     [header addSubview:instructionTitle];

@@ -2707,7 +2707,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flower/Main(其他)/第三方/JPush",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = readn.Flower;
+				PRODUCT_BUNDLE_IDENTIFIER = readchen;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 			};
@@ -2734,7 +2734,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flower/Main(其他)/第三方/JPush",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = readn.Flower;
+				PRODUCT_BUNDLE_IDENTIFIER = readchen;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 			};

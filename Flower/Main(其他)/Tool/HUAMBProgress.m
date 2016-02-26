@@ -54,6 +54,20 @@
     return hud;
 }
 
++ (id)MBProgressFromView:(UIView *)view andLabelText:(NSString *)labelText {
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:view animated:YES];
+    dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+        hud.labelText = labelText;
+        hud.mode = MBProgressHUDModeText;
+        sleep(1);
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [MBProgressHUD hideHUDForView:view animated:YES];
+        });
+    });
+    return hud;
+
+}
+
 
 + (id)MBProgressOnlywithLabelText:(NSString *)labelText {
     MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:[[UIApplication sharedApplication].windows lastObject] animated:YES];

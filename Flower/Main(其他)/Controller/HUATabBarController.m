@@ -58,11 +58,11 @@
     
     //设置子控制器的图片
     
-    subViewController.tabBarItem.image = [UIImage imageNamed:image];
+    subViewController.tabBarItem.image = [[UIImage imageNamed:image] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     subViewController.tabBarItem.selectedImage = [[UIImage imageNamed:selectedImage] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     //设置文字的样式
     NSMutableDictionary *textAttributes = [NSMutableDictionary dictionary];
-    textAttributes[NSForegroundColorAttributeName] = HUAColor(0x494949);
+    textAttributes[NSForegroundColorAttributeName] = HUAColor(0x323232);
     textAttributes[NSFontAttributeName] = [UIFont systemFontOfSize:12];
     NSMutableDictionary *selectTextAttributes = [NSMutableDictionary dictionary];
     selectTextAttributes[NSForegroundColorAttributeName] = HUAColor(0x4da800);

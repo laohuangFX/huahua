@@ -22,7 +22,7 @@
     //self.nameLabel.frame = ;
     self.typeLabel.text = masterInfo.masterType;
      [self.typeLabel sizeToFit];
-    self.typeLabel.frame = CGRectMake(hua_scale(85)+self.nameLabel.width, hua_scale(10), hua_scale(50), hua_scale(10));
+    self.typeLabel.frame = CGRectMake(hua_scale(65)+self.nameLabel.width, hua_scale(10), hua_scale(50), hua_scale(10));
     self.praiseLabel.text = [NSString stringWithFormat:@"%@赞过",masterInfo.praise_count];
     
 }
@@ -42,7 +42,7 @@
     self.headImageView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"loading_picture_small"]];
     [self addSubview:self.headImageView];
     
-    CGRect nameFrame = CGRectMake(hua_scale(80), hua_scale(8.5), hua_scale(50),     hua_scale(12));
+    CGRect nameFrame = CGRectMake(hua_scale(60), hua_scale(8.5), hua_scale(50),     hua_scale(12));
     self.nameLabel = [UILabel labelWithFrame:nameFrame text:@"张三三" color:HUAColor(0x333333) font:hua_scale(12)];
     [self addSubview:self.nameLabel];
     
@@ -52,12 +52,12 @@
     [self addSubview:self.typeLabel];
    
     
-    self.praiseImageView = [[UIImageView alloc] initWithFrame:CGRectMake(hua_scale(80), hua_scale(30.5), hua_scale(9), hua_scale(9))];
+    self.praiseImageView = [[UIImageView alloc] initWithFrame:CGRectMake(hua_scale(60), hua_scale(30.5), hua_scale(9), hua_scale(9))];
     self.praiseImageView.image = [UIImage imageNamed:@"productprise"];
     [self addSubview:self.praiseImageView];
     
     
-    CGRect praiseFrame = CGRectMake(hua_scale(84)+self.praiseImageView.width, hua_scale(30.5), hua_scale(100), hua_scale(9));
+    CGRect praiseFrame = CGRectMake(hua_scale(64)+self.praiseImageView.width, hua_scale(30.5), hua_scale(100), hua_scale(9));
     self.praiseLabel = [UILabel labelWithFrame:praiseFrame text:@"1526赞过" color:HUAColor(0xcdcdcd) font:hua_scale(9)];
     [self addSubview:self.praiseLabel];
     

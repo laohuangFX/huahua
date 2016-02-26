@@ -74,7 +74,6 @@
     button.layer.borderColor = HUAColor(0xbfbfbf).CGColor;
     button.tag = type;
     [button addTarget:self action:@selector(click:) forControlEvents:UIControlEventTouchUpInside];
-    [button addTarget:self action:@selector(clickDown:) forControlEvents:UIControlEventTouchDown];
     [self.chooseView addSubview:button];
     return button;
 }
@@ -96,10 +95,7 @@
 }
 
 
-- (void)clickDown:(UIButton *)sender {
-    [sender setTitleColor:HUAColor(0xffffff) forState:UIControlStateNormal];
-    sender.backgroundColor = HUAColor(0x4da800);
-}
+
 
 - (void)click:(UIButton *)sender {
     if (kNetworkNotReachability == YES) {
