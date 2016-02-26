@@ -98,13 +98,13 @@ typedef NS_ENUM(NSInteger, UITableViewLeftOrRight) {
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     if (tableView.tag == UITableViewLeft) {
         
-//        return self.cityArray.count;
-        if (self.cityArray.count != 0) {
-            return 1;
-        }
-        return 0;
-    }else{
         return self.cityArray.count;
+//        if (self.cityArray.count != 0) {
+//            return 1;
+//        }
+//        return 0;
+    }else{
+        return [self.cityArray[self.leftSelectIndex] childrenArray].count;
 //        NSDictionary *dic = self.cityArray[self.leftSelectIndex];
 //        return [[dic objectForKey:[dic allKeys][0]] count];
     }
@@ -123,7 +123,8 @@ typedef NS_ENUM(NSInteger, UITableViewLeftOrRight) {
         leftCell.selectedBackgroundView = BackgroundView;
         leftCell.textLabel.highlightedTextColor = [UIColor whiteColor];
 //        leftCell.textLabel.text = [self.cityArray[indexPath.row] allKeys][0];
-        leftCell.textLabel.text = [self.cityArray[0] mergerName];
+//        leftCell.textLabel.text = [self.cityArray[0] mergerName];
+        leftCell.textLabel.text = [self.cityArray[indexPath.row] cityName];
         return leftCell;
     }
     else
@@ -135,7 +136,10 @@ typedef NS_ENUM(NSInteger, UITableViewLeftOrRight) {
         }
 //        NSDictionary *dic = self.cityArray[self.leftSelectIndex];
 //        rightCell.textLabel.text = [[dic objectForKey:[dic allKeys][0]][indexPath.row] allKeys][0];
-        rightCell.textLabel.text = [self.cityArray[indexPath.row] cityName];
+//        rightCell.textLabel.text = [self.cityArray[indexPath.row] cityName];
+        
+        rightCell.textLabel.text = [[self.cityArray[self.leftSelectIndex] childrenArray][indexPath.row] cityName];
+        
         rightCell.textLabel.font = [UIFont systemFontOfSize:hua_scale(12)];
         rightCell.backgroundColor = HUAColor(0xf2f2f2);
         UIView *BackgroundView = [[UIView alloc]initWithFrame:rightCell.bounds];
@@ -156,8 +160,11 @@ typedef NS_ENUM(NSInteger, UITableViewLeftOrRight) {
     }
     else
     {
-        self.cityBlock(self.cityArray[indexPath.row]);
-        
+        if (indexPath.row == 0) {
+            self.cityBlock(self.cityArray[self.leftSelectIndex]);
+        }else{
+            self.cityBlock([self.cityArray[self.leftSelectIndex] childrenArray][indexPath.row]);
+        }
 //        self.rightSelectIndex = indexPath.row;
 //        NSDictionary *dic = self.cityArray[self.leftSelectIndex];
 //        self.cityBlock([[dic objectForKey:[dic allKeys][0]][indexPath.row] allKeys][0]);

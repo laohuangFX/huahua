@@ -319,6 +319,7 @@
 		59FBFD631C48D84000EB00B1 /* HUAServiceMasterInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 59FBFD621C48D84000EB00B1 /* HUAServiceMasterInfo.m */; };
 		59FBFD661C48ED0600EB00B1 /* HUAServiceMasterCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 59FBFD651C48ED0600EB00B1 /* HUAServiceMasterCell.m */; };
 		5F93774E1C7EAF9500058C6B /* HUAPraiseButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F93774D1C7EAF9500058C6B /* HUAPraiseButton.m */; };
+		5FAF2C091C80543800795CBB /* HUADuplicateTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5FAF2C081C80543800795CBB /* HUADuplicateTableViewCell.m */; };
 		5FB8FB351C7D3FC10017B1E3 /* jpush-ios-2.1.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5FB8FB331C7D3FC10017B1E3 /* jpush-ios-2.1.0.a */; };
 		5FB8FB371C7D3FEF0017B1E3 /* PushConfig.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5FB8FB361C7D3FEF0017B1E3 /* PushConfig.plist */; };
 		5FB8FB391C7D40B20017B1E3 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5FB8FB381C7D40B20017B1E3 /* CFNetwork.framework */; };
@@ -929,6 +930,8 @@
 		59FBFD651C48ED0600EB00B1 /* HUAServiceMasterCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HUAServiceMasterCell.m; sourceTree = "<group>"; };
 		5F93774C1C7EAF9500058C6B /* HUAPraiseButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HUAPraiseButton.h; sourceTree = "<group>"; };
 		5F93774D1C7EAF9500058C6B /* HUAPraiseButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HUAPraiseButton.m; sourceTree = "<group>"; };
+		5FAF2C071C80543800795CBB /* HUADuplicateTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HUADuplicateTableViewCell.h; sourceTree = "<group>"; };
+		5FAF2C081C80543800795CBB /* HUADuplicateTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HUADuplicateTableViewCell.m; sourceTree = "<group>"; };
 		5FB8FB331C7D3FC10017B1E3 /* jpush-ios-2.1.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "jpush-ios-2.1.0.a"; sourceTree = "<group>"; };
 		5FB8FB341C7D3FC10017B1E3 /* JPUSHService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JPUSHService.h; sourceTree = "<group>"; };
 		5FB8FB361C7D3FEF0017B1E3 /* PushConfig.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = PushConfig.plist; sourceTree = "<group>"; };
@@ -1949,6 +1952,8 @@
 		59279F681C5762A800136425 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				5FAF2C071C80543800795CBB /* HUADuplicateTableViewCell.h */,
+				5FAF2C081C80543800795CBB /* HUADuplicateTableViewCell.m */,
 				59279F691C5762A800136425 /* HUAcommentsTableViewCell.h */,
 				59279F6A1C5762A800136425 /* HUAcommentsTableViewCell.m */,
 				59279F6B1C5762A800136425 /* HUAWeiXinPhotoContainerView.h */,
@@ -2317,6 +2322,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5FAF2C091C80543800795CBB /* HUADuplicateTableViewCell.m in Sources */,
 				17B7E2A61C71BD9C0032C6D5 /* MJRefreshAutoFooter.m in Sources */,
 				17B7E2CC1C71BD9C0032C6D5 /* UIButton+WebCache.m in Sources */,
 				17B7E2931C71BD9C0032C6D5 /* MASViewAttribute.m in Sources */,
