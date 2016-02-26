@@ -169,6 +169,14 @@
     [HUAHttpTool GET:url params:self.parameters success:^(id responseObject) {
         HUALog(@"%@",responseObject);
         //获取数据总个数
+        if ([responseObject[@"info"] isKindOfClass:[NSString class]]) {
+            
+            [HUAMBProgress MBProgressOnlywithLabelText:responseObject[@"info"]];
+            [self.navigationController popViewControllerAnimated:YES];
+            [self.tableView.mj_header endRefreshing];
+            return  ;
+        }
+        
         NSString *newCount = responseObject[@"info"][@"total"];
         if (self.isFirstTime == YES) {
             

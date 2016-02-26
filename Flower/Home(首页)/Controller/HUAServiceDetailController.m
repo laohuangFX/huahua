@@ -189,13 +189,13 @@
     
     CGRect priceFrame = CGRectMake(hua_scale(10), serviceName.height+hua_scale(220), screenWidth - hua_scale(20), hua_scale(19));
     UILabel *servicePrice = [[UILabel alloc]initWithFrame:priceFrame];
-    servicePrice.text = [NSString stringWithFormat:@"¥%@(会员价¥%@)",serviceInfo.price,serviceInfo.vip_discount];
+    servicePrice.text = [NSString stringWithFormat:@"¥%@（会员价¥%@）",serviceInfo.price,serviceInfo.vip_price];
     
     NSMutableAttributedString *str = [[NSMutableAttributedString alloc] initWithString:servicePrice.text];
     [str addAttribute:NSForegroundColorAttributeName value:HUAColor(0x4da800) range:NSMakeRange(0 ,[serviceInfo.price length]+1)];
-    [str addAttribute:NSForegroundColorAttributeName value:HUAColor(0x4da800) range:NSMakeRange([serviceInfo.price length]+1,[serviceInfo.vip_discount length]+6)];
+    [str addAttribute:NSForegroundColorAttributeName value:HUAColor(0x4da800) range:NSMakeRange([serviceInfo.price length]+1,[serviceInfo.vip_price length]+6)];
     [str addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:hua_scale(19)] range:NSMakeRange(0, [serviceInfo.price length]+1)];
-    [str addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:hua_scale(11)] range:NSMakeRange([serviceInfo.price length]+1,[serviceInfo.vip_discount length]+6)];
+    [str addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:hua_scale(11)] range:NSMakeRange([serviceInfo.price length]+1,[serviceInfo.vip_price length]+6)];
     
     servicePrice.attributedText = str;
 

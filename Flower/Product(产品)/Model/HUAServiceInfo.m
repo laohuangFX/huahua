@@ -19,6 +19,7 @@
         self.name = dic[@"name"];
         self.price = dic[@"price"];
         self.vip_discount = dic[@"vip_discount"];
+        self.vip_price = dic[@"vip_price"];
         self.desc = dic[@"desc"];
         self.detail = dic[@"detail"];
         self.cover = dic[@"cover"];
