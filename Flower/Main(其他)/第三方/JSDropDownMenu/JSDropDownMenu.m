@@ -195,6 +195,7 @@
 @property (nonatomic, strong)NSString *leftText;
 @property (nonatomic, strong)CATextLayer *lastTextLayer;
 @property (nonatomic, strong)CAShapeLayer *lastGou;
+@property (nonatomic, assign)CGSize sizeW;
 @end
 
 
@@ -409,12 +410,14 @@
 - (CATextLayer *)createTextLayerWithNSString:(NSString *)string withColor:(UIColor *)color andPosition:(CGPoint)point {
     
     CGSize size = [self calculateTitleSizeWithString:string];
+    self.sizeW = size;
     //标题的字设置
     CATextLayer *layer = [CATextLayer new];
-    CGFloat sizeWidth = (size.width < (self.frame.size.width / _numOfMenu) - 25) ? size.width : self.frame.size.width / _numOfMenu - 25;
-    layer.bounds = CGRectMake(0, 0, sizeWidth, size.height);
+    //layer.backgroundColor = [UIColor redColor].CGColor;
+    CGFloat sizeWidth = (size.width < (self.frame.size.width / _numOfMenu) - 25) ? size.width+hua_scale(8) : self.frame.size.width / _numOfMenu - 25+hua_scale(8);
+    layer.bounds = CGRectMake(0, 0, hua_scale(sizeWidth) , hua_scale(size.height));
     layer.string = string;
-    layer.fontSize = 12.0;
+    layer.fontSize = hua_scale(12);
     layer.alignmentMode = kCAAlignmentCenter;
     layer.foregroundColor = color.CGColor;
     
@@ -445,8 +448,7 @@
     
     CATextLayer *layer = self.titles[tapIndex];
     layer.foregroundColor = HUAColor(0x4da800).CGColor;
-    
- 
+
    CAShapeLayer *indicator = _indicators[tapIndex];
     indicator.strokeColor = HUAColor(0x4da800).CGColor;
     
@@ -454,15 +456,24 @@
     self.lastTextLayer = layer;
     self.lastGou = indicator;
     for (int i = 0; i < _numOfMenu; i++) {
+       
         if (i != tapIndex) {
+            
             [self animateIndicator:_indicators[i] Forward:NO complete:^{
                 [self animateTitle:_titles[i] show:NO complete:^{
+
                    
                 }];
+                CATextLayer *lerv = self.titles[i];
+                
+                CGFloat sizeWidth = (_sizeW.width < (self.frame.size.width / _numOfMenu) - 25) ? _sizeW.width+hua_scale(8) : self.frame.size.width / _numOfMenu - 25+hua_scale(8);
+                lerv.bounds = CGRectMake(0, 0, hua_scale(sizeWidth) , hua_scale(_sizeW.height));
             }];
+   
           [(CALayer *)self.bgLayers[i] setBackgroundColor:BackColor.CGColor];
         }
-    }
+        
+            }
     
     BOOL displayByCollectionView = NO;
     
@@ -481,7 +492,12 @@
                 _show = NO;
             }];
 
-            [(CALayer *)self.bgLayers[tapIndex] setBackgroundColor:BackColor.CGColor];
+//            [(CALayer *)self.bgLayers[tapIndex] setBackgroundColor:BackColor.CGColor];
+//            CATextLayer *lerv = self.titles[tapIndex];
+//            
+//            CGFloat sizeWidth = (_sizeW.width < (self.frame.size.width / _numOfMenu) - 25) ? _sizeW.width+hua_scale(8) : self.frame.size.width / _numOfMenu - 25;
+//            lerv.bounds = CGRectMake(0, 0, hua_scale(sizeWidth) , hua_scale(_sizeW.height));
+
         } else {
             
             _currentSelectedMenudIndex = tapIndex;
@@ -552,6 +568,7 @@
             }
             
             if (_currentSelectedMenudIndex!=-1) {
+                
                 // 需要隐藏collectionview
                 [self animateCollectionView:_collectionView show:NO complete:^{
                     
@@ -565,10 +582,20 @@
                     _show = YES;
                 }];
             }
-            //点中设置颜色
-            [(CALayer *)self.bgLayers[tapIndex] setBackgroundColor:SelectColor.CGColor];
+//            //点中设置颜色
+//            [(CALayer *)self.bgLayers[tapIndex] setBackgroundColor:SelectColor.CGColor];
+//            CATextLayer *lerv = self.titles[tapIndex];
+//            
+//            CGFloat sizeWidth = (_sizeW.width < (self.frame.size.width / _numOfMenu) - 25) ? _sizeW.width+hua_scale(8) : self.frame.size.width / _numOfMenu - 25+hua_scale(8);
+//            lerv.bounds = CGRectMake(0, 0, hua_scale(sizeWidth) , hua_scale(_sizeW.height));
+
         }
     }
+    CATextLayer *lerv = self.titles[tapIndex];
+    
+    CGFloat sizeWidth = (_sizeW.width < (self.frame.size.width / _numOfMenu) - 25) ? _sizeW.width+hua_scale(8) : self.frame.size.width / _numOfMenu - 25+hua_scale(8);
+    lerv.bounds = CGRectMake(0, 0, hua_scale(sizeWidth) , hua_scale(_sizeW.height));
+
 }
 
 - (void)backgroundTapped:(UITapGestureRecognizer *)paramSender
@@ -810,7 +837,7 @@
         
     cell.selectedBackgroundView = [[UIView alloc] initWithFrame:cell.frame];
     cell.selectedBackgroundView.backgroundColor = HUAColor(0x4da800);
-    cell.textLabel.font = [UIFont systemFontOfSize:12];
+    cell.textLabel.font = [UIFont systemFontOfSize:hua_scale(11.5)];
     
     UIView *thView = [UIView new];
     thView.tag = 1200+indexPath.row;
@@ -871,6 +898,9 @@
     
     return cell;
 }
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+    return hua_scale(35);
+}
 
 #pragma mark - tableview delegate
 //记录上一个cell
@@ -878,8 +908,10 @@ UITableViewCell *lastCell = nil;
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     //让上一次的cell的颜色还原
     lastCell.textLabel.textColor = HUAColor(0x333333);
-//    UIView *view = [_leftTableView viewWithTag:1200+indexPath.row];
-//    view.backgroundColor = [UIColor redColor];
+
+
+    
+    
     
     NSInteger leftOrRight = 0;
     if (_rightTableView==tableView) {
@@ -1039,6 +1071,9 @@ UITableViewCell *lastCell = nil;
         //TODO: delegate is nil
      
     }
+    
+    CGFloat sizeWidth = (_sizeW.width < (self.frame.size.width / _numOfMenu) - 25) ? _sizeW.width+hua_scale(8) : self.frame.size.width / _numOfMenu - 25;
+    self.lastTextLayer.bounds = CGRectMake(0, 0, hua_scale(sizeWidth) , hua_scale(_sizeW.height));
 }
 
 - (void)confiMenuWithSelectRow:(NSInteger)row leftOrRight:(NSInteger)leftOrRight{

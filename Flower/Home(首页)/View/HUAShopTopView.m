@@ -73,7 +73,7 @@
 
 - (void)setShopIntroduce:(HUAShopIntroduce *)shopIntroduce {
     _shopIntroduce = shopIntroduce;
-    [self.topImageView sd_setImageWithURL:[NSURL URLWithString:shopIntroduce.cover] placeholderImage:nil];
+    //[self.topImageView sd_setImageWithURL:[NSURL URLWithString:shopIntroduce.cover] placeholderImage:nil];
     self.topImageView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"loading_picture_middle"]];
     [self.iconImageView sd_setImageWithURL:[NSURL URLWithString:shopIntroduce.icon] placeholderImage:nil];
     self.shopNameLabel.text = shopIntroduce.shopname;

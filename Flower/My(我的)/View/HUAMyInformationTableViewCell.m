@@ -34,11 +34,10 @@
     
     [_thView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.bottom.mas_equalTo(0);
-        make.height.mas_equalTo(hua_scale(1));
+        make.height.mas_equalTo(hua_scale(0.5));
         make.left.mas_equalTo(hua_scale(15));
         make.right.mas_equalTo(hua_scale(-15));
     }];
-    
 
     _headImage = [UIImageView new];
     _headImage.hidden = YES;

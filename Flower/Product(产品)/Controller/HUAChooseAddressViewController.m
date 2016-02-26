@@ -137,6 +137,15 @@
     _selecteButton =  button;
     
 }
+-(void)setExtraCellLineHidden: (UITableView *)tableView
+{
+    UIView *view = [UIView new];
+    
+    view.backgroundColor = [UIColor clearColor];
+    
+    [tableView setTableFooterView:view];
+}
+
 
 //选择地址
 - (void)selectAddress:(UIButton *)sender{
