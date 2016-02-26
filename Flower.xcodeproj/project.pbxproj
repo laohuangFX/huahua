@@ -174,6 +174,14 @@
 		17B7E2ED1C71BD9C0032C6D5 /* UIWebView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = 17B7E2471C71BD9C0032C6D5 /* UIWebView+AFNetworking.m */; };
 		17B7E2F01C71C09C0032C6D5 /* HUAAddressModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 17B7E2EF1C71C09C0032C6D5 /* HUAAddressModel.m */; };
 		17B7E2FB1C71E0400032C6D5 /* HUAChooseAddressTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 17B7E2F81C71E0400032C6D5 /* HUAChooseAddressTableViewCell.m */; };
+		1873F77D1C7EB0DB0051413A /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1873F77C1C7EB0DB0051413A /* Security.framework */; };
+		1873F77F1C7EB0EA0051413A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1873F77E1C7EB0EA0051413A /* UIKit.framework */; };
+		1873F7811C7EB0F70051413A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1873F7801C7EB0F70051413A /* Foundation.framework */; };
+		1873F7831C7EB1060051413A /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1873F7821C7EB1060051413A /* CoreGraphics.framework */; };
+		1873F7851C7EB1240051413A /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1873F7841C7EB1240051413A /* CoreTelephony.framework */; };
+		1873F7871C7EB1300051413A /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1873F7861C7EB1300051413A /* CoreFoundation.framework */; };
+		1873F7891C7EB13B0051413A /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1873F7881C7EB13B0051413A /* CFNetwork.framework */; };
+		1873F78C1C7EE5780051413A /* HUADuplicateTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1873F78B1C7EE5780051413A /* HUADuplicateTableViewCell.m */; };
 		189317E41C4887C3005D230F /* HUAConstRowHeight.m in Sources */ = {isa = PBXBuildFile; fileRef = 189317DD1C4887C3005D230F /* HUAConstRowHeight.m */; };
 		189317E51C4887C3005D230F /* HUACreateButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 189317DF1C4887C3005D230F /* HUACreateButton.m */; };
 		189317E61C4887C3005D230F /* HUADataTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 189317E11C4887C3005D230F /* HUADataTool.m */; };
@@ -287,11 +295,6 @@
 		592CB91F1C4E2A55002FD56C /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 592CB91E1C4E2A55002FD56C /* MessageUI.framework */; };
 		592CB9211C4E2A61002FD56C /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 592CB9201C4E2A61002FD56C /* JavaScriptCore.framework */; };
 		592CB9231C4E2A6B002FD56C /* libstdc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 592CB9221C4E2A6B002FD56C /* libstdc++.tbd */; };
-		59507C691C7ED3D00058491F /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 59507C681C7ED3D00058491F /* Security.framework */; };
-		59507C6B1C7ED3DB0058491F /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 59507C6A1C7ED3DB0058491F /* UIKit.framework */; };
-		59507C6D1C7ED3E60058491F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 59507C6C1C7ED3E60058491F /* Foundation.framework */; };
-		59507C6F1C7ED3F80058491F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 59507C6E1C7ED3F80058491F /* CoreGraphics.framework */; };
-		59507C711C7ED4570058491F /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 59507C701C7ED4570058491F /* CoreTelephony.framework */; };
 		5982844F1C5EF29F00972357 /* HUAMyOrderModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 5982844E1C5EF29F00972357 /* HUAMyOrderModel.m */; };
 		598284571C5EF2D300972357 /* HUAActivityOrderDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 598284521C5EF2D300972357 /* HUAActivityOrderDetailsViewController.m */; };
 		598284581C5EF2D300972357 /* HUAProductOrderDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 598284541C5EF2D300972357 /* HUAProductOrderDetailsViewController.m */; };
@@ -646,6 +649,15 @@
 		17B7E2EF1C71C09C0032C6D5 /* HUAAddressModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HUAAddressModel.m; sourceTree = "<group>"; };
 		17B7E2F71C71E0400032C6D5 /* HUAChooseAddressTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HUAChooseAddressTableViewCell.h; sourceTree = "<group>"; };
 		17B7E2F81C71E0400032C6D5 /* HUAChooseAddressTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HUAChooseAddressTableViewCell.m; sourceTree = "<group>"; };
+		1873F77C1C7EB0DB0051413A /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		1873F77E1C7EB0EA0051413A /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		1873F7801C7EB0F70051413A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		1873F7821C7EB1060051413A /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		1873F7841C7EB1240051413A /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
+		1873F7861C7EB1300051413A /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
+		1873F7881C7EB13B0051413A /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
+		1873F78A1C7EE5780051413A /* HUADuplicateTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HUADuplicateTableViewCell.h; sourceTree = "<group>"; };
+		1873F78B1C7EE5780051413A /* HUADuplicateTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HUADuplicateTableViewCell.m; sourceTree = "<group>"; };
 		189317DC1C4887C3005D230F /* HUAConstRowHeight.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HUAConstRowHeight.h; sourceTree = "<group>"; };
 		189317DD1C4887C3005D230F /* HUAConstRowHeight.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HUAConstRowHeight.m; sourceTree = "<group>"; };
 		189317DE1C4887C3005D230F /* HUACreateButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HUACreateButton.h; sourceTree = "<group>"; };
@@ -863,11 +875,6 @@
 		592CB91E1C4E2A55002FD56C /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		592CB9201C4E2A61002FD56C /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		592CB9221C4E2A6B002FD56C /* libstdc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libstdc++.tbd"; path = "usr/lib/libstdc++.tbd"; sourceTree = SDKROOT; };
-		59507C681C7ED3D00058491F /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
-		59507C6A1C7ED3DB0058491F /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
-		59507C6C1C7ED3E60058491F /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
-		59507C6E1C7ED3F80058491F /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
-		59507C701C7ED4570058491F /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
 		5982844D1C5EF29F00972357 /* HUAMyOrderModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HUAMyOrderModel.h; sourceTree = "<group>"; };
 		5982844E1C5EF29F00972357 /* HUAMyOrderModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HUAMyOrderModel.m; sourceTree = "<group>"; };
 		598284511C5EF2D300972357 /* HUAActivityOrderDetailsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HUAActivityOrderDetailsViewController.h; sourceTree = "<group>"; };
@@ -953,19 +960,21 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				59507C711C7ED4570058491F /* CoreTelephony.framework in Frameworks */,
+				1873F7891C7EB13B0051413A /* CFNetwork.framework in Frameworks */,
+				1873F7871C7EB1300051413A /* CoreFoundation.framework in Frameworks */,
+				1873F7851C7EB1240051413A /* CoreTelephony.framework in Frameworks */,
 				599DB67E1C7AB59B004EA1A0 /* SystemConfiguration.framework in Frameworks */,
-				59507C6F1C7ED3F80058491F /* CoreGraphics.framework in Frameworks */,
-				59507C6D1C7ED3E60058491F /* Foundation.framework in Frameworks */,
-				59507C6B1C7ED3DB0058491F /* UIKit.framework in Frameworks */,
-				59507C691C7ED3D00058491F /* Security.framework in Frameworks */,
-				592CB91B1C4E2A3B002FD56C /* libz.tbd in Frameworks */,
+				1873F7831C7EB1060051413A /* CoreGraphics.framework in Frameworks */,
+				1873F7811C7EB0F70051413A /* Foundation.framework in Frameworks */,
+				1873F77F1C7EB0EA0051413A /* UIKit.framework in Frameworks */,
+				1873F77D1C7EB0DB0051413A /* Security.framework in Frameworks */,
 				592CB9231C4E2A6B002FD56C /* libstdc++.tbd in Frameworks */,
 				592CB9211C4E2A61002FD56C /* JavaScriptCore.framework in Frameworks */,
 				592CB91F1C4E2A55002FD56C /* MessageUI.framework in Frameworks */,
 				590749391C772AE90050654B /* AliyunOSSiOS.framework in Frameworks */,
 				592CB91D1C4E2A4B002FD56C /* libicucore.tbd in Frameworks */,
 				5900D9231C7DD0B800FD1C04 /* jpush-ios-2.1.0.a in Frameworks */,
+				592CB91B1C4E2A3B002FD56C /* libz.tbd in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1961,6 +1970,8 @@
 				59279F6C1C5762A800136425 /* HUAWeiXinPhotoContainerView.m */,
 				59279F6D1C5762A800136425 /* HUDynamicATableViewCell.h */,
 				59279F6E1C5762A800136425 /* HUDynamicATableViewCell.m */,
+				1873F78A1C7EE5780051413A /* HUADuplicateTableViewCell.h */,
+				1873F78B1C7EE5780051413A /* HUADuplicateTableViewCell.m */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -1981,11 +1992,13 @@
 		59AC00EA1C3A4AFE00F453F5 = {
 			isa = PBXGroup;
 			children = (
-				59507C701C7ED4570058491F /* CoreTelephony.framework */,
-				59507C6E1C7ED3F80058491F /* CoreGraphics.framework */,
-				59507C6C1C7ED3E60058491F /* Foundation.framework */,
-				59507C6A1C7ED3DB0058491F /* UIKit.framework */,
-				59507C681C7ED3D00058491F /* Security.framework */,
+				1873F7881C7EB13B0051413A /* CFNetwork.framework */,
+				1873F7861C7EB1300051413A /* CoreFoundation.framework */,
+				1873F7841C7EB1240051413A /* CoreTelephony.framework */,
+				1873F7821C7EB1060051413A /* CoreGraphics.framework */,
+				1873F7801C7EB0F70051413A /* Foundation.framework */,
+				1873F77E1C7EB0EA0051413A /* UIKit.framework */,
+				1873F77C1C7EB0DB0051413A /* Security.framework */,
 				599DB67D1C7AB59B004EA1A0 /* SystemConfiguration.framework */,
 				590749381C772AE90050654B /* AliyunOSSiOS.framework */,
 				592CB9221C4E2A6B002FD56C /* libstdc++.tbd */,
@@ -2296,6 +2309,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1873F78C1C7EE5780051413A /* HUADuplicateTableViewCell.m in Sources */,
 				17B7E2A61C71BD9C0032C6D5 /* MJRefreshAutoFooter.m in Sources */,
 				5900D91B1C7DCD2800FD1C04 /* NSString+Emojize.m in Sources */,
 				17B7E2CC1C71BD9C0032C6D5 /* UIButton+WebCache.m in Sources */,
@@ -2693,7 +2707,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flower/Main(其他)/第三方/JPush",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = huahuahua;
+				PRODUCT_BUNDLE_IDENTIFIER = readn.Flower;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 			};
@@ -2720,7 +2734,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flower/Main(其他)/第三方/JPush",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = huahuahua;
+				PRODUCT_BUNDLE_IDENTIFIER = readn.Flower;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 			};

@@ -13,6 +13,7 @@
 #import "EMMallSectionView.h"
 #import "HUALoginController.h"
 #import "HUAmodel.h"
+#import "HUADuplicateTableViewCell.h"
 
 
 #define Scw [UIScreen mainScreen].bounds.size.width
@@ -32,6 +33,10 @@
     
     //记录第几行
     NSIndexPath *_indexPath;
+    
+    //点赞button；
+    UIButton *_loveButton;
+    UILabel  *_loveLabel;
 }
 
 @property(nonatomic,strong)UITableView *tableView;
@@ -70,14 +75,57 @@
  
     
     [self getData:NO];
+    //点赞按钮
+    [self navigationControllerLoveButton];
     
     //自定义表视图
     [self initTbaleView];
     
     //自定义键盘
     [self initKeyBoard];
+
+}
+- (void)navigationControllerLoveButton{
+    //爱好
+    _loveButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    //_loveButton.backgroundColor = [UIColor redColor];
+    //_loveButton.hidden = YES;
+    _loveButton.tag = 501;
+    [_loveButton setTitleColor:[UIColor grayColor] forState:0];
+    [_loveButton setImage:[UIImage imageNamed:@"praise_empty"] forState:UIControlStateNormal];
+    [_loveButton setImage:[UIImage imageNamed:@"praise_green"] forState:UIControlStateSelected];
+    _loveButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
+    [_loveButton addTarget:self action:@selector(click:) forControlEvents:UIControlEventTouchUpInside];
+    [_loveButton setImageEdgeInsets:UIEdgeInsetsMake(0, hua_scale(5), hua_scale(0), hua_scale(5))];
+    _loveButton.size = CGSizeMake(hua_scale(50), hua_scale(25));
+    if ([self.statusModel.is_praise.stringValue isEqualToString:@"0"]) {
+        _loveButton.selected = NO;
+    }else{
+        _loveButton.selected = YES;
+    }
+    _loveButton.left = self.view.right;
     
-   
+    _loveLabel = [UILabel new];
+    _loveLabel.font = [UIFont systemFontOfSize:hua_scale(12)];
+    //_loveLabel.backgroundColor = [UIColor yellowColor];
+    _loveLabel.textColor = [UIColor grayColor];
+    _loveLabel.text = self.statusModel.praise;
+    [_loveButton addSubview:_loveLabel];
+    [_loveLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.mas_equalTo(hua_scale(20));
+        make.centerY.mas_equalTo(0);
+        make.right.mas_equalTo(0);
+        make.height.mas_equalTo(_loveButton);
+    }];
+    
+    UIBarButtonItem *buttonItem = [[UIBarButtonItem alloc] initWithCustomView:_loveButton];
+    if ([[[[UIDevice currentDevice] systemVersion] substringToIndex:1] intValue]>=7) {
+        UIBarButtonItem *negativeSpacer = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
+        negativeSpacer.width = hua_scale(-25);
+        self.navigationItem.rightBarButtonItems = @[negativeSpacer, buttonItem];
+    }else{
+        self.navigationItem.rightBarButtonItem = buttonItem;
+    }
     
 }
 - (void)initTbaleView{
@@ -223,72 +271,12 @@
         
         static NSString *identifier = @"CELL";
         
-        HUDynamicATableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
+        HUADuplicateTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
         if (cell == nil) {
             
-            cell = [[HUDynamicATableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
+            cell = [[HUADuplicateTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
         }
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
-           __weak typeof(self) weakSelf = self;
-
-
-        //点赞
-        [cell setLoveBlock:^{
-            NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
-            //判断是否是游客模式
-            if (token==nil) {
-                //判断是否是游客评论，
-                UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"登陆" message:@"游客模式下不能点赞,请先登陆!" preferredStyle:UIAlertControllerStyleAlert];
-                
-                [alert addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                    
-                    [weakSelf.navigationController pushViewController:[HUALoginController new] animated:YES];
-                    [alert removeFromParentViewController];
-                    
-                }]];
-                
-                [alert addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                    
-                    [alert removeFromParentViewController];
-                }]];
-                
-                [self presentViewController:alert animated:YES completion:nil];
-                return ;
-            }
-            AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-            //申明返回的结果是json类型
-            manager.responseSerializer = [AFHTTPResponseSerializer serializer];
-            //申明请求的数据是json类型
-            manager.requestSerializer=[AFJSONRequestSerializer serializer];
-            //如果报接受类型不一致请替换一致text/html或别的
-            //manager.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"text/json"];
-            //传入的参数
-            [manager.requestSerializer setValue:token forHTTPHeaderField:@"token"];
-            NSDictionary *parameters = @{@"target":@"essay",@"id":self.statusModel.essay_id};
-            //你的接口地址
-            
-            NSString *url= [HUA_URL stringByAppendingPathComponent:@"user/praise"];
-            //发送请求
-            [manager POST:url parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:responseObject options:0 error:nil];
-                NSLog(@"JSON: %@", responseObject);
-                [self getData:NO];
-                NSString *praise = nil;
-                NSString *zan =nil;
-                if ([dic[@"info"][0] isKindOfClass:[NSDictionary class]]) {
-                    praise = [NSString stringWithFormat:@"%ld",self.statusModel.praise.integerValue+1];
-                    zan = @"1";
-                }else{
-                    praise = [NSString stringWithFormat:@"%ld",self.statusModel.praise.integerValue-1];
-                    zan = @"0";
-                }
-                self.praise_countBlock(praise,zan);
-                
-            } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                NSLog(@"Error: %@", error);
-            }];
-            
-        }];
         
         cell.model = self.statusModel;
         cell.boolType = YES;
@@ -532,6 +520,65 @@ int cellRow = 000;
     cellRow = self.cellIndex;
     [self.view endEditing:YES];
     NSLog(@"%@",text);
+}
+//点赞事件
+- (void)click:(UIButton *)sender{
+    NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"token"];
+    //判断是否是游客模式
+    if (token==nil) {
+        //判断是否是游客评论，
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"登陆" message:@"游客模式下不能点赞,请先登陆!" preferredStyle:UIAlertControllerStyleAlert];
+        
+        [alert addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            
+            [self.navigationController pushViewController:[HUALoginController new] animated:YES];
+            [alert removeFromParentViewController];
+            
+        }]];
+        
+        [alert addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            
+            [alert removeFromParentViewController];
+        }]];
+        
+        [self presentViewController:alert animated:YES completion:nil];
+        return ;
+    }
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    //申明返回的结果是json类型
+    manager.responseSerializer = [AFHTTPResponseSerializer serializer];
+    //申明请求的数据是json类型
+    manager.requestSerializer=[AFJSONRequestSerializer serializer];
+    //如果报接受类型不一致请替换一致text/html或别的
+    //manager.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"text/json"];
+    //传入的参数
+    [manager.requestSerializer setValue:token forHTTPHeaderField:@"token"];
+    NSDictionary *parameters = @{@"target":@"essay",@"id":self.statusModel.essay_id};
+    //你的接口地址
+    
+    NSString *url= [HUA_URL stringByAppendingPathComponent:@"user/praise"];
+    //发送请求
+    [manager POST:url parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:responseObject options:0 error:nil];
+        NSLog(@"JSON: %@", responseObject);
+        
+        NSString *zan =nil;
+        if ([dic[@"info"][0] isKindOfClass:[NSDictionary class]]) {
+            _loveLabel.text = [NSString stringWithFormat:@"%ld",self.statusModel.praise.integerValue+1];
+            zan = @"1";
+            _loveButton.selected = YES;
+        }else{
+            _loveLabel.text = [NSString stringWithFormat:@"%ld",self.statusModel.praise.integerValue-1];
+             _loveButton.selected = NO;
+            zan = @"0";
+        }
+        self.praise_countBlock(_loveLabel.text,zan);
+        
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"Error: %@", error);
+    }];
+
+
 }
 - (void)returnHeight:(CGFloat)height
 {
