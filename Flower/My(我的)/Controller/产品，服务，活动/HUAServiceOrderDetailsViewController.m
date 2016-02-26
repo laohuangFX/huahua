@@ -79,7 +79,7 @@
     [thView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(self.view.mas_left).mas_equalTo(hua_scale(10));
         make.right.mas_equalTo(self.view.mas_right).mas_equalTo(hua_scale(-10));
-        make.height.mas_equalTo(hua_scale(1));
+        make.height.mas_equalTo(hua_scale(0.5));
         make.top.mas_equalTo(hua_scale(75));
     }];
     
@@ -246,7 +246,7 @@
     [thView2 mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.right.mas_equalTo(thView);
         make.top.mas_equalTo(_state.mas_bottom).mas_equalTo(hua_scale(25));
-        make.height.mas_equalTo(1);
+        make.height.mas_equalTo(0.5);
     }];
     
     //服务内容
@@ -285,7 +285,7 @@
     [thView3 mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.right.mas_equalTo(thView);
         make.top.mas_equalTo(_serve.mas_bottom).mas_equalTo(hua_scale(25));
-        make.height.mas_equalTo(1);
+        make.height.mas_equalTo(0.5);
     }];
    
     NSDictionary *itemDic = self.modelDic[@"item"];
@@ -302,12 +302,11 @@
     //UILabel     *_time;//预约时间
 
     if ([self.is_use isEqualToString:@"0"]) {
-        _state.text = @"未使用 / 已完成交易" ;//状态
-        [HUAConstRowHeight adjustTheLabel:_state adjustColor:HUAColor(0x4da800) adjustRang:NSMakeRange(0, 3)];
+        _state.text = @"未使用";//状态
+      
         
     }else{
-        _state.text = @"未使用 / 已完成交易" ;//状态
-        [HUAConstRowHeight adjustTheLabel:_state adjustColor:HUAColor(0x4da800) adjustRang:NSMakeRange(6, 5)];
+        _state.text = @"已完成交易";//状态
     }
     
     
@@ -315,10 +314,6 @@
     _serve.text = itemDic[@"desc"];//服务内容文本
     
 
-    
-    
-    
-    
     //商品详情
     UILabel *label = [UILabel labelText:@"商品详情" color:nil font:hua_scale(13)];
     [_scrollView addSubview:label];
@@ -334,8 +329,8 @@
     NSArray *imageArray = self.modelDic[@"media_lis"];
     for (int i = 0; i<imageArray.count; i++) {
         UIImageView *image = [UIImageView new];
-        image.backgroundColor = [UIColor yellowColor];
-        [image sd_setImageWithURL:[NSURL URLWithString:imageArray[i]] placeholderImage:[UIImage imageNamed:@"placeholder"]];
+        image.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"loading_picture_middle"]];
+        [image sd_setImageWithURL:[NSURL URLWithString:imageArray[i]] placeholderImage:nil];
         [_scrollView addSubview:image];
         [image mas_makeConstraints:^(MASConstraintMaker *make) {
             make.left.mas_equalTo(hua_scale(10));

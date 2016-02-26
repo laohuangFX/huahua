@@ -49,7 +49,7 @@
 - (void)setCell{
 
     _iconImageView = [UIImageView new];
-    _iconImageView.backgroundColor = [UIColor yellowColor];
+    //_iconImageView.backgroundColor = [UIColor yellowColor];
    
     _shopName = [UILabel new];
     //_shopName.backgroundColor = [UIColor redColor];
@@ -206,14 +206,20 @@
    
     _time.text = [HUATranslateTime translateTimeIntoCurrurents:model.time.integerValue];
     
- 
-    [_iconImageView sd_setImageWithURL:[NSURL URLWithString:model.icon] placeholderImage:[UIImage imageNamed:@"placeholder"]];
+    _iconImageView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"loading_picture_small"]];
+    [_iconImageView sd_setImageWithURL:[NSURL URLWithString:model.icon] placeholderImage:nil];
     
     if ([model.type isEqualToString:@"1"]) {
         //产品
         if ([model.is_receipt isEqualToString:@"0"]) {
+            _confirmbutton.hidden = YES;
+            _stateLabel.hidden = NO;
+            _state.hidden = NO;
             _state.text = @"未发货";
         }else if ([model.is_receipt isEqualToString:@"2"]){
+            _confirmbutton.hidden = YES;
+            _stateLabel.hidden = NO;
+            _state.hidden = NO;
              _state.text = @"已完成交易";
              _state.textColor = HUAColor(0x999999);
         }else{
@@ -279,8 +285,7 @@
         _stateLabel.hidden = NO;
         _state.hidden = NO;
         
-        _state.text = @"收货成功";
-        _state.textColor = HUAColor(0x4da800);
+        _state.text = @"交易已完成";
         self.goodsBlock(self.indexPath);
 
     }]];

@@ -9,6 +9,8 @@
 #import <UIKit/UIKit.h>
 
 @interface HUAProductOrderDetailsViewController : UIViewController
+//订单id
+@property (nonatomic, strong)NSString *bill_id;
 //订单
 @property (nonatomic, strong)NSString *bill_num;
 //产品id

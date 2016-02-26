@@ -121,7 +121,7 @@
     UIBarButtonItem *buttonItem = [[UIBarButtonItem alloc] initWithCustomView:_loveButton];
     if ([[[[UIDevice currentDevice] systemVersion] substringToIndex:1] intValue]>=7) {
         UIBarButtonItem *negativeSpacer = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
-        negativeSpacer.width = hua_scale(-25);
+        negativeSpacer.width = hua_scale(-20);
         self.navigationItem.rightBarButtonItems = @[negativeSpacer, buttonItem];
     }else{
         self.navigationItem.rightBarButtonItem = buttonItem;

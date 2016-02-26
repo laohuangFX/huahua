@@ -84,7 +84,7 @@
     [thView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(self.view.mas_left).mas_equalTo(hua_scale(10));
         make.right.mas_equalTo(self.view.mas_right).mas_equalTo(hua_scale(-10));
-        make.height.mas_equalTo(hua_scale(1));
+        make.height.mas_equalTo(hua_scale(0.5));
         make.top.mas_equalTo(hua_scale(75));
     }];
     
@@ -255,7 +255,7 @@
     [thView2 mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.right.mas_equalTo(thView);
         make.top.mas_equalTo(_state.mas_bottom).mas_equalTo(hua_scale(25));
-        make.height.mas_equalTo(1);
+        make.height.mas_equalTo(0.5);
     }];
     
   
@@ -325,7 +325,7 @@
     [thView3 mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.right.mas_equalTo(thView);
         make.top.mas_equalTo(_addressButton.mas_bottom).mas_equalTo(hua_scale(25));
-        make.height.mas_equalTo(1);
+        make.height.mas_equalTo(0.5);
     }];
     
     //活动时间

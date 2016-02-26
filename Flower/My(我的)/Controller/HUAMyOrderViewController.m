@@ -338,6 +338,7 @@
     if ([model.type isEqualToString:@"1"]) {
        //产品
         HUAProductOrderDetailsViewController *vc = [HUAProductOrderDetailsViewController new];
+        vc.bill_id = model.bill_id;
         vc.bill_num = model.bill_num;
         vc.type = model.type;
         vc.product_id = model.product_id;
@@ -345,7 +346,8 @@
         vc.shop_id = model.shop_id;
         //从订单详情收货后跳转回来刷新我的订单里面的收货状态
         [vc setRefreshBlock:^(NSDictionary *dic) {
-            model.is_receipt = dic[@"info"][@"is_receipt"];
+            NSLog(@"%@",dic);
+            model.is_receipt = [dic[@"info"][@"is_receipt"]stringValue];
             [self.tablewView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:0];
         }];
         [self.navigationController pushViewController:vc animated:YES];

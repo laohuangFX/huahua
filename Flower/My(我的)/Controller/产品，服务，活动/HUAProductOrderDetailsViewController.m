@@ -300,13 +300,13 @@
         [thView2 mas_makeConstraints:^(MASConstraintMaker *make) {
             make.top.mas_equalTo(lastLabel.mas_bottom).mas_equalTo(hua_scale(25));
             make.left.right.mas_equalTo(thView);
-            make.height.mas_equalTo(hua_scale(1));
+            make.height.mas_equalTo(hua_scale(0.5));
         }];
     }else{
         [thView2 mas_makeConstraints:^(MASConstraintMaker *make) {
             make.top.mas_equalTo(confirmButton.mas_bottom).mas_equalTo(hua_scale(25));
             make.left.right.mas_equalTo(thView);
-            make.height.mas_equalTo(hua_scale(1));
+            make.height.mas_equalTo(hua_scale(0.5));
         }];
     }
   
@@ -328,6 +328,7 @@
     for (int i = 0; i < array2.count; i++) {
         
         UILabel *label = [UILabel labelText:array2[i] color:HUAColor(0x999999) font:hua_scale(11)];
+        //label.backgroundColor = [UIColor redColor];
         [_scrollView addSubview:label];
         [label setSingleLineAutoResizeWithMaxWidth:200];
         [label mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -345,66 +346,80 @@
         //记录上一个视图
         lastLabel2 = label;
     }
-
+    [lastLabel2 updateLayout];
     //品牌
     _brand = [UILabel labelText:@"蓝格子" color:HUAColor(0x4da800) font:hua_scale(11)];
     [_scrollView addSubview:_brand];
+    //_brand.backgroundColor = [UIColor yellowColor];
     [_brand mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(lastLabel2.mas_right).mas_equalTo(hua_scale(100));
+        make.height.mas_equalTo(lastLabel2.height);
         make.bottom.mas_equalTo(fileLbale2);
     }];
     [_brand setSingleLineAutoResizeWithMaxWidth:hua_scale(200)];
     
     //产地
     _place = [UILabel labelText:@"广州" color:HUAColor(0x4da800) font:hua_scale(11)];
+    //_place.backgroundColor = [UIColor yellowColor];
     [_scrollView addSubview:_place];
     [_place mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(_brand.mas_bottom).mas_equalTo(hua_scale(10));
+        make.height.mas_equalTo(lastLabel2.height);
         make.left.mas_equalTo(_brand);
     }];
     [_place setSingleLineAutoResizeWithMaxWidth:hua_scale(200)];
 
     //功效
     _effect = [UILabel labelText:@"收纳" color:HUAColor(0x4da800) font:hua_scale(11)];
+    //_effect.backgroundColor = [UIColor yellowColor];
     [_scrollView addSubview:_effect];
     [_effect mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(_place.mas_bottom).mas_equalTo(hua_scale(10));
+        make.height.mas_equalTo(lastLabel2.height);
         make.left.mas_equalTo(_place);
     }];
     [_effect setSingleLineAutoResizeWithMaxWidth:hua_scale(200)];
     
     //保质期
     _guaranteePeriod = [UILabel labelText:@"2018.06.30" color:HUAColor(0x4da800) font:hua_scale(11)];
+    //_guaranteePeriod.backgroundColor = [UIColor yellowColor];
     [_scrollView addSubview:_guaranteePeriod];
     [_guaranteePeriod mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(_effect.mas_bottom).mas_equalTo(hua_scale(10));
+        make.height.mas_equalTo(lastLabel2.height);
         make.left.mas_equalTo(_effect);
     }];
     [_guaranteePeriod setSingleLineAutoResizeWithMaxWidth:hua_scale(200)];
     
     //适合肤质
     _SuitableSkinTypes = [UILabel labelText:@"非过敏性皮肤" color:HUAColor(0x4da800) font:hua_scale(11)];
+    //_SuitableSkinTypes.backgroundColor = [UIColor yellowColor];
     [_scrollView addSubview:_SuitableSkinTypes];
     [_SuitableSkinTypes mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(_guaranteePeriod.mas_bottom).mas_equalTo(hua_scale(10));
+        make.height.mas_equalTo(lastLabel2.height);
         make.left.mas_equalTo(_guaranteePeriod);
     }];
     [_SuitableSkinTypes setSingleLineAutoResizeWithMaxWidth:hua_scale(200)];
 
     
     _instructions = [UILabel labelText:@"无" color:HUAColor(0x4da800) font:hua_scale(11)];
+    //_instructions.backgroundColor = [UIColor yellowColor];
     [_scrollView addSubview:_instructions];
     [_instructions mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(_SuitableSkinTypes.mas_bottom).mas_equalTo(hua_scale(10));
+        make.height.mas_equalTo(lastLabel2.height);
         make.left.mas_equalTo(_SuitableSkinTypes);
     }];
     [_instructions setSingleLineAutoResizeWithMaxWidth:hua_scale(200)];
 
     
     _specifications = [UILabel labelText:@"规格型号" color:HUAColor(0x4da800) font:hua_scale(11)];
+    //_specifications.backgroundColor = [UIColor yellowColor];
     [_scrollView addSubview:_specifications];
     [_specifications mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(_instructions.mas_bottom).mas_equalTo(hua_scale(10));
+        make.height.mas_equalTo(lastLabel2.height);
         make.left.mas_equalTo(_instructions);
     }];
     [_specifications setSingleLineAutoResizeWithMaxWidth:hua_scale(200)];
@@ -417,7 +432,7 @@
         make.left.mas_equalTo(mainView.mas_left).mas_equalTo(hua_scale(10));
         make.right.mas_equalTo(mainView.mas_right).mas_equalTo(hua_scale(-10));
         make.top.mas_equalTo(_specifications.mas_bottom).mas_equalTo(hua_scale(25));
-        make.height.mas_equalTo(1);
+        make.height.mas_equalTo(hua_scale(0.5));
     }];
     
     //使用说明
@@ -489,7 +504,7 @@
     [thView4 mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(_installationLabel.mas_bottom).mas_equalTo(hua_scale(25));
         make.left.right.mas_equalTo(_installationLabel);
-        make.height.mas_equalTo(hua_scale(1));
+        make.height.mas_equalTo(hua_scale(0.5));
     }];
     
     
@@ -545,8 +560,8 @@
     UIView *imageV = nil;
     for (int i = 0; i<imageArray.count; i++) {
         UIImageView *image = [UIImageView new];
-        image.backgroundColor = [UIColor yellowColor];
-        [image sd_setImageWithURL:[NSURL URLWithString:imageArray[i]] placeholderImage:[UIImage imageNamed:@"placeholder"]];
+        image.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"loading_picture_middle"]];
+        [image sd_setImageWithURL:[NSURL URLWithString:imageArray[i]] placeholderImage:nil];
         [_scrollView addSubview:image];
         [image mas_makeConstraints:^(MASConstraintMaker *make) {
             make.left.mas_equalTo(hua_scale(10));
@@ -600,7 +615,7 @@
         //如果报接受类型不一致请替换一致text/html或别的
         manager.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"application/json"];
         //传入的参数
-        NSDictionary *parameters = @{@"bill_id":self.bill_num};
+        NSDictionary *parameters = @{@"bill_id":self.bill_id};
         
         NSString *url = [HUA_URL stringByAppendingPathComponent:@"user/confirm_receipt"];
         

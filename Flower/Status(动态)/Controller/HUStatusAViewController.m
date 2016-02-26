@@ -108,15 +108,15 @@
     //self.tableView.estimatedRowHeight = 100;
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
+    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     [self.view addSubview:self.tableView];
     
     UIView *headView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, screenWidth, hua_scale(15))];
     headView.backgroundColor = [UIColor clearColor];
     self.tableView.tableHeaderView = headView;
 }
-//- (void)viewWillAppear:(BOOL)animated{
-//    [self getData:nil];
-//}
+
+
 //获取数据
 - (void)getData:(NSString *)marker{
     //获取当前用户名
