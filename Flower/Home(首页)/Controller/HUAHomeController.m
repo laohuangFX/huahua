@@ -171,6 +171,7 @@ static NSString *identifier = @"cell";
     [self setupDownRefresh];
 
     self.currentCity =[[NSUserDefaults standardUserDefaults] objectForKey: @"currentCity"];
+    [self loadCityData];
     //定位
     [self getAddress];
     
@@ -185,57 +186,6 @@ static NSString *identifier = @"cell";
         [self.selectView dismissView];
     }
 }
-- (void)getCurrentData{
-    NSString *url = [HUA_URL stringByAppendingPathComponent:App_index];
-    if (self.page > [self.totalPage integerValue ]) {
-        [self.tableView.mj_footer endRefreshingWithNoMoreData];
-        [HUAMBProgress MBProgressOnlywithLabelText:@"没有更多数据了"];
-        return;
-    }
-    [HUAHttpTool POST:url params:self.currentParameter success:^(id responseObject) {
-        HUALog(@"123%@",responseObject);
-        [self.tableView.mj_header endRefreshing];
-        [self.tableView.mj_footer endRefreshing];
-        if ([responseObject[@"info"] isKindOfClass:[NSString class]]) {
-            [HUAMBProgress MBProgressOnlywithLabelText:responseObject[@"info"]];
-            return  ;
-        }
-        [responseObject writeToFile:self.homePath atomically:YES];
-        if (self.page == 1) {
-            //加载数据插入到可变数组最前面
-            self.totalPage = responseObject[@"info"][@"pages"];
-            
-            NSString *newCount = responseObject[@"info"][@"total"];
-            [NSKeyedArchiver archiveRootObject:newCount toFile:self.pagePath];
-            if ([newCount isEqualToString:[NSKeyedUnarchiver unarchiveObjectWithFile:self.pagePath]]) {
-                [HUAMBProgress MBProgressOnlywithLabelText:@"没有更多新的商户了"];
-            }
-            self.categoryArray = [HUADataTool getCategoryList:responseObject];
-            
-            self.cityArray = [[HUACityInfo citysFromArray:responseObject[@"info"][@"city_list"]] mutableCopy];
-            NSArray *array = [HUADataTool homeBanner:responseObject];
-            
-            HUAShopInfo *banner = array.firstObject;
-            self.bannerArray = banner.bannerArr;
-            [self createHeaderView:self.bannerArray];
-            
-            [self.shopsArray removeAllObjects];
-        }
-        
-        NSArray *shopArray = [HUADataTool homeShop:responseObject];
-        
-        [self.shopsArray addObjectsFromArray:shopArray];
-        
-        [self.tableView reloadData];
-        self.page++;
-    } failure:^(NSError *error) {
-        [HUAMBProgress MBProgressFromWindowWithLabelText:@"还没有联网哦，去设置网络吧"];
-        [self.tableView.mj_header endRefreshing];
-        [self.tableView.mj_footer endRefreshing];
-        
-    }];
-}
-
 
 - (void)getData {
     
@@ -258,7 +208,7 @@ static NSString *identifier = @"cell";
         NSArray *array = [HUADataTool homeBanner:responseObject];
         HUAShopInfo *banner = array.firstObject;
         self.bannerArray = banner.bannerArr;
-        self.cityArray = [[HUACityInfo citysFromArray:[[responseObject objectForKey:@"info"] objectForKey:@"city_list"]] mutableCopy];
+//        self.cityArray = [[HUACityInfo citysFromArray:[[responseObject objectForKey:@"info"] objectForKey:@"city_list"]] mutableCopy];
         [self createHeaderView:self.bannerArray];
         [self.tableView reloadData];
     } failure:^(NSError *error) {
@@ -289,7 +239,24 @@ static NSString *identifier = @"cell";
     [self.tableView.mj_header beginRefreshing];
     
 }
-
+- (void)loadCityData{
+    NSString *url = [HUA_URL stringByAppendingPathComponent:@"general/get_city"];
+    [HUAHttpTool GET:url params:nil success:^(id responseObject) {
+        NSLog(@"%@",responseObject);
+        NSArray *array = responseObject[@"info"];
+        for (NSDictionary *dic  in array) {
+            NSArray *array1 = [HUACityInfo citysFromArray:dic[@"children"]];
+            HUACityInfo *city = [HUACityInfo modelWithDictionary:dic];
+            city.childrenArray = array1;
+            [self.cityArray addObject:city];
+        }
+        
+        
+    } failure:^(NSError *error) {
+        
+    }];
+    
+}
 - (void)loadNewData {
     if (self.order) {
         [HUAMBProgress MBProgressOnlywithLabelText:@"没有更多数据了"];
@@ -305,12 +272,22 @@ static NSString *identifier = @"cell";
         if ([self.currentCity isEqualToString:self.userCity]) {
             self.parameter[@"x"] = @(self.userCoord.latitude);
             self.parameter[@"y"] = @(self.userCoord.longitude);
+            [self.parameter removeObjectForKey:@"regoin_pid"];
+            [self.parameter removeObjectForKey:@"region_id"];
+            
         }else{
+            [self.parameter removeObjectForKey:@"x"];
+            [self.parameter removeObjectForKey:@"y"];
+            NSString *cityid = [HUACityInfo cityidForcityName:self.currentCity array:self.cityArray];
             NSString *regoinid = [HUACityInfo parentidForcityName:self.currentCity array:self.cityArray];
-            if (regoinid.length != 0) {
-                self.parameter[@"regoin_pid"] = regoinid;
-                self.parameter[@"region_id"] = @99;
+            if (cityid.length != 0) {
+                 self.parameter[@"regoin_pid"] = cityid;
+                if (regoinid.length != 0) {
+                     self.parameter[@"region_id"] = regoinid;
+                }
             }
+           
+            
            
         }
     }
@@ -346,7 +323,7 @@ static NSString *identifier = @"cell";
         
         self.categoryArray = [HUADataTool getCategoryList:responseObject];
         
-        self.cityArray = [[HUACityInfo citysFromArray:responseObject[@"info"][@"city_list"]] mutableCopy];
+//        self.cityArray = [[HUACityInfo citysFromArray:responseObject[@"info"][@"city_list"]] mutableCopy];
         
         NSArray *array = [HUADataTool homeBanner:responseObject];
         
