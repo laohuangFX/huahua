@@ -65,6 +65,7 @@
 - (UITableView *)tableView {
     if (!_tableView) {
         _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, screenWidth, screenHeight-navigationBarHeight) style:UITableViewStylePlain];
+        _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
         _tableView.delegate = self;
         _tableView.dataSource = self;
         _tableView.separatorInset = UIEdgeInsetsMake(0, hua_scale(10), 0, hua_scale(10));
@@ -93,6 +94,14 @@
     parameter[@"shop_id"] = self.shop_id;
     [HUAHttpTool GETWithTokenAndUrl:url params:parameter success:^(id responseObject) {
         HUALog(@"是不是会员%@",responseObject);
+        if ([responseObject[@"error"] isEqualToString:@"无效的TOKEN！"]) {
+            [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"token"];
+            [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"data"];
+            HUALoginController *loginVC = [[HUALoginController alloc] init];
+            [self.navigationController pushViewController:loginVC animated:YES];
+
+            return ;
+        }
         self.is_Vip = responseObject[@"info"];
         [self getData];
     } failure:^(NSError *error) {
@@ -127,8 +136,8 @@
     
     HUAPraiseButton *praiseButton = [[HUAPraiseButton alloc] initWithFrame:CGRectMake(hua_scale(268), hua_scale(9), hua_scale(42), hua_scale(15))];
 
-    UIBarButtonItem *leftSpace = [UIBarButtonItem leftSpace:-20];
-    
+    UIBarButtonItem *leftSpace = [UIBarButtonItem leftSpace:-10];
+    UIBarButtonItem *rightSpace = [UIBarButtonItem rightSpace:13];
     if ([self.userInfo.hava_praised isEqualToString:@"1"] ) {
         praiseButton.selected = YES;
         praiseButton.praiseImageView.image = [UIImage imageNamed:@"praise_tech"];
@@ -139,7 +148,7 @@
     [praiseButton addTarget:self action:@selector(clickToPraise:) forControlEvents:UIControlEventTouchUpInside];
     
     praiseButton.titleLabel.font = [UIFont systemFontOfSize:hua_scale(14)];
-    self.navigationItem.rightBarButtonItems = @[leftSpace,[[UIBarButtonItem alloc]initWithCustomView:praiseButton],[[UIBarButtonItem alloc]initWithCustomView:collectButton]];
+    self.navigationItem.rightBarButtonItems = @[leftSpace,[[UIBarButtonItem alloc]initWithCustomView:praiseButton],rightSpace,[[UIBarButtonItem alloc]initWithCustomView:collectButton]];
 }
 #pragma mark -- 点击收藏
 - (void)clickToCollect:(UIButton *)sender {
@@ -239,6 +248,7 @@
 
 - (void)setHeaderView:(HUAShopIntroduce *)shopIntroduce {
     //判断是不是会员
+
     if (![self.is_Vip isKindOfClass:[NSDictionary class]]) {
         HUAShopTopView *headerView = [[HUAShopTopView alloc] initWithFrame:CGRectMake(0, 0, screenWidth, hua_scale(390))];
         headerView.delegate = self;
@@ -249,6 +259,8 @@
         
         UIButton *becomeVIPButton = [UIButton buttonWithFrame:becomeVIPButtonFrame title:@"成为会员" image:@"becomevip" font:hua_scale(15) titleColor:HUAColor(0x333333)];
         becomeVIPButton.backgroundColor = HUAColor(0xF6F6F6);
+        becomeVIPButton.layer.borderColor = HUAColor(0xd2d2d2).CGColor;
+        becomeVIPButton.layer.borderWidth = 0.5;
         [becomeVIPButton addTarget:self action:@selector(becomeVIP:) forControlEvents:UIControlEventTouchUpInside];
         [headerView addSubview:becomeVIPButton];
         
@@ -325,6 +337,8 @@
         CGRect rechargeFrame = CGRectMake(hua_scale(10), hua_scale(265), hua_scale(145), hua_scale(53));
         UIButton *rechargeButton = [UIButton buttonWithFrame:rechargeFrame title:@"充值" image:@"recharge" font:hua_scale(15) titleColor:HUAColor(0x333333)];
         rechargeButton.backgroundColor = HUAColor(0xF6F6F6);
+        rechargeButton.layer.borderColor = HUAColor(0xd2d2d2).CGColor;
+        rechargeButton.layer.borderWidth = 0.5;
         [rechargeButton addTarget:self action:@selector(recharge:) forControlEvents:UIControlEventTouchUpInside];
         [headerView addSubview:rechargeButton];
         
@@ -459,24 +473,24 @@
     
     [detailLabel sizeToFit];
     
-    UIView *seperateLine = [[UIView alloc]initWithFrame:CGRectMake(hua_scale(10), hua_scale(77)+detailLabel.height, screenWidth-hua_scale(20), 0.5)];
+    UIView *seperateLine = [[UIView alloc]initWithFrame:CGRectMake(hua_scale(10), hua_scale(77)+detailLabel.height-10, screenWidth-hua_scale(20), 0.5)];
     seperateLine.backgroundColor = HUAColor(0xCBCBCB);
     
     
-    UILabel*newestActive = [[UILabel alloc]initWithFrame:CGRectMake(hua_scale(10), hua_scale(102)+detailLabel.height, hua_scale(100), hua_scale(13))];
+    UILabel*newestActive = [[UILabel alloc]initWithFrame:CGRectMake(hua_scale(10), hua_scale(102)+detailLabel.height-10, hua_scale(100), hua_scale(13))];
     newestActive.text = @"最新活动";
     newestActive.font = [UIFont systemFontOfSize:hua_scale(14)];
     
     CGFloat height = 0.0;
     if (coverArray.count == 0) {
-        height =detailLabel.height+hua_scale(134);
+        height =detailLabel.height+hua_scale(134)-10;
     }else {
         for (int i = 0; i < coverArray.count; i++) {
             if (i%3  == 0 || i%3  == 1) {
-                height = hua_scale(116)+(i / 3) *hua_scale(252)+detailLabel.height+hua_scale(134);
+                height = hua_scale(116)+(i / 3) *hua_scale(252)+detailLabel.height+hua_scale(134)-10;
             }
             if (i%3  == 2) {
-                height = hua_scale(242)+(i / 3) *hua_scale(252)+detailLabel.height+hua_scale(134);
+                height = hua_scale(242)+(i / 3) *hua_scale(252)+detailLabel.height+hua_scale(134)-10;
             }
         }
         
@@ -492,6 +506,7 @@
         if (i % 3 == 0) {
             CGRect buttonFrame = CGRectMake(hua_scale(10), (i / 3) *hua_scale(252)+detailLabel.height+hua_scale(132), hua_scale(147), hua_scale(116));
             UIButton *button = [UIButton buttonWithTarget:self action:@selector(click:) Frame:buttonFrame url:coverArray[i]];
+            
             button.tag = [idArray[i] integerValue];
             [footerView addSubview:button];
         }
@@ -536,6 +551,11 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:@"cell"];
         
     }
+    UIView *topSeperateLine = [[UIView alloc]initWithFrame:CGRectMake(hua_scale(10), hua_scale(44)-0.5 , screenWidth-hua_scale(20), 0.5)];
+    
+    topSeperateLine.backgroundColor = HUAColor(0xCBCBCB);
+    [cell addSubview:topSeperateLine];
+    
     cell.textLabel.font = [UIFont systemFontOfSize:hua_scale(13)];
     cell.detailTextLabel.font = [UIFont systemFontOfSize:hua_scale(13)];
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
@@ -600,7 +620,7 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    return 44;
+    return hua_scale(44);
 }
 
 

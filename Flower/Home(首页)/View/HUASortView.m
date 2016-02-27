@@ -74,26 +74,10 @@
     button.layer.borderColor = HUAColor(0xbfbfbf).CGColor;
     button.tag = type;
     [button addTarget:self action:@selector(click:) forControlEvents:UIControlEventTouchUpInside];
-//    [button setTitleColor:HUAColor(0xffffff) forState:UIControlStateHighlighted];
-//    [button setImage:[self imageWithColor:HUAColor(0x000000)] forState:UIControlStateNormal];
-//    [button setImage:[self imageWithColor:HUAColor(0x4da800)] forState:UIControlStateHighlighted];
-//    button.backgroundColor = HUAColor(0x4da800);
     [self.chooseView addSubview:button];
     return button;
 }
-- (UIImage *)imageWithColor:(UIColor *)color {
-    CGRect rect = CGRectMake(0.0f, 0.0f, 1.0f, 1.0f);
-    UIGraphicsBeginImageContext(rect.size);
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    
-    CGContextSetFillColorWithColor(context, [color CGColor]);
-    CGContextFillRect(context, rect);
-    
-    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    
-    return image;
-}
+
 - (void)layoutSubviews {
     [super layoutSubviews];
     // GRect buttonFrame = CGRectMake(hua_scale(10)+hua_scale(102)*i, hua_scale(14.5), hua_scale(96), hua_scale(31));
@@ -111,10 +95,7 @@
 }
 
 
-- (void)clickDown:(UIButton *)sender {
-    [sender setTitleColor:HUAColor(0xffffff) forState:UIControlStateNormal];
-    sender.backgroundColor = HUAColor(0x4da800);
-}
+
 
 - (void)click:(UIButton *)sender {
     if (kNetworkNotReachability == YES) {

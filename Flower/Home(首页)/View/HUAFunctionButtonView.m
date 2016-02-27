@@ -7,6 +7,11 @@
 //
 
 #import "HUAFunctionButtonView.h"
+#import "HUASectionHeaderView.h"
+
+@interface HUAFunctionButtonView ()
+@property (nonatomic, strong) UIButton *fuctionButton;
+@end
 
 @implementation HUAFunctionButtonView
 - (NSArray *)functionImages {
@@ -26,6 +31,7 @@
     if (self = [super initWithFrame:frame]) {
         for (int i = 0; i < 6; i++) {
             UIButton *fuctionButton =[UIButton buttonWithType:0];
+            self.fuctionButton = fuctionButton;
             fuctionButton.tag =  i;
             
             [fuctionButton setImage:[UIImage imageNamed:self.functionImages[i]] forState:UIControlStateNormal];
@@ -97,6 +103,9 @@
     }
     return self;
 }
+
+
+
 - (void)showFunction:(UIButton *)sender {
 
     

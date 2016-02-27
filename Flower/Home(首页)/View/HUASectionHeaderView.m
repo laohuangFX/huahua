@@ -43,6 +43,8 @@
 
 - (void)click:(UIButton *)sender {
     
+    [[NSNotificationCenter defaultCenter]postNotificationName:@"cannotClick" object:nil];
+    
     sender.selected = !sender.selected;
     
     if (self.delegate && [self.delegate respondsToSelector:@selector(clickSortButton:)]) {

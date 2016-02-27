@@ -25,11 +25,22 @@
     if (self = [super initWithFrame:frame]) {
         self.topImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, screenWidth, hua_scale(190))];
         [self addSubview:self.topImageView];
+        UIImageView *imageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, screenWidth, hua_scale(190))];
+        imageView.image = [UIImage imageNamed:@"gradual_change"];
+        [self.topImageView addSubview:imageView];
         
-        self.iconImageView = [[UIImageView alloc] initWithFrame:CGRectMake(hua_scale(10), hua_scale(107), hua_scale(75), hua_scale(60))];
+        
+        UIImageView *shadow = [[UIImageView alloc]initWithFrame:CGRectMake(hua_scale(10), hua_scale(120), hua_scale(83), hua_scale(69))];
+        shadow.contentMode = UIViewContentModeScaleAspectFill;
+        shadow.image = [UIImage imageNamed:@"shadow"];
+        //shadow.backgroundColor = [UIColor redColor];
+        [self addSubview:shadow];
+        
+        
+        self.iconImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, hua_scale(75), hua_scale(60))];
         self.iconImageView.layer.borderWidth = hua_scale(1);
         self.iconImageView.layer.borderColor = HUAColor(0xFFFFFF).CGColor;
-        [self addSubview:self.iconImageView];
+        [shadow addSubview:self.iconImageView];
         
         CGRect shopNameFrame = CGRectMake(hua_scale(100), hua_scale(150), hua_scale(200), hua_scale(15));
         self.shopNameLabel = [UILabel labelWithFrame:shopNameFrame text:@"华乐国际美丽造型" color:HUAColor(0xFFFFFF) font:hua_scale(16)];

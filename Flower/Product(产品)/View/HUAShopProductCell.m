@@ -70,14 +70,14 @@
     if (self.goodsNameLabel.height > 20) {
         self.praiseImageView.frame = CGRectMake(hua_scale(114), CGRectGetMaxY(self.goodsNameLabel.frame)+ hua_scale(6), hua_scale(hua_scale(9)), hua_scale(8));
         self.praiseLabel.text = [NSString stringWithFormat:@"%@赞过",product.praise_count];
-        self.praiseLabel.frame =  CGRectMake(hua_scale(125), CGRectGetMaxY(self.goodsNameLabel.frame)+ hua_scale(6), hua_scale(100), hua_scale(8));
+        self.praiseLabel.frame =  CGRectMake(hua_scale(128), CGRectGetMaxY(self.goodsNameLabel.frame)+ hua_scale(6), hua_scale(100), hua_scale(8));
     }else {
         self.praiseImageView.frame = CGRectMake(hua_scale(114), CGRectGetMaxY(self.goodsNameLabel.frame)+ hua_scale(10), hua_scale(hua_scale(9)), hua_scale(8));
         self.praiseLabel.text = [NSString stringWithFormat:@"%@赞过",product.praise_count];
-        self.praiseLabel.frame =  CGRectMake(hua_scale(125), CGRectGetMaxY(self.goodsNameLabel.frame)+ hua_scale(10), hua_scale(100), hua_scale(8));
+        self.praiseLabel.frame =  CGRectMake(hua_scale(128), CGRectGetMaxY(self.goodsNameLabel.frame)+ hua_scale(10), hua_scale(100), hua_scale(8));
     }
 
-    self.priceLabel.text = [NSString stringWithFormat:@"¥%@",product.price];
+    self.priceLabel.text = [NSString stringWithFormat:@"¥ %@",product.price];
     
 }
 

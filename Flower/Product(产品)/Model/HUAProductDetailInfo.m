@@ -22,6 +22,7 @@
         self.vip_discount = dic[@"vip_discount"];
         self.size = dic[@"size"];
         self.desc = dic[@"desc"];
+        self.vip_price = dic[@"vip_price"];
     }
     return self;
 }

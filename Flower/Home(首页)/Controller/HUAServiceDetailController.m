@@ -61,8 +61,10 @@
         _tableView.dataSource = self;
         _tableView.delegate = self;
         [_tableView registerClass:[HUAServiceMasterCell class] forCellReuseIdentifier:@"Cell"];
-        _tableView.separatorInset = UIEdgeInsetsMake(0, hua_scale(10), 0, hua_scale(10));
-        _tableView.separatorColor = HUAColor(0xcdcdcd);
+        _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+        
+        
+ 
        // [_tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"cell"];
     }
     return _tableView;
@@ -93,7 +95,7 @@
         self.serviceInfo = [HUAServiceInfo mj_objectWithKeyValues:responseObject[@"item"]];
         HUALog(@"%@",self.serviceInfo.have_praised);
         self.category = responseObject[@"item"][@"category"];
-        self.serviceArray = responseObject[@"info"][@"media_lis"];
+        self.serviceArray = responseObject[@"media_lis"];
         self.masterArray = [HUADataTool getMasterArray:responseObject];
         [self setHeaderView:self.serviceInfo];
         [self setNavigationBar];
@@ -176,26 +178,27 @@
     serviceImageView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"loading_picture_middle"]];
     [serviceImageView sd_setImageWithURL:[NSURL URLWithString:serviceInfo.cover] placeholderImage:nil];
     
-    CGRect nameFrame = CGRectMake(hua_scale(10), hua_scale(205), screenWidth - hua_scale(20), 0);
+    CGRect nameFrame = CGRectMake(hua_scale(10), hua_scale(205), screenWidth - hua_scale(20), hua_scale(13));
     UILabel *serviceName = [UILabel labelWithFrame:nameFrame text:serviceInfo.name color:HUAColor(0x000000) font:hua_scale(13)];
-    serviceName.numberOfLines = 0;
-    NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:serviceName.text];
-    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
-    [paragraphStyle setLineSpacing:hua_scale(7)];//调整行间距
-    [attributedString addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange(0, [serviceName.text length])];
-        serviceName.attributedText = attributedString;
-    [serviceName sizeToFit];
-    
-    
+
+//    serviceName.numberOfLines = 0;
+//    NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:serviceName.text];
+//    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+//    [paragraphStyle setLineSpacing:hua_scale(7)];//调整行间距
+//    [attributedString addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange(0, [serviceName.text length])];
+//        serviceName.attributedText = attributedString;
+//    [serviceName sizeToFit];
+
+
     CGRect priceFrame = CGRectMake(hua_scale(10), serviceName.height+hua_scale(220), screenWidth - hua_scale(20), hua_scale(19));
     UILabel *servicePrice = [[UILabel alloc]initWithFrame:priceFrame];
-    servicePrice.text = [NSString stringWithFormat:@"¥%@（会员价¥%@）",serviceInfo.price,serviceInfo.vip_price];
+    servicePrice.text = [NSString stringWithFormat:@"¥ %@（ 会员价¥ %@ ）",serviceInfo.price,serviceInfo.vip_price];
     
     NSMutableAttributedString *str = [[NSMutableAttributedString alloc] initWithString:servicePrice.text];
-    [str addAttribute:NSForegroundColorAttributeName value:HUAColor(0x4da800) range:NSMakeRange(0 ,[serviceInfo.price length]+1)];
-    [str addAttribute:NSForegroundColorAttributeName value:HUAColor(0x4da800) range:NSMakeRange([serviceInfo.price length]+1,[serviceInfo.vip_price length]+6)];
-    [str addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:hua_scale(19)] range:NSMakeRange(0, [serviceInfo.price length]+1)];
-    [str addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:hua_scale(11)] range:NSMakeRange([serviceInfo.price length]+1,[serviceInfo.vip_price length]+6)];
+    [str addAttribute:NSForegroundColorAttributeName value:HUAColor(0x4da800) range:NSMakeRange(0 ,[serviceInfo.price length]+2)];
+    [str addAttribute:NSForegroundColorAttributeName value:HUAColor(0x4da800) range:NSMakeRange([serviceInfo.price length]+2,servicePrice.text.length-([serviceInfo.price length]+2))];
+    [str addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:hua_scale(19)] range:NSMakeRange(0, [serviceInfo.price length]+2)];
+    [str addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:hua_scale(11)] range:NSMakeRange([serviceInfo.price length]+2,servicePrice.text.length-([serviceInfo.price length]+2))];
     
     servicePrice.attributedText = str;
 
@@ -224,16 +227,16 @@
     CGRect titleDetailFrame = CGRectMake(hua_scale(10), serviceName.height+serviceContent.height+hua_scale(420), screenWidth- hua_scale(20), hua_scale(13));
     UILabel *serviceDetailLabel = [UILabel labelWithFrame:titleDetailFrame text:@"服务详情" color:HUAColor(0x000000) font:hua_scale(13)];
     
-    UIView *separateLine2 = [[UIView alloc] initWithFrame:CGRectMake(hua_scale(10), serviceName.height+serviceContent.height+hua_scale(463) + hua_scale(195)*self.serviceArray.count, screenWidth-hua_scale(20), 0.5)];
+    UIView *separateLine2 = [[UIView alloc] initWithFrame:CGRectMake(hua_scale(10), serviceName.height+serviceContent.height+hua_scale(473) + hua_scale(195)*self.serviceArray.count, screenWidth-hua_scale(20), 0.5)];
     separateLine2.backgroundColor = HUAColor(0xeeeeee);
     
-    CGRect masterFrame = CGRectMake(hua_scale(10), serviceName.height+serviceContent.height+hua_scale(488) + hua_scale(195)*self.serviceArray.count, screenWidth-hua_scale(20), hua_scale(13));
+    CGRect masterFrame = CGRectMake(hua_scale(10), serviceName.height+serviceContent.height+hua_scale(498) + hua_scale(195)*self.serviceArray.count, screenWidth-hua_scale(20), hua_scale(13));
     UILabel *masterLabel = [UILabel labelWithFrame:masterFrame text:@"服务技师" color:HUAColor(0x000000) font:hua_scale(13)];
     
-    UIView *separateLine3 = [[UIView alloc] initWithFrame:CGRectMake(hua_scale(10), serviceName.height+serviceContent.height+hua_scale(516) + hua_scale(195)*self.serviceArray.count, screenWidth-hua_scale(20), 0.5)];
+    UIView *separateLine3 = [[UIView alloc] initWithFrame:CGRectMake(hua_scale(10), serviceName.height+serviceContent.height+hua_scale(526) + hua_scale(195)*self.serviceArray.count, screenWidth-hua_scale(20), 0.5)];
     separateLine3.backgroundColor = HUAColor(0xcdcdcd);
     
-    CGFloat height = serviceName.height+serviceContent.height+hua_scale(516) + hua_scale(195)*self.serviceArray.count;
+    CGFloat height = serviceName.height+serviceContent.height+hua_scale(526) + hua_scale(195)*self.serviceArray.count;
     UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, screenWidth, height)];
     
     for (int i = 0; i < self.serviceArray.count; i ++) {
@@ -301,6 +304,9 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     HUAServiceMasterCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" ];
     cell.masterInfo = self.masterArray[indexPath.row];
+    UIView *separateLine = [[UIView alloc] initWithFrame:CGRectMake(hua_scale(10), hua_scale(50)-0.5 , screenWidth-hua_scale(20), 0.5)];
+    separateLine.backgroundColor = HUAColor(0xcdcdcd);
+    [cell addSubview:separateLine];
     return cell;
     
 }

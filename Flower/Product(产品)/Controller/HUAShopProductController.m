@@ -186,7 +186,10 @@
     [HUAHttpTool GET:url params:self.parameters success:^(id responseObject) {
         HUALog(@"%@",responseObject);
         if ([responseObject[@"info"] isKindOfClass:[NSString class]]) {
-            return ;
+            [HUAMBProgress MBProgressOnlywithLabelText:responseObject[@"info"]];
+            [self.navigationController popViewControllerAnimated:YES];
+            [self.tableView.mj_header endRefreshing];
+            return  ;
         }
         //获取数据总个数
         NSString *newCount = responseObject[@"info"][@"total"];
@@ -436,6 +439,7 @@
     HUAProductDetailController *productVC = [HUAProductDetailController new];
     productVC.product_id = product.product_id;
     productVC.shop_id = self.shop_id;
+    
     [self.navigationController pushViewController:productVC animated:YES];
    [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }

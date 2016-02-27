@@ -19,6 +19,7 @@
 @property (nonatomic, strong) NSString *product_id;
 @property (nonatomic, strong) NSNumber *have_praised;
 @property (nonatomic, strong) NSString *shop_id;
+@property (nonatomic, strong) NSString *vip_price;
 
 
 + (id)getProductDetailInfoWithDictionary:(NSDictionary *)dic;
