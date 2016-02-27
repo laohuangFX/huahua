@@ -53,6 +53,7 @@
         _tablewView = [[UITableView alloc] initWithFrame:CGRectMake(0, hua_scale(30), screenWidth, screenHeight-navigationBarHeight-hua_scale(30))];
         _tablewView.delegate = self;
         _tablewView.dataSource = self;
+        _tablewView.separatorStyle = UITableViewCellSeparatorStyleNone;
  
     }
     return _tablewView;

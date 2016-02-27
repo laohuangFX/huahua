@@ -387,6 +387,7 @@
 }
 
 - (CAShapeLayer *)createSeparatorLineWithColor:(UIColor *)color andPosition:(CGPoint)point {
+    //分割线
     CAShapeLayer *layer = [CAShapeLayer new];
     
     UIBezierPath *path = [UIBezierPath new];
@@ -414,10 +415,10 @@
     //标题的字设置
     CATextLayer *layer = [CATextLayer new];
     //layer.backgroundColor = [UIColor redColor].CGColor;
-    CGFloat sizeWidth = (size.width < (self.frame.size.width / _numOfMenu) - 25) ? size.width+hua_scale(8) : self.frame.size.width / _numOfMenu - 25+hua_scale(8);
-    layer.bounds = CGRectMake(0, 0, hua_scale(sizeWidth) , hua_scale(size.height));
+    CGFloat sizeWidth = (size.width < (self.frame.size.width / _numOfMenu) - 25) ? size.width : self.frame.size.width / _numOfMenu - 25;
+    layer.bounds = CGRectMake(0, 0,sizeWidth ,size.height);
     layer.string = string;
-    layer.fontSize = hua_scale(12);
+    layer.fontSize = hua_scale(12.5);
     layer.alignmentMode = kCAAlignmentCenter;
     layer.foregroundColor = color.CGColor;
     
@@ -430,9 +431,9 @@
 
 - (CGSize)calculateTitleSizeWithString:(NSString *)string
 {
-    CGFloat fontSize = 14.0;
+    CGFloat fontSize = hua_scale(12.5);
     NSDictionary *dic = @{NSFontAttributeName: [UIFont systemFontOfSize:fontSize]};
-    CGSize size = [string boundingRectWithSize:CGSizeMake(280, 0) options:NSStringDrawingTruncatesLastVisibleLine | NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading attributes:dic context:nil].size;
+    CGSize size = [string boundingRectWithSize:CGSizeMake(hua_scale(280), 0) options:NSStringDrawingTruncatesLastVisibleLine | NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading attributes:dic context:nil].size;
     return size;
 }
 
@@ -464,16 +465,16 @@
 
                    
                 }];
-                CATextLayer *lerv = self.titles[i];
-                
-                CGFloat sizeWidth = (_sizeW.width < (self.frame.size.width / _numOfMenu) - 25) ? _sizeW.width+hua_scale(8) : self.frame.size.width / _numOfMenu - 25+hua_scale(8);
-                lerv.bounds = CGRectMake(0, 0, hua_scale(sizeWidth) , hua_scale(_sizeW.height));
+//                CATextLayer *lerv = self.titles[i];
+//                
+//                CGFloat sizeWidth = (_sizeW.width < (self.frame.size.width / _numOfMenu) - 25) ? _sizeW.width+hua_scale(8) : self.frame.size.width / _numOfMenu - 25+hua_scale(8);
+//                lerv.bounds = CGRectMake(0, 0, hua_scale(sizeWidth) , hua_scale(_sizeW.height));
             }];
    
           [(CALayer *)self.bgLayers[i] setBackgroundColor:BackColor.CGColor];
         }
         
-            }
+    }
     
     BOOL displayByCollectionView = NO;
     
@@ -582,19 +583,16 @@
                     _show = YES;
                 }];
             }
-//            //点中设置颜色
-//            [(CALayer *)self.bgLayers[tapIndex] setBackgroundColor:SelectColor.CGColor];
-//            CATextLayer *lerv = self.titles[tapIndex];
-//            
-//            CGFloat sizeWidth = (_sizeW.width < (self.frame.size.width / _numOfMenu) - 25) ? _sizeW.width+hua_scale(8) : self.frame.size.width / _numOfMenu - 25+hua_scale(8);
-//            lerv.bounds = CGRectMake(0, 0, hua_scale(sizeWidth) , hua_scale(_sizeW.height));
+           //点中设置颜色
+            [(CALayer *)self.bgLayers[tapIndex] setBackgroundColor:SelectColor.CGColor];
+
 
         }
     }
-    CATextLayer *lerv = self.titles[tapIndex];
-    
-    CGFloat sizeWidth = (_sizeW.width < (self.frame.size.width / _numOfMenu) - 25) ? _sizeW.width+hua_scale(8) : self.frame.size.width / _numOfMenu - 25+hua_scale(8);
-    lerv.bounds = CGRectMake(0, 0, hua_scale(sizeWidth) , hua_scale(_sizeW.height));
+//    CATextLayer *lerv = self.titles[tapIndex];
+//    
+//    CGFloat sizeWidth = (_sizeW.width < (self.frame.size.width / _numOfMenu) - 25) ? _sizeW.width+hua_scale(8) : self.frame.size.width / _numOfMenu - 25+hua_scale(8);
+//    lerv.bounds = CGRectMake(0, 0, hua_scale(sizeWidth) , hua_scale(_sizeW.height));
 
 }
 
@@ -1072,8 +1070,8 @@ UITableViewCell *lastCell = nil;
      
     }
     
-    CGFloat sizeWidth = (_sizeW.width < (self.frame.size.width / _numOfMenu) - 25) ? _sizeW.width+hua_scale(8) : self.frame.size.width / _numOfMenu - 25;
-    self.lastTextLayer.bounds = CGRectMake(0, 0, hua_scale(sizeWidth) , hua_scale(_sizeW.height));
+//    CGFloat sizeWidth = (_sizeW.width < (self.frame.size.width / _numOfMenu) - 25) ? _sizeW.width+hua_scale(8) : self.frame.size.width / _numOfMenu - 25;
+//    self.lastTextLayer.bounds = CGRectMake(0, 0, hua_scale(sizeWidth) , hua_scale(_sizeW.height));
 }
 
 - (void)confiMenuWithSelectRow:(NSInteger)row leftOrRight:(NSInteger)leftOrRight{

@@ -152,7 +152,7 @@ const CGFloat maxContentLabelHeight = 54;
         
         //[self.timeButton setTitle:[HUATranslateTime translateTimeIntoCurrurents:[modell.time integerValue]] forState:0];
         
-        [self.headImage sd_setImageWithURL:[NSURL URLWithString:modell.icon] placeholderImage:[UIImage imageNamed:@"placeholder"]];
+        [self.headImage sd_setImageWithURL:[NSURL URLWithString:modell.icon] placeholderImage:[UIImage imageNamed:@"selecttechnician"]];
         
         if (modell.commentArray.count>=4) {
             _moreButton.hidden = NO;

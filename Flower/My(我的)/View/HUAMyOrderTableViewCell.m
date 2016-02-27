@@ -47,6 +47,15 @@
 }
 
 - (void)setCell{
+    //线
+    UIView *view =[UIView new];
+    view.backgroundColor = HUAColor(0xe1e1e1);
+    [self.contentView addSubview:view];
+    [view mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.bottom.left.right.mas_equalTo(0);
+        make.height.mas_equalTo(hua_scale(0.5));
+    }];
+    
 
     _iconImageView = [UIImageView new];
     //_iconImageView.backgroundColor = [UIColor yellowColor];
@@ -147,7 +156,7 @@
     .heightIs(0.5);
     
     _numbersLabel.sd_layout
-    .topSpaceToView(_thView,hua_scale(8))
+    .topSpaceToView(_thView,hua_scale(9))
     .leftEqualToView(_serveName)
     .autoHeightRatio(0);
     [_numbersLabel setSingleLineAutoResizeWithMaxWidth:hua_scale(300)];
@@ -159,7 +168,7 @@
     [_time setSingleLineAutoResizeWithMaxWidth:200];
     
     _moneyLabel.sd_layout
-    .topSpaceToView(_thView,hua_scale(8))
+    .topSpaceToView(_thView,hua_scale(9))
     .autoHeightRatio(0)
     .rightSpaceToView(self.contentView,hua_scale(20));
     [_thView updateLayout];
@@ -189,7 +198,7 @@
     .widthIs(hua_scale(64));
     
     
-    [self setupAutoHeightWithBottomViewsArray:@[_state,_confirmbutton] bottomMargin:hua_scale(15)];
+   // [self setupAutoHeightWithBottomViewsArray:@[_state,_confirmbutton] bottomMargin:hua_scale(0)];
 }
 
 - (void)setModel:(HUAMyOrderModel *)model{
@@ -267,8 +276,7 @@
         }
     }else{
     
-        [self setupAutoHeightWithBottomView:_state bottomMargin:hua_scale(15)];
-
+        [self setupAutoHeightWithBottomView:_state bottomMargin:hua_scale(12)];
     }
     
     
